@@ -68,5 +68,17 @@
     "conversationId": "conv_1751990568144_9010a6ujv",
     "registeredAt": "2025-07-08T16:03:58.620Z",
     "source": "chatbot-widget"
+  },
+  {
+    "id": "user_1752079843607_yreuwtr1g",
+    "name": "Houman44",
+    "email": "info@logoland.se",
+    "phone": "09878970",
+    "company": "goooo",
+    "language": "en",
+    "systemUsage": "existing_customer",
+    "conversationId": null,
+    "registrationTime": "2025-07-09T16:50:43.607Z",
+    "leadScore": 8
   }
 ]

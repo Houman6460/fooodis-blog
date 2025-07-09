@@ -38,5 +38,76 @@
     },
     "lastUserMessage": "I want to know about fooodis",
     "messageCount": 2
+  },
+  {
+    "id": "conv_1752079866664_y6o99h5b5",
+    "messages": [
+      {
+        "content": "I need to know about fooodis",
+        "sender": "user",
+        "timestamp": "2025-07-09T16:51:06.883Z"
+      },
+      {
+        "content": "Thanks for reaching out! As your Fooodis assistant, I can help you with orders, restaurant recommendations, account questions, and more. What can I assist you with today?",
+        "sender": "assistant",
+        "timestamp": "2025-07-09T16:51:06.883Z",
+        "agent": "David Kim"
+      },
+      {
+        "content": "hours",
+        "sender": "user",
+        "timestamp": "2025-07-09T16:51:15.286Z"
+      },
+      {
+        "content": "Welcome to Fooodis! I'm here to make your food ordering experience as smooth as possible. How can I help you today?",
+        "sender": "assistant",
+        "timestamp": "2025-07-09T16:51:15.286Z",
+        "agent": "David Kim"
+      },
+      {
+        "content": "location",
+        "sender": "user",
+        "timestamp": "2025-07-09T16:51:18.938Z"
+      },
+      {
+        "content": "Thanks for reaching out! As your Fooodis assistant, I can help you with orders, restaurant recommendations, account questions, and more. What can I assist you with today?",
+        "sender": "assistant",
+        "timestamp": "2025-07-09T16:51:18.938Z",
+        "agent": "David Kim"
+      },
+      {
+        "content": "contact",
+        "sender": "user",
+        "timestamp": "2025-07-09T16:51:27.519Z"
+      },
+      {
+        "content": "Welcome to Fooodis! I'm here to make your food ordering experience as smooth as possible. How can I help you today?",
+        "sender": "assistant",
+        "timestamp": "2025-07-09T16:51:27.519Z",
+        "agent": "David Kim"
+      }
+    ],
+    "userInfo": {
+      "id": "user_1752079843607_yreuwtr1g",
+      "name": "Houman44",
+      "email": "info@logoland.se",
+      "phone": "09878970",
+      "company": "goooo",
+      "language": "en",
+      "systemUsage": "existing_customer",
+      "conversationId": null,
+      "registrationTime": "2025-07-09T16:50:43.607Z",
+      "leadScore": 8
+    },
+    "language": "en",
+    "agent": {
+      "name": "David Kim",
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "personality": "Friendly Fooodis assistant"
+    },
+    "startTime": "2025-07-09T16:51:06.883Z",
+    "lastActivity": "2025-07-09T16:51:27.519Z",
+    "messageCount": 8,
+    "lastMessage": "Welcome to Fooodis! I'm here to make your food ordering experience as smooth as possible. How can I help you today?"
   }
 ]
