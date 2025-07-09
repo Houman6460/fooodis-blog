@@ -1,0 +1,58 @@
+Phase 1: Language Handling & Consistency
+1. Improve Language Detection Logic
+Enhance recognition of Swedish greetings and keywords (hej, tack, hjälp, jag behöver hjälp).
+
+Ensure language routing activates the appropriate assistant configuration (Swedish vs English).
+
+Apply language detection consistently across all entry points and handoff scenarios.
+
+2. Fix Incorrect Starting Message Language
+Modify logic so that the assistant’s starting message matches the user’s detected or selected language.
+
+English-initiated chats must receive the corresponding English intro message:
+
+English: “Hi! I'm Marcus Chen and I’ll be helping you today. What can I help you with?”
+
+Swedish: Current message is already correct.
+
+3. Translate Form Placeholder in Swedish
+Update the form's dropdown placeholder from “Choose from the options” to the correct Swedish version.
+
+Confirm all form labels and placeholders match the active language setting.
+
+4. Enable Language Toggle in Initial Popup Form
+Add tab-style UI toggle to the form allowing users to switch between English and Swedish.
+
+Maintain identical structure, validation, and data submission for both versions.
+
+Ensure lead and conversation data are correctly logged regardless of language.
+
+🧭 Phase 2: Post-Chat Logic & Rating Flow
+5. Automate Post-Chat “Thank You” Message
+Auto-send a localized thank-you message after 40 seconds of user inactivity after the chat is finished.
+
+Avoid triggering this while the user is still typing.
+
+Message content:
+
+English: “Thank you for today, [User’s Name]. We are happy to assist you next time!”
+
+Swedish: Localized equivalent to be used.
+
+6. Integrate Chat Rating Form
+Display rating form popup after the thank-you message is sent.
+
+Support both Swedish and English via same detection/toggle logic as the initial form.
+
+Submission must be saved to:
+
+Chat statistics
+
+User lead
+
+Chat history in the dashboard
+
+7. Ensure Rating Logic Triggers Reliably
+Fix the broken trigger so the form appears as designed.
+
+Add fallback logging or alerts if submission fails or isn't recorded properly.
