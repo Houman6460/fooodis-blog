@@ -498,43 +498,68 @@ class NodeFlowBuilder {
     }
 
     createDefaultFlow() {
-        // Create welcome node
-        const welcomeNode = this.createNode({
-            type: 'welcome',
-            position: { x: 100, y: 100 },
-            data: {
-                title: 'Welcome Message',
-                messages: {
-                    english: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?",
-                    swedish: "🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?",
-                    bilingual: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?\n\n🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?"
-                }
-            }
-        });
-
-        // Create intent detection node
-        const intentNode = this.createNode({
-            type: 'intent',
-            position: { x: 400, y: 100 },
-            data: {
-                title: 'Intent Detection',
-                intents: ['menu-help', 'ordering-help', 'technical-support', 'billing-question']
-            }
-        });
-
-        // Create department routing nodes
-        this.masterTemplate.departments.forEach((dept, index) => {
-            const handoffNode = this.createNode({
-                type: 'handoff',
-                position: { x: 700, y: 50 + (index * 120) },
+        // Only create default flow if no saved flow exists
+        if (this.nodes.length === 0) {
+            // Create welcome node
+            const welcomeNode = this.createNode({
+                type: 'welcome',
+                position: { x: 100, y: 100 },
                 data: {
-                    title: dept.name,
-                    department: dept.id,
-                    agents: dept.agents,
-                    color: dept.color
+                    title: 'Welcome Message',
+                    messages: {
+                        english: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?",
+                        swedish: "🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?",
+                        bilingual: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?\n\n🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?"
+                    }
                 }
             });
-        });
+
+            // Create intent detection node with comprehensive intents
+            const intentNode = this.createNode({
+                type: 'intent',
+                position: { x: 400, y: 100 },
+                data: {
+                    title: 'Intent Detection',
+                    intents: [
+                        'menu-creation', 'qr-codes', 'menu-customization', 'allergens',
+                        'pos-system', 'local-orders', 'whatsapp-ordering', 'payment-processing',
+                        'kitchen-display', 'preparation-time', 'staff-management', 'order-tracking',
+                        'loyalty-programs', 'coupons', 'tips', 'social-profiles', 'reviews',
+                        'themes', 'timezone-settings', 'multi-language', 'customization',
+                        'plan-comparison', 'billing-cycles', 'discounts', 'trials', 'upgrades'
+                    ],
+                    description: 'Detects user intent and routes to appropriate department'
+                }
+            });
+
+            // Create department routing nodes
+            this.masterTemplate.departments.forEach((dept, index) => {
+                const handoffNode = this.createNode({
+                    type: 'handoff',
+                    position: { x: 700, y: 50 + (index * 120) },
+                    data: {
+                        title: dept.name,
+                        department: dept.id,
+                        agents: dept.agents,
+                        color: dept.color,
+                        handoffMessage: `Transferring you to our ${dept.name} team...`
+                    }
+                });
+            });
+
+            // Create condition nodes for language routing
+            const languageCondition = this.createNode({
+                type: 'condition',
+                position: { x: 250, y: 300 },
+                data: {
+                    title: 'Language Detection',
+                    condition: 'user.language === "swedish"',
+                    description: 'Routes based on detected or selected language'
+                }
+            });
+
+            console.log('Created default flow with', this.nodes.length, 'nodes');
+        }
 
         this.renderNodes();
     }
@@ -1327,7 +1352,7 @@ class NodeFlowBuilder {
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
                     <button type="button" class="btn btn-primary modal-update" data-node-id="${node.id}">
-                        <i class="fas fa-save"></i> Update Node
+                        <i class="fas fa-save"></i> ${node.type === 'intent' ? 'Save Settings' : 'Update Node'}
                     </button>
                 </div>
             </div>
@@ -1341,7 +1366,7 @@ class NodeFlowBuilder {
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
         
-        // Update node handler
+        // Update node handler - Enhanced for Intent Detection
         modal.querySelector('.modal-update').addEventListener('click', (e) => {
             const nodeId = e.target.getAttribute('data-node-id');
             this.updateNodeFromModal(nodeId);
@@ -1433,6 +1458,7 @@ class NodeFlowBuilder {
                                     ${category.intents.map(intent => `
                                         <label class="checkbox-label">
                                             <input type="checkbox" value="${intent}" ${node.data.intents && node.data.intents.includes(intent) ? 'checked' : ''}>
+                                            <span class="checkmark"></span>
                                             ${intent}
                                         </label>
                                     `).join('')}
@@ -1522,8 +1548,15 @@ class NodeFlowBuilder {
             case 'intent':
                 const checkedIntents = Array.from(document.querySelectorAll('.intent-checkboxes input:checked'))
                     .map(input => input.value);
+                const intentDescription = document.getElementById('edit-intent-description');
+                
                 node.data.intents = checkedIntents;
+                if (intentDescription) {
+                    node.data.description = intentDescription.value;
+                }
+                
                 console.log('Updated intent node with intents:', checkedIntents);
+                console.log('Updated intent node description:', node.data.description);
                 break;
                 
             case 'condition':
