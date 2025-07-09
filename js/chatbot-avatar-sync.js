@@ -14,18 +14,14 @@
         // Get avatar from any available source with enhanced detection
         getStoredAvatar: function() {
             const sources = [
-                // Direct avatar storage
-                { key: 'chatbot-widget-avatar', direct: true },
-                
-                // Settings with avatar property
+                // Settings with avatar property (prioritize these for uploaded avatars)
                 { key: 'fooodis-chatbot-settings', property: 'avatar' },
                 { key: 'chatbot-settings-backup', property: 'avatar' },
                 { key: 'chatbot-avatar-settings', property: 'avatar' },
                 
-                // Config file backup
+                // Direct avatar storage
+                { key: 'chatbot-widget-avatar', direct: true },
                 { key: 'chatbot-config-avatar', direct: true },
-                
-                // Additional fallback sources
                 { key: 'chatbot-current-avatar', direct: true },
                 { key: 'dashboard-avatar-cache', direct: true }
             ];
@@ -35,14 +31,40 @@
                     const stored = localStorage.getItem(source.key);
                     if (stored) {
                         if (source.direct) {
-                            if (this.isValidAvatar(stored)) {
-                                console.log(`📥 Found avatar from ${source.key}:`, stored.substring(0, 50) + '...');
+                            if (this.isValidAvatar(stored) && !stored.includes('data:image/svg+xml')) {
+                                console.log(`📥 Found uploaded avatar from ${source.key}:`, stored.substring(0, 50) + '...');
                                 return this.makeAbsoluteUrl(stored);
                             }
                         } else {
                             const parsed = JSON.parse(stored);
                             if (parsed && parsed[source.property] && this.isValidAvatar(parsed[source.property])) {
-                                console.log(`📥 Found avatar from ${source.key}.${source.property}:`, parsed[source.property].substring(0, 50) + '...');
+                                // Prioritize non-default avatars (uploaded ones)
+                                if (!parsed[source.property].includes('data:image/svg+xml')) {
+                                    console.log(`📥 Found uploaded avatar from ${source.key}.${source.property}:`, parsed[source.property].substring(0, 50) + '...');
+                                    return this.makeAbsoluteUrl(parsed[source.property]);
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Failed to parse ${source.key}:`, error);
+                }
+            }
+
+            // Second pass: look for any valid avatar (including defaults)
+            for (const source of sources) {
+                try {
+                    const stored = localStorage.getItem(source.key);
+                    if (stored) {
+                        if (source.direct) {
+                            if (this.isValidAvatar(stored)) {
+                                console.log(`📥 Found fallback avatar from ${source.key}:`, stored.substring(0, 50) + '...');
+                                return this.makeAbsoluteUrl(stored);
+                            }
+                        } else {
+                            const parsed = JSON.parse(stored);
+                            if (parsed && parsed[source.property] && this.isValidAvatar(parsed[source.property])) {
+                                console.log(`📥 Found fallback avatar from ${source.key}.${source.property}:`, parsed[source.property].substring(0, 50) + '...');
                                 return this.makeAbsoluteUrl(parsed[source.property]);
                             }
                         }
