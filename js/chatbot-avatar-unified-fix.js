@@ -1,41 +1,39 @@
 
 /**
- * 🎯 UNIFIED CHATBOT AVATAR FIX
- * Single optimized solution for all avatar display issues
+ * 🎯 OPTIMIZED UNIFIED CHATBOT AVATAR FIX
+ * Single efficient solution for avatar display with proper z-index management
  */
 
 (function() {
     'use strict';
 
-    console.log('🎯 Unified Chatbot Avatar Fix loading...');
+    console.log('🎯 Optimized Unified Chatbot Avatar Fix loading...');
 
     const UnifiedAvatarFix = {
         targetAvatar: null,
         isProcessing: false,
         retryCount: 0,
-        maxRetries: 5,
+        maxRetries: 3,
         
-        // Throttled update function to prevent performance issues
-        updateThrottled: null,
+        // Performance optimization
+        updateQueue: [],
+        isUpdating: false,
         lastUpdate: 0,
-        updateDelay: 100,
+        updateDelay: 250, // Reduced frequency
         
         init: function() {
-            console.log('🔄 Initializing unified avatar fix...');
-            
-            // Create throttled update function
-            this.updateThrottled = this.throttle(this.performUpdate.bind(this), this.updateDelay);
+            console.log('🔄 Initializing optimized avatar fix...');
             
             // Load target avatar
             this.loadTargetAvatar();
             
-            // Initial update
-            this.scheduleUpdate();
+            // Set up efficient monitoring with debouncing
+            this.setupOptimizedMonitoring();
             
-            // Set up efficient monitoring
-            this.setupMonitoring();
+            // Initial update with delay to avoid blocking
+            setTimeout(() => this.scheduleUpdate(), 500);
             
-            // Clean up any conflicting scripts
+            // Clean up conflicting scripts
             this.cleanupConflictingScripts();
         },
 
@@ -43,8 +41,7 @@
             const sources = [
                 { key: 'fooodis-chatbot-settings', prop: 'avatar' },
                 { key: 'chatbot-widget-avatar', direct: true },
-                { key: 'chatbot-current-avatar', direct: true },
-                { key: 'dashboard-avatar-cache', direct: true }
+                { key: 'chatbot-current-avatar', direct: true }
             ];
 
             for (const source of sources) {
@@ -60,7 +57,7 @@
                         return;
                     }
                 } catch (error) {
-                    console.warn(`Could not parse ${source.key}:`, error);
+                    // Silent fail, continue to next source
                 }
             }
             
@@ -88,8 +85,16 @@
         },
 
         scheduleUpdate: function() {
-            if (this.isProcessing) return;
-            requestAnimationFrame(() => this.updateThrottled());
+            if (this.isProcessing || !this.targetAvatar) return;
+            
+            // Use requestAnimationFrame for better performance
+            if (!this.isUpdating) {
+                this.isUpdating = true;
+                requestAnimationFrame(() => {
+                    this.performUpdate();
+                    this.isUpdating = false;
+                });
+            }
         },
 
         performUpdate: function() {
@@ -99,11 +104,11 @@
             const now = Date.now();
             
             try {
-                // Update chatbot configuration
+                // Update chatbot configuration efficiently
                 this.updateChatbotConfig();
                 
-                // Update DOM elements efficiently
-                this.updateAvatarElements();
+                // Update DOM elements with batching
+                this.updateAvatarElementsBatched();
                 
                 // Store avatar for persistence
                 this.storeAvatar();
@@ -131,7 +136,7 @@
             }
         },
 
-        updateAvatarElements: function() {
+        updateAvatarElementsBatched: function() {
             const selectors = [
                 '.chatbot-avatar img',
                 '.chatbot-avatar-header img', 
@@ -139,38 +144,50 @@
                 '#chatbot-button img'
             ];
 
-            // Use document fragment for efficient DOM updates
+            // Create document fragment for efficient DOM manipulation
+            const updates = [];
+            
             selectors.forEach(selector => {
                 const images = document.querySelectorAll(selector);
                 images.forEach(img => {
                     if (img.src !== this.targetAvatar) {
-                        this.updateSingleImage(img);
+                        updates.push(img);
                     }
                 });
             });
+
+            // Batch DOM updates
+            if (updates.length > 0) {
+                updates.forEach(img => this.updateSingleImageOptimized(img));
+                console.log(`✅ Updated ${updates.length} avatar images`);
+            }
         },
 
-        updateSingleImage: function(img) {
-            // Pre-load image to avoid broken displays
-            const tempImg = new Image();
-            tempImg.onload = () => {
+        updateSingleImageOptimized: function(img) {
+            // Apply proper z-index management
+            const parent = img.closest('.chatbot-avatar, .chatbot-button, #chatbot-button');
+            if (parent) {
+                // Use reasonable z-index values
+                parent.style.zIndex = '1002';
+            }
+            
+            // Pre-load image efficiently
+            if (img.src !== this.targetAvatar) {
                 img.src = this.targetAvatar;
                 img.style.display = 'block';
                 img.style.objectFit = 'cover';
                 img.style.borderRadius = '50%';
-            };
-            tempImg.onerror = () => {
-                console.warn('❌ Failed to load avatar:', this.targetAvatar);
-            };
-            tempImg.src = this.targetAvatar;
+                
+                // Remove excessive z-index
+                img.style.zIndex = 'inherit';
+            }
         },
 
         storeAvatar: function() {
             try {
                 localStorage.setItem('chatbot-current-avatar', this.targetAvatar);
-                localStorage.setItem('dashboard-avatar-cache', this.targetAvatar);
             } catch (error) {
-                console.warn('Could not store avatar:', error);
+                // Silent fail for storage issues
             }
         },
 
@@ -180,47 +197,38 @@
                 setTimeout(() => {
                     this.isProcessing = false;
                     this.scheduleUpdate();
-                }, Math.min(1000 * this.retryCount, 5000));
+                }, Math.min(2000 * this.retryCount, 10000));
             }
         },
 
-        setupMonitoring: function() {
-            // Listen for storage changes
+        setupOptimizedMonitoring: function() {
+            // Listen for storage changes with debouncing
+            let storageTimeout;
             window.addEventListener('storage', (e) => {
                 if (e.key && (e.key.includes('avatar') || e.key.includes('chatbot'))) {
-                    this.loadTargetAvatar();
-                    this.scheduleUpdate();
+                    clearTimeout(storageTimeout);
+                    storageTimeout = setTimeout(() => {
+                        this.loadTargetAvatar();
+                        this.scheduleUpdate();
+                    }, 100);
                 }
             });
 
-            // Efficient DOM observer
+            // Optimized DOM observer with debouncing
             if (this.observer) return;
             
-            this.observer = new MutationObserver(this.throttle((mutations) => {
-                let needsUpdate = false;
-                
-                for (const mutation of mutations) {
-                    if (mutation.addedNodes?.length > 0) {
-                        for (const node of mutation.addedNodes) {
-                            if (node.nodeType === 1 && node.querySelector) {
-                                if (node.querySelector('.chatbot-avatar, #chatbot-button')) {
-                                    needsUpdate = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (needsUpdate) break;
-                }
-
-                if (needsUpdate) {
+            let observerTimeout;
+            this.observer = new MutationObserver(() => {
+                clearTimeout(observerTimeout);
+                observerTimeout = setTimeout(() => {
                     this.scheduleUpdate();
-                }
-            }, 200));
+                }, 200);
+            });
 
             this.observer.observe(document.body, {
                 childList: true,
-                subtree: true
+                subtree: true,
+                attributes: false // Disable attribute watching for performance
             });
         },
 
@@ -241,7 +249,28 @@
                         }
                         delete window[script];
                     } catch (error) {
-                        console.warn(`Could not clean up ${script}:`, error);
+                        // Silent cleanup
+                    }
+                }
+            });
+
+            // Clean up excessive z-index values
+            this.cleanupZIndexValues();
+        },
+
+        cleanupZIndexValues: function() {
+            // Find and fix elements with excessive z-index
+            const highZIndexElements = document.querySelectorAll('[style*="z-index"]');
+            highZIndexElements.forEach(el => {
+                const style = el.style.zIndex;
+                if (style && parseInt(style) > 1500) {
+                    // Reset to reasonable value
+                    if (el.classList.contains('chatbot-widget') || 
+                        el.classList.contains('chatbot-button') ||
+                        el.id === 'chatbot-button') {
+                        el.style.zIndex = '1002';
+                    } else {
+                        el.style.zIndex = '1000';
                     }
                 }
             });
@@ -262,17 +291,17 @@
         }
     };
 
-    // Initialize when DOM is ready
+    // Initialize when DOM is ready with delay to avoid blocking
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => UnifiedAvatarFix.init(), 100);
+            setTimeout(() => UnifiedAvatarFix.init(), 200);
         });
     } else {
-        setTimeout(() => UnifiedAvatarFix.init(), 100);
+        setTimeout(() => UnifiedAvatarFix.init(), 200);
     }
 
     // Make globally available
     window.UnifiedAvatarFix = UnifiedAvatarFix;
 
-    console.log('✅ Unified Chatbot Avatar Fix loaded');
+    console.log('✅ Optimized Unified Chatbot Avatar Fix loaded');
 })();

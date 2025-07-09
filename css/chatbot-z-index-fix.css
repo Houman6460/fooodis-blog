@@ -1,16 +1,18 @@
 
-/* 🎯 CHATBOT Z-INDEX OPTIMIZATION */
+/* 🎯 OPTIMIZED CHATBOT Z-INDEX MANAGEMENT */
 
-/* Base chatbot elements */
+/* Base chatbot elements with reasonable z-index values */
 .chatbot-widget,
 .chatbot-container {
     z-index: 1000 !important;
+    will-change: transform; /* Optimize for animations */
 }
 
 /* Chatbot button */
 #chatbot-button,
 .chatbot-button {
     z-index: 1001 !important;
+    transform: translateZ(0); /* Create stacking context */
 }
 
 /* Chatbot modal/popup */
@@ -18,6 +20,7 @@
 .chatbot-popup,
 .chatbot-window {
     z-index: 1002 !important;
+    isolation: isolate; /* Isolate stacking context */
 }
 
 /* Chatbot overlay */
@@ -25,14 +28,34 @@
     z-index: 999 !important;
 }
 
-/* Remove excessive z-index values */
+/* Force reset of excessive z-index values */
+[style*="z-index: 2000"],
+[style*="z-index: 3000"],
+[style*="z-index: 9999"],
 [style*="z-index: 10000"],
 [style*="z-index: 999999"] {
     z-index: 1002 !important;
 }
 
-/* Ensure proper stacking context */
+/* Ensure proper stacking context without excessive values */
 .chatbot-avatar,
 .chatbot-avatar img {
-    z-index: inherit;
+    z-index: inherit !important;
+    position: relative;
+}
+
+/* Optimize chatbot performance */
+.chatbot-widget * {
+    backface-visibility: hidden; /* Optimize for 3D transforms */
+}
+
+/* Prevent layout thrashing */
+.chatbot-avatar img {
+    contain: layout style paint; /* CSS containment for performance */
+}
+
+/* Smooth transitions */
+.chatbot-button,
+.chatbot-avatar {
+    transition: opacity 0.2s ease-in-out;
 }
