@@ -1,0 +1,564 @@
+/* Date Time Picker Dark Theme */
+:root {
+    --primary-color: #e8f24c; /* Yellow accent color */
+    --secondary-color: #1e2127; /* Dark background */
+    --text-color: #ffffff; /* White text */
+    --accent-color: #c7d037; /* Darker yellow for hover states */
+    --dark-accent: #1d2029; /* Slightly darker background for cards */
+    --border-color: rgba(232, 242, 76, 0.3); /* Semi-transparent yellow for borders */
+    --dark-bg: #1e2127; /* Main dark background */
+    --darker-bg: #171a1f; /* Darker background for contrast */
+    --dark-card: #252830; /* Dark card background */
+    --dark-input: #2a2e36; /* Dark input background */
+    --dark-border: #32363f; /* Dark border color */
+    --dark-text: #e0e0e0; /* Main text color on dark background */
+    --dark-text-secondary: #a0a0a0; /* Secondary text color on dark background */
+    --highlight-blue: #3478F6; /* Blue highlight color for selected items */
+}
+
+/* Date and Time Input Fields */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+    background-color: var(--dark-input) !important;
+    color: var(--dark-text) !important;
+    border: 1px solid var(--dark-border) !important;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.7;
+}
+
+/* Date Picker Calendar Popup */
+.calendar-popup,
+.date-picker-popup,
+.ui-datepicker,
+.flatpickr-calendar,
+.datepicker,
+.picker,
+.picker__holder,
+.datetime-picker {
+    background-color: white !important;
+    color: black !important;
+    border-radius: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+}
+
+/* Month Header */
+.calendar-popup .header,
+.date-picker-popup .header,
+.ui-datepicker-header,
+.flatpickr-month,
+.datepicker-header,
+.picker__header,
+.datetime-picker-header {
+    background-color: white !important;
+    color: black !important;
+    padding: 10px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+
+/* Month Title */
+.calendar-popup .month-title,
+.date-picker-popup .month-title,
+.ui-datepicker-title,
+.flatpickr-current-month,
+.datepicker-title,
+.picker__month,
+.datetime-picker-title {
+    font-weight: bold !important;
+    font-size: 16px !important;
+    color: black !important;
+}
+
+/* Day Names Row */
+.calendar-popup .weekdays,
+.date-picker-popup .weekdays,
+.ui-datepicker-calendar thead,
+.flatpickr-weekdays,
+.datepicker-weekdays,
+.picker__weekdays,
+.datetime-picker-weekdays {
+    background-color: white !important;
+    color: black !important;
+    font-weight: normal !important;
+    font-size: 14px !important;
+}
+
+/* Day Names */
+.calendar-popup .weekday,
+.date-picker-popup .weekday,
+.ui-datepicker-calendar th,
+.flatpickr-weekday,
+.datepicker-weekday,
+.picker__weekday,
+.datetime-picker-weekday {
+    color: #666 !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    padding: 8px 0 !important;
+}
+
+/* Calendar Days */
+.calendar-popup .day,
+.date-picker-popup .day,
+.ui-datepicker-calendar td,
+.flatpickr-day,
+.datepicker-day,
+.picker__day,
+.datetime-picker-day {
+    color: black !important;
+    text-align: center !important;
+    padding: 8px !important;
+    font-size: 14px !important;
+    border-radius: 0 !important;
+}
+
+/* Today's Date */
+.calendar-popup .today,
+.date-picker-popup .today,
+.ui-datepicker-today,
+.flatpickr-day.today,
+.datepicker-today,
+.picker__day--today,
+.datetime-picker-today {
+    font-weight: bold !important;
+}
+
+/* Selected Date */
+.calendar-popup .selected,
+.date-picker-popup .selected,
+.ui-datepicker-current-day,
+.flatpickr-day.selected,
+.datepicker-selected,
+.picker__day--selected,
+.datetime-picker-selected,
+.calendar-popup .day.selected,
+.date-picker-popup .day.selected {
+    background-color: var(--highlight-blue) !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 4px !important;
+}
+
+/* Disabled/Other Month Days */
+.calendar-popup .disabled,
+.date-picker-popup .disabled,
+.ui-datepicker-other-month,
+.flatpickr-day.disabled,
+.datepicker-disabled,
+.picker__day--disabled,
+.datetime-picker-disabled,
+.calendar-popup .day.disabled,
+.date-picker-popup .day.disabled {
+    color: #ccc !important;
+    opacity: 0.5 !important;
+}
+
+/* Navigation Buttons */
+.calendar-popup .prev,
+.calendar-popup .next,
+.date-picker-popup .prev,
+.date-picker-popup .next,
+.ui-datepicker-prev,
+.ui-datepicker-next,
+.flatpickr-prev-month,
+.flatpickr-next-month,
+.datepicker-prev,
+.datepicker-next,
+.picker__nav--prev,
+.picker__nav--next,
+.datetime-picker-prev,
+.datetime-picker-next {
+    cursor: pointer !important;
+    padding: 5px !important;
+    color: #666 !important;
+}
+
+.calendar-popup .prev:hover,
+.calendar-popup .next:hover,
+.date-picker-popup .prev:hover,
+.date-picker-popup .next:hover,
+.ui-datepicker-prev:hover,
+.ui-datepicker-next:hover,
+.flatpickr-prev-month:hover,
+.flatpickr-next-month:hover,
+.datepicker-prev:hover,
+.datepicker-next:hover,
+.picker__nav--prev:hover,
+.picker__nav--next:hover,
+.datetime-picker-prev:hover,
+.datetime-picker-next:hover {
+    color: black !important;
+    background-color: #f5f5f5 !important;
+}
+
+/* Footer Buttons */
+.calendar-popup .footer,
+.date-picker-popup .footer,
+.ui-datepicker-buttonpane,
+.flatpickr-buttons,
+.datepicker-buttons,
+.picker__footer,
+.datetime-picker-footer {
+    padding: 10px !important;
+    text-align: right !important;
+    border-top: 1px solid #f0f0f0 !important;
+    background-color: white !important;
+}
+
+.calendar-popup .btn,
+.date-picker-popup .btn,
+.ui-datepicker-button,
+.flatpickr-button,
+.datepicker-button,
+.picker__button,
+.datetime-picker-button {
+    padding: 6px 12px !important;
+    margin-left: 5px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+}
+
+.calendar-popup .btn-primary,
+.date-picker-popup .btn-primary,
+.ui-datepicker-current,
+.flatpickr-button.primary,
+.datepicker-button.primary,
+.picker__button--today,
+.datetime-picker-button.primary {
+    background-color: var(--highlight-blue) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.calendar-popup .btn-secondary,
+.date-picker-popup .btn-secondary,
+.ui-datepicker-close,
+.flatpickr-button.secondary,
+.datepicker-button.secondary,
+.picker__button--clear,
+.datetime-picker-button.secondary {
+    background-color: #f5f5f5 !important;
+    color: #333 !important;
+    border: 1px solid #ddd !important;
+}
+
+/* Time Picker */
+.time-picker-popup,
+.ui-timepicker,
+.flatpickr-time,
+.timepicker,
+.picker__list,
+.datetime-picker-time {
+    background-color: white !important;
+    color: black !important;
+    border-radius: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    padding: 10px 0 !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+}
+
+/* Time Options */
+.time-picker-popup .time-option,
+.ui-timepicker-option,
+.flatpickr-time-option,
+.timepicker-option,
+.picker__list-item,
+.datetime-picker-time-option {
+    padding: 8px 12px !important;
+    cursor: pointer !important;
+    color: black !important;
+    font-size: 14px !important;
+}
+
+.time-picker-popup .time-option:hover,
+.ui-timepicker-option:hover,
+.flatpickr-time-option:hover,
+.timepicker-option:hover,
+.picker__list-item:hover,
+.datetime-picker-time-option:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.time-picker-popup .time-option.selected,
+.ui-timepicker-option.selected,
+.flatpickr-time-option.selected,
+.timepicker-option.selected,
+.picker__list-item--selected,
+.datetime-picker-time-option.selected {
+    background-color: var(--highlight-blue) !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Time Input */
+.time-picker-popup input,
+.ui-timepicker input,
+.flatpickr-time input,
+.timepicker input,
+.picker__input,
+.datetime-picker-time input {
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid #ddd !important;
+    padding: 8px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+}
+
+/* Specific styling for the date picker shown in the images */
+.date-picker-calendar {
+    background-color: white !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    width: 280px !important;
+}
+
+.date-picker-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 15px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.date-picker-month {
+    font-weight: bold !important;
+    font-size: 16px !important;
+    color: black !important;
+}
+
+.date-picker-nav {
+    display: flex !important;
+    gap: 10px !important;
+}
+
+.date-picker-nav button {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 5px !important;
+}
+
+.date-picker-weekdays {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    text-align: center !important;
+    padding: 10px 0 !important;
+}
+
+.date-picker-weekday {
+    color: #666 !important;
+    font-size: 14px !important;
+}
+
+.date-picker-days {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 1px !important;
+    padding: 0 5px !important;
+}
+
+.date-picker-day {
+    aspect-ratio: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    color: black !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
+}
+
+.date-picker-day.other-month {
+    color: #ccc !important;
+}
+
+.date-picker-day.today {
+    font-weight: bold !important;
+}
+
+.date-picker-day.selected {
+    background-color: var(--highlight-blue) !important;
+    color: white !important;
+}
+
+.date-picker-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 10px 15px !important;
+    border-top: 1px solid #f0f0f0 !important;
+}
+
+.date-picker-footer button {
+    background: none !important;
+    border: none !important;
+    color: var(--highlight-blue) !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+}
+
+/* Time picker shown in the images */
+.time-picker-dropdown {
+    background-color: white !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    width: 150px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.time-picker-columns {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+}
+
+.time-picker-column {
+    text-align: center !important;
+}
+
+.time-picker-time {
+    padding: 8px 0 !important;
+    color: black !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+}
+
+.time-picker-time.selected {
+    background-color: var(--highlight-blue) !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Specific overrides for the exact pickers shown in the images */
+/* Date picker from Image 1 */
+.date-picker-specific {
+    width: 280px !important;
+    background-color: white !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.date-picker-specific .header {
+    padding: 10px 15px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.date-picker-specific .month-title {
+    font-weight: bold !important;
+    font-size: 16px !important;
+    color: black !important;
+}
+
+.date-picker-specific .nav-buttons {
+    display: flex !important;
+    gap: 10px !important;
+}
+
+.date-picker-specific .weekdays {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    text-align: center !important;
+    padding: 10px 0 !important;
+}
+
+.date-picker-specific .weekday {
+    color: black !important;
+    font-size: 14px !important;
+}
+
+.date-picker-specific .days {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 1px !important;
+    padding: 0 5px 10px !important;
+}
+
+.date-picker-specific .day {
+    aspect-ratio: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    color: black !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
+    margin: 2px !important;
+}
+
+.date-picker-specific .day.other-month {
+    color: #ccc !important;
+}
+
+.date-picker-specific .day.selected {
+    background-color: var(--highlight-blue) !important;
+    color: white !important;
+}
+
+.date-picker-specific .footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 10px 15px !important;
+    border-top: 1px solid #f0f0f0 !important;
+}
+
+.date-picker-specific .footer button {
+    background: none !important;
+    border: none !important;
+    color: var(--highlight-blue) !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+}
+
+/* Time picker from Image 3 */
+.time-picker-specific {
+    width: 150px !important;
+    background-color: white !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.time-picker-specific .columns {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+}
+
+.time-picker-specific .column {
+    text-align: center !important;
+}
+
+.time-picker-specific .time {
+    padding: 8px 0 !important;
+    color: black !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+}
+
+.time-picker-specific .time.selected {
+    background-color: var(--highlight-blue) !important;
+    color: white !important;
+    font-weight: bold !important;
+}
