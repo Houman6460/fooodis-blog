@@ -681,6 +681,20 @@
                 this.setupAllAvatars();
                 console.log('🖼️ Avatar setup completed after widget creation');
             }, 100);
+
+            // Auto-welcome message with delay - but check for registration first
+            setTimeout(() => {
+                // Only show basic welcome if registration form will not be shown
+                if (window.FoodisRegistrationForm && !window.FoodisRegistrationForm.shouldShowRegistration()) {
+                    this.addMessage(this.getWelcomeMessage(), 'assistant');
+                } else {
+                    // Just show initial greeting, registration form will handle personalized welcome
+                    const basicWelcome = this.config.language === 'sv' ? 
+                        'Välkommen till Fooodis!' : 
+                        'Welcome to Fooodis!';
+                    this.addMessage(basicWelcome, 'assistant');
+                }
+            }, 1500);
         },
 
         injectStyles: function() {
@@ -881,8 +895,7 @@
                     font-size: 14px !important;
                     line-height: 1.4 !important;
                     color: #333333 !important;
-                }
-
+                }```text
                 .message.user .message-content {
                     background: #e8f24c !important;
                     color: #26282f !important;
