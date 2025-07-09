@@ -1,35 +1,113 @@
 
 /**
- * 🔧 CHATBOT AVATAR OVERRIDE
- * Forces the correct avatar to be displayed on all pages
+ * 🔧 ENHANCED CHATBOT AVATAR OVERRIDE
+ * Prevents duplicate buttons and forces correct avatar display
  */
 
 (function() {
     'use strict';
 
-    console.log('🔧 Chatbot Avatar Override loading...');
+    console.log('🔧 Enhanced Chatbot Avatar Override loading...');
 
     const AvatarOverride = {
-        // Target avatar URL from storage or config
+        // Configuration
         targetAvatar: null,
-        
-        // Observer for DOM changes
         observer: null,
+        intervalId: null,
+        isInitialized: false,
         
         // Initialize the override system
         init: function() {
-            // Remove duplicates first
+            if (this.isInitialized) {
+                console.log('🔧 Avatar Override already initialized');
+                return;
+            }
+            
+            this.isInitialized = true;
+            console.log('🔧 Initializing Enhanced Avatar Override...');
+            
+            // Step 1: Immediate cleanup
             this.removeDuplicateButtons();
             
+            // Step 2: Load target avatar
             this.loadTargetAvatar();
-            this.setupDOMObserver();
-            this.forceAvatarUpdate();
             
-            // Set up periodic checks
-            setInterval(() => this.forceAvatarUpdate(), 2000);
+            // Step 3: Setup observers and periodic checks
+            this.setupDOMObserver();
+            this.startPeriodicChecks();
+            
+            // Step 4: Initial avatar application
+            setTimeout(() => this.forceAvatarUpdate(), 1000);
         },
 
-        // Load the target avatar from storage
+        // Start periodic checks to prevent duplicates
+        startPeriodicChecks: function() {
+            // Clear any existing interval
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+            }
+            
+            // Check every 3 seconds
+            this.intervalId = setInterval(() => {
+                this.removeDuplicateButtons();
+                this.forceAvatarUpdate();
+            }, 3000);
+        },
+
+        // Enhanced duplicate button removal
+        removeDuplicateButtons: function() {
+            const buttons = document.querySelectorAll('.chatbot-button, #chatbot-button');
+            
+            if (buttons.length <= 1) {
+                return; // No duplicates
+            }
+            
+            console.log(`🗑️ Found ${buttons.length} chatbot buttons, removing duplicates...`);
+            
+            // Keep the first properly positioned button
+            let keptButton = null;
+            
+            buttons.forEach((button, index) => {
+                if (index === 0) {
+                    keptButton = button;
+                    // Ensure proper styling
+                    this.ensureButtonStyling(button);
+                } else {
+                    console.log(`🗑️ Removing duplicate button ${index + 1}`);
+                    button.remove();
+                }
+            });
+            
+            // Ensure the kept button has proper ID
+            if (keptButton && !keptButton.id) {
+                keptButton.id = 'chatbot-button';
+            }
+        },
+
+        // Ensure proper button styling
+        ensureButtonStyling: function(button) {
+            if (!button) return;
+            
+            // Apply essential styles
+            button.style.cssText = `
+                position: fixed !important;
+                bottom: 20px !important;
+                right: 20px !important;
+                width: 60px !important;
+                height: 60px !important;
+                border-radius: 50% !important;
+                background: #e8f24c !important;
+                cursor: pointer !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+                z-index: 999999 !important;
+                transition: all 0.3s ease !important;
+            `;
+        },
+
+        // Load target avatar from multiple sources
         loadTargetAvatar: function() {
             const sources = [
                 localStorage.getItem('chatbot-widget-avatar'),
@@ -38,15 +116,16 @@
                 sessionStorage.getItem('chatbot-avatar-current')
             ];
 
+            // Try direct sources first
             for (const source of sources) {
                 if (source && this.isValidAvatar(source)) {
                     this.targetAvatar = this.makeAbsoluteUrl(source);
-                    console.log('🎯 Target avatar loaded:', this.targetAvatar.substring(0, 50) + '...');
+                    console.log('🎯 Target avatar loaded from storage:', this.targetAvatar.substring(0, 50) + '...');
                     return;
                 }
             }
 
-            // Try to get from settings
+            // Try settings object
             try {
                 const settings = localStorage.getItem('fooodis-chatbot-settings');
                 if (settings) {
@@ -58,7 +137,7 @@
                     }
                 }
             } catch (e) {
-                console.warn('Failed to parse settings for avatar');
+                console.warn('Failed to parse chatbot settings for avatar');
             }
 
             // Fallback to config file
@@ -82,38 +161,49 @@
             }
         },
 
-        // Set up DOM observer to catch avatar changes
+        // Enhanced DOM observer
         setupDOMObserver: function() {
+            if (this.observer) {
+                this.observer.disconnect();
+            }
+
             this.observer = new MutationObserver((mutations) => {
-                let avatarChanged = false;
+                let shouldUpdate = false;
                 
                 mutations.forEach((mutation) => {
+                    // Check for added nodes
                     if (mutation.addedNodes) {
                         mutation.addedNodes.forEach((node) => {
                             if (node.nodeType === 1) {
-                                // Check if chatbot avatar elements were added
-                                if (node.querySelector && 
-                                    (node.querySelector('.chatbot-avatar img') || 
-                                     node.querySelector('#chatbot-button img') ||
-                                     node.classList?.contains('chatbot-avatar'))) {
-                                    avatarChanged = true;
+                                // Check if chatbot elements were added
+                                if (node.classList?.contains('chatbot-button') ||
+                                    node.classList?.contains('chatbot-avatar') ||
+                                    node.id === 'chatbot-button' ||
+                                    node.querySelector && (
+                                        node.querySelector('.chatbot-button') ||
+                                        node.querySelector('#chatbot-button') ||
+                                        node.querySelector('.chatbot-avatar')
+                                    )) {
+                                    shouldUpdate = true;
                                 }
                             }
                         });
                     }
                     
-                    // Check for attribute changes on existing avatar images
-                    if (mutation.type === 'attributes' && mutation.target.tagName === 'IMG') {
-                        const img = mutation.target;
-                        if (img.closest('.chatbot-avatar') || img.closest('#chatbot-button')) {
-                            avatarChanged = true;
-                        }
+                    // Check for attribute changes on images
+                    if (mutation.type === 'attributes' && 
+                        mutation.target.tagName === 'IMG' &&
+                        mutation.target.closest('.chatbot-avatar, .chatbot-button, #chatbot-button')) {
+                        shouldUpdate = true;
                     }
                 });
 
-                if (avatarChanged) {
-                    console.log('🔄 Avatar DOM change detected, applying override...');
-                    setTimeout(() => this.forceAvatarUpdate(), 100);
+                if (shouldUpdate) {
+                    console.log('🔄 Chatbot DOM change detected, applying fixes...');
+                    setTimeout(() => {
+                        this.removeDuplicateButtons();
+                        this.forceAvatarUpdate();
+                    }, 100);
                 }
             });
 
@@ -121,16 +211,19 @@
                 childList: true,
                 subtree: true,
                 attributes: true,
-                attributeFilter: ['src']
+                attributeFilter: ['src', 'class', 'id']
             });
         },
 
-        // Force avatar update on all chatbot elements and remove duplicates
+        // Enhanced avatar update
         forceAvatarUpdate: function() {
-            // First, remove duplicate chatbot buttons
+            // First, ensure no duplicates
             this.removeDuplicateButtons();
             
-            if (!this.targetAvatar) return;
+            if (!this.targetAvatar) {
+                console.log('🔄 No target avatar available yet');
+                return;
+            }
 
             const selectors = [
                 '.chatbot-avatar img',
@@ -148,17 +241,20 @@
                     if (img.src !== this.targetAvatar) {
                         console.log(`🔄 Updating avatar: ${selector}`);
                         img.src = this.targetAvatar;
-                        img.style.display = 'block';
-                        img.style.objectFit = 'cover';
-                        img.style.width = '100%';
-                        img.style.height = '100%';
-                        img.style.borderRadius = '50%';
+                        img.style.cssText = `
+                            display: block !important;
+                            object-fit: cover !important;
+                            width: 100% !important;
+                            height: 100% !important;
+                            border-radius: 50% !important;
+                            background-color: #e8f24c !important;
+                        `;
                         updatedCount++;
                     }
                 });
             });
 
-            // Also update chatbot config if available
+            // Update chatbot config objects
             if (window.FoodisChatbot) {
                 if (window.FoodisChatbot.config && window.FoodisChatbot.config.avatar !== this.targetAvatar) {
                     window.FoodisChatbot.config.avatar = this.targetAvatar;
@@ -173,20 +269,6 @@
 
             if (updatedCount > 0) {
                 console.log(`✅ Avatar override applied to ${updatedCount} elements`);
-            }
-        },
-
-        // Remove duplicate chatbot buttons
-        removeDuplicateButtons: function() {
-            const buttons = document.querySelectorAll('.chatbot-button, #chatbot-button');
-            if (buttons.length > 1) {
-                console.log(`🗑️ Found ${buttons.length} chatbot buttons, removing duplicates...`);
-                
-                // Keep only the first one, remove the rest
-                for (let i = 1; i < buttons.length; i++) {
-                    buttons[i].remove();
-                    console.log(`🗑️ Removed duplicate chatbot button ${i + 1}`);
-                }
             }
         },
 
@@ -222,20 +304,45 @@
             } else {
                 return baseUrl + '/images/avatars/' + url;
             }
+        },
+
+        // Cleanup method
+        cleanup: function() {
+            if (this.observer) {
+                this.observer.disconnect();
+                this.observer = null;
+            }
+            
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+            
+            this.isInitialized = false;
         }
     };
 
     // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
+    function initializeOverride() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => AvatarOverride.init(), 500);
+            });
+        } else {
             setTimeout(() => AvatarOverride.init(), 500);
-        });
-    } else {
-        setTimeout(() => AvatarOverride.init(), 500);
+        }
     }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+        AvatarOverride.cleanup();
+    });
 
     // Make globally available
     window.ChatbotAvatarOverride = AvatarOverride;
 
-    console.log('✅ Chatbot Avatar Override loaded');
+    // Initialize
+    initializeOverride();
+
+    console.log('✅ Enhanced Chatbot Avatar Override loaded');
 })();
