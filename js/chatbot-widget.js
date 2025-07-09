@@ -109,24 +109,47 @@
 
         loadSavedSettings: function() {
             try {
-                const savedSettings = localStorage.getItem('fooodis-chatbot-settings');
-                if (savedSettings) {
-                    const settings = JSON.parse(savedSettings);
+                // Try multiple storage locations
+                let settings = null;
+                const storageKeys = ['fooodis-chatbot-settings', 'chatbot-settings-backup'];
+                
+                for (const key of storageKeys) {
+                    const savedSettings = localStorage.getItem(key);
+                    if (savedSettings) {
+                        settings = JSON.parse(savedSettings);
+                        console.log('📦 Widget loaded settings from:', key);
+                        break;
+                    }
+                }
+                
+                if (settings) {
                     this.chatbotSettings = settings;
                     this.config.avatar = settings.avatar || this.getDefaultAvatar();
                     this.config.enabled = settings.enabled !== false;
                     this.config.allowFileUpload = settings.allowFileUpload !== false;
 
-                    if (settings.enableMultipleAgents && settings.agents) {
-                        this.availableAgents = settings.agents.filter(agent => agent.enabled !== false);
+                    // Load assistants/agents
+                    if (settings.assistants && settings.assistants.length > 0) {
+                        this.availableAgents = settings.assistants.filter(agent => 
+                            agent.status === 'active' || agent.enabled !== false
+                        );
+                        console.log('📋 Widget loaded', this.availableAgents.length, 'active agents');
                     }
+                    
+                    // Set current agent from available agents
+                    if (this.availableAgents && this.availableAgents.length > 0) {
+                        this.currentAgent = {
+                            name: this.availableAgents[0].name,
+                            avatar: this.availableAgents[0].avatar || this.config.avatar || this.getDefaultAvatar(),
+                            personality: this.availableAgents[0].personality || 'Friendly Fooodis assistant'
+                        };
+                    } else {
+                        this.setDefaultAgent();
+                    }
+                } else {
+                    console.warn('⚠️ No settings found in any storage location');
+                    this.setDefaultAgent();
                 }
-
-                this.currentAgent = {
-                    name: 'David Kim',
-                    avatar: this.config.avatar || this.getDefaultAvatar(),
-                    personality: 'Friendly Fooodis assistant'
-                };
             } catch (error) {
                 console.error('Error loading saved settings:', error);
                 this.setDefaultAgent();
