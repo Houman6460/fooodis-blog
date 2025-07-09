@@ -366,6 +366,40 @@
     max-width: 90vw;
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.modal-content .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-content .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.modal-content .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.modal-content .form-control:focus {
+    outline: none;
+    border-color: #e8f24c;
+    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.2);
+}
+
+.modal-content textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
 }
 
 .modal-content.large {
@@ -571,54 +605,77 @@
         min-height: 70vh;
     }
 }
-/* Intent Detection Node Modal Styles */
+/* Intent Detection Node Modal Styles - Dark Theme */
 .intent-category {
     margin-bottom: 15px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
+    padding: 12px;
+    background: #333;
+    border-radius: 6px;
+    border: 1px solid #555;
 }
 
 .intent-category h5 {
-    margin: 0 0 10px 0;
-    color: #495057;
+    margin: 0 0 12px 0;
+    color: #e8f24c;
     font-size: 14px;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .checkbox-label {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     cursor: pointer;
     font-size: 13px;
-    color: #6c757d;
-}
-
-.checkbox-label input[type="checkbox"] {
-    margin-right: 8px;
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
+    color: #ccc;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
 .checkbox-label:hover {
-    color: #495057;
+    color: #fff;
+    background: rgba(232, 242, 76, 0.1);
 }
 
-.checkbox-label input[type="checkbox"]:checked + .checkmark {
-    background-color: #28a745;
-}
-
-.checkmark {
+.checkbox-label input[type="checkbox"] {
+    margin-right: 10px;
     width: 16px;
     height: 16px;
-    background-color: #fff;
-    border: 2px solid #ddd;
+    cursor: pointer;
+    appearance: none;
+    background: #2a2a2a;
+    border: 2px solid #555;
     border-radius: 3px;
-    margin-right: 8px;
-    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+    background: #e8f24c;
+    border-color: #e8f24c;
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+}
+
+.checkbox-label input[type="checkbox"]:hover {
+    border-color: #e8f24c;
+    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.2);
+}
+
+/* Remove old checkmark styles */
+.checkmark {
+    display: none;
 }
 
 /* Modal Footer Enhancement */

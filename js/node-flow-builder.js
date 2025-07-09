@@ -1407,6 +1407,15 @@ class NodeFlowBuilder {
                     this.scheduleAutoSave();
                 });
             });
+            
+            // Special handling for checkboxes in intent categories
+            const checkboxes = form.querySelectorAll('.intent-checkboxes input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    console.log('Checkbox changed:', checkbox.value, checkbox.checked);
+                    this.scheduleAutoSave();
+                });
+            });
         }
     }
 
@@ -1577,7 +1586,7 @@ class NodeFlowBuilder {
                 break;
                 
             case 'intent':
-                const checkedIntents = Array.from(document.querySelectorAll('.intent-checkboxes input:checked'))
+                const checkedIntents = Array.from(document.querySelectorAll('.intent-checkboxes input[type="checkbox"]:checked'))
                     .map(input => input.value);
                 const intentDescription = document.getElementById('edit-intent-description');
                 
@@ -1588,6 +1597,9 @@ class NodeFlowBuilder {
                 
                 console.log('Updated intent node with intents:', checkedIntents);
                 console.log('Updated intent node description:', node.data.description);
+                
+                // Force re-render to show updated intents
+                this.renderNodes();
                 break;
                 
             case 'condition':
