@@ -109,29 +109,11 @@ if (typeof authAPI === 'function' || (authAPI && typeof authAPI.handle === 'func
 // Serve static files from the current directory
 // Note: Static serving is now handled by express.static('.') above
 
-// Start server with proper error handling
-const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Fooodis Blog System server running on http://0.0.0.0:${PORT}`);
-    console.log(`- Dashboard: http://0.0.0.0:${PORT}/dashboard.html`);
-    console.log(`- Login: http://0.0.0.0:${PORT}/login.html`);
-    console.log(`- Profile: http://0.0.0.0:${PORT}/profile.html`);
-    console.log(`- API Health: http://0.0.0.0:${PORT}/api/system-health`);
-});
-
-server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.log(`Port ${PORT} is busy, trying port ${PORT + 1}`);
-        const server2 = app.listen(PORT + 1, '0.0.0.0', () => {
-            console.log(`Fooodis Blog System server running on http://0.0.0.0:${PORT + 1}`);
-            console.log(`- Dashboard: http://0.0.0.0:${PORT + 1}/dashboard.html`);
-            console.log(`- Login: http://0.0.0.0:${PORT + 1}/login.html`);
-            console.log(`- Profile: http://0.0.0.0:${PORT + 1}/profile.html`);
-            console.log(`- API Health: http://0.0.0.0:${PORT + 1}/api/system-health`);
-        });
-        server2.on('error', (err) => {
-            console.error(`Failed to start on port ${PORT + 1}:`, err);
-        });
-    } else {
-        console.error('Server error:', err);
-    }
+// Start the server
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Fooodis Blog System server running on http://0.0.0.0:${PORT}`);
+  console.log(`- Dashboard: http://0.0.0.0:${PORT}/dashboard.html`);
+  console.log(`- Login: http://0.0.0.0:${PORT}/login.html`);
+  console.log(`- Profile: http://0.0.0.0:${PORT}/profile.html`);
+  console.log(`- API Health: http://0.0.0.0:${PORT}/api/system-health`);
 });
