@@ -122,18 +122,17 @@
                 if (settings) {
                     this.chatbotSettings = settings;
 
-                    // Check for uploaded avatar - be more flexible with detection
-                    let uploadedAvatar = null;
-                    if (settings.avatar && settings.avatar.trim() !== '') {
-                        // Check if it's not the default SVG avatar
-                        if (!settings.avatar.includes('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAi')) {
-                            uploadedAvatar = settings.avatar;
-                            console.log('🖼️ Found uploaded avatar in settings:', uploadedAvatar.substring(0, 50) + '...');
-                        }
+                    // Simplified avatar handling - use any valid avatar URL
+                    let avatarUrl = this.getDefaultAvatar();
+                    if (settings.avatar && settings.avatar.trim() !== '' && this.isValidAvatarUrl(settings.avatar)) {
+                        avatarUrl = settings.avatar;
+                        console.log('🖼️ Using uploaded avatar from settings');
+                    } else {
+                        console.log('🖼️ Using default avatar');
                     }
 
-                    // Set configuration with proper avatar priority
-                    this.config.avatar = uploadedAvatar || this.getDefaultAvatar();
+                    // Set configuration
+                    this.config.avatar = avatarUrl;
                     this.config.enabled = settings.enabled !== false;
                     this.config.allowFileUpload = settings.allowFileUpload !== false;
 
@@ -145,12 +144,12 @@
                         console.log('📋 Widget loaded', this.availableAgents.length, 'active agents from settings');
                     }
 
-                    // ALWAYS start with General Settings using the uploaded avatar
+                    // ALWAYS start with General Settings using the configured avatar
                     this.currentAgent = {
                         name: settings.chatbotName || 'Fooodis Assistant',
-                        avatar: this.config.avatar, // Use the same avatar as config
+                        avatar: this.config.avatar,
                         personality: 'General assistant',
-                        isGeneral: true // Flag to indicate this is the general settings agent
+                        isGeneral: true
                     };
 
                     console.log('🏢 Starting with General Settings agent:', this.currentAgent.name);
@@ -165,8 +164,18 @@
             }
         },
 
+        isValidAvatarUrl: function(url) {
+            if (!url || typeof url !== 'string') return false;
+            return url.startsWith('data:image/') || 
+                   url.startsWith('http://') || 
+                   url.startsWith('https://') || 
+                   url.startsWith('/') || 
+                   url.startsWith('./');
+        },
+
         getDefaultAvatar: function() {
-            return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNlOGYyNGMiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDMTMuMSAyIDE0IDIuOSAxNCA0QzE0IDUuMSAxMy4xIDYgMTIgNkMxMC45IDYgMTAgNS4xIDEwIDRDMTAgMi45IDEwLjkgMiAxMiAyWk0yMSAxOVYyMEgzVjE5QzMgMTYuMzMgOSA0NSA5IDE1SDE1QzE2IDE1IDIxIDE2LjMzIDIxIDE5WiIgZmlsbD0iIzI2MjgyZiIvPgo8L3N2Zz4KPC9zdmc+';
+            // Return a simple, reliable default avatar
+            return 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Ccircle cx="20" cy="20" r="20" fill="%23e8f24c"/%3E%3Cpath d="M20 10c2 0 4 2 4 4s-2 4-4 4-4-2-4-4 2-4 4-4zm0 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" fill="%2326282f"/%3E%3C/svg%3E';
         },
 
         loadLanguagePreference: function() {
@@ -300,47 +309,49 @@
                 headerText.textContent = this.currentAgent.name;
             }
 
-            // Use the avatar from config (which was properly set) or current agent
-            let avatarUrl = this.config.avatar || this.currentAgent.avatar || this.getDefaultAvatar();
+            // Use a reliable avatar URL
+            let avatarUrl = this.config.avatar || this.getDefaultAvatar();
+            console.log('🖼️ Updating avatar with URL:', avatarUrl.substring(0, 50) + '...');
 
-            console.log('🖼️ Final avatar URL:', avatarUrl.substring(0, 100) + '...');
-
-            // Update all avatar images with enhanced error handling
+            // Update all avatar images
             avatarImages.forEach((img, index) => {
-                console.log(`🖼️ Updating avatar image ${index + 1}`);
-
-                // Clear any previous handlers
-                img.onerror = null;
-                img.onload = null;
-
-                // Set up error handler
-                img.onerror = function() {
-                    console.warn('Avatar failed to load, using default');
-                    img.src = this.getDefaultAvatar();
-                }.bind(this);
-
-                img.onload = function() {
-                    console.log('✅ Avatar loaded successfully for image', index + 1);
-                };
-
-                // Set attributes and styles
-                img.alt = this.currentAgent.name + ' Avatar';
-                img.style.display = 'block';
-                img.style.objectFit = 'cover';
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.borderRadius = '50%';
-                img.style.backgroundColor = '#e8f24c';
-
-                // Set src to trigger loading
-                img.src = avatarUrl;
+                this.setAvatarImage(img, avatarUrl, index + 1);
             });
 
-            // Update references
-            this.currentAgent.avatar = avatarUrl;
-            this.config.avatar = avatarUrl;
-
             console.log('🖼️ Updated agent header with avatar');
+        },
+
+        setAvatarImage: function(imgElement, avatarUrl, index) {
+            if (!imgElement) return;
+
+            // Clear existing handlers
+            imgElement.onerror = null;
+            imgElement.onload = null;
+
+            // Set up error handling
+            imgElement.onerror = () => {
+                console.warn(`Avatar ${index} failed to load, using default`);
+                if (avatarUrl !== this.getDefaultAvatar()) {
+                    imgElement.src = this.getDefaultAvatar();
+                }
+            };
+
+            imgElement.onload = () => {
+                console.log(`✅ Avatar ${index} loaded successfully`);
+                imgElement.style.display = 'block';
+            };
+
+            // Set essential styles
+            imgElement.style.display = 'block';
+            imgElement.style.objectFit = 'cover';
+            imgElement.style.width = '100%';
+            imgElement.style.height = '100%';
+            imgElement.style.borderRadius = '50%';
+            imgElement.style.backgroundColor = '#e8f24c';
+            imgElement.alt = (this.currentAgent?.name || 'Assistant') + ' Avatar';
+
+            // Set the source to trigger loading
+            imgElement.src = avatarUrl;
         },
 
         setupAvatarUpdateListener: function() {
@@ -369,6 +380,19 @@
             };
         },
 
+        setupAllAvatars: function() {
+            if (!this.widget) return;
+
+            const avatarUrl = this.config.avatar || this.getDefaultAvatar();
+            const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .chatbot-avatar-header img, .message-avatar img');
+
+            console.log(`🖼️ Setting up ${avatarImages.length} avatar images`);
+
+            avatarImages.forEach((img, index) => {
+                this.setAvatarImage(img, avatarUrl, index + 1);
+            });
+        },
+
         updateAvatar: function(avatarUrl) {
             this.config.avatar = avatarUrl;
 
@@ -378,17 +402,11 @@
             }
 
             // Update all avatar images in the widget
-            const avatarImages = this.widget?.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .chatbot-avatar-header img, .message-avatar img');
-            avatarImages?.forEach(img => {
-                img.src = avatarUrl;
-                img.style.display = 'block';
-                img.onerror = function() {
-                    console.warn('Avatar failed to load:', avatarUrl);
-                    img.src = this.getDefaultAvatar();
-                }.bind(this);
-            });
+            if (this.widget) {
+                this.setupAllAvatars();
+            }
 
-            console.log('🖼️ Avatar updated in chatbot widget:', avatarUrl);
+            console.log('🖼️ Avatar updated in chatbot widget');
         },
 
         updateFileUploadVisibility: function() {
@@ -408,7 +426,7 @@
             // Get agent info and avatar
             const agentName = this.currentAgent ? this.currentAgent.name : 'Fooodis Assistant';
             
-            // Use the avatar from config which was properly set in loadSavedSettings
+            // Use a reliable avatar URL
             let agentAvatar = this.config.avatar || this.getDefaultAvatar();
 
             console.log('🖼️ Creating widget with avatar:', agentAvatar.substring(0, 50) + '...');
@@ -423,7 +441,7 @@
                     <!-- Chat Button -->
                     <div class="chatbot-button" id="chatbot-button">
                         <div class="chatbot-avatar">
-                            <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="console.log('Avatar load failed, using fallback'); this.src='${this.getDefaultAvatar()}'; this.style.display='block';" onload="console.log('Avatar loaded successfully');" />
+                            <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" />
                         </div>
                         <div class="notification-badge" id="notification-badge">1</div>
                     </div>
@@ -443,7 +461,7 @@
                             </div>
                             <div class="agent-info">
                                 <div class="chatbot-avatar-header">
-                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="console.log('Avatar load failed, using fallback'); this.src='${this.getDefaultAvatar()}'; this.style.display='block';" onload="console.log('Avatar loaded successfully');" />
+                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" />
                                 </div>
                                 <div class="header-text">
                                     <h4>${agentName}</h4>
@@ -457,7 +475,7 @@
                         <div class="chatbot-messages" id="chatbot-messages">
                             <div class="message assistant">
                                 <div class="message-avatar">
-                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="console.log('Avatar load failed, using fallback'); this.src='${this.getDefaultAvatar()}'; this.style.display='block';" onload="console.log('Avatar loaded successfully');" />
+                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" />
                                 </div>
                                 <div class="message-content">${this.getInitialWelcomeMessage()}</div>
                             </div>
@@ -504,10 +522,10 @@
             document.body.appendChild(widget);
             this.widget = widget;
 
-            // Force avatar update after widget is created
+            // Set up avatars with proper error handling after DOM is ready
             setTimeout(() => {
-                this.updateAgentHeader();
-                console.log('🖼️ Forced avatar update after widget creation');
+                this.setupAllAvatars();
+                console.log('🖼️ Avatar setup completed after widget creation');
             }, 100);
         },
 
