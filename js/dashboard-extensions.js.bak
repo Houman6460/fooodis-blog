@@ -1,0 +1,1654 @@
+/**
+ * Dashboard Extensions
+ * This file contains functionality for AI assistant, scheduled posts, and media library
+ */
+
+// Initialize all dashboard extensions when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AI Assistant
+    initAIAssistant();
+    
+    // Initialize Scheduled Posts
+    initScheduledPosts();
+    
+    // Initialize Media Library
+    initMediaLibrary();
+    
+    // Initialize Social Media Publishing
+    initSocialMediaPublishing();
+});
+
+/**
+ * Initialize AI Assistant functionality
+ */
+function initAIAssistant() {
+    console.log('AI Assistant initialized');
+    
+    // Get DOM elements
+    const generateBtn = document.getElementById('generateContentBtn');
+    const promptInput = document.getElementById('aiPrompt');
+    const toneSelect = document.getElementById('contentTone');
+    const lengthSelect = document.getElementById('contentLength');
+    const resultContainer = document.getElementById('aiGeneratedContent');
+    const useContentBtn = document.getElementById('useGeneratedContent');
+    
+    // Check if elements exist
+    if (!generateBtn || !promptInput || !toneSelect || !lengthSelect || !resultContainer) {
+        console.error('AI Assistant: Required elements not found');
+        return;
+    }
+    
+    // Load API key from localStorage or prompt user to enter one
+    let apiKey = localStorage.getItem('openai-api-key');
+    if (!apiKey) {
+        setupAPIKeyConfiguration();
+    }
+    
+    // Add event listener to generate content button
+    generateBtn.addEventListener('click', function() {
+        const prompt = promptInput.value.trim();
+        const tone = toneSelect.value;
+        const length = lengthSelect.value;
+        
+        if (prompt === '') {
+            showNotification('Please enter a prompt for content generation', 'error');
+            return;
+        }
+        
+        // Show loading state
+        resultContainer.innerHTML = '<div class="ai-loading"><i class="fas fa-spinner fa-spin"></i> Generating content...</div>';
+        generateBtn.disabled = true;
+        
+        // Simulate AI generation (in a real app, this would call an API)
+        setTimeout(function() {
+            const generatedContent = generateSampleContent(prompt, tone, length);
+            resultContainer.innerHTML = generatedContent;
+            generateBtn.disabled = false;
+            useContentBtn.style.display = 'block';
+        }, 2000);
+    });
+    
+    // Add event listener to use generated content button
+    if (useContentBtn) {
+        useContentBtn.addEventListener('click', function() {
+            const generatedText = resultContainer.innerHTML;
+            if (generatedText && !generatedText.includes('ai-loading')) {
+                // Get the content editor from the post form
+                const postContentEditor = document.querySelector('.content-editor');
+                if (postContentEditor) {
+                    postContentEditor.innerHTML = generatedText;
+                    // Scroll to the post form
+                    document.getElementById('create-post-section').scrollIntoView({ behavior: 'smooth' });
+                    // Show success message
+                    showNotification('Content added to post editor', 'success');
+                }
+            }
+        });
+    }
+    
+}
+
+/**
+ * Set up API key configuration
+ */
+function setupAPIKeyConfiguration() {
+    // Create API key configuration section if it doesn't exist
+    let apiConfigSection = document.querySelector('.ai-api-config');
+    
+    if (!apiConfigSection) {
+        const aiAssistantPanel = document.querySelector('.ai-assistant-panel');
+        if (!aiAssistantPanel) return;
+        
+        apiConfigSection = document.createElement('div');
+        apiConfigSection.className = 'ai-api-config';
+        apiConfigSection.innerHTML = `
+            <h3 class="ai-section-title">API Configuration</h3>
+            <p>To use the AI content generation feature, you need to provide an OpenAI API key.</p>
+            <div class="api-key-input">
+                <label for="openaiApiKey">OpenAI API Key:</label>
+                <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key">
+            </div>
+            <div class="api-key-actions">
+                <button id="saveApiKey" class="btn btn-primary">Save API Key</button>
+                <button id="clearApiKey" class="btn btn-secondary">Clear API Key</button>
+            </div>
+            <p class="api-key-status"></p>
+        `;
+        
+        // Insert before the first child of the AI assistant panel
+        aiAssistantPanel.insertBefore(apiConfigSection, aiAssistantPanel.firstChild);
+        
+        // Add event listeners to API key buttons
+        document.getElementById('saveApiKey').addEventListener('click', function() {
+            const apiKey = document.getElementById('openaiApiKey').value.trim();
+            if (apiKey) {
+                localStorage.setItem('openai-api-key', apiKey);
+                document.querySelector('.api-key-status').textContent = 'API key saved successfully!';
+                document.querySelector('.api-key-status').style.color = '#4CAF50';
+            } else {
+                document.querySelector('.api-key-status').textContent = 'Please enter a valid API key.';
+                document.querySelector('.api-key-status').style.color = '#F44336';
+            }
+        });
+        
+        document.getElementById('clearApiKey').addEventListener('click', function() {
+            localStorage.removeItem('openai-api-key');
+            document.getElementById('openaiApiKey').value = '';
+            document.querySelector('.api-key-status').textContent = 'API key cleared.';
+            document.querySelector('.api-key-status').style.color = '#F44336';
+        });
+    }
+}
+
+/**
+ * Generate sample content based on prompt, tone, and length
+ */
+function generateSampleContent(prompt, tone, length) {
+    // Convert prompt to lowercase for easier matching
+    const promptLower = prompt.toLowerCase();
+    
+    // Determine word count based on length setting
+    let wordCount;
+    switch (length) {
+        case 'short':
+            wordCount = 150;
+            break;
+        case 'long':
+            wordCount = 500;
+            break;
+        case 'medium':
+        default:
+            wordCount = 300;
+            break;
+    }
+    
+    // Generate different content based on prompt keywords
+    let content = '';
+    
+    if (promptLower.includes('menu') || promptLower.includes('food')) {
+        content = `<h2>Crafting the Perfect Restaurant Menu</h2>
+<p>A well-designed menu is more than just a list of dishes—it's a powerful marketing tool that can influence customer choices and increase your restaurant's profitability. The strategic placement of items, thoughtful descriptions, and careful pricing can significantly impact your bottom line.</p>
+<h3>The Psychology of Menu Design</h3>
+<p>Research shows that customers typically read menus in a predictable pattern, often referred to as the "Golden Triangle." High-profit items placed in these prime viewing areas tend to sell better. Additionally, removing currency symbols from prices can reduce price sensitivity, leading to higher spending.</p>
+<h3>Crafting Compelling Descriptions</h3>
+<p>Descriptive, evocative language can increase sales of an item by up to 27%. Use sensory words, origin stories, and preparation methods to make dishes sound more appealing and justify premium pricing. For example, "Hand-selected local mushrooms sautéed in aged Burgundy wine" sounds more enticing than simply "Mushroom sauce."</p>
+<p>Remember that your menu should reflect your restaurant's unique identity and concept. Regularly update your offerings based on customer feedback, seasonal availability, and food cost analysis to maintain freshness and profitability.</p>`;
+    } else if (promptLower.includes('customer') || promptLower.includes('service')) {
+        content = `<h2>Elevating the Customer Experience in Your Restaurant</h2>
+<p>In today's competitive dining landscape, exceptional customer service can be your restaurant's most powerful differentiator. Beyond delicious food, it's the experience you create that turns first-time visitors into loyal regulars who advocate for your establishment.</p>
+<h3>Training for Excellence</h3>
+<p>Comprehensive staff training is the foundation of outstanding service. Ensure your team understands not just procedures but the why behind them. Role-playing exercises can help staff practice handling difficult situations with grace, while regular feedback sessions provide opportunities for continuous improvement.</p>
+<h3>Personalizing the Experience</h3>
+<p>The most memorable service feels personalized to each guest. Train staff to notice and remember customer preferences, celebrate special occasions, and anticipate needs before they're expressed. Simple gestures like remembering a regular's favorite table or beverage can create a powerful connection.</p>
+<p>Remember that service recovery is equally important as service excellence. How you respond when things go wrong often leaves a stronger impression than when everything goes right. Empower your staff to resolve issues promptly and generously, turning potential negative experiences into opportunities to demonstrate your commitment to customer satisfaction.</p>`;
+    } else if (promptLower.includes('technology') || promptLower.includes('digital')) {
+        content = `<h2>Embracing Restaurant Technology for Operational Excellence</h2>
+<p>The right technology solutions can transform restaurant operations, enhancing efficiency, improving the customer experience, and providing valuable data insights. From reservation systems to kitchen display screens, strategic tech investments can give your restaurant a competitive edge.</p>
+<h3>Front-of-House Innovations</h3>
+<p>Modern POS systems do far more than process payments—they can track inventory, analyze sales patterns, and integrate with customer relationship management tools. Tableside ordering devices can reduce errors and increase table turnover, while digital reservation platforms can minimize no-shows and optimize seating arrangements.</p>
+<h3>Kitchen Technology</h3>
+<p>Kitchen display systems eliminate the need for paper tickets, improving communication between front and back of house while providing valuable data on preparation times. Inventory management software can reduce food waste and prevent stockouts, directly impacting your bottom line.</p>
+<p>When evaluating restaurant technology, consider not just the upfront cost but the potential return on investment through labor savings, improved accuracy, and enhanced customer satisfaction. Choose systems that integrate well with your existing technology stack and provide the analytics you need to make data-driven decisions.</p>`;
+    } else {
+        content = `<h2>Innovative Strategies for Restaurant Success</h2>
+<p>In the ever-evolving restaurant industry, staying ahead requires both adherence to fundamentals and willingness to innovate. The most successful establishments balance tradition and trend, creating memorable experiences that keep guests coming back.</p>
+<h3>Creating a Distinctive Concept</h3>
+<p>Your restaurant's concept should be clear, cohesive, and compelling. Every element—from menu to décor to service style—should reinforce your unique value proposition. A well-defined concept helps cut through market noise and attracts your ideal customers.</p>
+<h3>Building a Strong Team Culture</h3>
+<p>Your staff are the face of your restaurant and the executors of your vision. Investing in recruitment, training, and retention pays dividends in service quality and operational consistency. Create a positive work environment where feedback flows freely and every team member understands their contribution to the restaurant's success.</p>
+<p>Finally, remain adaptable in the face of changing consumer preferences, economic conditions, and industry trends. The restaurants that thrive long-term are those that honor their core identity while evolving thoughtfully to meet the moment.</p>`;
+    }
+    
+    // Adjust tone based on selection
+    if (tone === 'casual') {
+        content = content.replace(/Additionally/g, 'Also')
+                         .replace(/significantly/g, 'really')
+                         .replace(/implementation/g, 'use')
+                         .replace(/utilizing/g, 'using');
+    } else if (tone === 'enthusiastic') {
+        content = content.replace(/can/g, 'can absolutely')
+                         .replace(/important/g, 'essential')
+                         .replace(/good/g, 'exceptional')
+                         .replace(/improve/g, 'dramatically enhance');
+    }
+    
+    return content;
+}
+
+/**
+ * Generate sample content based on prompt, tone, and length
+ */
+function generateSampleContent(prompt, tone, length) {
+    let content = '';
+    const wordCount = length === 'short' ? 150 : length === 'medium' ? 300 : 500;
+    
+    // Generate title
+    const title = `<h2>${capitalizeFirstLetter(prompt)}</h2>`;
+    
+    // Generate paragraphs
+    const paragraphCount = length === 'short' ? 2 : length === 'medium' ? 3 : 5;
+    
+    // Adjust tone
+    let toneAdjective = '';
+    switch (tone) {
+        case 'professional':
+            toneAdjective = 'professional and informative';
+            break;
+        case 'casual':
+            toneAdjective = 'casual and conversational';
+            break;
+        case 'enthusiastic':
+            toneAdjective = 'enthusiastic and engaging';
+            break;
+        default:
+            toneAdjective = 'balanced';
+    }
+    
+    content += title;
+    
+    // Introduction
+    content += `<p>Welcome to this ${toneAdjective} article about ${prompt}. In the following sections, we'll explore key aspects and provide valuable insights that can help restaurant owners and managers improve their operations.</p>`;
+    
+    // Sample paragraphs based on restaurant industry topics
+    const paragraphs = [
+        `<p>One of the most important aspects of ${prompt} is understanding your target audience. By analyzing customer preferences and behaviors, you can tailor your approach to meet their specific needs and expectations. This customer-centric approach will not only improve satisfaction but also drive loyalty and repeat business.</p>`,
+        
+        `<p>Implementing effective strategies for ${prompt} requires a combination of traditional wisdom and innovative thinking. The restaurant industry is constantly evolving, and staying ahead of trends can give you a significant competitive advantage. Consider investing in technology solutions that can streamline processes and enhance the customer experience.</p>`,
+        
+        `<p>Staff training plays a crucial role in successful ${prompt} implementation. Your team members are the face of your restaurant and directly impact customer satisfaction. Develop comprehensive training programs that emphasize both technical skills and soft skills like communication and problem-solving.</p>`,
+        
+        `<p>Data analysis can provide valuable insights for optimizing your ${prompt} approach. Track key performance indicators and use this information to make data-driven decisions. This analytical approach can help identify areas for improvement and measure the effectiveness of your strategies.</p>`,
+        
+        `<p>Finally, don't underestimate the power of continuous improvement when it comes to ${prompt}. Regularly review your processes, gather feedback from customers and staff, and be willing to adapt as needed. The most successful restaurants are those that can evolve with changing market conditions and customer preferences.</p>`
+    ];
+    
+    // Add paragraphs based on length
+    for (let i = 0; i < paragraphCount; i++) {
+        content += paragraphs[i % paragraphs.length];
+    }
+    
+    // Add conclusion
+    content += `<p>By implementing these strategies for ${prompt}, your restaurant can improve operational efficiency, enhance customer satisfaction, and ultimately drive business growth. Remember that success requires consistent effort and a willingness to adapt to changing circumstances.</p>`;
+    
+    return content;
+}
+
+/**
+ * Initialize Scheduled Posts functionality
+ */
+function initScheduledPosts() {
+    console.log('Scheduled Posts initialized');
+    
+    // Get DOM elements
+    const calendarContainer = document.getElementById('calendarContainer');
+    const scheduledPostsList = document.getElementById('scheduledPostsList');
+    const filterScheduledPosts = document.getElementById('filterScheduledPosts');
+    
+    // Check if elements exist
+    if (!calendarContainer || !scheduledPostsList) {
+        console.error('Scheduled Posts: Required elements not found');
+        return;
+    }
+    
+    // Generate calendar
+    generateCalendar();
+    
+    // Load scheduled posts
+    loadScheduledPosts();
+    
+    // Add event listener to filter
+    if (filterScheduledPosts) {
+        filterScheduledPosts.addEventListener('change', function() {
+            loadScheduledPosts(this.value);
+        });
+    }
+}
+
+/**
+ * Generate calendar for scheduled posts
+ */
+function generateCalendar() {
+    const calendarContainer = document.getElementById('calendarContainer');
+    if (!calendarContainer) return;
+    
+    // Get current date
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    
+    // Create calendar header
+    const calendarHeader = document.createElement('div');
+    calendarHeader.className = 'calendar-header';
+    calendarHeader.innerHTML = `
+        <button class="calendar-nav prev" title="Previous month"><i class="fas fa-chevron-left"></i></button>
+        <h3 class="calendar-title">${getMonthName(currentMonth)} ${currentYear}</h3>
+        <button class="calendar-nav next" title="Next month"><i class="fas fa-chevron-right"></i></button>
+    `;
+    
+    // Create calendar grid
+    const calendarGrid = document.createElement('div');
+    calendarGrid.className = 'calendar-grid';
+    
+    // Add day headers
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayNames.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'calendar-day-header';
+        dayHeader.textContent = day;
+        calendarGrid.appendChild(dayHeader);
+    });
+    
+    // Get first day of month and total days
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Add empty cells for days before first day of month
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'calendar-day empty';
+        calendarGrid.appendChild(emptyDay);
+    }
+    
+    // Add days of the month
+    for (let i = 1; i <= totalDays; i++) {
+        const day = document.createElement('div');
+        day.className = 'calendar-day';
+        if (i === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+            day.classList.add('today');
+        }
+        
+        // Check if there are scheduled posts for this day
+        const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        const hasScheduledPosts = checkScheduledPostsForDate(dateStr);
+        if (hasScheduledPosts) {
+            day.classList.add('has-posts');
+        }
+        
+        day.innerHTML = `<span>${i}</span>`;
+        day.setAttribute('data-date', dateStr);
+        
+        // Add click event to show posts for this day
+        day.addEventListener('click', function() {
+            // Remove selected class from all days
+            document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+            // Add selected class to clicked day
+            this.classList.add('selected');
+            // Show posts for this day
+            filterScheduledPostsByDate(dateStr);
+        });
+        
+        calendarGrid.appendChild(day);
+    }
+    
+    // Clear calendar container and append new elements
+    calendarContainer.innerHTML = '';
+    calendarContainer.appendChild(calendarHeader);
+    calendarContainer.appendChild(calendarGrid);
+    
+    // Add event listeners to navigation buttons
+    calendarContainer.querySelector('.calendar-nav.prev').addEventListener('click', function() {
+        navigateMonth('prev');
+    });
+    
+    calendarContainer.querySelector('.calendar-nav.next').addEventListener('click', function() {
+        navigateMonth('next');
+    });
+}
+
+/**
+ * Check if there are scheduled posts for a specific date
+ */
+function checkScheduledPostsForDate(dateStr) {
+    // Get scheduled posts from localStorage
+    const scheduledPosts = JSON.parse(localStorage.getItem('scheduled-posts') || '[]');
+    return scheduledPosts.some(post => post.scheduledDate && post.scheduledDate.startsWith(dateStr));
+}
+
+/**
+ * Navigate to previous or next month
+ */
+function navigateMonth(direction) {
+    // Implementation will be added in future updates
+    console.log(`Navigate to ${direction} month`);
+    // For now, just regenerate the current month calendar
+    generateCalendar();
+}
+
+/**
+ * Load scheduled posts
+ */
+function loadScheduledPosts(filter = 'all') {
+    const scheduledPostsList = document.getElementById('scheduledPostsList');
+    if (!scheduledPostsList) return;
+    
+    // Get scheduled posts from localStorage
+    const scheduledPosts = JSON.parse(localStorage.getItem('scheduled-posts') || '[]');
+    
+    // Filter posts based on selected filter
+    let filteredPosts = scheduledPosts;
+    if (filter !== 'all') {
+        filteredPosts = scheduledPosts.filter(post => post.status === filter);
+    }
+    
+    // Clear list
+    scheduledPostsList.innerHTML = '';
+    
+    // Show message if no posts
+    if (filteredPosts.length === 0) {
+        scheduledPostsList.innerHTML = '<div class="no-posts-message">No scheduled posts found.</div>';
+        return;
+    }
+    
+    // Sort posts by scheduled date
+    filteredPosts.sort((a, b) => {
+        if (!a.scheduledDate) return 1;
+        if (!b.scheduledDate) return -1;
+        return new Date(a.scheduledDate) - new Date(b.scheduledDate);
+    });
+    
+    // Render posts
+    filteredPosts.forEach(post => {
+        const postItem = document.createElement('div');
+        postItem.className = 'scheduled-post-item';
+        postItem.dataset.id = post.id;
+        
+        // Format date
+        let dateDisplay = 'Draft';
+        if (post.scheduledDate) {
+            const date = new Date(post.scheduledDate);
+            dateDisplay = date.toLocaleDateString('en-US', { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Determine status class
+        let statusClass = 'draft';
+        if (post.status === 'scheduled') {
+            statusClass = 'scheduled';
+        } else if (post.status === 'ai-generated') {
+            statusClass = 'ai-generated';
+        }
+        
+        postItem.innerHTML = `
+            <div class="post-info">
+                <h4 class="post-title">${post.title}</h4>
+                <p class="post-date ${statusClass}">${dateDisplay}</p>
+            </div>
+            <div class="post-actions">
+                <button class="btn-icon edit-post" title="Edit post"><i class="fas fa-edit"></i></button>
+                <button class="btn-icon delete-post" title="Delete post"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+        
+        // Add event listeners to buttons
+        postItem.querySelector('.edit-post').addEventListener('click', function() {
+            editScheduledPost(post.id);
+        });
+        
+        postItem.querySelector('.delete-post').addEventListener('click', function() {
+            deleteScheduledPost(post.id);
+        });
+        
+        scheduledPostsList.appendChild(postItem);
+    });
+}
+
+/**
+ * Filter scheduled posts by date
+ */
+function filterScheduledPostsByDate(dateStr) {
+    const scheduledPostsList = document.getElementById('scheduledPostsList');
+    if (!scheduledPostsList) return;
+    
+    // Get scheduled posts from localStorage
+    const scheduledPosts = JSON.parse(localStorage.getItem('scheduled-posts') || '[]');
+    
+    // Filter posts by date
+    const filteredPosts = scheduledPosts.filter(post => post.scheduledDate && post.scheduledDate.startsWith(dateStr));
+    
+    // Clear list
+    scheduledPostsList.innerHTML = '';
+    
+    // Show message if no posts
+    if (filteredPosts.length === 0) {
+        scheduledPostsList.innerHTML = `<div class="no-posts-message">No posts scheduled for ${dateStr}.</div>`;
+        return;
+    }
+    
+    // Render posts
+    filteredPosts.forEach(post => {
+        const postItem = document.createElement('div');
+        postItem.className = 'scheduled-post-item';
+        postItem.dataset.id = post.id;
+        
+        // Format date
+        const date = new Date(post.scheduledDate);
+        const dateDisplay = date.toLocaleTimeString('en-US', { 
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        postItem.innerHTML = `
+            <div class="post-info">
+                <h4 class="post-title">${post.title}</h4>
+                <p class="post-date scheduled">${dateDisplay}</p>
+            </div>
+            <div class="post-actions">
+                <button class="btn-icon edit-post" title="Edit post"><i class="fas fa-edit"></i></button>
+                <button class="btn-icon delete-post" title="Delete post"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+        
+        // Add event listeners to buttons
+        postItem.querySelector('.edit-post').addEventListener('click', function() {
+            editScheduledPost(post.id);
+        });
+        
+        postItem.querySelector('.delete-post').addEventListener('click', function() {
+            deleteScheduledPost(post.id);
+        });
+        
+        scheduledPostsList.appendChild(postItem);
+    });
+}
+
+/**
+ * Edit scheduled post
+ */
+function editScheduledPost(postId) {
+    // Get scheduled posts from localStorage
+    const scheduledPosts = JSON.parse(localStorage.getItem('scheduled-posts') || '[]');
+    const post = scheduledPosts.find(p => p.id === postId);
+    
+    if (!post) return;
+    
+    // Fill post form with post data
+    document.getElementById('postTitle').value = post.title;
+    document.getElementById('postExcerpt').value = post.excerpt || '';
+    document.getElementById('postContent').value = post.content || '';
+    document.getElementById('postCategory').value = post.category || '';
+    document.getElementById('postSubcategory').value = post.subcategory || '';
+    document.getElementById('postTags').value = post.tags || '';
+    
+    if (post.scheduledDate) {
+        // Format date for datetime-local input
+        const date = new Date(post.scheduledDate);
+        const formattedDate = date.toISOString().slice(0, 16);
+        document.getElementById('postScheduleDate').value = formattedDate;
+    }
+    
+    document.getElementById('postFeatured').checked = post.featured || false;
+    
+    // Set post ID in hidden field
+    const postIdField = document.getElementById('postId');
+    if (postIdField) {
+        postIdField.value = postId;
+    } else {
+        // Create hidden field if it doesn't exist
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.id = 'postId';
+        hiddenField.name = 'postId';
+        hiddenField.value = postId;
+        document.getElementById('postForm').appendChild(hiddenField);
+    }
+    
+    // Switch to create post section
+    const createPostTab = document.querySelector('[data-section="create-post"]');
+    if (createPostTab) {
+        createPostTab.click();
+    }
+    
+    // Change publish button text
+    document.getElementById('publishPostBtn').textContent = 'Update Post';
+}
+
+/**
+ * Delete scheduled post
+ */
+function deleteScheduledPost(postId) {
+    // Get scheduled posts from localStorage
+    const scheduledPosts = JSON.parse(localStorage.getItem('scheduled-posts') || '[]');
+    const updatedPosts = scheduledPosts.filter(p => p.id !== postId);
+    
+    // Save updated posts to localStorage
+    localStorage.setItem('scheduled-posts', JSON.stringify(updatedPosts));
+    
+    // Reload scheduled posts
+    loadScheduledPosts();
+    
+    // Regenerate calendar
+    generateCalendar();
+    
+    // Show success message
+    showNotification('Post deleted successfully', 'success');
+}
+
+/**
+ * Get month name from month index
+ */
+function getMonthName(monthIndex) {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return months[monthIndex];
+}
+
+/**
+ * Initialize Media Library functionality
+ */
+function initMediaLibrary() {
+    console.log('Media Library initialized');
+    
+    // Get DOM elements
+    const mediaGrid = document.getElementById('mediaGrid');
+    const mediaUploadInput = document.getElementById('mediaUploadInput');
+    const mediaUploadBtn = document.getElementById('mediaUploadBtn');
+    const mediaSearchInput = document.getElementById('mediaSearchInput');
+    
+    // Check if elements exist
+    if (!mediaGrid) {
+        console.error('Media Library: Required elements not found');
+        return;
+    }
+    
+    // Load media items
+    loadMediaItems();
+    
+    // Set up media upload functionality
+    if (mediaUploadInput && mediaUploadBtn) {
+        mediaUploadBtn.addEventListener('click', function() {
+            mediaUploadInput.click();
+        });
+        
+        mediaUploadInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                handleMediaUpload(e.target.files);
+            }
+        });
+        
+        // Set up drag and drop functionality
+        setupMediaUpload();
+    }
+    
+    // Set up search functionality
+    if (mediaSearchInput) {
+        mediaSearchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            filterMediaItems(searchTerm);
+        });
+    }
+}
+
+/**
+ * Load media items from localStorage
+ */
+function loadMediaItems() {
+    const mediaGrid = document.getElementById('mediaGrid');
+    if (!mediaGrid) return;
+    
+    // Get media items from localStorage
+    const mediaItems = JSON.parse(localStorage.getItem('media-items') || '[]');
+    
+    // Clear grid
+    mediaGrid.innerHTML = '';
+    
+    // Show message if no items
+    if (mediaItems.length === 0) {
+        mediaGrid.innerHTML = '<div class="no-media-message">No media items found. Upload images to get started.</div>';
+        return;
+    }
+    
+    // Sort items by date added (newest first)
+    mediaItems.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+    
+    // Render items
+    mediaItems.forEach(item => {
+        const mediaItem = document.createElement('div');
+        mediaItem.className = 'media-item';
+        mediaItem.dataset.id = item.id;
+        
+        let itemPreview;
+        if (item.type.startsWith('image/')) {
+            // Image preview
+            itemPreview = `<img src="${item.url}" alt="${item.name}" class="media-preview">`;
+        } else if (item.type.startsWith('video/')) {
+            // Video preview
+            itemPreview = `<video src="${item.url}" class="media-preview" muted></video>`;
+        } else {
+            // File icon for other types
+            itemPreview = `<div class="file-icon"><i class="fas fa-file"></i></div>`;
+        }
+        
+        mediaItem.innerHTML = `
+            <div class="media-preview-container">
+                ${itemPreview}
+            </div>
+            <div class="media-info">
+                <p class="media-name">${item.name}</p>
+                <p class="media-size">${formatFileSize(item.size)}</p>
+            </div>
+            <div class="media-actions">
+                <button class="btn-icon view-media" title="View media"><i class="fas fa-eye"></i></button>
+                <button class="btn-icon insert-media" title="Insert into post"><i class="fas fa-plus"></i></button>
+                <button class="btn-icon delete-media" title="Delete media"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+        
+        // Add event listeners to buttons
+        mediaItem.querySelector('.view-media').addEventListener('click', function() {
+            viewMediaItem(item);
+        });
+        
+        mediaItem.querySelector('.insert-media').addEventListener('click', function() {
+            insertMediaItem(item);
+        });
+        
+        mediaItem.querySelector('.delete-media').addEventListener('click', function() {
+            deleteMediaItem(item.id);
+        });
+        
+        mediaGrid.appendChild(mediaItem);
+    });
+}
+
+/**
+ * Filter media items by search term
+ */
+function filterMediaItems(searchTerm) {
+    const mediaItems = document.querySelectorAll('.media-item');
+    
+    mediaItems.forEach(item => {
+        const mediaName = item.querySelector('.media-name').textContent.toLowerCase();
+        if (mediaName.includes(searchTerm)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+/**
+ * Set up media upload area with drag and drop
+ */
+function setupMediaUpload() {
+    const uploadArea = document.getElementById('mediaUploadArea');
+    if (!uploadArea) return;
+    
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    // Highlight drop area when item is dragged over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+        uploadArea.classList.add('drag-active');
+    }
+    
+    function unhighlight() {
+        uploadArea.classList.remove('drag-active');
+    }
+    
+    // Handle dropped files
+    uploadArea.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleMediaUpload(files);
+    }
+}
+
+/**
+ * Handle media upload
+ */
+function handleMediaUpload(files) {
+    // Get media items from localStorage
+    const mediaItems = JSON.parse(localStorage.getItem('media-items') || '[]');
+    
+    // Process each file
+    Array.from(files).forEach(file => {
+        // Create a unique ID for the file
+        const fileId = 'media_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Create a URL for the file
+        const fileUrl = URL.createObjectURL(file);
+        
+        // Add file to media items
+        mediaItems.push({
+            id: fileId,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            url: fileUrl,
+            dateAdded: new Date().toISOString()
+        });
+    });
+    
+    // Save updated media items to localStorage
+    localStorage.setItem('media-items', JSON.stringify(mediaItems));
+    
+    // Reload media items
+    loadMediaItems();
+    
+    // Show success message
+    showNotification('Media uploaded successfully', 'success');
+}
+
+/**
+ * View media item in a modal
+ */
+function viewMediaItem(item) {
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'media-modal';
+    
+    let mediaContent;
+    if (item.type.startsWith('image/')) {
+        mediaContent = `<img src="${item.url}" alt="${item.name}" class="media-modal-content">`;
+    } else if (item.type.startsWith('video/')) {
+        mediaContent = `<video src="${item.url}" controls class="media-modal-content"></video>`;
+    } else {
+        mediaContent = `<div class="file-icon large"><i class="fas fa-file"></i></div>`;
+    }
+    
+    modal.innerHTML = `
+        <div class="media-modal-container">
+            <div class="media-modal-header">
+                <h3>${item.name}</h3>
+                <button class="media-modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="media-modal-body">
+                ${mediaContent}
+            </div>
+            <div class="media-modal-footer">
+                <p>${formatFileSize(item.size)} | ${new Date(item.dateAdded).toLocaleString()}</p>
+                <button class="btn btn-primary insert-media-btn">Insert into Post</button>
+            </div>
+        </div>
+    `;
+    
+    // Add to body
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    modal.querySelector('.media-modal-close').addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+    
+    modal.querySelector('.insert-media-btn').addEventListener('click', function() {
+        insertMediaItem(item);
+        document.body.removeChild(modal);
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+/**
+ * Insert media item into post editor
+ */
+function insertMediaItem(item) {
+    // Get post content editor
+    const postContentEditor = document.getElementById('postContentEditor');
+    if (!postContentEditor) return;
+    
+    let mediaHtml = '';
+    if (item.type.startsWith('image/')) {
+        mediaHtml = `<img src="${item.url}" alt="${item.name}" style="max-width: 100%; height: auto;">`;
+    } else if (item.type.startsWith('video/')) {
+        mediaHtml = `<video src="${item.url}" controls style="max-width: 100%;"></video>`;
+    } else {
+        mediaHtml = `<a href="${item.url}" target="_blank">${item.name}</a>`;
+    }
+    
+    // Insert at cursor position or append to end
+    if (document.activeElement === postContentEditor) {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        const fragment = document.createRange().createContextualFragment(mediaHtml);
+        range.deleteContents();
+        range.insertNode(fragment);
+    } else {
+        postContentEditor.innerHTML += mediaHtml;
+    }
+    
+    // Update hidden input if it exists
+    const postContentInput = document.getElementById('postContent');
+    if (postContentInput) {
+        postContentInput.value = postContentEditor.innerHTML;
+    }
+    
+    // Switch to create post section
+    const createPostTab = document.querySelector('[data-section="create-post"]');
+    if (createPostTab) {
+        createPostTab.click();
+    }
+    
+    // Show success message
+    showNotification('Media inserted into post', 'success');
+}
+
+/**
+ * Delete media item
+ */
+function deleteMediaItem(itemId) {
+    // Get media items from localStorage
+    const mediaItems = JSON.parse(localStorage.getItem('media-items') || '[]');
+    const updatedItems = mediaItems.filter(item => item.id !== itemId);
+    
+    // Save updated items to localStorage
+    localStorage.setItem('media-items', JSON.stringify(updatedItems));
+    
+    // Reload media items
+    loadMediaItems();
+    
+    // Show success message
+    showNotification('Media deleted successfully', 'success');
+}
+
+/**
+ * Format file size in human-readable format
+ */
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * Generate calendar for the current month
+ */
+function generateCalendar() {
+    const calendarContainer = document.getElementById('calendarContainer');
+    if (!calendarContainer) return;
+    
+    const date = new Date();
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    
+    // Create calendar header
+    const calendarHeader = document.createElement('div');
+    calendarHeader.className = 'calendar-header';
+    
+    const prevMonthBtn = document.createElement('button');
+    prevMonthBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevMonthBtn.className = 'btn-icon';
+    
+    const monthYearDisplay = document.createElement('h3');
+    monthYearDisplay.textContent = new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long', year: 'numeric' });
+    
+    const nextMonthBtn = document.createElement('button');
+    nextMonthBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextMonthBtn.className = 'btn-icon';
+    
+    calendarHeader.appendChild(prevMonthBtn);
+    calendarHeader.appendChild(monthYearDisplay);
+    calendarHeader.appendChild(nextMonthBtn);
+    
+    // Create calendar grid
+    const calendarGrid = document.createElement('div');
+    calendarGrid.className = 'calendar-grid';
+    
+    // Add day headers
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    daysOfWeek.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'calendar-day-header';
+        dayHeader.textContent = day;
+        calendarGrid.appendChild(dayHeader);
+    });
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Add empty cells for days before first day of month
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'calendar-day empty';
+        calendarGrid.appendChild(emptyDay);
+    }
+    
+    // Add days of the month
+    for (let i = 1; i <= daysInMonth; i++) {
+        const day = document.createElement('div');
+        day.className = 'calendar-day';
+        
+        // Mark current day
+        if (i === date.getDate() && currentMonth === date.getMonth() && currentYear === date.getFullYear()) {
+            day.classList.add('today');
+        }
+        
+        // Add day number
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'calendar-day-number';
+        dayNumber.textContent = i;
+        day.appendChild(dayNumber);
+        
+        // Add event indicator for sample scheduled posts
+        if (i % 5 === 0) {
+            day.classList.add('has-post');
+            
+            const postIndicator = document.createElement('div');
+            postIndicator.className = 'post-indicator';
+            postIndicator.textContent = '1 post';
+            day.appendChild(postIndicator);
+        }
+        
+        // Make days clickable
+        day.addEventListener('click', function() {
+            document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Show scheduled posts for this day
+            filterScheduledPostsByDate(new Date(currentYear, currentMonth, i));
+        });
+        
+        calendarGrid.appendChild(day);
+    }
+    
+    // Clear container and add new calendar
+    calendarContainer.innerHTML = '';
+    calendarContainer.appendChild(calendarHeader);
+    calendarContainer.appendChild(calendarGrid);
+    
+    // Add event listeners for month navigation
+    prevMonthBtn.addEventListener('click', function() {
+        navigateMonth(-1);
+    });
+    
+    nextMonthBtn.addEventListener('click', function() {
+        navigateMonth(1);
+    });
+}
+
+/**
+ * Navigate to previous or next month
+ */
+function navigateMonth(direction) {
+    // This would update the calendar to show the previous or next month
+    // For this demo, we'll just regenerate the current month
+    generateCalendar();
+}
+
+/**
+ * Load scheduled posts
+ */
+function loadScheduledPosts() {
+    const scheduledPostsList = document.getElementById('scheduledPostsList');
+    if (!scheduledPostsList) return;
+    
+    // Sample scheduled posts
+    const scheduledPosts = [
+        {
+            id: 1,
+            title: 'Upcoming Summer Menu Changes',
+            scheduledDate: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000),
+            category: 'Menu Updates',
+            status: 'scheduled',
+            excerpt: 'Introducing our new summer menu with fresh seasonal ingredients and exciting flavors.'
+        },
+        {
+            id: 2,
+            title: 'Staff Training Workshop Recap',
+            scheduledDate: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000),
+            category: 'Staff Management',
+            status: 'draft',
+            excerpt: 'Highlights from our recent staff training workshop focused on customer service excellence.'
+        },
+        {
+            id: 3,
+            title: 'New Online Ordering System Launch',
+            scheduledDate: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+            category: 'Technology',
+            status: 'ai-generated',
+            excerpt: 'Announcing our new online ordering system designed to enhance customer convenience.'
+        }
+    ];
+    
+    // Clear container
+    scheduledPostsList.innerHTML = '';
+    
+    // Add posts
+    scheduledPosts.forEach(post => {
+        const postCard = document.createElement('div');
+        postCard.className = 'scheduled-post-card';
+        
+        const postDate = document.createElement('div');
+        postDate.className = 'scheduled-post-date';
+        
+        const dateObj = post.scheduledDate;
+        const formattedDate = `${dateObj.getDate()} ${dateObj.toLocaleString('default', { month: 'short' })} ${dateObj.getFullYear()}`;
+        const formattedTime = dateObj.toLocaleString('default', { hour: '2-digit', minute: '2-digit' });
+        
+        postDate.innerHTML = `
+            <div class="date">${formattedDate}</div>
+            <div class="time">${formattedTime}</div>
+        `;
+        
+        const postContent = document.createElement('div');
+        postContent.className = 'scheduled-post-content';
+        
+        postContent.innerHTML = `
+            <h4 class="scheduled-post-title">${post.title}</h4>
+            <div class="scheduled-post-meta">
+                <span class="scheduled-post-category">${post.category}</span>
+                <span class="scheduled-post-status ${post.status}">${capitalizeFirstLetter(post.status)}</span>
+            </div>
+            <p class="scheduled-post-excerpt">${post.excerpt}</p>
+        `;
+        
+        const postActions = document.createElement('div');
+        postActions.className = 'scheduled-post-actions';
+        
+        postActions.innerHTML = `
+            <button class="btn-icon" title="Edit Post"><i class="fas fa-edit"></i></button>
+            <button class="btn-icon" title="Delete Post"><i class="fas fa-trash-alt"></i></button>
+        `;
+        
+        postCard.appendChild(postDate);
+        postCard.appendChild(postContent);
+        postCard.appendChild(postActions);
+        
+        scheduledPostsList.appendChild(postCard);
+    });
+}
+
+/**
+ * Filter scheduled posts by date
+ */
+function filterScheduledPostsByDate(date) {
+    // This would filter the posts to show only those scheduled for the selected date
+    // For this demo, we'll just reload all posts
+    loadScheduledPosts();
+}
+
+/**
+ * Initialize Media Library functionality
+ */
+function initMediaLibrary() {
+    const mediaGrid = document.getElementById('mediaGrid');
+    const mediaUploadArea = document.getElementById('mediaUploadArea');
+    
+    if (!mediaGrid || !mediaUploadArea) return;
+    
+    // Load media items
+    loadMediaItems();
+    
+    // Setup upload area
+    setupMediaUpload();
+}
+
+/**
+ * Load media items
+ */
+function loadMediaItems() {
+    const mediaGrid = document.getElementById('mediaGrid');
+    if (!mediaGrid) return;
+    
+    // Sample media items
+    const mediaItems = [
+        {
+            id: 1,
+            name: 'restaurant-interior.jpg',
+            type: 'image',
+            url: 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg',
+            size: '1.2 MB',
+            uploaded: '2023-10-15'
+        },
+        {
+            id: 2,
+            name: 'chef-cooking.jpg',
+            type: 'image',
+            url: 'images/New images/professional-female-chef-cutting-vegetables-indoor-2024-10-18-09-04-56-utc.jpg',
+            size: '2.4 MB',
+            uploaded: '2023-10-10'
+        },
+        {
+            id: 3,
+            name: 'menu-special.jpg',
+            type: 'image',
+            url: 'images/New images/breakfast-in-cafe-2024-10-18-04-29-35-utc.jpg',
+            size: '1.8 MB',
+            uploaded: '2023-10-05'
+        },
+        {
+            id: 4,
+            name: 'staff-meeting.jpg',
+            type: 'image',
+            url: 'images/New images/group-of-happy-business-people-eating-in-restauran-2025-03-17-20-01-46-utc.jpg',
+            size: '3.1 MB',
+            uploaded: '2023-09-28'
+        },
+        {
+            id: 5,
+            name: 'customer-dining.jpg',
+            type: 'image',
+            url: 'images/New images/customers-enjoying-meals-in-busy-restaurant-2024-10-19-13-34-34-utc.jpg',
+            size: '2.7 MB',
+            uploaded: '2023-09-22'
+        },
+        {
+            id: 6,
+            name: 'food-plating.jpg',
+            type: 'image',
+            url: 'images/New images/chef-delivers-food-group-of-young-friends-that-si-2025-03-18-20-11-26-utc.jpg',
+            size: '1.9 MB',
+            uploaded: '2023-09-15'
+        }
+    ];
+    
+    // Clear container
+    mediaGrid.innerHTML = '';
+    
+    // Add media items
+    mediaItems.forEach(item => {
+        const mediaItem = document.createElement('div');
+        mediaItem.className = 'media-item';
+        mediaItem.dataset.id = item.id;
+        
+        mediaItem.innerHTML = `
+            <div class="media-item-preview">
+                <img src="${item.url}" alt="${item.name}">
+                <div class="media-item-actions">
+                    <button class="media-action-btn" title="View"><i class="fas fa-eye"></i></button>
+                    <button class="media-action-btn" title="Insert"><i class="fas fa-plus"></i></button>
+                    <button class="media-action-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            </div>
+            <div class="media-item-info">
+                <h4 class="media-item-name">${item.name}</h4>
+                <div class="media-item-meta">${item.size} • ${item.uploaded}</div>
+            </div>
+        `;
+        
+        mediaGrid.appendChild(mediaItem);
+        
+        // Add event listeners for media actions
+        const viewBtn = mediaItem.querySelector('.media-action-btn[title="View"]');
+        const insertBtn = mediaItem.querySelector('.media-action-btn[title="Insert"]');
+        const deleteBtn = mediaItem.querySelector('.media-action-btn[title="Delete"]');
+        
+        viewBtn.addEventListener('click', function() {
+            viewMediaItem(item);
+        });
+        
+        insertBtn.addEventListener('click', function() {
+            insertMediaItem(item);
+        });
+        
+        deleteBtn.addEventListener('click', function() {
+            deleteMediaItem(item.id);
+        });
+    });
+}
+
+/**
+ * Setup media upload area
+ */
+function setupMediaUpload() {
+    const mediaUploadArea = document.getElementById('mediaUploadArea');
+    const mediaUploadInput = document.getElementById('mediaUploadInput');
+    
+    if (!mediaUploadArea || !mediaUploadInput) return;
+    
+    mediaUploadArea.addEventListener('click', function() {
+        mediaUploadInput.click();
+    });
+    
+    mediaUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    
+    mediaUploadArea.addEventListener('dragleave', function() {
+        this.classList.remove('dragover');
+    });
+    
+    mediaUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleMediaUpload(files);
+        }
+    });
+    
+    mediaUploadInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            handleMediaUpload(this.files);
+        }
+    });
+}
+
+/**
+ * Handle media upload
+ */
+function handleMediaUpload(files) {
+    // In a real application, this would upload the files to a server
+    // For this demo, we'll just show a success message
+    showToast(`${files.length} file(s) uploaded successfully`, 'success');
+    
+    // Reload media items
+    loadMediaItems();
+}
+
+/**
+ * View media item
+ */
+function viewMediaItem(item) {
+    // In a real application, this would open a modal with a larger preview
+    // For this demo, we'll just show a message
+    showToast(`Viewing ${item.name}`, 'info');
+}
+
+/**
+ * Insert media item
+ */
+function insertMediaItem(item) {
+    // In a real application, this would insert the media into the current editor
+    // For this demo, we'll just show a message
+    showToast(`${item.name} inserted into editor`, 'success');
+    
+    // If we're on the create post page, insert the image URL into the image URL field
+    const postImageUrl = document.getElementById('postImageUrl');
+    if (postImageUrl) {
+        postImageUrl.value = item.url;
+        
+        // Trigger image preview
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        
+        if (imagePreview && imagePreviewContainer) {
+            imagePreview.src = item.url;
+            imagePreviewContainer.style.display = 'block';
+        }
+    }
+}
+
+/**
+ * Delete media item
+ */
+function deleteMediaItem(id) {
+    // In a real application, this would delete the media from the server
+    // For this demo, we'll just remove it from the grid
+    const mediaItem = document.querySelector(`.media-item[data-id="${id}"]`);
+    if (mediaItem) {
+        mediaItem.remove();
+        showToast('Media item deleted', 'success');
+    }
+}
+
+/**
+ * Initialize Social Media Publishing functionality
+ */
+function initSocialMediaPublishing() {
+    console.log('Social Media Publishing initialized');
+    
+    // Get DOM elements
+    const socialMediaForm = document.getElementById('socialMediaForm');
+    const socialMediaSettings = document.getElementById('socialMediaSettings');
+    
+    // Check if elements exist
+    if (!socialMediaForm && !socialMediaSettings) {
+        console.error('Social Media Publishing: Required elements not found');
+        return;
+    }
+    
+    // Load social media settings
+    loadSocialMediaSettings();
+    
+    // Add event listener to form submit
+    if (socialMediaForm) {
+        socialMediaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get selected platforms
+            const platforms = [];
+            document.querySelectorAll('input[name="socialPlatform"]:checked').forEach(input => {
+                platforms.push(input.value);
+            });
+            
+            // Get auto-publish setting
+            const autoPublish = document.getElementById('autoPublish').checked;
+            
+            // Save settings
+            saveSocialMediaSettings(platforms, autoPublish);
+            
+            // Show success message
+            showNotification('Social media settings saved successfully', 'success');
+        });
+    }
+}
+
+/**
+ * Save social media settings
+ */
+function saveSocialMediaSettings(platforms, autoPublish) {
+    // Save settings to localStorage
+    localStorage.setItem('social-media-settings', JSON.stringify({
+        platforms: platforms,
+        autoPublish: autoPublish
+    }));
+}
+
+/**
+ * Load social media settings
+ */
+function loadSocialMediaSettings() {
+    // Get settings from localStorage
+    const settings = JSON.parse(localStorage.getItem('social-media-settings') || '{}');
+    
+    // Set form values if form exists
+    const socialMediaForm = document.getElementById('socialMediaForm');
+    if (socialMediaForm) {
+        // Set platform checkboxes
+        if (settings.platforms) {
+            settings.platforms.forEach(platform => {
+                const checkbox = document.querySelector(`input[name="socialPlatform"][value="${platform}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+        
+        // Set auto-publish checkbox
+        const autoPublishCheckbox = document.getElementById('autoPublish');
+        if (autoPublishCheckbox && settings.autoPublish !== undefined) {
+            autoPublishCheckbox.checked = settings.autoPublish;
+        }
+    }
+    
+    // Update settings display if it exists
+    updateSocialMediaSettingsDisplay(settings);
+}
+
+/**
+ * Update social media settings display
+ */
+function updateSocialMediaSettingsDisplay(settings) {
+    const settingsDisplay = document.getElementById('socialMediaSettings');
+    if (!settingsDisplay) return;
+    
+    // Clear display
+    settingsDisplay.innerHTML = '';
+    
+    // Show message if no settings
+    if (!settings.platforms || settings.platforms.length === 0) {
+        settingsDisplay.innerHTML = '<p>No social media platforms configured. Configure in settings.</p>';
+        return;
+    }
+    
+    // Create settings display
+    const platformsList = document.createElement('div');
+    platformsList.className = 'social-platforms-list';
+    
+    // Add platforms
+    settings.platforms.forEach(platform => {
+        const platformItem = document.createElement('div');
+        platformItem.className = 'platform-item';
+        
+        // Get icon class based on platform
+        let iconClass = 'fa-globe';
+        if (platform === 'facebook') iconClass = 'fa-facebook';
+        if (platform === 'twitter') iconClass = 'fa-twitter';
+        if (platform === 'instagram') iconClass = 'fa-instagram';
+        if (platform === 'linkedin') iconClass = 'fa-linkedin';
+        if (platform === 'pinterest') iconClass = 'fa-pinterest';
+        
+        platformItem.innerHTML = `
+            <i class="fab ${iconClass}"></i>
+            <span>${capitalizeFirstLetter(platform)}</span>
+        `;
+        
+        platformsList.appendChild(platformItem);
+    });
+    
+    // Add auto-publish status
+    const autoPublishStatus = document.createElement('div');
+    autoPublishStatus.className = 'auto-publish-status';
+    autoPublishStatus.innerHTML = `
+        <p><strong>Auto-Publish:</strong> ${settings.autoPublish ? 'Enabled' : 'Disabled'}</p>
+    `;
+    
+    // Add to settings display
+    settingsDisplay.appendChild(platformsList);
+    settingsDisplay.appendChild(autoPublishStatus);
+}
+
+/**
+ * Utility function to capitalize first letter of a string
+ */
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+/**
+ * Show notification
+ */
+function showNotification(message, type = 'success') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <span>${message}</span>
+        </div>
+        <button class="notification-close"><i class="fas fa-times"></i></button>
+    `;
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Add event listener to close button
+    notification.querySelector('.notification-close').addEventListener('click', function() {
+        document.body.removeChild(notification);
+    });
+    
+    // Auto-remove after 5 seconds
+    setTimeout(function() {
+        if (document.body.contains(notification)) {
+    // For this demo, we'll just log the settings
+    console.log('Social Media Settings:', { platforms, autoPublish });
+    
+    // Save to localStorage
+    localStorage.setItem('socialMediaPlatforms', JSON.stringify(platforms));
+    localStorage.setItem('socialMediaAutoPublish', autoPublish);
+}
+
+/**
+ * Load social media settings
+ */
+function loadSocialMediaSettings() {
+    // In a real application, this would load the settings from a server or localStorage
+    // For this demo, we'll use default settings
+    const platforms = JSON.parse(localStorage.getItem('socialMediaPlatforms')) || ['facebook', 'twitter'];
+    const autoPublish = localStorage.getItem('socialMediaAutoPublish') === 'true';
+    
+    // Update form
+    platforms.forEach(platform => {
+        const input = document.querySelector(`input[name="socialPlatform"][value="${platform}"]`);
+        if (input) {
+            input.checked = true;
+        }
+    });
+    
+    const autoPublishInput = document.getElementById('autoPublish');
+    if (autoPublishInput) {
+        autoPublishInput.checked = autoPublish;
+    }
+}
+
+/**
+ * Utility function to capitalize first letter of a string
+ */
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+/**
+ * Show toast notification
+ */
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toastNotification');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.querySelector('.toast-icon i');
+    
+    if (!toast || !toastMessage || !toastIcon) return;
+    
+    // Set message
+    toastMessage.textContent = message;
+    
+    // Set icon based on type
+    toastIcon.className = '';
+    switch (type) {
+        case 'success':
+            toastIcon.className = 'fas fa-check-circle';
+            break;
+        case 'error':
+            toastIcon.className = 'fas fa-exclamation-circle';
+            break;
+        case 'info':
+            toastIcon.className = 'fas fa-info-circle';
+            break;
+        case 'warning':
+            toastIcon.className = 'fas fa-exclamation-triangle';
+            break;
+    }
+    
+    // Add type class
+    toast.className = 'toast-notification';
+    toast.classList.add(`toast-${type}`);
+    
+    // Show toast
+    toast.classList.add('show');
+    
+    // Hide toast after 3 seconds
+    setTimeout(function() {
+        toast.classList.remove('show');
+    }, 3000);
+}

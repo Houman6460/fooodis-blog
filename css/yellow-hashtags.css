@@ -1,0 +1,49 @@
+/**
+ * Fooodis Blog System - Yellow Hashtags Styling
+ * Hashtag styling with yellow color scheme
+ */
+
+.hashtags-container {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    line-height: 2.5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.hashtag {
+    display: inline-block;
+    background-color: rgba(43, 51, 39, 0.95);
+    color: #ffdb00; /* Changed to bright yellow */
+    padding: 10px 20px;
+    margin: 0;
+    border-radius: 30px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border: 2px solid rgba(255, 219, 0, 0.3); /* Yellow border */
+    cursor: pointer;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hashtag:hover {
+    background-color: rgba(58, 66, 41, 0.95);
+    border-color: rgba(255, 219, 0, 0.6); /* Brighter yellow border on hover */
+}
+
+.sidebar-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    /* Removed the border-bottom that was creating the thin line */
+}
+
+.sidebar-title {
+    color: #ffffff;
+    font-size: 18px;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ffdb00; /* Yellow border under section titles */
+    display: inline-block;
+}

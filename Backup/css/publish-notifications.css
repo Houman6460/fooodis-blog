@@ -1,0 +1,150 @@
+/* 
+ * Publish Notifications Styling
+ * For AI Automation post publishing notifications
+ */
+
+.publish-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: flex-start;
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.publish-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.publish-notification .notification-icon {
+    margin-right: 15px;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.publish-notification .notification-content {
+    flex-grow: 1;
+}
+
+.publish-notification .notification-content h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.publish-notification .notification-content p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.publish-notification .notification-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+    font-size: 14px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    align-self: flex-start;
+}
+
+.publish-notification .notification-close:hover {
+    opacity: 1;
+}
+
+.publish-notification.success {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+.publish-notification.error {
+    background-color: #ffebee;
+    border-left: 4px solid #f44336;
+}
+
+.publish-notification.info {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+.publish-notification.warning {
+    background-color: #fff8e1;
+    border-left: 4px solid #ff9800;
+}
+
+.publish-notification.success .notification-icon {
+    color: #4caf50;
+}
+
+.publish-notification.error .notification-icon {
+    color: #f44336;
+}
+
+.publish-notification.info .notification-icon {
+    color: #2196f3;
+}
+
+.publish-notification.warning .notification-icon {
+    color: #ff9800;
+}
+
+.publish-notification .view-post-link {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 5px 10px;
+    background-color: #4caf50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.publish-notification .view-post-link:hover {
+    background-color: #388e3c;
+}
+
+/* Dark mode styles */
+body.dark-mode .publish-notification {
+    background-color: #2d2d2d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .publish-notification .notification-content h4,
+body.dark-mode .publish-notification .notification-content p {
+    color: #f5f5f5;
+}
+
+body.dark-mode .publish-notification .notification-close {
+    color: #f5f5f5;
+}
+
+body.dark-mode .publish-notification.success {
+    background-color: #1b2e1c;
+    border-left-color: #4caf50;
+}
+
+body.dark-mode .publish-notification.error {
+    background-color: #2e1c1c;
+    border-left-color: #f44336;
+}
+
+body.dark-mode .publish-notification.info {
+    background-color: #1c2a2e;
+    border-left-color: #2196f3;
+}
+
+body.dark-mode .publish-notification.warning {
+    background-color: #2e2a1c;
+    border-left-color: #ff9800;
+}

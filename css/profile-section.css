@@ -1,0 +1,221 @@
+/**
+ * Profile Section Styles
+ * 
+ * Styling for the profile management section in the dashboard
+ */
+
+/* Profile Container */
+.profile-container {
+    background-color: #2D323D;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #3D434E;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+    background-color: #3D434E;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid #BADE30;
+}
+
+.profile-avatar.small {
+    width: 40px;
+    height: 40px;
+    font-size: 0.7em;
+}
+
+.avatar-initials {
+    font-size: 2em;
+    font-weight: bold;
+    color: #BADE30;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h2 {
+    margin: 0 0 5px;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.profile-info p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+/* Profile Navigation */
+.profile-navigation {
+    display: flex;
+    padding: 0 20px;
+    border-bottom: 1px solid #3D434E;
+}
+
+.profile-nav-item {
+    padding: 15px 0;
+    margin-right: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    position: relative;
+    font-weight: 500;
+}
+
+.profile-nav-item:hover {
+    color: #fff;
+}
+
+.profile-nav-item.active {
+    color: #BADE30;
+}
+
+.profile-nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #BADE30;
+}
+
+/* Profile Content */
+.profile-content {
+    padding: 20px;
+}
+
+.profile-section {
+    display: none;
+}
+
+.profile-section.active {
+    display: block;
+}
+
+.profile-section h3 {
+    margin: 0 0 20px;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* Form Styling */
+.profile-form {
+    max-width: 100%;
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-field input {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #3D434E;
+    border-radius: 4px;
+    background-color: #1F242E;
+    color: #fff;
+    transition: border-color 0.2s;
+}
+
+.form-field input:focus {
+    border-color: #BADE30;
+    outline: none;
+}
+
+.form-field input[readonly] {
+    background-color: #252A34;
+    cursor: not-allowed;
+}
+
+/* Profile Picture Upload */
+.profile-picture-upload {
+    display: flex;
+    align-items: center;
+}
+
+.profile-picture-upload .btn {
+    margin-left: 15px;
+    background-color: #3D434E;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.2s;
+}
+
+.profile-picture-upload .btn:hover {
+    background-color: #4D535E;
+}
+
+/* Hidden file input */
+.hidden-file-input {
+    display: none;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #BADE30;
+    border: none;
+    color: #1F242E;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #C8EC3A;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .profile-picture-upload {
+        flex-direction: column;
+    }
+    
+    .profile-picture-upload .btn {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}

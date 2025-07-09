@@ -1,0 +1,165 @@
+Below is a work-order style development plan that splits the project into clear backend (dashboard & services) and frontend (website widget & console) tracks, shows recommended phases, deliverables, and key tech decisions. Feel free to adjust naming, sequencing, or tech stacks to match your in-house standards.
+
+0. High-level architecture
+Layer	Main Responsibility	Core Tech Suggestions
+Chat Widget (Frontend)	UI, i18n, file upload toggle, streaming responses	React 18 + TypeScript, Tailwind, WebSockets (or SSE), i18next for localisation
+Conversation Service	Routes user → correct OpenAI Assistant(s), manages memory, spam check, contact-capture workflow	Node.js (NestJS) or Python (FastAPI); Redis for short-term memory; PostgreSQL for persistence
+Analytics & Reporting	Aggregates message logs, builds weekly / monthly reports	ClickHouse / Postgres-OLAP or BigQuery; scheduled jobs via cron / Celery / BullMQ
+Dashboard (Backend UI)	View conversations, create assistants, toggle features, download reports	React (same mono-repo) or Vue 3; REST/GraphQL APIs; Auth via JWT + RBAC
+Integrations	OpenAI API, email service, webhook push to CRM / Slack	OpenAI SDK; SendGrid / Mailgun; webhook queue
+
+1. Phase-by-phase breakdown
+Phase 1 – Foundations
+Requirements finalisation & UX wireframes.
+
+Data model & DB migrations
+
+users, visitors, assistants, messages, files, stats_snapshots.
+
+Security & compliance baseline
+
+GDPR data-retention policy, opt-in consent flags, rate-limiting, encrypted PII fields.
+
+Phase 2 – Core Chat Pipeline
+Step	Backend	Frontend
+2.1	Route incoming message → “Conversation Service”. Persist draft row in messages.	Embed widget; open connection; show pre-chat modal asking Name & Email (required) + language selector (EN/SV default).
+2.2	Spam/Fraud filter → OpenAI moderation endpoint + Honeypot heuristics (link count, language mismatch, repeated IP).	
+2.3	Memory lookup: fetch last N msgs by visitor_id (cookie + IP fallback) and pass as messages context.	
+2.4	Assistant orchestration:	
+
+Use OpenAI “Assistants v2”.
+
+Allow multiple assistants per tenant; orchestrator chooses based on metadata tags (e.g., “Sales”, “Tech-Support”) or passes all via tool-calling. |
+| 2.5 | Stream response tokens back via WebSocket → widget. | Render typing indicator; support Markdown with links. |
+| 2.6 | Persist final assistant reply, update conversation status (open / resolved / escalated). |
+
+Phase 3 – File Handling & Multilingual
+File upload micro-service (S3 compatible).
+
+Toggle per assistant: allow_file_upload true/false.
+
+Virus scan (ClamAV) + size limits.
+
+Language detection & translation
+
+Detect visitor language (ISO 639-1) → if not EN/SV, automatically translate with OpenAI / DeepL before sending to assistant; translate back on the fly.
+
+Dashboard flag for “always ask original language”.
+
+Allergen & menu doc ingestion (for Fooodis examples) – store PDFs/images, auto-embed chunks for retrieval.
+
+Phase 4 – Dashboard & Admin UX
+Authentication & RBAC: Owner, Manager, Viewer roles.
+
+Assistants Manager
+
+CRUD assistants; attach knowledge files; configure system/themselves prompt.
+
+Toggle memory, file upload, spam filter level, fallback human escalation address.
+
+Conversation Inbox
+
+Search & filters (date, tag, visitor, resolution).
+
+Pin / merge threads; internal notes.
+
+Statistics Module
+
+Daily ETL summarises message table → stats_snapshots (common intents, CSAT thumb-ups, language mix, average response time).
+
+Dashboard widgets + CSV export.
+
+Schedule weekly & monthly email with PDF/PNG graphs.
+
+Webhook settings (order tickets, CRM push).
+
+Brand & localisation – upload logo, primary colours, greeting text in EN & SV.
+
+Phase 5 – Reporting & Monitoring
+Cron jobs / Cloud scheduler to:
+
+Aggregate stats every night.
+
+Rotate / delete PII older than X days (configurable).
+
+Observability – OpenTelemetry traces, structured logs to Elastic or Loki.
+
+Alerting – Slack/webhook on error rate spikes, token spend anomalies.
+
+Phase 6 – Advanced Intelligence
+Topic clustering to auto-tag recurring issues (K-Means over embeddings).
+
+Intent handoff – if confidence < X, escalate to human with conversation summary.
+
+Proactive suggestions – surface top FAQ answers while user types.
+
+Continuous fine-tuning loop: collect good/bad ratings, export conversations for RAG improvements.
+
+Phase 7 – Hardening & Launch
+Load testing (k6 / Locust).
+
+Pen-testing.
+
+Fallback plan (cached FAQ answers if OpenAI API unreachable).
+
+Staging → production cut-over.
+
+2. Additional recommendations (“nice-to-have but valuable”)
+Feature	Reason
+OAuth social login for visitors	Improves ID continuity across devices.
+Widget theme auto-switch (light/dark)	Matches Fooodis theme-switcher feature set.
+Voice input/output using Web Speech API	Accessibility, future-proofing.
+RLHF style feedback buttons 👍🏻👎🏻	Captures quality signals for analytics & model updates.
+IP throttling + Geo-blocking	Extra anti-spam / fraud layer.
+
+3. Minimal tech stack bill-of-materials
+Backend runtime: Node.js 18 (NestJS) or Python 3.12 (FastAPI)
+
+Database: PostgreSQL 15
+
+Caching / short-term memory: Redis 7
+
+Object storage: S3 (Wasabi, MinIO, or AWS)
+
+Task queue: BullMQ (Node) / Celery + Redis (Python)
+
+CI/CD: GitHub Actions → Docker images → Fly.io / AWS ECS
+
+Observability: Prometheus + Grafana + Loki (or Datadog)
+
+All above are OSS / usage-based to keep infra costs predictable.
+
+Deliverable checklist for development contract
+Technical specification & ERD (Figma / Draw.io).
+
+Working POC: Widget + assistant orchestration with memory.
+
+Production-ready MVP: Phases 1-4 complete.
+
+Documentation: API docs (OpenAPI), dashboard user guide, run-books.
+
+Launch support & hand-off.
+
+Estimated timeline (sequential, can overlap)
+Phase	Duration
+1	1 week
+2	3 – 4 weeks
+3	2 weeks
+4	3 – 4 weeks
+5	1 week
+6	2 weeks
+7	1 week
+
+Total ≈ 12 – 14 weeks for full scope with a 3-person dev squad.
+
+Acceptance criteria snapshot
+Widget loads < 150 kB compressed, first response < 3 s.
+
+95 % of user inputs correctly classified (FAQ vs other).
+
+Spam precision > 0.9, recall > 0.85 on test set.
+
+Stats email generates every Monday 08:00 CET and 1st of month.
+
+GDPR export & delete endpoints pass compliance review.
+

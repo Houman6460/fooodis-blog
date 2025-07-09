@@ -1,0 +1,131 @@
+/* 
+ * Email Studio Header Styles
+ * Matches the styling of the properties panel
+ */
+
+/* Email Studio Container */
+.email-studio-container {
+    background-color: var(--dark-bg, #2e3138);
+    color: var(--text-color, #fff);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Email Studio Header */
+.email-studio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--dark-bg, #2e3138);
+    color: var(--text-color, #fff);
+}
+
+.email-studio-header .email-campaign-title {
+    display: flex;
+    align-items: center;
+}
+
+.email-studio-header input#campaign-name {
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: var(--text-color, #fff);
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px 10px;
+    transition: all 0.2s ease;
+}
+
+.email-studio-header input#campaign-name:focus {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
+    outline: none;
+}
+
+.email-studio-header .edit-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.email-studio-header .email-campaign-title:hover .edit-label {
+    opacity: 1;
+}
+
+/* Email Right Sidebar */
+.email-right-sidebar {
+    width: 300px;
+    height: 100%;
+    background-color: var(--dark-bg, #2e3138);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+}
+
+/* Email Elements Sidebar */
+.email-elements-sidebar {
+    width: 280px;
+    height: 100%;
+    background-color: var(--dark-bg, #2e3138);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+}
+
+.email-elements-sidebar .sidebar-header {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.email-elements-sidebar .sidebar-header h4 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-color, #fff);
+    font-weight: 500;
+}
+
+.email-elements-sidebar .category-title {
+    padding: 10px 15px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.5px;
+}
+
+/* Email Marketing Tabs */
+.email-marketing-tabs {
+    display: flex;
+    background-color: var(--dark-bg, #2e3138);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.email-tab {
+    padding: 12px 18px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.email-tab:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.email-tab.active {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff;
+    border-bottom: 2px solid var(--primary-color, #0088cc);
+}
+
+.email-tab i {
+    font-size: 16px;
+}

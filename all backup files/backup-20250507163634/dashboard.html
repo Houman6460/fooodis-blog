@@ -1,0 +1,2667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- EMERGENCY SELECTOR FIX: Simplified version to prevent crashes -->
+    <script src="js/emergency-selector-fix.js"></script>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8"/>
+    <meta content="Fooodis Blog Dashboard - Create and Manage Blog Content" name="keywords"/>
+    <meta content="Admin dashboard for creating and managing blog content for the Fooodis website." name="description"/>
+    <title>Fooodis Blog Dashboard</title>
+    <!-- EMERGENCY FIX: Core browser functions interception -->
+    <script src="js/core-intercept.js"></script>
+    
+    <!-- TEMPLATE FIX: Replaces hardcoded default template -->
+    <script src="js/template-replacement.js"></script>
+    
+    <!-- TITLE FIX: Ensures every post gets a unique title -->
+    <script src="js/title-uniqueness-fix.js"></script>
+    
+    <!-- MARKDOWN FIX: Enables proper rendering of formatted content -->
+    <script src="js/markdown-renderer.js"></script>
+    
+    <!-- Storage Manager - Must be loaded before all other scripts -->
+    <script src="js/storage-manager.js"></script>
+    
+    <!-- Dependency Checker - Ensures required dependencies are available before use -->
+    <script src="js/dependency-checker.js"></script>
+    
+    <!-- Schedule AI Config Fix - Ensures proper AI integration with scheduling -->
+    <script src="js/schedule-ai-config-fix.js"></script>
+    
+    <!-- CRITICAL FIX: Direct patch to automation system to respect prompts and ensure unique images -->
+    <script src="js/direct-automation-patch.js"></script>
+    <!-- Storage Manager Fix - Ensures all required methods are available -->
+    <script src="js/storage-manager-fix.js"></script>
+    
+    <!-- Email Media Sync Fix - Fixes image loading in Email Subscribers section -->
+    <script src="js/email-media-sync-fix.js"></script>
+    
+    <!-- Media Selector Redesign - Implements dark-themed media selector matching the sample image -->
+    <script src="js/media-selector-redesign.js"></script>
+    
+    <!-- Color Format Fix - Resolves rgba color format issues -->
+    <script src="js/color-format-fix.js"></script>
+    
+    <!-- AI Config Integration Fix - Resolves duplicate method issues -->
+    <script src="js/ai-config-integration-fix.js"></script>
+    
+    <!-- Absolute Fix - Comprehensive solution for all issues including logos and forms -->
+    <script src="js/absolute-fix.js"></script>
+    
+    <!-- Media Selector Fix CSS - Ensures placeholder styling for broken images -->
+    <link rel="stylesheet" href="css/media-selector-fix.css">
+    <!-- Storage Fix - Resolves data persistence issues -->
+    <script src="js/storage-fix.js"></script>
+    <!-- Data Persistence Diagnostic - Helps diagnose and fix storage issues -->
+    <script src="js/data-persistence-diagnostic.js"></script>
+    <!-- Direct Status Fix - Standalone solution for status card persistence -->
+    <script src="js/direct-status-fix.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Core scripts -->
+    <script src="js/jquery.js"></script>
+    <script src="js/nicepage.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/dashboard-fixes-new.js"></script>
+    <script src="js/footer-bubbles.js"></script>
+    
+    <!-- Feature-specific scripts -->
+    <script src="js/post-scheduler.js"></script>
+    <script src="js/categories-dark.js"></script>
+    <script src="js/ai-assistant-dark.js"></script>
+    <script src="js/post-scheduler-dark.js"></script>
+    <script src="js/schedule-popup-dark.js"></script>
+    <script src="js/scheduled-posts-dark.js"></script>
+    <script src="js/schedule-dark-fix.js"></script>
+    
+    <!-- Email Management Section -->
+    <link rel="stylesheet" href="css/email-collection-popup.css">
+    <script src="js/email-collection-popup.js"></script>
+    <script src="js/email-management-dashboard.js"></script>
+    <script src="js/date-time-picker-dark.js"></script>
+    <script src="js/schedule-persistence-fix-v2.js"></script>
+    <script src="js/advertising-banners.js"></script>
+    <script src="js/enhanced-banner.js"></script>
+    
+    <!-- Email Subscribers Media Fix - Ensures media selector loads pictures correctly -->
+    <script src="js/email-media-sync-fix.js"></script>
+    
+    <!-- Chart.js library for statistics dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/blog-stats-dashboard.js"></script>
+    
+    <!-- Force immediate stats refresh -->
+    <script>
+    (function() {
+        // Force clear localStorage for stats
+        localStorage.removeItem('blog_stats_data');
+        localStorage.removeItem('blog_stats_version');
+        
+        // Execute when document is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard: Forcing immediate stats refresh');
+            setTimeout(function() {
+                if (typeof BlogStatsDashboard !== 'undefined' && typeof BlogStatsDashboard.forceRefresh === 'function') {
+                    BlogStatsDashboard.forceRefresh();
+                    console.log('Dashboard: Stats refresh complete');
+                } else {
+                    console.log('Dashboard: Stats refresh delayed, waiting for scripts to load');
+                    // Try again after a short delay
+                    setTimeout(function() {
+                        if (typeof BlogStatsDashboard !== 'undefined' && typeof BlogStatsDashboard.forceRefresh === 'function') {
+                            BlogStatsDashboard.forceRefresh();
+                            console.log('Dashboard: Stats refresh complete');
+                        }
+                    }, 1000);
+                }
+            }, 200);
+        });
+    })();
+    </script>
+    <script src="js/auth-manager.js"></script>
+    
+    <!-- AI Configuration scripts -->
+    <script src="js/schedule-ai-config-fix.js"></script>
+    <script src="js/ai-automation-scheduler-fix.js"></script>
+    <script src="js/ai-automation.js"></script>
+    <script src="js/ai-config-fix.js"></script>
+    <script src="js/ai-config-fix-publish.js"></script>
+    <script src="js/ai-config-complete-fix.js"></script>
+    <script src="js/ai-content-generator-fix.js"></script>
+    
+    <!-- Custom Prompt Integration - Ensures your prompts are properly used in content generation -->
+    <script src="js/prompt-integration-fix.js"></script>
+    
+    <!-- Force Unique Content - Complete override of content generation -->
+    <script src="js/force-unique-content.js"></script>
+    
+    <!-- AI Automation scripts - load in correct order -->
+    <script src="js/ai-automation.js"></script>
+    <script src="js/automation-media-folders.js"></script>
+    
+    <!-- Email Subscribers Media Fix removed - using pure placeholder solution instead -->
+    <script src="js/media-selector-fix.js"></script>
+    <script src="js/direct-image-fix.js"></script>
+    <script src="js/content-diversifier.js"></script>
+    <script src="js/generate-now.js"></script>
+    <script src="js/automation-fix.js"></script>
+    <script src="js/automation-direct-fix.js"></script>
+    <!-- Diagnostic script - provides direct DOM fixes and debugging tools -->
+    <script src="js/diagnostic.js"></script>
+    
+    <!-- Media management scripts -->
+    <script src="js/folder-icons.js"></script>
+    <script src="js/media-folders.js"></script>
+    <script src="js/media-pagination-fix.js"></script>
+    <script src="js/direct-media-pagination-fix.js"></script>
+    
+    <!-- Theme scripts -->
+    <script src="js/mode-toggle.js"></script>
+    
+    <!-- Enhanced Email Popup scripts -->
+    <script src="js/email-popup-enhancer.js"></script>
+    <script src="js/email-popup-preview.js"></script>
+    <script src="js/email-popup-bridge.js"></script>
+    <script src="js/subscriber-list-manager.js"></script>
+    <script src="js/email-popup-media-integration.js"></script>
+    <script src="js/email-subscribers-media-fix.js"></script>
+    <!-- Core styles -->
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard-extensions.css">
+    <link rel="stylesheet" href="css/dashboard-styles.css">
+    <link rel="stylesheet" href="css/advertising-banners.css">
+    <script src="js/enhanced-banner.js" defer></script>
+    <link rel="stylesheet" href="css/mode-toggle.css">
+    
+    <!-- Footer styles -->
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/footer-bubbles.css">
+    
+    <!-- Feature-specific styles -->
+    <link rel="stylesheet" href="css/social-sharing.css">
+    <link rel="stylesheet" href="css/categories-dark.css">
+    <link rel="stylesheet" href="css/categories-ui-improvements.css">
+    <link rel="stylesheet" href="css/ai-assistant-dark.css">
+    <link rel="stylesheet" href="css/ai-assistant-ui-improvements.css">
+    <link rel="stylesheet" href="css/advertising-banners.css">
+    <link rel="stylesheet" href="css/blog-stats-dashboard.css">
+    <link rel="stylesheet" href="css/email-popup-enhanced.css">
+    <link rel="stylesheet" href="css/email-media-selector.css">
+    
+    <!-- Material Icons for stats dashboard -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Scheduler styles -->    
+    <link rel="stylesheet" href="css/post-scheduler-dark.css">
+    <link rel="stylesheet" href="css/schedule-popup-dark.css">
+    <link rel="stylesheet" href="css/scheduled-posts-dark.css">
+    <link rel="stylesheet" href="css/schedule-modal-fixes.css">
+    <link rel="stylesheet" href="css/force-dark-modal.css">
+    <link rel="stylesheet" href="css/post-scheduler-section-dark.css">
+    <link rel="stylesheet" href="css/date-time-picker-dark.css">
+    <link rel="stylesheet" href="css/scheduled-posts-improvements.css">
+    
+    <!-- AI Configuration styles -->
+    <link rel="stylesheet" href="css/ai-config-dark.css">
+    
+    <!-- AI Automation styles -->
+    <link rel="stylesheet" href="css/ai-automation-dark.css">
+    <link rel="stylesheet" href="css/generate-now-button.css">
+    <link rel="stylesheet" href="css/panel-generate-button.css">
+    <link rel="stylesheet" href="css/execution-status-cards.css">
+    <link rel="stylesheet" href="css/publish-notifications.css">
+    
+    <!-- Media management styles -->
+    <link rel="stylesheet" href="css/media-folders.css">
+    <link rel="stylesheet" href="css/folder-icons.css">
+    <link rel="stylesheet" href="css/automation-media.css">
+    <link rel="stylesheet" href="css/schedule-time.css">
+    <link rel="stylesheet" href="css/automation-cards.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Email Collection Popup System -->
+    <link rel="stylesheet" href="css/email-collection-popup.css">
+    <script src="js/email-collection-popup.js"></script>
+    <script src="js/email-management-dashboard.js"></script>
+</head>
+
+<body class="u-body u-xl-mode dashboard-body">
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo-container">
+                <img alt="Fooodis Logo" class="dashboard-logo" src="images/Artboard17copy9.svg"/>
+            </div>
+            <div class="header-actions">
+                <a href="blog.html" class="view-blog-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View Blog
+                </a>
+                <div class="user-info">
+                    <span class="user-name">Admin</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active" data-section="create-post">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Create Post</span>
+                    </li>
+                    <li class="nav-item" data-section="manage-posts"><i class="fas fa-list"></i><span>Manage Posts</span></li>
+                    <li class="nav-item" data-section="ai-config"><i class="fas fa-key"></i><span>AI Configuration</span></li>
+                    <li class="nav-item" data-section="ai-automation"><i class="fas fa-calendar-check"></i><span>AI Automation</span></li>
+                    <li class="nav-item" data-section="ai-assistant"><i class="fas fa-robot"></i><span>AI Assistant</span></li>
+                    <li class="nav-item" data-section="scheduled-posts"><i class="fas fa-calendar-alt"></i><span>Scheduled Posts</span></li>
+                    <li class="nav-item" data-section="categories"><i class="fas fa-tags"></i><span>Categories</span></li>
+                    <li class="nav-item" data-section="media-library"><i class="fas fa-images"></i><span>Media Library</span></li>
+                    <li class="nav-item" data-section="blog-stats"><i class="fas fa-chart-line"></i><span>Blog Statistics</span></li>
+                    <li class="nav-item" data-section="ad-management"><i class="fas fa-ad"></i><span>Advertising Banners</span></li>
+                    <li class="nav-item" data-section="profile"><i class="fas fa-user-circle"></i><span>Profile</span></li>
+                    <li class="nav-item" data-section="email-management"><i class="fas fa-envelope-open-text"></i><span>Email Subscribers</span></li>
+                    <li class="nav-item" data-section="settings"><i class="fas fa-cog"></i><span>Settings</span></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="logoland-branding">
+                    <img src="images/Artboard1.svg" alt="LogoLand Logo" class="logoland-logo">
+                    <span>Powered by LogoLand</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="dashboard-main">
+            <!-- Create Post Section -->
+            <section class="dashboard-section active" id="create-post-section">
+                <div class="section-header">
+                    <h2 class="section-title">Create New Blog Post</h2>
+                    <p class="section-description">Create a new blog post to share with your audience</p>
+                </div>
+                
+                <div class="post-form-container">
+                    <form id="postForm" class="post-form">
+                        <div class="form-group">
+                            <label for="postTitle">Post Title</label>
+                            <input type="text" id="postTitle" name="postTitle" placeholder="Enter post title" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="postCategory">Category</label>
+                                <select id="postCategory" name="postCategory" required title="Select category" aria-label="Select category">
+                                    <option value="" disabled selected>Select a category</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Operations">Operations</option>
+                                    <option value="Digital Solutions">Digital Solutions</option>
+                                    <option value="Customer Service">Customer Service</option>
+                                    <option value="Business Growth">Business Growth</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group half">
+                                <label for="postSubcategory">Subcategory</label>
+                                <select id="postSubcategory" name="postSubcategory" title="Select subcategory" aria-label="Select subcategory">
+                                    <option value="" disabled selected>Select a subcategory</option>
+                                    <!-- Subcategories will be dynamically populated based on selected category -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="postImageUrl">Featured Image</label>
+                            <div class="media-input-container">
+                                <input type="text" id="postImageUrl" name="postImageUrl" placeholder="Enter image URL">
+                                <span class="media-input-separator">OR</span>
+                                <div class="upload-btn-wrapper">
+                                    <button type="button" class="btn btn-secondary" id="uploadImageBtn">Upload Image</button>
+                                    <input type="file" id="imageUpload" accept="image/*" title="Upload image" aria-label="Upload image">
+                                </div>
+                            </div>
+                            <div id="imagePreviewContainer" class="image-preview-container">
+                                <img id="imagePreview" src="" alt="Image Preview">
+                                <button type="button" class="remove-image-btn" id="removeImageBtn" title="Remove image" aria-label="Remove image"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="postExcerpt">Excerpt (Short Description)</label>
+                            <textarea id="postExcerpt" name="postExcerpt" placeholder="Enter a short description of your post" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="postContentEditor">Post Content</label>
+                            <div class="editor-toolbar">
+                                <button type="button" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                <button type="button" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                <button type="button" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                                <button type="button" data-command="strikeThrough" title="Strike Through"><i class="fas fa-strikethrough"></i></button>
+                                <button type="button" data-command="justifyLeft" title="Align Left"><i class="fas fa-align-left"></i></button>
+                                <button type="button" data-command="justifyCenter" title="Align Center"><i class="fas fa-align-center"></i></button>
+                                <button type="button" data-command="justifyRight" title="Align Right"><i class="fas fa-align-right"></i></button>
+                                <button type="button" data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                                <button type="button" data-command="createLink" title="Insert Link"><i class="fas fa-link"></i></button>
+                                <button type="button" data-command="insertImage" title="Insert Image"><i class="fas fa-image"></i></button>
+                                <button type="button" data-command="insertHTML" data-value="video" title="Insert Video"><i class="fas fa-video"></i></button>
+                                <button type="button" data-command="formatBlock" data-value="h2" title="Heading 2"><i class="fas fa-heading"></i>2</button>
+                                <button type="button" data-command="formatBlock" data-value="h3" title="Heading 3"><i class="fas fa-heading"></i>3</button>
+                                <button type="button" data-command="formatBlock" data-value="h4" title="Heading 4"><i class="fas fa-heading"></i>4</button>
+                            </div>
+                            <div id="postContentEditor" class="content-editor" contenteditable="true"></div>
+                            <input type="hidden" id="postContent" name="postContent">
+                        </div>
+                        <div class="form-group">
+                            <label>Media Attachments</label>
+                            <div class="media-attachments-container">
+                                <div class="upload-btn-wrapper">
+                                    <button type="button" class="btn btn-secondary" id="uploadAttachmentBtn">Add Media</button>
+                                    <input type="file" id="mediaUpload" accept="image/*,video/*" multiple title="Upload media" aria-label="Upload media">
+                                </div>
+                                <div id="mediaAttachmentsList" class="media-attachments-list"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postTags">Tags (comma separated)</label>
+                            <input type="text" id="postTags" name="postTags" placeholder="e.g. restaurant, management, tips">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="postScheduleDate">Schedule Publication</label>
+                                <input type="datetime-local" id="postScheduleDate" name="postScheduleDate">
+                            </div>
+                            <div class="form-group half checkbox-group">
+                                <input type="checkbox" id="postFeatured" name="postFeatured">
+                                <label for="postFeatured">Feature on homepage banner</label>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" id="previewPostBtn" class="btn btn-secondary">Preview</button>
+                            <button type="submit" id="publishPostBtn" class="btn btn-primary">Publish Post</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Manage Posts Section -->
+            <section class="dashboard-section" id="manage-posts-section">
+                <div class="section-header">
+                    <h2 class="section-title">Manage Blog Posts</h2>
+                    <p class="section-description">View, edit, and delete your blog posts</p>
+                </div>
+                
+                <div class="posts-management">
+                    <div class="posts-filters">
+                        <div class="search-container">
+                            <input type="text" id="searchPosts" placeholder="Search posts...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        
+                        <div class="filter-container">
+                            <select id="filterCategory" title="Filter by category" aria-label="Filter by category">
+                                <option value="">All Categories</option>
+                                <!-- Categories will be dynamically populated -->
+                            </select>
+                            
+                            <select id="filterStatus" title="Filter by status" aria-label="Filter by status">
+                                <option value="">All Posts</option>
+                                <option value="featured">Featured Only</option>
+                                <option value="not-featured">Not Featured</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="posts-table-container">
+                        <table class="posts-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Featured</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="postsTableBody">
+                                <!-- Posts will be dynamically populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Categories Section -->
+            <section class="dashboard-section" id="categories-section">
+                <div class="section-header">
+                    <h2 class="section-title">Categories & Tags</h2>
+                    <p class="section-description">Manage your blog categories, subcategories, and tags</p>
+                </div>
+                
+                <div class="categories-management">
+                    <div class="categories-container">
+                        <div class="category-section">
+                            <h3 class="category-section-title">Categories</h3>
+                            <div class="category-list" id="categoriesList">
+                                <!-- Example static items for visual reference -->
+                                <div class="category-item">
+                                    <span class="category-name">[object Object]</span>
+                                    <div class="category-actions">
+                                        <button class="edit-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <div class="category-item">
+                                    <span class="category-name">[object Object]</span>
+                                    <div class="category-actions">
+                                        <button class="edit-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <!-- Dynamic content will replace these examples -->
+                            </div>
+                            <div class="add-category-form">
+                                <input type="text" id="newCategoryName" placeholder="New category name">
+                                <button id="addCategoryBtn" class="btn btn-small">Add</button>
+                            </div>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h3 class="category-section-title">Subcategories</h3>
+                            <div class="subcategory-list" id="subcategoriesList">
+                                <!-- Example static items for visual reference -->
+                                <div class="subcategory-item">
+                                    <div>
+                                        <span class="subcategory-name">POS Systems</span>
+                                        <span class="subcategory-parent">(undefined)</span>
+                                    </div>
+                                    <div class="subcategory-actions">
+                                        <button class="edit-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <div class="subcategory-item">
+                                    <div>
+                                        <span class="subcategory-name">Online Ordering</span>
+                                        <span class="subcategory-parent">(undefined)</span>
+                                    </div>
+                                    <div class="subcategory-actions">
+                                        <button class="edit-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <!-- Dynamic content will replace these examples -->
+                            </div>
+                            <div class="add-subcategory-form">
+                                <select id="subcategoryParent" title="Select parent category" aria-label="Select parent category">
+                                    <option value="" disabled selected>Select parent category</option>
+                                    <!-- Categories will be dynamically populated -->
+                                </select>
+                                <input type="text" id="newSubcategoryName" placeholder="New subcategory name">
+                                <button id="addSubcategoryBtn" class="btn btn-small">Add</button>
+                            </div>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h3 class="category-section-title">Tags</h3>
+                            <div class="tags-cloud" id="tagsCloud">
+                                <!-- Example static items for visual reference -->
+                                <div class="tag-item">
+                                    <span class="tag-name">Food</span>
+                                    <div class="tag-actions">
+                                        <button class="tag-delete-btn" title="Delete"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="tag-item">
+                                    <span class="tag-name">Efficiency</span>
+                                    <div class="tag-actions">
+                                        <button class="tag-delete-btn" title="Delete"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="tag-item">
+                                    <span class="tag-name">Restaurant Management</span>
+                                    <div class="tag-actions">
+                                        <button class="tag-delete-btn" title="Delete"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="tag-item">
+                                    <span class="tag-name">Online Ordering</span>
+                                    <div class="tag-actions">
+                                        <button class="tag-delete-btn" title="Delete"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="tag-item">
+                                    <span class="tag-name">Revenue Growth</span>
+                                    <div class="tag-actions">
+                                        <button class="tag-delete-btn" title="Delete"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="tag-item">
+                                    <span class="tag-name">Customer Experience</span>
+                                    <div class="tag-actions">
+                                        <button class="tag-delete-btn" title="Delete"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <div class="tag-item">
+                                    <span class="tag-name">Tech</span>
+                                    <div class="tag-actions">
+                                        <button class="tag-delete-btn" title="Delete"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                                <!-- Dynamic content will replace these examples -->
+                            </div>
+                            <div class="add-tag-form">
+                                <input type="text" id="newTagName" placeholder="New tag name">
+                                <button id="addTagBtn" class="btn btn-small">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Settings Section -->
+            <!-- AI Configuration Section -->
+            <section class="dashboard-section" id="ai-config-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-brain"></i> AI Configuration</h2>
+                    <p class="section-description">Configure OpenAI API settings for AI-generated content</p>
+                </div>
+                
+                <div class="ai-config-form">
+                    <div class="form-group api-key-field">
+                        <label for="openai-api-key">OpenAI API Key</label>
+                        <div class="input-group">
+                            <input type="password" id="openai-api-key" placeholder="Enter your OpenAI API key">
+                            <button type="button" class="toggle-visibility" title="Toggle visibility">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="form-text">Your API key is stored locally and never sent to our servers.</small>
+                    </div>
+                    
+                    <div class="form-group model-selection">
+                        <label>Select AI Model</label>
+                        <div class="model-options">
+                            <div class="model-option selected" data-model="gpt-4">
+                                <h4>GPT-4</h4>
+                                <p>Most capable model, best quality</p>
+                            </div>
+                            <div class="model-option" data-model="gpt-4-turbo">
+                                <h4>GPT-4 Turbo</h4>
+                                <p>Faster, more recent knowledge</p>
+                            </div>
+                            <div class="model-option" data-model="gpt-3.5-turbo">
+                                <h4>GPT-3.5 Turbo</h4>
+                                <p>Faster, more economical</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group assistant-selection">
+                        <label>Select Assistant Type</label>
+                        <div class="assistant-options">
+                            <div class="assistant-option selected" data-assistant="default">
+                                <h4><i class="fas fa-robot"></i> Default Assistant</h4>
+                                <p>Optimized for food blog content creation</p>
+                            </div>
+                            <div class="assistant-option" data-assistant="recipe">
+                                <h4><i class="fas fa-utensils"></i> Recipe Creator</h4>
+                                <p>Specialized in creating detailed recipes</p>
+                            </div>
+                            <div class="assistant-option" data-assistant="review">
+                                <h4><i class="fas fa-star"></i> Restaurant Reviewer</h4>
+                                <p>Expert in writing engaging restaurant reviews</p>
+                            </div>
+                            <div class="assistant-option" data-assistant="custom">
+                                <h4><i class="fas fa-user-cog"></i> Custom Assistant</h4>
+                                <p>Use your own OpenAI assistant</p>
+                            </div>
+                        </div>
+                        
+                        <div class="custom-assistant-form">
+                            <h4><i class="fas fa-cogs"></i> Custom Assistant Details</h4>
+                            <div class="form-group">
+                                <label for="custom-assistant-id">Assistant ID</label>
+                                <input type="text" id="custom-assistant-id" placeholder="Enter your OpenAI Assistant ID">
+                            </div>
+                            <div class="form-group">
+                                <label for="custom-assistant-name">Assistant Name (Optional)</label>
+                                <input type="text" id="custom-assistant-name" placeholder="Enter a name for this assistant">
+                            </div>
+                            <div class="form-group">
+                                <label for="custom-assistant-instructions">Instructions (Optional)</label>
+                                <textarea id="custom-assistant-instructions" rows="4" placeholder="Enter custom instructions for this assistant"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-config-actions">
+                        <button type="button" class="test-btn" id="test-connection">
+                            <i class="fas fa-vial"></i> Test Connection
+                        </button>
+                        <button type="button" class="save-btn" id="save-config">
+                            <i class="fas fa-save"></i> Save Configuration
+                        </button>
+                        <button type="button" class="reset-btn" id="reset-config">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    <div id="connection-status" class="status"></div>
+                </div>
+            </section>
+            
+            <!-- AI Automation Section -->
+            <section class="dashboard-section" id="ai-automation-section">
+                <div class="section-header">
+                    <h2 class="section-title">AI Content Automation</h2>
+                    <p class="section-description">Schedule automated AI post generation for your blog</p>
+                </div>
+                
+                <div class="ai-automation-container">
+                    <!-- Execution status cards container -->
+                    <div class="execution-status-cards-container">
+                        <!-- Execution status cards will be dynamically added here when paths are running -->
+                    </div>
+                    
+                    <div class="automation-paths-container">
+                        <!-- Automation paths will be dynamically added here -->
+                    </div>
+                    
+                    <div class="add-automation-path">
+                        <i class="fas fa-plus-circle"></i>
+                        <p>Add New Automation Path</p>
+                    </div>
+                </div>
+                
+                <!-- Automation Path Form Modal -->
+                <div class="automation-path-modal">
+                    <div class="automation-path-form">
+                        <button class="close-btn" title="Close Form"><i class="fas fa-times"></i><span class="sr-only">Close</span></button>
+                        <h2>Automation Path</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="path-name">Path Name</label>
+                                <input type="text" id="path-name" placeholder="Enter a name for this automation path">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="content-type">Content Type</label>
+                                    <select id="content-type">
+                                        <option value="general">General Blog Post</option>
+                                        <option value="recipe">Recipe</option>
+                                        <option value="review">Restaurant Review</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="assistant-type">OpenAI Assistant</label>
+                                    <select id="assistant-type">
+                                        <option value="default">Default (GPT Model)</option>
+                                        <option value="recipe-creator">Recipe Creator</option>
+                                        <option value="restaurant-reviewer">Restaurant Reviewer</option>
+                                        <option value="food-blogger">Food Blogger</option>
+                                        <option value="nutrition-expert">Nutrition Expert</option>
+                                        <option value="custom">Custom Assistant</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group assistant-id-group">
+                                    <label for="assistant-id">Assistant ID</label>
+                                    <input type="text" id="assistant-id" placeholder="Enter OpenAI Assistant ID">
+                                    <p class="help-text">Find this in your OpenAI dashboard</p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <select id="category">
+                                        <option value="Uncategorized">Uncategorized</option>
+                                        <option value="Recipes">Recipes</option>
+                                        <option value="Cooking">Cooking</option>
+                                        <option value="Restaurant Reviews">Restaurant Reviews</option>
+                                        <option value="Food News">Food News</option>
+                                        <option value="Nutrition">Nutrition</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="subcategory">Subcategory (Optional)</label>
+                                    <select id="subcategory">
+                                        <option value="">None</option>
+                                        <option value="Breakfast">Breakfast</option>
+                                        <option value="Lunch">Lunch</option>
+                                        <option value="Dinner">Dinner</option>
+                                        <option value="Desserts">Desserts</option>
+                                        <option value="Vegan">Vegan</option>
+                                        <option value="Kitchen">Kitchen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="topics">Topics (Comma Separated)</label>
+                                <input type="text" id="topics" placeholder="Enter topics for content generation">
+                            </div>
+                            
+                            <div class="form-group mode-toggle-container">
+                                <label>Post Creation Mode</label>
+                                <div class="mode-toggle" data-mode="schedule">
+                                    <span class="mode-label">Generate Now</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="mode-toggle" checked aria-label="Toggle between Generate Now and Schedule modes" title="Toggle between Generate Now and Schedule modes">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="mode-label">Schedule</span>
+                                </div>
+                                <div class="generate-now-panel">
+                                    <button type="button" class="panel-generate-now-btn"><i class="fas fa-bolt"></i> Generate & Publish Now</button>
+                                    <p class="help-text">Generate content and publish it immediately without scheduling.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group schedule-section">
+                                <label>Schedule</label>
+                                <div class="schedule-options">
+                                    <div class="schedule-option selected" data-schedule="daily">
+                                        <h4>Daily</h4>
+                                        <p>Every day</p>
+                                    </div>
+                                    <div class="schedule-option" data-schedule="every2days">
+                                        <h4>Every 2 Days</h4>
+                                        <p>Skip one day</p>
+                                    </div>
+                                    <div class="schedule-option" data-schedule="weekly">
+                                        <h4>Weekly</h4>
+                                        <p>Once a week</p>
+                                    </div>
+                                    <div class="schedule-option" data-schedule="biweekly">
+                                        <h4>Bi-Weekly</h4>
+                                        <p>Every two weeks</p>
+                                    </div>
+                                    <div class="schedule-option" data-schedule="monthly">
+                                        <h4>Monthly</h4>
+                                        <p>Once a month</p>
+                                    </div>
+                                    <div class="schedule-option" data-schedule="custom">
+                                        <h4>Custom</h4>
+                                        <p>Set your own</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="schedule-time-selection">
+                                    <h4>Time of Day</h4>
+                                    <div class="time-picker">
+                                        <label for="schedule-time">Schedule Time</label>
+                                        <input type="time" id="schedule-time" value="14:00" aria-label="Schedule time for post generation" title="Select the time when posts should be generated" placeholder="14:00">
+                                        <p class="help-text">Select the time when posts should be generated (24-hour format)</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="custom-schedule">
+                                    <h4>Custom Schedule</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="custom-interval">Every</label>
+                                            <input type="number" id="custom-interval" min="1" value="1">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="custom-unit">Unit</label>
+                                            <select id="custom-unit">
+                                                <option value="days">Days</option>
+                                                <option value="weeks">Weeks</option>
+                                                <option value="months">Months</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group prompt-template">
+                                <label for="prompt-template">Prompt Template (Optional)</label>
+                                <textarea id="prompt-template" placeholder="Enter a custom prompt template for content generation"></textarea>
+                                <div class="prompt-variables">
+                                    <h4>Available Variables:</h4>
+                                    <ul>
+                                        <li><code>{topic}</code> - The main topic</li>
+                                        <li><code>{category}</code> - The selected category</li>
+                                        <li><code>{subcategory}</code> - The selected subcategory</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Media Options</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="include-images" checked>
+                                        <span class="checkbox-text">Include Images</span>
+                                    </label>
+                                </div>
+                                <div class="media-folder-selection" id="mediaFolderSelection">
+                                    <label for="media-folder">Select Media Folder</label>
+                                    <select id="media-folder">
+                                        <option value="">Use Random Images</option>
+                                        <!-- Folders will be populated dynamically -->
+                                    </select>
+                                    <p class="help-text">Images from this folder will be used for posts and marked as used</p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Languages</label>
+                                <div class="form-check">
+                                    <input type="checkbox" id="lang-english" checked disabled>
+                                    <label for="lang-english">English (Primary)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="lang-swedish" checked>
+                                    <label for="lang-swedish">Swedish</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="cancel-btn">Cancel</button>
+                                <button type="button" class="generate-now-btn"><i class="fas fa-bolt"></i> Generate & Publish Now</button>
+                                <button type="button" class="save-btn">Save Automation Path</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- AI Assistant Section -->
+            <section class="dashboard-section" id="ai-assistant-section">
+                <div class="section-header">
+                    <h2 class="section-title">AI Content Assistant</h2>
+                    <p class="section-description">Generate blog content with AI assistance</p>
+                </div>
+                
+                <div class="ai-assistant-panel">
+                    <div class="ai-config-section">
+                        <h3 class="ai-section-title">Content Generation</h3>
+                        <div class="ai-prompt-container">
+                            <label for="aiPrompt">What would you like to write about?</label>
+                            <textarea id="aiPrompt" placeholder="E.g., '5 ways to improve restaurant customer service' or 'The benefits of a digital menu system'"></textarea>
+                        </div>
+                        
+                        <div class="ai-options">
+                            <div class="ai-option-group">
+                                <label for="contentTone">Tone</label>
+                                <select id="contentTone" title="Select content tone" aria-label="Select content tone">
+                                    <option value="professional">Professional</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="enthusiastic">Enthusiastic</option>
+                                </select>
+                            </div>
+                            
+                            <div class="ai-option-group">
+                                <label for="contentLength">Length</label>
+                                <select id="contentLength" title="Select content length" aria-label="Select content length">
+                                    <option value="short">Short (~150 words)</option>
+                                    <option value="medium" selected>Medium (~300 words)</option>
+                                    <option value="long">Long (~500 words)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button id="generateContentBtn" class="btn btn-primary">Generate Content</button>
+                    </div>
+                    
+                    <div class="ai-result-section">
+                        <div class="ai-result-header">
+                            <h3 class="ai-section-title">Generated Content</h3>
+                            <div class="ai-result-actions">
+                                <button id="useGeneratedContent" class="btn btn-secondary">Use This Content</button>
+                            </div>
+                        </div>
+                        
+                        <div id="aiGeneratedContent" class="ai-content-editor">
+                            <p class="placeholder-text">Generated content will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Scheduled Posts Section -->
+            <section class="dashboard-section" id="scheduled-posts-section">
+                <div class="section-header">
+                    <h2 class="section-title">Scheduled Posts</h2>
+                    <p class="section-description">Manage and schedule your upcoming blog posts</p>
+                </div>
+                
+                <div class="scheduled-posts-panel">
+                    <div class="scheduled-posts-container">
+                        <div class="calendar-view">
+                            <div id="calendarContainer" class="calendar-container"></div>
+                        </div>
+                        
+                        <div class="scheduled-posts-list-container">
+                            <div class="scheduled-posts-header">
+                                <h3>Upcoming Posts</h3>
+                                <div class="scheduled-posts-filters">
+                                    <select id="filterScheduledPosts" title="Filter scheduled posts" aria-label="Filter scheduled posts">
+                                        <option value="all">All Posts</option>
+                                        <option value="scheduled">Scheduled</option>
+                                        <option value="draft">Drafts</option>
+                                        <option value="ai-generated">AI Generated</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="scheduledPostsList" class="scheduled-posts-list">
+                                <!-- Scheduled posts will be dynamically populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Media Library Section -->
+            <section class="dashboard-section" id="media-library-section">
+                <div class="section-header">
+                    <h2 class="section-title">Media Library</h2>
+                    <p class="section-description">Manage your images and media files</p>
+                </div>
+                
+                <div class="media-library-panel">
+                    <div id="mediaUploadArea" class="media-upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Upload Media</h3>
+                        <p>Drag and drop files here or click to browse</p>
+                        <div class="upload-folder-selection">
+                            <label for="uploadFolderSelect">Upload to folder:</label>
+                            <select id="uploadFolderSelect" title="Select folder to upload to" aria-label="Select folder to upload to">
+                                <option value="current">Current Folder</option>
+                                <option value="uncategorized">Uncategorized</option>
+                                <!-- Additional folders will be added dynamically -->
+                            </select>
+                        </div>
+                        <input type="file" id="mediaUploadInput" multiple accept="image/*,video/*" title="Upload media files" aria-label="Upload media files">
+                    </div>
+                    
+                    <div class="media-library-container">
+                        <div class="media-header">
+                            <div class="media-search-container">
+                                <input type="text" id="searchMedia" placeholder="Search media..." title="Search media" aria-label="Search media">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            
+                            <div class="media-filters">
+                                <select id="filterMediaType" title="Filter by media type" aria-label="Filter by media type">
+                                    <option value="all">All Media</option>
+                                    <option value="image">Images</option>
+                                    <option value="video">Videos</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="media-library-flex">
+                            <!-- Folder sidebar -->
+                            <div class="media-folders" id="mediaFolders">
+                                <div class="folder-actions">
+                                    <h4 class="folder-title">Folders</h4>
+                                    <button class="add-folder-btn" id="addFolderBtn" title="Add new folder">
+                                        <i class="fas fa-plus"></i> New
+                                    </button>
+                                </div>
+                                
+                                <!-- New folder form -->
+                                <div class="folder-form" id="folderForm">
+                                    <input type="text" id="folderNameInput" placeholder="Folder name" title="Enter folder name">
+                                    <div class="folder-form-actions">
+                                        <button class="cancel-btn" id="cancelFolderBtn">Cancel</button>
+                                        <button class="save-btn" id="saveFolderBtn">Save</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Folder list -->
+                                <div class="folder-list" id="folderList">
+                                    <div class="folder-item active" data-folder="all">
+                                        <i class="fas fa-images"></i>
+                                        <span class="folder-name">All Media</span>
+                                        <span class="folder-count">0</span>
+                                    </div>
+                                    <div class="folder-item" data-folder="uncategorized">
+                                        <i class="fas fa-folder"></i>
+                                        <span class="folder-name">Uncategorized</span>
+                                        <span class="folder-count">0</span>
+                                    </div>
+                                    <!-- Additional folders will be added dynamically -->
+                                </div>
+                            </div>
+                            
+                            <!-- Media content -->
+                            <div class="media-content">
+                                <!-- Current folder indicator -->
+                                <div class="current-folder" id="currentFolder">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span class="current-folder-name">All Media</span>
+                                </div>
+                                
+                                <!-- Media type filter buttons -->
+                                <div class="media-type-filter" id="mediaTypeFilter">
+                                    <button class="media-type-btn active" data-type="all">
+                                        <i class="fas fa-layer-group"></i> All
+                                    </button>
+                                    <button class="media-type-btn" data-type="image">
+                                        <i class="fas fa-image"></i> Images
+                                    </button>
+                                    <button class="media-type-btn" data-type="video">
+                                        <i class="fas fa-video"></i> Videos
+                                    </button>
+                                </div>
+                                
+                                <!-- Media grid -->
+                                <div id="mediaGrid" class="media-grid">
+                                    <!-- Media items will be dynamically populated here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="media-pagination">
+                            <button class="btn-icon" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
+                            <span>Page 1 of 1</span>
+                            <button class="btn-icon" title="Next Page"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Blog Statistics Section -->
+            <section class="dashboard-section" id="blog-stats-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-chart-line"></i> Blog Statistics</h2>
+                    <p class="section-description">Monitor post views, ratings, shares, and website analytics</p>
+                </div>
+                
+                <div class="stats-dashboard-container">
+                    <!-- Stats Summary Cards -->
+                    <div class="stats-summary-cards">
+                        <!-- Live Visitors Card - Always at the top -->
+                        <div class="stats-card live-visitors-card">
+                            <div class="stats-card-icon with-pulse-dot">
+                                <i class="material-icons">people</i>
+                                <span class="pulse-dot"></span>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3 class="stats-card-title">Live Visitors</h3>
+                                <div class="stats-card-value" id="live-visitor-count">
+                                    <span id="visitor-number">7</span>
+                                    <span class="visitor-label">online now</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <div class="stats-card-icon">
+                                <i class="material-icons">visibility</i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3 class="stats-card-title">Total Views</h3>
+                                <div class="stats-card-value" id="total-views-count">0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <div class="stats-card-icon">
+                                <i class="material-icons">description</i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3 class="stats-card-title">Post Views</h3>
+                                <div class="stats-card-value" id="post-views-count">0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <div class="stats-card-icon">
+                                <i class="material-icons">star</i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3 class="stats-card-title">Total Ratings</h3>
+                                <div class="stats-card-value" id="total-ratings-count">0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <div class="stats-card-icon">
+                                <i class="material-icons">share</i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3 class="stats-card-title">Total Shares</h3>
+                                <div class="stats-card-value" id="total-shares-count">0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <div class="stats-card-icon">
+                                <i class="material-icons">grade</i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3 class="stats-card-title">Avg. Rating</h3>
+                                <div class="stats-card-value" id="average-rating-value">0.0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Container -->
+                    <div class="stats-charts-container" id="stats-charts-container">
+                        <div class="stats-chart-wrapper views-chart-wrapper">
+                            <canvas id="views-chart"></canvas>
+                        </div>
+                        
+                        <div class="stats-charts-row">
+                            <div class="stats-chart-wrapper ratings-chart-wrapper">
+                                <canvas id="ratings-chart"></canvas>
+                            </div>
+                            
+                            <div class="stats-chart-wrapper shares-chart-wrapper">
+                                <canvas id="shares-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Posts List -->
+                    <div class="top-posts-container">
+                        <h3 class="top-posts-title">Top Performing Posts</h3>
+                        <div class="top-posts-list" id="top-posts-list">
+                            <!-- Top posts will be dynamically populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Advertising Banner Management Section -->
+            <section class="dashboard-section" id="ad-management-section">
+                <div class="section-header">
+                    <h2 class="section-title">Advertising Banners</h2>
+                    <p class="section-description">Create and manage advertising banners for your blog page</p>
+                </div>
+                
+                <div class="ad-management">
+                    <div class="ad-controls">
+                        <div class="ad-toggle">
+                            <label class="toggle-switch" for="adToggle">
+                                <input type="checkbox" id="adToggle" title="Toggle advertising banner visibility" aria-label="Enable or disable advertising banner on blog page">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">Enable Advertising Banner</span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="subsection-title">Select Layout</h3>
+                    <div class="ad-layouts">
+                        <div class="layout-option">
+                            <input type="radio" name="adLayout" id="layout1" value="layout-1" checked>
+                            <label for="layout1">
+                                <div class="layout-preview layout-1">
+                                    <div class="preview-text">
+                                        <div class="preview-title"></div>
+                                        <div class="preview-subtitle"></div>
+                                        <div class="preview-paragraph"></div>
+                                    </div>
+                                    <div class="preview-image"></div>
+                                </div>
+                                <div class="layout-name">Text & Image</div>
+                            </label>
+                        </div>
+                        
+                        <div class="layout-option">
+                            <input type="radio" name="adLayout" id="layout2" value="layout-2">
+                            <label for="layout2">
+                                <div class="layout-preview layout-2">
+                                    <div class="preview-text">
+                                        <div class="preview-title"></div>
+                                        <div class="preview-subtitle"></div>
+                                    </div>
+                                    <div class="preview-image"></div>
+                                </div>
+                                <div class="layout-name">Centered</div>
+                            </label>
+                        </div>
+                        
+                        <div class="layout-option">
+                            <input type="radio" name="adLayout" id="layout3" value="layout-3">
+                            <label for="layout3">
+                                <div class="layout-preview layout-3">
+                                    <div class="preview-image"></div>
+                                    <div class="preview-text">
+                                        <div class="preview-title"></div>
+                                        <div class="preview-subtitle"></div>
+                                        <div class="preview-paragraph"></div>
+                                    </div>
+                                </div>
+                                <div class="layout-name">Image & Text</div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <h3 class="subsection-title">Banner Content</h3>
+                    <div class="ad-content-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="adTitle">Banner Title</label>
+                                <input type="text" id="adTitle" placeholder="Enter banner title">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="adSubtitle">Banner Subtitle</label>
+                                <input type="text" id="adSubtitle" placeholder="Enter banner subtitle">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="adText">Banner Text</label>
+                            <textarea id="adText" placeholder="Enter banner text content"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="adImageInput">Banner Image</label>
+                            <div id="adImageUpload" class="ad-image-upload">
+                                <input type="file" id="adImageInput" accept="image/*" class="hidden-file-input" aria-label="Upload banner image" title="Select an image for the banner">
+                                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <div class="upload-text">Drag & drop an image here or click to browse</div>
+                                <div class="upload-subtext">Recommended size: 1200 x 400 pixels</div>
+                                <img id="adImagePreview" class="image-preview" alt="Banner image preview">
+                            </div>
+                        </div>
+                        
+                        <div class="ad-actions">
+                            <button id="previewAdBtn" class="btn-preview-ad">Preview Banner</button>
+                            <button id="saveAdBtn" class="btn-save-ad">Save Banner</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ad Preview Modal -->
+                <div id="adPreviewModal" class="ad-preview-modal">
+                    <div class="preview-container">
+                        <div class="preview-header">
+                            <div class="preview-title-bar">Banner Preview</div>
+                            <button class="preview-close" title="Close preview" aria-label="Close banner preview">&times;</button>
+                        </div>
+                        <div class="preview-body">
+                            <div class="ad-preview-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Profile Management Section -->
+            <section class="dashboard-section" id="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-user-circle"></i> Profile Management</h2>
+                    <p class="section-description">Manage your account information and security settings</p>
+                </div>
+                
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <!-- Avatar will be inserted by JavaScript -->
+                        </div>
+                        <div class="profile-info">
+                            <h3 class="profile-name">Admin User</h3>
+                            <p class="profile-role">Administrator</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-tabs">
+                        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="profile-tab" data-toggle="tab" data-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">Profile</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="security-tab" data-toggle="tab" data-target="#security" type="button" role="tab" aria-controls="security" aria-selected="false">Security</button>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tab-content profile-content" id="profileTabsContent">
+                        <!-- Profile Tab -->
+                        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="profile-section">
+                                <h3>Personal Information</h3>
+                                <div id="profileStatus" class="alert profile-status"></div>
+                                
+                                <form id="profileForm" class="profile-form">
+                                    <div class="form-group">
+                                        <label for="displayName">Display Name</label>
+                                        <input type="text" id="displayName" name="displayName" class="form-control" placeholder="Your display name">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="email">Email Address</label>
+                                        <input type="email" id="email" name="email" class="form-control" placeholder="Your email address">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="bio">Bio</label>
+                                        <textarea id="bio" name="bio" class="form-control" rows="4" placeholder="Tell us about yourself"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="profileAvatar">Profile Picture</label>
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" id="avatarPreview">
+                                                <!-- Preview will be shown here -->
+                                            </div>
+                                            <div class="avatar-edit">
+                                                <input type="file" id="profileAvatar" accept=".png, .jpg, .jpeg">
+                                                <label for="profileAvatar">Change Image</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <button type="reset" class="btn btn-secondary">Reset</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Security Tab -->
+                        <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
+                            <div class="profile-section">
+                                <h3>Change Password</h3>
+                                <div id="passwordStatus" class="alert password-status"></div>
+                                
+                                <form id="passwordForm" class="password-form">
+                                    <div class="form-group">
+                                        <label for="currentPassword">Current Password</label>
+                                        <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="Enter your current password">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="newPassword">New Password</label>
+                                        <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="Enter your new password">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Confirm New Password</label>
+                                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm your new password">
+                                    </div>
+                                    
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary">Update Password</button>
+                                        <button type="reset" class="btn btn-secondary">Reset</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Social Media Publishing Section -->
+            <section class="dashboard-section" id="social-media-section">
+                <div class="section-header">
+                    <h2 class="section-title">Social Media Publishing</h2>
+                    <p class="section-description">Configure social media integration for automatic post publishing</p>
+                </div>
+                
+                <div class="settings-card">
+                    <h3 class="settings-card-title">Social Media Platforms</h3>
+                    <form id="socialMediaForm" class="settings-form">
+                        <div class="settings-form-group">
+                            <label>Select platforms to publish your blog posts:</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="facebookPublish" name="socialPlatform" value="facebook">
+                                <label for="facebookPublish">Facebook</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="twitterPublish" name="socialPlatform" value="twitter">
+                                <label for="twitterPublish">Twitter/X</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="linkedinPublish" name="socialPlatform" value="linkedin">
+                                <label for="linkedinPublish">LinkedIn</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="instagramPublish" name="socialPlatform" value="instagram">
+                                <label for="instagramPublish">Instagram</label>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="autoPublish" name="autoPublish">
+                                <label for="autoPublish">Automatically publish to social media when a new blog post is published</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Social Media Settings</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Settings Section -->
+            <!-- Email Management Section -->
+            <section class="dashboard-section" id="email-management-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-envelope"></i> Email Subscribers</h2>
+                    <p class="section-description">Manage email subscribers and popup configuration</p>
+                </div>
+                
+                <div class="email-management-container">
+                    <div class="email-controls">
+                        <h3 class="email-management-title">Subscriber List</h3>
+                        <div class="email-subscriber-count">0 Active Subscribers</div>
+                    </div>
+                    
+                    <div class="email-list-container">
+                        <div class="email-list-header">
+                            <span>Email Address</span>
+                            <span>Signup Date</span>
+                            <span>Status</span>
+                            <span>Actions</span>
+                        </div>
+                        <div class="email-list">
+                            <!-- Subscribers will be loaded here -->
+                        </div>
+                        <div class="email-pagination">
+                            <span>Page 1 of 1</span>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn prev-page" title="Previous Page">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="pagination-btn next-page" title="Next Page">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="export-import-container">
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i> Export Subscribers
+                        </button>
+                        <button class="import-btn">
+                            <i class="fas fa-upload"></i> Import Subscribers
+                        </button>
+                        <input type="file" id="importFile" class="import-file" accept=".csv" title="Import subscriber CSV file" aria-label="Import subscriber CSV file">
+                    </div>
+                    
+                    <div class="popup-customization">
+                        <h3 class="customization-title">Email Popup Configuration</h3>
+                        
+                        <form id="popupConfigForm">
+                            <div class="form-group form-group-spaced">
+                                <div class="toggle-container">
+                                    <label class="simple-toggle" for="popupEnabled">
+                                        <input type="checkbox" id="popupEnabled" aria-label="Enable Email Popup" title="Toggle to enable or disable email popup">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <label for="popupEnabled" class="toggle-text">Enable Email Popup</label>
+                                </div>
+                            </div>
+                            
+                            <div class="customization-options">
+                                <div class="customization-option email-section-header">
+                                    <h4 class="email-config-section-title">Basic Configuration</h4>
+                                </div>
+                                
+                                <div class="customization-option">
+                                    <label class="option-label" for="popupBackgroundImage">Background Image</label>
+                                    <div class="option-input-group">
+                                        <input type="text" id="popupBackgroundImage" class="option-input" placeholder="Background image URL">
+                                        <button type="button" class="email-media-select-button" data-target-input="popupBackgroundImage">
+                                            <i class="fas fa-images"></i> Select Image
+                                        </button>
+                                    </div>
+                                    <div class="image-preview background-preview"></div>
+                                </div>
+                                
+                                <div class="customization-option">
+                                    <label class="option-label" for="popupLogoImage">Logo Image</label>
+                                    <div class="option-input-group">
+                                        <input type="text" id="popupLogoImage" class="option-input" placeholder="Logo image URL">
+                                        <button type="button" class="email-media-select-button" data-target-input="popupLogoImage">
+                                            <i class="fas fa-images"></i> Select Image
+                                        </button>
+                                    </div>
+                                    <div class="image-preview logo-preview"></div>
+                                </div>
+                                
+                                <div class="customization-option">
+                                    <label class="option-label" for="popupTitle">Popup Title</label>
+                                    <input type="text" id="popupTitle" class="option-input" placeholder="Subscribe to Our Newsletter">
+                                </div>
+                                
+                                <div class="customization-option">
+                                    <label class="option-label" for="buttonText">Button Text</label>
+                                    <input type="text" id="buttonText" class="option-input" placeholder="Subscribe">
+                                </div>
+                                
+                                <div class="customization-option">
+                                    <label class="option-label" for="placeholderText">Input Placeholder</label>
+                                    <input type="text" id="placeholderText" class="option-input" placeholder="Enter your email address">
+                                </div>
+                                
+                                <div class="customization-option">
+                                    <label class="option-label" for="successMessage">Success Message</label>
+                                    <input type="text" id="successMessage" class="option-input" placeholder="Thank you for subscribing!">
+                                </div>
+                                
+                                <div class="customization-option">
+                                    <label class="option-label" for="popupDelay">Popup Delay (seconds)</label>
+                                    <input type="number" id="popupDelay" class="option-input" min="0" max="60" placeholder="5">
+                                </div>
+                            </div>
+                            
+                            <div class="popup-trigger-settings">
+                                <h4 class="trigger-title">Popup Trigger</h4>
+                                <div class="trigger-options">
+                                    <div class="trigger-option" data-trigger="delay">
+                                        <div class="trigger-option-title">Time Delay</div>
+                                        <div class="trigger-option-description">Show popup after a specific time delay</div>
+                                    </div>
+                                    <div class="trigger-option" data-trigger="exit">
+                                        <div class="trigger-option-title">Exit Intent</div>
+                                        <div class="trigger-option-description">Show popup when user is about to leave</div>
+                                    </div>
+                                    <div class="trigger-option" data-trigger="scroll">
+                                        <div class="trigger-option-title">Scroll Position</div>
+                                        <div class="trigger-option-description">Show popup when user scrolls to a specific position</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="trigger-parameters trigger-parameters-container" id="scrollParameters">
+                                    <div class="customization-option">
+                                        <label class="option-label" for="scrollPercentage">Scroll Percentage</label>
+                                        <input type="number" id="scrollPercentage" class="option-input" min="10" max="90" placeholder="50">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="email-customization-save">Save Configuration</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Settings Section -->
+            <section class="dashboard-section" id="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">Blog Settings</h2>
+                    <p class="section-description">Configure your blog settings and preferences</p>
+                </div>
+                
+                <div class="settings-container">
+                    <form id="settingsForm" class="settings-form">
+                        <div class="settings-group">
+                            <h3 class="settings-group-title">General Settings</h3>
+                            
+                            <div class="form-group">
+                                <label for="blogTitle">Blog Title</label>
+                                <input type="text" id="blogTitle" name="blogTitle" value="Fooodis Blog">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="blogDescription">Blog Description</label>
+                                <textarea id="blogDescription" name="blogDescription" rows="2">Latest insights, tips, and updates for restaurant management</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3 class="settings-group-title">Display Settings</h3>
+                            
+                            <div class="form-group">
+                                <label for="postsPerPage">Posts Per Page</label>
+                                <input type="number" id="postsPerPage" name="postsPerPage" value="6" min="3" max="12">
+                            </div>
+                            
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="showFeaturedBanner" name="showFeaturedBanner" checked>
+                                <label for="showFeaturedBanner">Show Featured Posts Banner</label>
+                            </div>
+                            
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="showSidebar" name="showSidebar" checked>
+                                <label for="showSidebar">Show Categories Sidebar</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" id="saveSettingsBtn" class="btn btn-primary">Save Settings</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Fooodis Footer with Bubble Animation -->
+    <footer class="fooodis-footer">
+        <!-- Bubbles animation container -->
+        <div class="bubbles">
+            <!-- Bubbles will be dynamically generated by JavaScript -->
+        </div>
+        
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <a href="#">
+                        <img src="images/Artboard17copy9.svg" alt="Fooodis Logo" class="fooodis-logo-footer">
+                    </a>
+                </div>
+                <nav class="footer-nav">
+                    <ul class="footer-nav-list">
+                        <li class="footer-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener" data-lang-en="Service" data-lang-sv="Tjänst">Service</a></li>
+                        <li class="footer-nav-item"><a href="#" data-lang-en="Contact" data-lang-sv="Kontakt">Contact</a></li>
+                        <li class="footer-nav-item"><a href="blog.html" data-lang-en="Blog" data-lang-sv="Blogg">Blog</a></li>
+                        <li class="footer-nav-item"><a href="dashboard.html" data-lang-en="Dashboard" data-lang-sv="Instrumentpanel">Dashboard</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-powered-by">
+                    <div class="logoland-container">
+                        <a href="https://logoland.se/" target="_blank" rel="noopener">
+                            <img src="images/Artboard1.svg" alt="LogoLand" class="logoland-logo">
+                        </a>
+                        <p data-lang-en="Powered by LogoLand with ❤️" data-lang-sv="Drivs av LogoLand med ❤️">Powered by LogoLand with ❤️</p>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link linkedin" title="Visit Fooodis on LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Visit Fooodis on Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Visit Fooodis on Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link twitter" title="Visit Fooodis on X (Twitter)">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link youtube" title="Visit Fooodis on YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Post Preview Modal -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-content">
+            <div class="preview-header">
+                <h3>Post Preview</h3>
+                <span class="close-preview">&times;</span>
+            </div>
+            <div class="preview-body" id="previewBody">
+                <!-- Preview content will be inserted here -->
+            </div>
+            <div class="preview-footer">
+                <button class="btn btn-secondary close-preview-btn">Close</button>
+                <button class="btn btn-primary" id="publishFromPreviewBtn">Publish</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div class="confirmation-modal" id="confirmationModal">
+        <div class="confirmation-content">
+            <div class="confirmation-header">
+                <h3 id="confirmationTitle">Confirmation</h3>
+                <span class="close-confirmation">&times;</span>
+            </div>
+            <div class="confirmation-body" id="confirmationMessage">
+                <!-- Confirmation message will be inserted here -->
+            </div>
+            <div class="confirmation-footer">
+                <button class="btn btn-secondary" id="cancelConfirmationBtn">Cancel</button>
+                <button class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast-notification" id="toastNotification">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-message" id="toastMessage">
+            <!-- Toast message will be inserted here -->
+        </div>
+    </div>
+    <!-- Direct fix script - injected directly into the page -->
+    <script>
+        // Wait for everything to be fully loaded
+        window.addEventListener('load', function() {
+            console.log('Direct fix script running...');
+            
+            // CRITICAL FIX: Add emergency status card persistence
+            setTimeout(function() {
+                console.log('Emergency status card fix running...');
+                initEmergencyStatusCardFix();
+            }, 2000);
+            
+            // Fix 1: Time display
+            fixTimeDisplay();
+            
+            // Fix 2: Card persistence
+            fixCardPersistence();
+            
+            // Fix 3: Post publishing
+            fixPostPublishing();
+            
+            console.log('All fixes applied');
+        });
+        
+        /**
+         * Fix 1: Time display
+         */
+        function fixTimeDisplay() {
+            console.log('Fixing time display...');
+            
+            // Override the calculateNextRun function
+            window.calculateNextRun = function(path) {
+                if (!path || !path.active || !path.schedule || !path.schedule.time) {
+                    return null;
+                }
+                
+                // Just use Today or Tomorrow with the exact time string
+                const now = new Date();
+                const [hours, minutes] = path.schedule.time.split(':').map(Number);
+                
+                const scheduleTime = new Date();
+                scheduleTime.setHours(hours, minutes, 0, 0);
+                
+                // Use Tomorrow if the time has already passed today
+                const dateStr = (scheduleTime > now) ? 'Today' : 'Tomorrow';
+                
+                // Return with the EXACT original time string
+                return dateStr + ', ' + path.schedule.time;
+            };
+            
+            // Fix time display on existing cards
+            setTimeout(function() {
+                const pathCards = document.querySelectorAll('.automation-path');
+                pathCards.forEach(function(card, index) {
+                    const nextRunElement = card.querySelector('.next-run');
+                    if (nextRunElement && window.automationPaths && window.automationPaths[index]) {
+                        const path = window.automationPaths[index];
+                        if (path.schedule && path.schedule.time) {
+                            const nextRun = window.calculateNextRun(path);
+                            if (nextRun) {
+                                nextRunElement.textContent = 'Next run: ' + nextRun;
+                            }
+                        }
+                    }
+                });
+            }, 500);
+        }
+        
+        /**
+         * Fix 2: Card persistence
+         */
+        function fixCardPersistence() {
+            console.log('Fixing card persistence...');
+            
+            // Initialize storage for in-progress paths
+            if (!localStorage.getItem('directFixInProgress')) {
+                localStorage.setItem('directFixInProgress', JSON.stringify([]));
+            }
+            
+            // Override the createExecutionStatusCard function
+            const originalCreateCard = window.createExecutionStatusCard;
+            window.createExecutionStatusCard = function(path) {
+                console.log('Creating execution status card for path:', path?.name);
+                
+                if (!path || !path.id) return;
+                
+                // Check if a card already exists
+                const existingCard = document.querySelector('.execution-status-card[data-path-id="' + path.id + '"]');
+                if (existingCard) {
+                    console.log('Card already exists for path:', path.name);
+                    return;
+                }
+                
+                // Make sure the container exists
+                let container = document.querySelector('.execution-status-cards-container');
+                if (!container) {
+                    console.log('Creating execution status cards container');
+                    container = document.createElement('div');
+                    container.className = 'execution-status-cards-container';
+                    
+                    // Find the automation section
+                    const section = document.querySelector('#ai-automation-section');
+                    if (section) {
+                        // Try to insert after the header
+                        const header = section.querySelector('.section-header');
+                        if (header) {
+                            section.insertBefore(container, header.nextSibling);
+                        } else {
+                            section.insertBefore(container, section.firstChild);
+                        }
+                    } else {
+                        // Fallback to adding to the body
+                        document.body.appendChild(container);
+                    }
+                }
+                
+                // Create the card
+                const card = document.createElement('div');
+                card.className = 'execution-status-card';
+                card.dataset.pathId = path.id;
+                
+                card.innerHTML = `
+                    <div class="status-card-header">
+                        <i class="fas fa-sync-alt fa-spin"></i>
+                        <h3>Generating Content</h3>
+                    </div>
+                    <div class="status-card-content">
+                        <p>Generating post for "${path.name}"</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add the card to the container
+                container.appendChild(card);
+                
+                // Animate the progress bar
+                const progressFill = card.querySelector('.progress-fill');
+                if (progressFill) {
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        width = (width + 1) % 100;
+                        progressFill.style.width = width + '%';
+                    }, 100);
+                    card.dataset.intervalId = interval;
+                }
+                
+                // Track the path in localStorage
+                let inProgress = [];
+                try {
+                    const saved = localStorage.getItem('directFixInProgress');
+                    if (saved) {
+                        inProgress = JSON.parse(saved);
+                    }
+                } catch (e) {
+                    console.error('Error parsing in-progress paths:', e);
+                }
+                
+                if (!inProgress.includes(path.id)) {
+                    inProgress.push(path.id);
+                    localStorage.setItem('directFixInProgress', JSON.stringify(inProgress));
+                    console.log('Added path to in-progress list:', path.id);
+                }
+            };
+            
+            // Override the removeExecutionStatusCard function
+            const originalRemoveCard = window.removeExecutionStatusCard;
+            window.removeExecutionStatusCard = function(path) {
+                console.log('Removing execution status card for path:', path?.name);
+                
+                if (!path || !path.id) return;
+                
+                // Find the card
+                const card = document.querySelector('.execution-status-card[data-path-id="' + path.id + '"]');
+                if (card) {
+                    // Clear any intervals
+                    if (card.dataset.intervalId) {
+                        clearInterval(parseInt(card.dataset.intervalId));
+                    }
+                    
+                    // Remove the card
+                    card.remove();
+                }
+                
+                // Remove from in-progress list
+                let inProgress = [];
+                try {
+                    const saved = localStorage.getItem('directFixInProgress');
+                    if (saved) {
+                        inProgress = JSON.parse(saved);
+                    }
+                } catch (e) {
+                    console.error('Error parsing in-progress paths:', e);
+                }
+                
+                const index = inProgress.indexOf(path.id);
+                if (index !== -1) {
+                    inProgress.splice(index, 1);
+                    localStorage.setItem('directFixInProgress', JSON.stringify(inProgress));
+                    console.log('Removed path from in-progress list:', path.id);
+                }
+            };
+            
+            // Restore cards on page load
+            setTimeout(function() {
+                console.log('Restoring execution status cards...');
+                
+                // Get in-progress paths
+                let inProgress = [];
+                try {
+                    const saved = localStorage.getItem('directFixInProgress');
+                    if (saved) {
+                        inProgress = JSON.parse(saved);
+                    }
+                } catch (e) {
+                    console.error('Error parsing in-progress paths:', e);
+                }
+                
+                if (inProgress.length === 0) {
+                    console.log('No in-progress paths found');
+                    return;
+                }
+                
+                console.log('Found in-progress paths:', inProgress);
+                
+                // Get automation paths
+                const paths = window.automationPaths || [];
+                
+                // Create cards for in-progress paths
+                inProgress.forEach(function(pathId) {
+                    const path = paths.find(p => p.id === pathId);
+                    if (path) {
+                        console.log('Restoring card for path:', path.name);
+                        window.createExecutionStatusCard(path);
+                    } else {
+                        console.warn('Path not found for ID:', pathId);
+                        
+                        // Remove from in-progress list
+                        const index = inProgress.indexOf(pathId);
+                        if (index !== -1) {
+                            inProgress.splice(index, 1);
+                            localStorage.setItem('directFixInProgress', JSON.stringify(inProgress));
+                        }
+                    }
+                });
+            }, 1000);
+        }
+        
+        /**
+         * Fix 3: Post publishing
+         */
+        function fixPostPublishing() {
+            console.log('Fixing post publishing...');
+            
+            // Override the publishAutomatedPost function
+            window.publishAutomatedPost = function(post) {
+                console.log('Publishing post:', post?.title);
+                
+                try {
+                    // Validate post
+                    if (!post) {
+                        throw new Error('Post is null or undefined');
+                    }
+                    
+                    if (!post.title) {
+                        throw new Error('Post has no title');
+                    }
+                    
+                    if (!post.content) {
+                        throw new Error('Post has no content');
+                    }
+                    
+                    // Ensure post has an ID
+                    if (!post.id) {
+                        post.id = Date.now().toString();
+                    }
+                    
+                    // Get existing posts
+                    let blogPosts = [];
+                    try {
+                        const saved = localStorage.getItem('fooodis-blog-posts');
+                        if (saved) {
+                            blogPosts = JSON.parse(saved);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing blog posts:', e);
+                    }
+                    
+                    // Ensure it's an array
+                    if (!Array.isArray(blogPosts)) {
+                        blogPosts = [];
+                    }
+                    
+                    // Prepare the post
+                    post.date = new Date().toISOString();
+                    post.language = post.language || 'english';
+                    post.status = 'published';
+                    post.category = post.category || 'Uncategorized';
+                    
+                    // Add to the beginning of the array
+                    blogPosts.unshift(post);
+                    
+                    // Save to localStorage
+                    try {
+                        localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+                        console.log('Post saved successfully:', post.title);
+                    } catch (e) {
+                        console.error('Error saving post:', e);
+                        
+                        // Try with fewer posts if localStorage is full
+                        if (blogPosts.length > 10) {
+                            const trimmed = blogPosts.slice(0, 10);
+                            localStorage.setItem('fooodis-blog-posts', JSON.stringify(trimmed));
+                        }
+                    }
+                    
+                    // Return success
+                    return {
+                        success: true,
+                        post: post,
+                        url: 'blog.html?post=' + post.id
+                    };
+                } catch (error) {
+                    console.error('Error publishing post:', error);
+                    
+                    // Return error
+                    return {
+                        success: false,
+                        error: error.message
+                    };
+                }
+            };
+        }
+        /**
+         * Emergency Status Card Fix
+         * This is a direct implementation that bypasses all other scripts
+         */
+        function initEmergencyStatusCardFix() {
+            // Store status cards in localStorage with a unique key
+            const STORAGE_KEY = 'emergency_status_cards';
+            
+            // Load existing status cards
+            let statusCards = [];
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    statusCards = JSON.parse(stored);
+                    console.log('Loaded ' + statusCards.length + ' emergency status cards');
+                }
+            } catch (e) {
+                console.error('Error loading emergency status cards:', e);
+            }
+            
+            // Create status cards container if it doesn't exist
+            let container = document.querySelector('#automation-status-cards');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'automation-status-cards';
+                container.className = 'automation-status-cards';
+                
+                // Find the automation section
+                const section = document.querySelector('#ai-automation-section');
+                if (section) {
+                    // Try to find a good insertion point
+                    const insertAfter = section.querySelector('.automation-paths') || 
+                                       section.querySelector('.section-header');
+                    
+                    if (insertAfter) {
+                        section.insertBefore(container, insertAfter.nextSibling);
+                    } else {
+                        section.appendChild(container);
+                    }
+                } else {
+                    // Fallback: append to body
+                    document.body.appendChild(container);
+                }
+                
+                console.log('Created emergency status cards container');
+            }
+            
+            // Restore status cards
+            statusCards.forEach(function(card) {
+                createStatusCard(card);
+            });
+            
+            // Set up a mutation observer to watch for new status cards
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        // Look for new status cards
+                        Array.from(mutation.addedNodes).forEach(function(node) {
+                            if (node.nodeType === 1 && node.classList.contains('automation-status-card')) {
+                                // Extract data from this card
+                                const cardData = extractCardData(node);
+                                if (cardData) {
+                                    // Save this card
+                                    saveStatusCard(cardData);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Start observing the automation section
+            observer.observe(document.querySelector('#ai-automation-section') || document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // Set up a periodic check for scheduled tasks
+            setInterval(checkScheduledTasks, 60000); // Check every minute
+            setTimeout(checkScheduledTasks, 5000); // Initial check after 5 seconds
+            
+            // Extract data from a status card element
+            function extractCardData(cardElement) {
+                try {
+                    // Get path ID
+                    const pathId = cardElement.getAttribute('data-path-id') || 
+                                  cardElement.querySelector('[data-path-id]')?.getAttribute('data-path-id');
+                    if (!pathId) return null;
+                    
+                    // Get card header
+                    const header = cardElement.querySelector('.card-header');
+                    if (!header) return null;
+                    
+                    // Get card body
+                    const body = cardElement.querySelector('.card-body');
+                    if (!body) return null;
+                    
+                    // Extract data
+                    return {
+                        id: pathId,
+                        name: header.querySelector('h3')?.textContent || 'Unnamed Path',
+                        status: header.querySelector('.status-badge')?.className.replace('status-badge', '').trim() || 'unknown',
+                        contentType: extractFieldValue(body, 'Content Type'),
+                        category: extractFieldValue(body, 'Category'),
+                        schedule: extractFieldValue(body, 'Schedule'),
+                        topics: extractFieldValue(body, 'Topics'),
+                        timestamp: new Date().toISOString()
+                    };
+                } catch (e) {
+                    console.error('Error extracting card data:', e);
+                    return null;
+                }
+            }
+            
+            // Extract a field value from a card body
+            function extractFieldValue(body, fieldName) {
+                const paragraphs = body.querySelectorAll('p');
+                for (let i = 0; i < paragraphs.length; i++) {
+                    const p = paragraphs[i];
+                    const strong = p.querySelector('strong');
+                    if (strong && strong.textContent.includes(fieldName)) {
+                        return p.textContent.replace(strong.textContent, '').trim();
+                    }
+                }
+                return '';
+            }
+            
+            // Save a status card
+            function saveStatusCard(cardData) {
+                // Check if this card already exists
+                const index = statusCards.findIndex(card => card.id === cardData.id);
+                if (index >= 0) {
+                    // Update existing card
+                    statusCards[index] = cardData;
+                } else {
+                    // Add new card
+                    statusCards.push(cardData);
+                }
+                
+                // Save to localStorage
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(statusCards));
+                    console.log('Saved emergency status card: ' + cardData.name);
+                } catch (e) {
+                    console.error('Error saving emergency status cards:', e);
+                }
+            }
+            
+            // Create a status card element
+            function createStatusCard(cardData) {
+                // Check if this card already exists
+                const existing = document.querySelector(`[data-path-id="${cardData.id}"]`);
+                if (existing) return existing;
+                
+                // Create card element
+                const card = document.createElement('div');
+                card.className = 'automation-status-card';
+                card.setAttribute('data-path-id', cardData.id);
+                
+                // Set card content
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${cardData.name}</h3>
+                        <span class="status-badge ${cardData.status}">${getStatusText(cardData.status)}</span>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Content Type:</strong> ${cardData.contentType}</p>
+                        <p><strong>Category:</strong> ${cardData.category}</p>
+                        <p><strong>Schedule:</strong> ${cardData.schedule}</p>
+                        <p><strong>Topics:</strong> ${cardData.topics}</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-cancel" data-path-id="${cardData.id}">Cancel</button>
+                        <button class="btn-view-details" data-path-id="${cardData.id}">View Details</button>
+                    </div>
+                `;
+                
+                // Add event listeners
+                card.querySelector('.btn-cancel').addEventListener('click', function() {
+                    cancelAutomationPath(cardData.id);
+                });
+                
+                card.querySelector('.btn-view-details').addEventListener('click', function() {
+                    viewAutomationPathDetails(cardData.id);
+                });
+                
+                // Add to container
+                container.appendChild(card);
+                
+                return card;
+            }
+            
+            // Get status text
+            function getStatusText(status) {
+                switch (status) {
+                    case 'scheduled': return 'Scheduled';
+                    case 'queued': return 'Queued';
+                    case 'executing': return 'Executing';
+                    case 'completed': return 'Completed';
+                    case 'failed': return 'Failed';
+                    case 'cancelled': return 'Cancelled';
+                    default: return 'Unknown';
+                }
+            }
+            
+            // Cancel an automation path
+            function cancelAutomationPath(pathId) {
+                console.log('Cancelling automation path: ' + pathId);
+                
+                // Update card status
+                const index = statusCards.findIndex(card => card.id === pathId);
+                if (index >= 0) {
+                    statusCards[index].status = 'cancelled';
+                    statusCards[index].timestamp = new Date().toISOString();
+                    
+                    // Save to localStorage
+                    try {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(statusCards));
+                    } catch (e) {
+                        console.error('Error saving emergency status cards:', e);
+                    }
+                    
+                    // Update UI
+                    const card = document.querySelector(`[data-path-id="${pathId}"]`);
+                    if (card) {
+                        const statusBadge = card.querySelector('.status-badge');
+                        if (statusBadge) {
+                            statusBadge.className = 'status-badge cancelled';
+                            statusBadge.textContent = 'Cancelled';
+                        }
+                    }
+                }
+                
+                // Try to call the original cancel function
+                if (window.cancelAutomationPath) {
+                    window.cancelAutomationPath(pathId);
+                }
+            }
+            
+            // View automation path details
+            function viewAutomationPathDetails(pathId) {
+                console.log('Viewing automation path details: ' + pathId);
+                
+                // Try to call the original view function
+                if (window.viewAutomationPathDetails) {
+                    window.viewAutomationPathDetails(pathId);
+                    return;
+                }
+                
+                // Find the card data
+                const cardData = statusCards.find(card => card.id === pathId);
+                if (!cardData) return;
+                
+                // Create modal if it doesn't exist
+                let modal = document.getElementById('emergency-details-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'emergency-details-modal';
+                    modal.className = 'modal';
+                    document.body.appendChild(modal);
+                }
+                
+                // Set modal content
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Automation Path Details</h2>
+                            <button class="close-btn">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h3>${cardData.name}</h3>
+                            <p><strong>Status:</strong> <span class="status-badge ${cardData.status}">${getStatusText(cardData.status)}</span></p>
+                            <p><strong>Content Type:</strong> ${cardData.contentType}</p>
+                            <p><strong>Category:</strong> ${cardData.category}</p>
+                            <p><strong>Schedule:</strong> ${cardData.schedule}</p>
+                            <p><strong>Topics:</strong> ${cardData.topics}</p>
+                            <p><strong>Last Updated:</strong> ${new Date(cardData.timestamp).toLocaleString()}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-close">Close</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add event listeners
+                modal.querySelector('.close-btn').addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+                
+                modal.querySelector('.btn-close').addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+                
+                // Show modal
+                modal.style.display = 'block';
+            }
+            
+            // Check for scheduled tasks
+            function checkScheduledTasks() {
+                console.log('Checking for scheduled tasks...');
+                
+                // Get automation paths from localStorage
+                let paths = [];
+                try {
+                    const pathsJson = localStorage.getItem('aiAutomationPaths');
+                    if (pathsJson) {
+                        paths = JSON.parse(pathsJson);
+                    }
+                } catch (e) {
+                    console.error('Error loading automation paths:', e);
+                    return;
+                }
+                
+                // Current time
+                const now = new Date();
+                
+                // Check each path
+                paths.forEach(function(path) {
+                    // Skip if not scheduled or not active
+                    if (path.status !== 'scheduled' || !path.schedule || path.active === false) {
+                        return;
+                    }
+                    
+                    // Check if it's time to execute
+                    if (path.schedule.nextExecution) {
+                        const nextExecution = new Date(path.schedule.nextExecution);
+                        if (nextExecution <= now) {
+                            console.log('Time to execute path: ' + path.id);
+                            
+                            // Create a status card for this path
+                            const cardData = {
+                                id: path.id,
+                                name: path.name || 'Unnamed Path',
+                                status: 'executing',
+                                contentType: path.contentType || 'Blog Post',
+                                category: path.category || 'Uncategorized',
+                                schedule: getScheduleText(path.schedule),
+                                topics: path.topics || 'None specified',
+                                timestamp: new Date().toISOString()
+                            };
+                            
+                            // Save and create the card
+                            saveStatusCard(cardData);
+                            createStatusCard(cardData);
+                            
+                            // Try to execute the path
+                            if (window.executeAutomationPath) {
+                                window.executeAutomationPath(path.id);
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Get schedule text
+            function getScheduleText(schedule) {
+                if (!schedule) return 'One-time';
+                
+                let frequency = 'Unknown';
+                switch (schedule.frequency) {
+                    case 'daily': frequency = 'Daily'; break;
+                    case 'every2days': frequency = 'Every 2 Days'; break;
+                    case 'weekly': frequency = 'Weekly'; break;
+                    case 'biweekly': frequency = 'Bi-Weekly'; break;
+                    case 'monthly': frequency = 'Monthly'; break;
+                    default: frequency = schedule.frequency || 'One-time';
+                }
+                
+                const time = schedule.time ? formatTime(schedule.time) : '12:00 PM';
+                return frequency + ' at ' + time;
+            }
+            
+            // Format time
+            function formatTime(timeStr) {
+                try {
+                    const [hours, minutes] = timeStr.split(':').map(Number);
+                    const period = hours >= 12 ? 'PM' : 'AM';
+                    const displayHours = hours % 12 || 12;
+                    return displayHours + ':' + String(minutes).padStart(2, '0') + ' ' + period;
+                } catch (e) {
+                    return timeStr;
+                }
+            }
+            
+            // Add emergency styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .automation-status-cards {
+                    margin-top: 20px;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                    gap: 15px;
+                }
+                
+                .automation-status-card {
+                    background-color: #2a2a2a;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+                
+                .automation-status-card .card-header {
+                    background-color: #333;
+                    padding: 12px 15px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                
+                .automation-status-card .card-header h3 {
+                    margin: 0;
+                    font-size: 16px;
+                    color: #fff;
+                }
+                
+                .automation-status-card .card-body {
+                    padding: 15px;
+                    color: #ccc;
+                }
+                
+                .automation-status-card .card-body p {
+                    margin: 8px 0;
+                    font-size: 14px;
+                }
+                
+                .automation-status-card .card-footer {
+                    padding: 12px 15px;
+                    background-color: #333;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                }
+                
+                .automation-status-card .btn-cancel,
+                .automation-status-card .btn-view-details {
+                    padding: 6px 12px;
+                    border-radius: 4px;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+                
+                .automation-status-card .btn-cancel {
+                    background-color: #d32f2f;
+                    color: white;
+                }
+                
+                .automation-status-card .btn-view-details {
+                    background-color: #2196f3;
+                    color: white;
+                }
+                
+                .status-badge {
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: white;
+                }
+                
+                .status-badge.scheduled {
+                    background-color: #2196f3;
+                }
+                
+                .status-badge.queued {
+                    background-color: #ff9800;
+                }
+                
+                .status-badge.executing {
+                    background-color: #9c27b0;
+                }
+                
+                .status-badge.completed {
+                    background-color: #4caf50;
+                }
+                
+                .status-badge.failed {
+                    background-color: #f44336;
+                }
+                
+                .status-badge.cancelled {
+                    background-color: #9e9e9e;
+                }
+                
+                /* Modal styles */
+                .modal {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.7);
+                    z-index: 1000;
+                }
+                
+                .modal-content {
+                    background-color: #2a2a2a;
+                    margin: 10% auto;
+                    padding: 0;
+                    width: 80%;
+                    max-width: 600px;
+                    border-radius: 8px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                }
+                
+                .modal-header {
+                    padding: 15px;
+                    background-color: #333;
+                    color: white;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                }
+                
+                .modal-header h2 {
+                    margin: 0;
+                    font-size: 18px;
+                }
+                
+                .modal-body {
+                    padding: 20px;
+                    color: #ccc;
+                }
+                
+                .modal-footer {
+                    padding: 15px;
+                    background-color: #333;
+                    display: flex;
+                    justify-content: flex-end;
+                    border-bottom-left-radius: 8px;
+                    border-bottom-right-radius: 8px;
+                }
+                
+                .close-btn {
+                    color: white;
+                    background: transparent;
+                    border: none;
+                    font-size: 20px;
+                    cursor: pointer;
+                }
+                
+                .btn-close {
+                    padding: 8px 16px;
+                    background-color: #2196f3;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            console.log('Emergency status card fix initialized');
+        }
+        
+        // Initialize the emergency status card fix when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing emergency status card fix...');
+            setTimeout(initEmergencyStatusCardFix, 1000);
+        });
+    </script>
+    
+    <!-- New AI Content Automation Fix - Addresses all three issues in one script -->
+    <script src="fix-time-scheduler.js"></script>
+    
+    <!-- Direct emergency fix for stats dashboard -->
+    <script src="js/dashboard-stats-fix.js"></script>
+    
+    <!-- Critical stats display fix -->
+    <script src="js/stats-critical-fix.js"></script>
+    
+    <!-- Better visitor counter - accurately tracks real and test visitors -->
+    <script src="js/better-visitor-counter.js"></script>
+    
+    <!-- Main dashboard scripts -->
+    <script src="js/dashboard.js"></script>
+    
+    <!-- Media selector unified fix -->
+    <script src="js/unified-media-selector.js"></script>
+    
+    <!-- Form accessibility fixes -->
+    <script src="js/ultimate-media-fix.js"></script>
+    
+    <!-- Fix console errors -->
+    <script src="js/console-error-fixer.js"></script>
+</body>
+</html>

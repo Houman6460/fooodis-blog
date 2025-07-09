@@ -1,0 +1,231 @@
+/* 
+ * Enhanced Advertising Banners CSS
+ * Adds premium styling with shining effects and customizable elements
+ */
+
+/* Premium Banner Frame */
+.premium-banner {
+    width: 100%;
+    background-color: #1e2127;
+    color: #ffffff;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    /* Border radius is now controlled by CSS variable with fallback */
+    border-radius: var(--banner-border-radius, 8px);
+}
+
+/* Shining Border Effect */
+.premium-banner::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--banner-shine-color-1, #e8f24c), 
+        var(--banner-shine-color-2, #ffd700), 
+        var(--banner-shine-color-1, #e8f24c), 
+        var(--banner-shine-color-2, #ffd700),
+        var(--banner-shine-color-1, #e8f24c), 
+        var(--banner-shine-color-2, #ffd700), 
+        var(--banner-shine-color-1, #e8f24c), 
+        var(--banner-shine-color-2, #ffd700));
+    background-size: 400%;
+    border-radius: calc(var(--banner-border-radius, 8px) + 2px);
+    z-index: -1;
+    animation: shine-animation 20s linear infinite;
+    /* Animation can be disabled with CSS variable */
+    animation-play-state: var(--banner-shine-animation, running);
+}
+
+/* Shining Animation */
+@keyframes shine-animation {
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+/* Banner Inner Container */
+.premium-banner-inner {
+    padding: 30px;
+    background-color: #1e2127;
+    border-radius: calc(var(--banner-border-radius, 8px) - 2px);
+    margin: 2px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Premium Layout */
+.premium-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .premium-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Text Section */
+.premium-text {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Removed highlight text and its animation */
+
+/* Promo Text - No animation */
+.promo-text {
+    margin-bottom: 10px;
+}
+
+.promo-typewriter {
+    color: var(--banner-accent-color, #e8f24c);
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* Discount Text - No animation */
+.animated-discount {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--banner-accent-color, #e8f24c);
+    margin: 10px 0;
+}
+
+/* Countdown Container */
+.countdown-container {
+    margin: 15px 0;
+    position: relative;
+    display: var(--countdown-display, flex);
+}
+
+/* Countdown Animation */
+.countdown-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.countdown-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Countdown Timer */
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.countdown-box {
+    background-color: rgba(30, 33, 39, 0.8);
+    border: 1px solid var(--banner-accent-color, #e8f24c);
+    border-radius: var(--countdown-border-radius, 5px);
+    padding: 8px;
+    width: 60px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(232, 242, 76, 0.3);
+}
+
+.countdown-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--banner-accent-color, #e8f24c);
+}
+
+.countdown-label {
+    font-size: 12px;
+    color: #ffffff;
+    margin-top: 5px;
+}
+
+/* Price Info Container */
+.price-info-container {
+    background-color: rgba(30, 33, 39, 0.6);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid rgba(232, 242, 76, 0.3);
+}
+
+/* Call to Action Button - Customizable */
+.premium-cta {
+    display: inline-block;
+    background: var(--button-background, linear-gradient(45deg, #e8f24c, #ffd700));
+    color: var(--button-text-color, #1e2127);
+    padding: var(--button-padding, 12px 25px);
+    border-radius: var(--button-border-radius, 30px);
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    border: var(--button-border, none);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Button shine effect - can be disabled */
+.premium-cta.with-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(30deg);
+    animation: button-shine 3s infinite;
+    animation-play-state: var(--button-shine-animation, running);
+}
+
+@keyframes button-shine {
+    0% {
+        left: -60%;
+    }
+    100% {
+        left: 160%;
+    }
+}
+
+.premium-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(232, 242, 76, 0.4);
+}
+
+/* Image Section */
+.premium-image {
+    text-align: center;
+}
+
+.premium-image img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.premium-image img:hover {
+    transform: scale(1.03);
+}

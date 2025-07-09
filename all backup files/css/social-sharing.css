@@ -1,0 +1,145 @@
+/* Social Sharing CSS for Fooodis Blog System */
+
+/* Blog post share buttons */
+.blog-post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.blog-post-share {
+    position: relative;
+}
+
+.share-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.share-btn:hover {
+    background-color: rgba(232, 242, 76, 0.1);
+    color: var(--accent-color);
+}
+
+.share-dropdown {
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    background-color: var(--dark-accent);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+}
+
+.share-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.share-link {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.share-link:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+
+.share-link.facebook {
+    background-color: #3b5998;
+}
+
+.share-link.twitter {
+    background-color: #1da1f2;
+}
+
+.share-link.linkedin {
+    background-color: #0077b5;
+}
+
+.share-link.email {
+    background-color: #ea4335;
+}
+
+/* Modal share buttons */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-share {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-share-label {
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.modal-share-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.modal-share-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.modal-share-button:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+
+.modal-share-button.facebook {
+    background-color: #3b5998;
+}
+
+.modal-share-button.twitter {
+    background-color: #1da1f2;
+}
+
+.modal-share-button.linkedin {
+    background-color: #0077b5;
+}
+
+.modal-share-button.email {
+    background-color: #ea4335;
+}

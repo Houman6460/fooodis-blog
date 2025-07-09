@@ -1,0 +1,311 @@
+/**
+ * Email Property Panel
+ * Styling for the dynamic block property panel
+ * Matches the dashboard's dark theme
+ */
+
+/* Property Panel Container */
+.block-properties-panel {
+    position: absolute;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100%;
+    background-color: var(--dark-bg);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    z-index: 99;
+    color: var(--text-color);
+}
+
+/* Styles for the panel when in the sidebar */
+.block-properties-panel.in-sidebar {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    height: 100%;
+    border-left: none;
+    z-index: 1;
+    transition: none;
+}
+
+.block-properties-panel.active {
+    right: 0;
+}
+
+/* Panel Header */
+.block-properties-panel .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.block-properties-panel .panel-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.block-properties-panel .close-panel {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.block-properties-panel .close-panel:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Panel Content */
+.block-properties-panel .panel-content {
+    padding: 15px;
+}
+
+.block-properties-panel .no-block-selected {
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    margin: 20px 0;
+    font-style: italic;
+}
+
+/* Property Sections */
+.block-properties-panel .property-section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 15px;
+}
+
+.block-properties-panel .property-section h5 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.block-properties-panel h4 {
+    margin: 0 0 15px;
+    font-size: 16px;
+    color: var(--text-color);
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+/* Property Row */
+.block-properties-panel .property-row {
+    margin-bottom: 12px;
+}
+
+.block-properties-panel .property-row label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Form Controls */
+.block-properties-panel input[type="text"],
+.block-properties-panel input[type="number"],
+.block-properties-panel select,
+.block-properties-panel textarea {
+    width: 100%;
+    padding: 8px 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: var(--text-color);
+    font-size: 13px;
+}
+
+.block-properties-panel select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="%23ffffff"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 30px;
+}
+
+/* Input Groups */
+.block-properties-panel .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.block-properties-panel .input-group input {
+    flex: 1;
+}
+
+.block-properties-panel .input-group span {
+    margin-left: 5px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    width: 30px;
+}
+
+.block-properties-panel .control-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+/* Color Picker */
+.block-properties-panel .color-picker-control {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.block-properties-panel .color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-right: 8px;
+    cursor: pointer;
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+                      linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                      linear-gradient(45deg, transparent 75%, #ccc 75%),
+                      linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+}
+
+.block-properties-panel .color-palette {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    flex-wrap: wrap;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 8px;
+    gap: 5px;
+    width: 200px;
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    margin-top: 5px;
+}
+
+.block-properties-panel .color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.block-properties-panel .color-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.block-properties-panel .color-swatch.transparent {
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+                      linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                      linear-gradient(45deg, transparent 75%, #ccc 75%),
+                      linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+}
+
+.block-properties-panel .color-swatch.custom {
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Block toolbar styling */
+.email-content-block {
+    position: relative;
+}
+
+.block-toolbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding: 4px;
+    display: flex;
+    gap: 2px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.email-content-block:hover .block-toolbar {
+    opacity: 1;
+}
+
+.block-toolbar button {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.block-toolbar button:hover {
+    background-color: var(--primary-color);
+    color: #000;
+}
+
+.block-toolbar button i {
+    font-size: 16px;
+}
+
+/* Selected block indicator */
+.email-content-block.selected {
+    outline: 2px solid var(--primary-color);
+    position: relative;
+    z-index: 5;
+}
+
+/* Block content styling */
+.block-content {
+    padding: 15px;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+/* Placeholder for editable content */
+[contenteditable="true"]:empty:before {
+    content: attr(placeholder);
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    cursor: text;
+}
+
+/* Make sure email canvas adjusts when properties panel is open */
+.email-canvas.with-properties-panel {
+    padding-right: 320px;
+    transition: padding-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

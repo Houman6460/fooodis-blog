@@ -1,0 +1,279 @@
+/* Email Blocks Styling - Base component styles for the email builder */
+
+/* Base blocks */
+.email-content-block {
+  position: relative;
+  margin-bottom: 20px;
+  border: 1px dashed transparent;
+  transition: all 0.2s ease;
+}
+
+.email-content-block:hover {
+  border-color: rgba(13, 110, 253, 0.5);
+}
+
+.email-content-block.selected {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+/* Block types */
+.text-content-block {
+  padding: 15px;
+}
+
+.image-content-block {
+  text-align: center;
+}
+
+.button-content-block {
+  padding: 15px;
+  text-align: center;
+}
+
+.divider-content-block {
+  padding: 15px 0;
+}
+
+.spacer-content-block {
+  height: 30px;
+}
+
+.product-grid-block {
+  padding: 15px;
+}
+
+.testimonials-block {
+  padding: 20px;
+  background-color: #f7f9fc;
+}
+
+.footer-block {
+  padding: 30px 15px;
+  background-color: #f0f2f5;
+}
+
+/* Content elements */
+.email-heading {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 24px;
+}
+
+.email-text {
+  margin-bottom: 15px;
+  line-height: 1.6;
+  color: #4a4a4a;
+}
+
+.email-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0d6efd;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.email-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  border: none;
+  margin: 20px 0;
+}
+
+/* Product grid */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.product-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 180px;
+  background-color: #f0f2f5;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.product-title {
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.product-price {
+  color: #0d6efd;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Testimonials */
+.testimonials-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.testimonial-item {
+  padding: 15px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.testimonial-rating {
+  color: #FFD700;
+  margin-bottom: 10px;
+}
+
+.testimonial-text {
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.testimonial-author {
+  font-weight: 600;
+}
+
+/* Header/Footer specialized styles */
+.email-template-header {
+  padding: 20px;
+}
+
+.blue-background {
+  background-color: #f0f7ff;
+}
+
+.email-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-logo {
+  max-width: 150px;
+}
+
+.header-navigation {
+  display: flex;
+  gap: 15px;
+}
+
+.header-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Footer specific styles */
+.footer-contact-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.footer-logo {
+  margin-bottom: 10px;
+}
+
+.footer-social {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.social-icon {
+  color: #666;
+  font-size: 18px;
+}
+
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.footer-link {
+  color: #666;
+  text-decoration: none;
+}
+
+.footer-legal {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Block controls */
+.block-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #0d6efd;
+  border-radius: 0 0 0 4px;
+  display: none;
+  z-index: 10;
+}
+
+.email-content-block:hover .block-controls {
+  display: flex;
+}
+
+.block-control-button {
+  padding: 3px 6px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.block-control-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Personalization tokens */
+.personalization-token {
+  background-color: #e3f2fd;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: #0d6efd;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  
+  .testimonials-container {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-contact-info {
+    grid-template-columns: 1fr;
+  }
+}

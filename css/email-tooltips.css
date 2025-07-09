@@ -1,0 +1,70 @@
+/**
+ * Email Builder Tooltips
+ * Styling for informative tooltips on email builder elements
+ */
+
+/* Custom tooltips styling */
+.email-tooltip {
+  position: absolute;
+  z-index: 9999;
+  background-color: rgba(51, 51, 51, 0.95);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  max-width: 250px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.email-tooltip-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tooltip arrows */
+.email-tooltip:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.tooltip-top:after {
+  border-width: 6px 6px 0 6px;
+  border-color: rgba(51, 51, 51, 0.95) transparent transparent transparent;
+  bottom: -6px;
+  left: 50%;
+  margin-left: -6px;
+}
+
+.tooltip-bottom:after {
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent rgba(51, 51, 51, 0.95) transparent;
+  top: -6px;
+  left: 50%;
+  margin-left: -6px;
+}
+
+/* Enhanced styling for elements with tooltips */
+[data-tooltip-added="true"] {
+  position: relative;
+}
+
+/* Highlight effect on hover for elements with tooltips */
+[data-tooltip-added="true"]:hover {
+  transition: all 0.2s ease;
+}
+
+/* No visual indicators for elements with tooltips - clean interface */
+/* Tooltips are available on hover but without visual indicators */
+
+/* Remove default browser tooltip delay */
+[title] {
+  transition-delay: 0s;
+}

@@ -1,0 +1,166 @@
+/* Markdown Rendering Fixes
+ * Ensures markdown content is properly styled in all views
+ */
+
+/* Shared styling for markdown content */
+.markdown-content {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #fff !important; /* Force white text color */
+}
+
+/* Fix for blog post cards */
+.blog-post-content .markdown-content,
+.blog-post-content p,
+.blog-post-content h1,
+.blog-post-content h2,
+.blog-post-content h3,
+.blog-post-content h4,
+.blog-post-content h5,
+.blog-post-content h6,
+.blog-post-content li,
+.blog-post-content blockquote,
+.blog-post-content td,
+.blog-post-content th,
+.blog-post-content a {
+    color: #fff !important; 
+}
+
+/* Fix for modal popup content */
+.modal-content-text .markdown-content,
+.modal-content-text,
+.modal-content-text p,
+.modal-content-text h1,
+.modal-content-text h2,
+.modal-content-text h3,
+.modal-content-text h4,
+.modal-content-text h5,
+.modal-content-text h6,
+.modal-content-text li,
+.modal-content-text blockquote,
+.modal-content-text td,
+.modal-content-text th,
+.modal-content-text a {
+    color: #fff !important;
+}
+
+/* Ensure modal background is dark */
+.modal-content {
+    background-color: #1a1a1a !important;
+    color: #fff !important;
+}
+
+/* Specific header styles */
+.markdown-content h1 {
+    font-size: 2em;
+    margin-bottom: 0.7em;
+    color: #fff !important;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.3em;
+}
+
+.markdown-content h2 {
+    font-size: 1.7em;
+    margin-top: 1.5em;
+    margin-bottom: 0.6em;
+    color: #fff !important;
+}
+
+.markdown-content h3 {
+    font-size: 1.4em;
+    margin-top: 1.3em;
+    margin-bottom: 0.5em;
+    color: #fff !important;
+}
+
+.markdown-content h4 {
+    font-size: 1.2em;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+    color: #fff !important;
+}
+
+/* Table styling */
+.markdown-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1em;
+    color: #fff !important;
+}
+
+.markdown-table th, 
+.markdown-table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #444;
+    color: #fff !important;
+}
+
+.markdown-table th {
+    background-color: #333 !important;
+    font-weight: bold;
+}
+
+.markdown-table tr:nth-child(even) {
+    background-color: #2a2a2a !important;
+}
+
+/* Lists */
+.markdown-content ul {
+    margin-bottom: 1em;
+    padding-left: 2em;
+    color: #fff !important;
+}
+
+.markdown-content li {
+    margin-bottom: 0.3em;
+    color: #fff !important;
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+    padding: 0.5em 1em;
+    margin-bottom: 1em;
+    border-left: 4px solid #444;
+    color: #ddd !important;
+    background-color: #2a2a2a !important;
+}
+
+/* Code blocks */
+.markdown-content code {
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+    background-color: #2a2a2a !important;
+    color: #eee !important;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.markdown-content pre {
+    background-color: #2a2a2a !important;
+    padding: 1em;
+    border-radius: 3px;
+    overflow-x: auto;
+    margin-bottom: 1em;
+}
+
+/* Modal specific fixes */
+.modal-title {
+    color: #fff !important;
+}
+
+.modal-category {
+    color: #f08d1a !important;
+}
+
+.modal-content-text {
+    color: #fff !important;
+}
+
+/* Ensure white text in post cards */
+.blog-post-title {
+    color: #fff !important;
+}
+
+.blog-post-excerpt {
+    color: #fff !important;
+}

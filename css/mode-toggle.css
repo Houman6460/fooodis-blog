@@ -1,0 +1,107 @@
+/* Mode Toggle Switch Styles */
+.mode-toggle-container {
+    margin-bottom: 20px;
+}
+
+.mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.mode-label {
+    font-size: 14px;
+    color: var(--dark-text);
+    margin: 0 10px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #2a2e36;
+    transition: .4s;
+    border-radius: 30px;
+    border: 1px solid var(--dark-border);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 3px;
+    background-color: var(--primary-color);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #2a2e36;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(29px);
+    background-color: var(--primary-color);
+    opacity: 1;
+}
+
+/* Active mode highlighting */
+.mode-toggle[data-mode="generate"] .mode-label:first-child {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.mode-toggle[data-mode="schedule"] .mode-label:last-child {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Accessibility */
+.toggle-switch input:focus + .toggle-slider {
+    box-shadow: 0 0 1px var(--primary-color);
+}
+
+/* Dark theme adjustments */
+.dashboard-body .toggle-slider {
+    background-color: #1d2029;
+}
+
+.dashboard-body .toggle-slider:before {
+    background-color: var(--primary-color);
+}
+
+.dashboard-body input:checked + .toggle-slider {
+    background-color: #1d2029;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .mode-toggle {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .mode-label {
+        margin: 5px 0;
+    }
+}

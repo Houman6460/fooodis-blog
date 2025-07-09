@@ -1,0 +1,50 @@
+/**
+ * Fooodis Blog System - No Separator Lines
+ * This CSS explicitly removes all separator lines between sidebar sections
+ */
+
+/* Target the sidebar section to remove borders */
+.sidebar-section {
+    border: none !important;
+    border-bottom: none !important;
+    border-top: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove any horizontal rules in the sidebar */
+.blog-sidebar hr {
+    display: none !important;
+}
+
+/* Target any potential dividers between sections */
+.blog-sidebar .divider,
+.blog-sidebar .separator {
+    display: none !important;
+}
+
+/* Remove bottom borders from any child elements that might have them */
+.sidebar-section::after,
+.sidebar-section > *::after {
+    border-bottom: none !important;
+}
+
+/* Fix for potential pseudo-elements being used as separators */
+.sidebar-section + .sidebar-section::before {
+    display: none !important;
+}
+
+/* Increase space between sections slightly to compensate for missing lines */
+.sidebar-section {
+    margin-bottom: 35px !important;
+    padding-bottom: 0 !important;
+}
+
+/* Remove any potential background borders/shadows */
+.blog-sidebar {
+    background-image: none !important;
+}
+
+/* Override any other potential CSS causing horizontal lines */
+.blog-sidebar * {
+    border-image: none !important;
+}

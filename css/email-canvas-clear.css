@@ -1,0 +1,42 @@
+/**
+ * Email Canvas Clear Button Styles
+ */
+
+/* Clear Canvas button styling */
+#clear-canvas-btn {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+#clear-canvas-btn:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Active effect */
+#clear-canvas-btn:active {
+  transform: scale(0.95);
+}
+
+/* Icon color */
+#clear-canvas-btn i {
+  color: #dc3545;
+}
+
+/* Status indicator update for clear canvas operation */
+.status-indicator.canvas-cleared {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+/* Empty block styling */
+.empty-block {
+  min-height: 150px;
+  margin: 20px 0;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "conv_1751997797856_1zu9cuep0",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to know about fooodis",
+        "timestamp": "2025-07-08T18:03:17.856Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Fooodis is a modern food delivery and restaurant platform designed to make your dining experience easier and more enjoyable. We connect customers with a wide variety of restaurants, allowing you to explore diverse menus and order your favorite meals with just a few clicks. \n\nHere are some key features of Fooodis:\n\n- **Extensive Menu Options**: You can browse through menus from various restaurants, making it easy to find something that suits your taste.\n- **Easy Ordering Process**: Place your order quickly and conveniently through our user-friendly platform.\n- **Order Tracking**: Stay updated on your order status and get real-time delivery tracking.\n- **Restaurant Information**: Access detailed information about restaurants, including their locations, hours, and specialties.\n- **Customer Support**: Our friendly customer support team is here to help with any questions or issues you may have.\n\nIf you have any specific questions or need assistance, feel free to ask!",
+        "timestamp": "2025-07-08T18:03:21.945Z"
+      }
+    ],
+    "createdAt": "2025-07-08T18:03:17.856Z",
+    "lastMessageAt": "2025-07-08T18:03:17.856Z",
+    "language": "en",
+    "status": "active",
+    "threadId": null,
+    "agent": {
+      "id": "billing",
+      "name": "Elena Rodriguez",
+      "realName": "Elena Rodriguez",
+      "department": "Billing",
+      "description": "Handles billing, payments, and subscription questions",
+      "color": "#ffc107",
+      "active": true,
+      "assistantId": "billing-assistant",
+      "assignedAssistantId": "billing-assistant",
+      "model": "gpt-4",
+      "systemPrompt": "You are Elena Rodriguez, a detail-oriented billing specialist for Fooodis. Help customers with billing questions, payment issues, and subscription management with precision and care.",
+      "personality": "Detail-oriented and precise",
+      "introduction": {
+        "en": "Hi! I'm Elena from Billing. I can help you with any payment or subscription questions you have.",
+        "sv": "Hej! Jag heter Elena och arbetar med fakturering. Jag kan hjälpa dig med betalningar och prenumerationsfrågor."
+      }
+    },
+    "lastUserMessage": "I want to know about fooodis",
+    "messageCount": 2
+  }
+]

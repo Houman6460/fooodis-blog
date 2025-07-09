@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Config Test</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard-extensions.css">
+    <link rel="stylesheet" href="css/ai-config-dark.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-content">
+        <h1>AI Configuration Test</h1>
+        <div id="ai-config-container">
+            <!-- AI Config will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Simple localStorage wrapper for testing
+        const storage = {
+            get: function(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    console.error('Error accessing localStorage:', e);
+                    return null;
+                }
+            },
+            set: function(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                    return true;
+                } catch (e) {
+                    console.error('Error setting localStorage:', e);
+                    return false;
+                }
+            }
+        };
+
+        // Initialize AI Config
+        window.aiConfig = {
+            customAssistants: [],
+            getConfig: function() {
+                const savedConfig = storage.get('aiConfig');
+                if (savedConfig) {
+                    try {
+                        return JSON.parse(savedConfig);
+                    } catch (e) {
+                        console.error('Error parsing saved config:', e);
+                    }
+                }
+                return {
+                    apiKey: '',
+                    model: 'gpt-4',
+                    assistant: 'default',
+                    customAssistant: {
+                        id: '',
+                        name: '',
+                        instructions: ''
+                    },
+                    customAssistants: []
+                };
+            },
+            getCustomAssistants: function() {
+                const config = this.getConfig();
+                return config.customAssistants || [];
+            }
+        };
+
+        // Create AI Config Section
+        function createAIConfigSection() {
+            const container = document.getElementById('ai-config-container');
+            if (!container) return;
+
+            const section = document.createElement('section');
+            section.id = 'ai-config-section';
+            section.className = 'dashboard-section';
+            
+            section.innerHTML = `
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-cog"></i> AI Configuration</h2>
+                    <p class="section-description">Configure your OpenAI API settings</p>
+                </div>
+                <div class="ai-config-form">
+                    <div class="form-group api-key-field">
+                        <label for="openai-api-key">OpenAI API Key</label>
+                        <div class="input-group">
+                            <input type="password" id="openai-api-key" placeholder="Enter your OpenAI API key">
+                            <button type="button" class="toggle-visibility" title="Toggle visibility">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="form-text">Your API key is stored locally and never sent to our servers.</small>
+                    </div>
+                    
+                    <div class="form-group model-selection">
+                        <label>Select AI Model</label>
+                        <div class="model-options">
+                            <div class="model-option selected" data-model="gpt-4">
+                                <h4>GPT-4</h4>
+                                <p>Most capable model, best quality</p>
+                            </div>
+                            <div class="model-option" data-model="gpt-4-turbo">
+                                <h4>GPT-4 Turbo</h4>
+                                <p>Faster, more recent knowledge</p>
+                            </div>
+                            <div class="model-option" data-model="gpt-3.5-turbo">
+                                <h4>GPT-3.5 Turbo</h4>
+                                <p>Faster, more economical</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group assistant-selection">
+                        <label>Select Assistant Type</label>
+                        <div class="assistant-options">
+                            <div class="assistant-option selected" data-assistant="default">
+                                <h4><i class="fas fa-robot"></i> Default Assistant</h4>
+                                <p>Optimized for food blog content creation</p>
+                            </div>
+                            <div class="assistant-option" data-assistant="recipe">
+                                <h4><i class="fas fa-utensils"></i> Recipe Creator</h4>
+                                <p>Specialized in creating detailed recipes</p>
+                            </div>
+                            <div class="assistant-option" data-assistant="review">
+                                <h4><i class="fas fa-star"></i> Restaurant Reviewer</h4>
+                                <p>Expert in writing engaging restaurant reviews</p>
+                            </div>
+                            <div class="assistant-option" data-assistant="custom">
+                                <h4><i class="fas fa-user-cog"></i> Custom Assistant</h4>
+                                <p>Use your own OpenAI assistant</p>
+                            </div>
+                        </div>
+                        
+                        <div class="custom-assistant-form" style="display: none;">
+                            <h4><i class="fas fa-cogs"></i> Custom Assistant Details</h4>
+                            <div class="form-group">
+                                <label for="custom-assistant-id">Assistant ID</label>
+                                <input type="text" id="custom-assistant-id" placeholder="Enter your OpenAI Assistant ID">
+                            </div>
+                            <div class="form-group">
+                                <label for="custom-assistant-name">Assistant Name (Optional)</label>
+                                <input type="text" id="custom-assistant-name" placeholder="Enter a name for this assistant">
+                            </div>
+                            <div class="form-group">
+                                <label for="custom-assistant-instructions">Instructions (Optional)</label>
+                                <textarea id="custom-assistant-instructions" rows="4" placeholder="Enter custom instructions for this assistant"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="save-custom-assistant" class="btn btn-primary">Save Assistant</button>
+                            </div>
+                        </div>
+                        
+                        <div class="saved-assistants-section">
+                            <h4><i class="fas fa-list"></i> Saved Custom Assistants</h4>
+                            <div class="saved-assistants-list">
+                                <!-- Saved assistants will be listed here -->
+                                <p class="no-assistants-message">No custom assistants saved yet.</p>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="add-new-assistant" class="btn btn-secondary">Add New Assistant</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-config-actions">
+                        <button type="button" class="test-btn" id="test-connection">
+                            <i class="fas fa-vial"></i> Test Connection
+                        </button>
+                        <button type="button" class="save-btn" id="save-config">
+                            <i class="fas fa-save"></i> Save Configuration
+                        </button>
+                        <button type="button" class="reset-btn" id="reset-config">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    
+                    <div id="connection-status"></div>
+                </div>
+            `;
+            
+            container.appendChild(section);
+            console.log('AI Config section created');
+            
+            // Set up event listeners
+            setupEventListeners();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Toggle API key visibility
+            const toggleBtn = document.querySelector('.toggle-visibility');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const apiKeyInput = document.getElementById('openai-api-key');
+                    if (apiKeyInput) {
+                        if (apiKeyInput.type === 'password') {
+                            apiKeyInput.type = 'text';
+                            this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                        } else {
+                            apiKeyInput.type = 'password';
+                            this.innerHTML = '<i class="fas fa-eye"></i>';
+                        }
+                    }
+                });
+            }
+            
+            // Model selection
+            const modelOptions = document.querySelectorAll('.model-option');
+            modelOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    modelOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Assistant selection
+            const assistantOptions = document.querySelectorAll('.assistant-option');
+            assistantOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    assistantOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Show/hide custom assistant form
+                    const customAssistantForm = document.querySelector('.custom-assistant-form');
+                    const savedAssistantsSection = document.querySelector('.saved-assistants-section');
+                    
+                    if (this.dataset.assistant === 'custom') {
+                        if (customAssistantForm) customAssistantForm.style.display = 'block';
+                        if (savedAssistantsSection) savedAssistantsSection.style.display = 'block';
+                    } else {
+                        if (customAssistantForm) customAssistantForm.style.display = 'none';
+                        if (savedAssistantsSection) savedAssistantsSection.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Test connection
+            const testBtn = document.getElementById('test-connection');
+            if (testBtn) {
+                testBtn.addEventListener('click', function() {
+                    const apiKey = document.getElementById('openai-api-key').value.trim();
+                    const statusElement = document.getElementById('connection-status');
+                    
+                    if (!apiKey) {
+                        if (statusElement) {
+                            statusElement.className = 'connection-status error';
+                            statusElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> API key is required';
+                        }
+                        return;
+                    }
+                    
+                    // Show loading status
+                    if (statusElement) {
+                        statusElement.className = 'connection-status warning';
+                        statusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing connection...';
+                    }
+                    
+                    // Simulate API call (in a real app, you would make an actual API call)
+                    setTimeout(function() {
+                        if (statusElement) {
+                            statusElement.className = 'connection-status success';
+                            statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Connection successful!';
+                        }
+                    }, 1500);
+                });
+            }
+            
+            // Save configuration
+            const saveBtn = document.getElementById('save-config');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function() {
+                    const apiKey = document.getElementById('openai-api-key').value.trim();
+                    const selectedModel = document.querySelector('.model-option.selected');
+                    const selectedAssistant = document.querySelector('.assistant-option.selected');
+                    const statusElement = document.getElementById('connection-status');
+                    
+                    if (!apiKey) {
+                        if (statusElement) {
+                            statusElement.className = 'connection-status error';
+                            statusElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> API key is required';
+                        }
+                        return;
+                    }
+                    
+                    const config = {
+                        apiKey: apiKey,
+                        model: selectedModel ? selectedModel.dataset.model : 'gpt-4',
+                        assistant: selectedAssistant ? selectedAssistant.dataset.assistant : 'default',
+                        customAssistant: {
+                            id: document.getElementById('custom-assistant-id').value.trim(),
+                            name: document.getElementById('custom-assistant-name').value.trim(),
+                            instructions: document.getElementById('custom-assistant-instructions').value.trim()
+                        },
+                        customAssistants: window.aiConfig.getCustomAssistants()
+                    };
+                    
+                    // Save to localStorage
+                    storage.set('aiConfig', JSON.stringify(config));
+                    
+                    // Show success message
+                    if (statusElement) {
+                        statusElement.className = 'connection-status success';
+                        statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Configuration saved successfully';
+                    }
+                });
+            }
+            
+            // Reset configuration
+            const resetBtn = document.getElementById('reset-config');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function() {
+                    // Clear localStorage
+                    localStorage.removeItem('aiConfig');
+                    
+                    // Reset form
+                    const apiKeyInput = document.getElementById('openai-api-key');
+                    if (apiKeyInput) apiKeyInput.value = '';
+                    
+                    // Reset model selection
+                    const modelOptions = document.querySelectorAll('.model-option');
+                    modelOptions.forEach(opt => opt.classList.remove('selected'));
+                    const defaultModel = document.querySelector('.model-option[data-model="gpt-4"]');
+                    if (defaultModel) defaultModel.classList.add('selected');
+                    
+                    // Reset assistant selection
+                    const assistantOptions = document.querySelectorAll('.assistant-option');
+                    assistantOptions.forEach(opt => opt.classList.remove('selected'));
+                    const defaultAssistant = document.querySelector('.assistant-option[data-assistant="default"]');
+                    if (defaultAssistant) defaultAssistant.classList.add('selected');
+                    
+                    // Hide custom assistant form
+                    const customAssistantForm = document.querySelector('.custom-assistant-form');
+                    if (customAssistantForm) customAssistantForm.style.display = 'none';
+                    
+                    // Show status
+                    const statusElement = document.getElementById('connection-status');
+                    if (statusElement) {
+                        statusElement.className = 'connection-status warning';
+                        statusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Configuration reset to defaults';
+                    }
+                });
+            }
+            
+            // Add new assistant
+            const addNewBtn = document.getElementById('add-new-assistant');
+            if (addNewBtn) {
+                addNewBtn.addEventListener('click', function() {
+                    const customAssistantForm = document.querySelector('.custom-assistant-form');
+                    const savedAssistantsSection = document.querySelector('.saved-assistants-section');
+                    
+                    if (customAssistantForm) {
+                        document.getElementById('custom-assistant-id').value = '';
+                        document.getElementById('custom-assistant-id').dataset.editingId = '';
+                        document.getElementById('custom-assistant-name').value = '';
+                        document.getElementById('custom-assistant-instructions').value = '';
+                        
+                        customAssistantForm.style.display = 'block';
+                    }
+                    
+                    if (savedAssistantsSection) {
+                        savedAssistantsSection.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Save custom assistant
+            const saveAssistantBtn = document.getElementById('save-custom-assistant');
+            if (saveAssistantBtn) {
+                saveAssistantBtn.addEventListener('click', function() {
+                    const assistantId = document.getElementById('custom-assistant-id').value.trim();
+                    const assistantName = document.getElementById('custom-assistant-name').value.trim() || 'Custom Assistant';
+                    const assistantInstructions = document.getElementById('custom-assistant-instructions').value.trim();
+                    const statusElement = document.getElementById('connection-status');
+                    
+                    if (!assistantId) {
+                        if (statusElement) {
+                            statusElement.className = 'connection-status error';
+                            statusElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Assistant ID is required';
+                        }
+                        return;
+                    }
+                    
+                    // Get current configuration
+                    const config = window.aiConfig.getConfig();
+                    
+                    // Initialize customAssistants array if it doesn't exist
+                    if (!config.customAssistants) {
+                        config.customAssistants = [];
+                    }
+                    
+                    // Check if we're editing an existing assistant
+                    const editingId = document.getElementById('custom-assistant-id').dataset.editingId;
+                    
+                    if (editingId) {
+                        // Update existing assistant
+                        const index = config.customAssistants.findIndex(a => a.id === editingId);
+                        if (index !== -1) {
+                            config.customAssistants[index] = {
+                                id: assistantId,
+                                name: assistantName,
+                                instructions: assistantInstructions,
+                                createdAt: config.customAssistants[index].createdAt,
+                                updatedAt: new Date().toISOString()
+                            };
+                        }
+                    } else {
+                        // Add new assistant
+                        config.customAssistants.push({
+                            id: assistantId,
+                            name: assistantName,
+                            instructions: assistantInstructions,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        });
+                    }
+                    
+                    // Save the updated configuration
+                    storage.set('aiConfig', JSON.stringify(config));
+                    
+                    // Update window.aiConfig
+                    window.aiConfig.customAssistants = config.customAssistants;
+                    
+                    // Clear the form
+                    document.getElementById('custom-assistant-id').value = '';
+                    document.getElementById('custom-assistant-id').dataset.editingId = '';
+                    document.getElementById('custom-assistant-name').value = '';
+                    document.getElementById('custom-assistant-instructions').value = '';
+                    
+                    // Show success message
+                    if (statusElement) {
+                        statusElement.className = 'connection-status success';
+                        statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Assistant saved successfully';
+                    }
+                    
+                    // Hide the form and show the saved assistants section
+                    const customAssistantForm = document.querySelector('.custom-assistant-form');
+                    const savedAssistantsSection = document.querySelector('.saved-assistants-section');
+                    
+                    if (customAssistantForm) customAssistantForm.style.display = 'none';
+                    if (savedAssistantsSection) savedAssistantsSection.style.display = 'block';
+                    
+                    // Render the updated assistants list
+                    renderCustomAssistants();
+                });
+            }
+        }
+
+        // Render custom assistants
+        function renderCustomAssistants() {
+            const assistantsList = document.querySelector('.saved-assistants-list');
+            if (!assistantsList) return;
+            
+            const assistants = window.aiConfig.getCustomAssistants();
+            
+            if (assistants.length === 0) {
+                assistantsList.innerHTML = '<p class="no-assistants-message">No custom assistants saved yet.</p>';
+                return;
+            }
+            
+            let html = '';
+            assistants.forEach(assistant => {
+                html += `
+                    <div class="saved-assistant-item" data-id="${assistant.id}">
+                        <div class="assistant-info">
+                            <h4>${assistant.name}</h4>
+                            <p class="assistant-id">ID: ${assistant.id}</p>
+                            <p class="assistant-date">Created: ${new Date(assistant.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div class="assistant-actions">
+                            <button type="button" class="edit-assistant-btn" title="Edit Assistant">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="delete-assistant-btn" title="Delete Assistant">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            assistantsList.innerHTML = html;
+            
+            // Add event listeners for edit and delete buttons
+            const editBtns = document.querySelectorAll('.edit-assistant-btn');
+            const deleteBtns = document.querySelectorAll('.delete-assistant-btn');
+            
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const assistantElement = this.closest('.saved-assistant-item');
+                    if (assistantElement && assistantElement.dataset.id) {
+                        const assistantId = assistantElement.dataset.id;
+                        const assistants = window.aiConfig.getCustomAssistants();
+                        const assistant = assistants.find(a => a.id === assistantId);
+                        
+                        if (assistant) {
+                            document.getElementById('custom-assistant-id').value = assistant.id;
+                            document.getElementById('custom-assistant-id').dataset.editingId = assistant.id;
+                            document.getElementById('custom-assistant-name').value = assistant.name;
+                            document.getElementById('custom-assistant-instructions').value = assistant.instructions;
+                            
+                            const customAssistantForm = document.querySelector('.custom-assistant-form');
+                            const savedAssistantsSection = document.querySelector('.saved-assistants-section');
+                            
+                            if (customAssistantForm) customAssistantForm.style.display = 'block';
+                            if (savedAssistantsSection) savedAssistantsSection.style.display = 'none';
+                        }
+                    }
+                });
+            });
+            
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete this assistant?')) {
+                        const assistantElement = this.closest('.saved-assistant-item');
+                        if (assistantElement && assistantElement.dataset.id) {
+                            const assistantId = assistantElement.dataset.id;
+                            const config = window.aiConfig.getConfig();
+                            
+                            if (config.customAssistants) {
+                                config.customAssistants = config.customAssistants.filter(a => a.id !== assistantId);
+                                storage.set('aiConfig', JSON.stringify(config));
+                                window.aiConfig.customAssistants = config.customAssistants;
+                                renderCustomAssistants();
+                                
+                                const statusElement = document.getElementById('connection-status');
+                                if (statusElement) {
+                                    statusElement.className = 'connection-status success';
+                                    statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Assistant deleted successfully';
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createAIConfigSection();
+            renderCustomAssistants();
+        });
+    </script>
+</body>
+</html>

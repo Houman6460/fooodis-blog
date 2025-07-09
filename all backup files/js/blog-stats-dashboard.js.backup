@@ -1,0 +1,914 @@
+/**
+ * Blog Statistics Dashboard
+ * Tracks and displays post views, ratings, shares, and overall website analytics
+ */
+
+// Initialize the stats tracking system
+const BlogStatsDashboard = {
+    version: '1.1', // Version tracking to force refresh
+    statsData: {
+        posts: {},
+        website: {
+            totalViews: 0,
+            dailyViews: {},
+            weeklyViews: {},
+            monthlyViews: {}
+        },
+        topPosts: []
+    },
+    
+    /**
+     * Initialize the stats dashboard
+     */
+    init: function() {
+        console.log('Blog Stats Dashboard: Initializing...');
+        
+        // Load stats data from localStorage
+        this.loadStatsData();
+        
+        // Set up event listeners
+        this.setupEventListeners();
+        
+        // Initialize charts once DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initCharts());
+        } else {
+            this.initCharts();
+        }
+        
+        // Update top posts display
+        this.updateTopPostsDisplay();
+        
+        console.log('Blog Stats Dashboard: Initialization complete');
+    },
+    
+    /**
+     * Load stats data from localStorage
+     */
+    loadStatsData: function() {
+        try {
+            const savedData = localStorage.getItem('blog_stats_data');
+            const savedVersion = localStorage.getItem('blog_stats_version');
+            
+            // Force refresh if version doesn't match or if we're in the dashboard page
+            const forceRefresh = savedVersion !== this.version || window.location.pathname.includes('dashboard');
+            
+            if (savedData && !forceRefresh) {
+                this.statsData = JSON.parse(savedData);
+                console.log('Blog Stats Dashboard: Loaded stats data from localStorage');
+            } else {
+                // Clear existing data and reinitialize
+                localStorage.removeItem('blog_stats_data');
+                localStorage.removeItem('blog_stats_version');
+                console.log('Blog Stats Dashboard: Forcing refresh of stats data');
+                
+                // Initialize with default data if nothing is saved or force refresh
+                this.initializeDefaultData();
+                console.log('Blog Stats Dashboard: Initialized with default data');
+            }
+        } catch (error) {
+            console.error('Blog Stats Dashboard: Error loading stats data', error);
+            // Initialize with default data if there's an error
+            this.initializeDefaultData();
+        }
+    },
+    
+    /**
+     * Save stats data to localStorage
+     */
+    saveStatsData: function() {
+        try {
+            // Save both the data and version
+            localStorage.setItem('blog_stats_data', JSON.stringify(this.statsData));
+            localStorage.setItem('blog_stats_version', this.version);
+            console.log('Blog Stats Dashboard: Saved stats data to localStorage');
+            
+            // Update displays immediately if on dashboard page
+            if (window.location.pathname.includes('dashboard')) {
+                this.updateTopPostsDisplay();
+                this.updateStatsSummary();
+                
+                // Reinitialize charts if they exist
+                if (document.getElementById('views-chart')) {
+                    this.initCharts();
+                }
+            }
+        } catch (error) {
+            console.error('Blog Stats Dashboard: Error saving stats data', error);
+        }
+    },
+    
+    /**
+     * Initialize with default data
+     */
+    initializeDefaultData: function() {
+        // Find all blog posts and initialize stats for them
+        const blogPosts = document.querySelectorAll('.blog-post');
+        blogPosts.forEach(post => {
+            const postId = post.getAttribute('data-post-id') || Date.now().toString();
+            if (!this.statsData.posts[postId]) {
+                this.statsData.posts[postId] = {
+                    id: postId,
+                    title: post.querySelector('.post-title')?.textContent || 'Untitled Post',
+                    views: Math.floor(Math.random() * 500) + 50, // Generate random data for demo
+                    ratings: {
+                        average: (Math.random() * 3) + 2, // Random rating between 2-5
+                        count: Math.floor(Math.random() * 20) + 1, // Random number of ratings
+                        total: 0 // Will be calculated below
+                    },
+                    shares: Math.floor(Math.random() * 30) + 5, // Random shares
+                    viewDates: []
+                };
+                
+                // Calculate total ratings based on average and count
+                this.statsData.posts[postId].ratings.total = 
+                    Math.round(this.statsData.posts[postId].ratings.average * 
+                              this.statsData.posts[postId].ratings.count);
+                
+                // Generate random view dates for the last 30 days
+                const now = new Date();
+                for (let i = 0; i < this.statsData.posts[postId].views; i++) {
+                    const randomDaysAgo = Math.floor(Math.random() * 30);
+                    const viewDate = new Date();
+                    viewDate.setDate(now.getDate() - randomDaysAgo);
+                    this.statsData.posts[postId].viewDates.push(viewDate.toISOString());
+                }
+            }
+        });
+        
+        // Initialize website stats if not present
+        if (!this.statsData.website) {
+            this.statsData.website = {
+                totalViews: 0,
+                dailyViews: {},
+                weeklyViews: {},
+                monthlyViews: {}
+            };
+            
+            // Generate random daily views for the last 30 days
+            const now = new Date();
+            for (let i = 0; i < 30; i++) {
+                const date = new Date();
+                date.setDate(now.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+                this.statsData.website.dailyViews[dateStr] = Math.floor(Math.random() * 100) + 20;
+                this.statsData.website.totalViews += this.statsData.website.dailyViews[dateStr];
+            }
+        }
+        
+        // Update top posts
+        this.updateTopPosts();
+        
+        // Save the initialized data
+        this.saveStatsData();
+    },
+    
+    /**
+     * Set up event listeners for tracking stats
+     */
+    setupEventListeners: function() {
+        // Track post views when they're opened
+        document.addEventListener('click', event => {
+            // Check if a blog post was clicked
+            const postCard = event.target.closest('.blog-post');
+            if (postCard) {
+                const postId = postCard.getAttribute('data-post-id');
+                if (postId) {
+                    this.trackPostView(postId);
+                }
+            }
+            
+            // Check if a share button was clicked
+            if (event.target.closest('.social-share, .share-button, .share-icon')) {
+                const postCard = event.target.closest('.blog-post');
+                if (postCard) {
+                    const postId = postCard.getAttribute('data-post-id');
+                    if (postId) {
+                        this.trackPostShare(postId);
+                    }
+                }
+            }
+        });
+        
+        // Track website views on page load
+        window.addEventListener('load', () => {
+            this.trackWebsiteView();
+        });
+        
+        // Track ratings when stars are clicked
+        document.addEventListener('click', event => {
+            if (event.target.closest('.blog-post-stats-star')) {
+                const statsBar = event.target.closest('.blog-post-stats');
+                if (statsBar) {
+                    const postId = statsBar.getAttribute('data-post-id');
+                    const star = event.target.closest('.blog-post-stats-star');
+                    const starIndex = Array.from(statsBar.querySelectorAll('.blog-post-stats-star')).indexOf(star);
+                    
+                    if (postId && starIndex !== -1) {
+                        // Rating is 1-based (stars are 0-indexed)
+                        const rating = starIndex + 1;
+                        this.trackPostRating(postId, rating);
+                    }
+                }
+            }
+        });
+    },
+    
+    /**
+     * Track a post view
+     */
+    trackPostView: function(postId) {
+        // Create post stats if it doesn't exist
+        if (!this.statsData.posts[postId]) {
+            const post = document.querySelector(`.blog-post[data-post-id="${postId}"]`);
+            this.statsData.posts[postId] = {
+                id: postId,
+                title: post?.querySelector('.post-title')?.textContent || 'Untitled Post',
+                views: 0,
+                ratings: {
+                    average: 0,
+                    count: 0,
+                    total: 0
+                },
+                shares: 0,
+                viewDates: []
+            };
+        }
+        
+        // Increment view count
+        this.statsData.posts[postId].views++;
+        
+        // Record view date
+        const now = new Date();
+        this.statsData.posts[postId].viewDates.push(now.toISOString());
+        
+        // Update the views counter in the DOM if it exists
+        const viewsElement = document.querySelector(`.blog-post-stats[data-post-id="${postId}"] .blog-post-stats-views-count`);
+        if (viewsElement) {
+            viewsElement.textContent = this.statsData.posts[postId].views;
+        }
+        
+        // Update top posts
+        this.updateTopPosts();
+        
+        // Save the updated stats
+        this.saveStatsData();
+        
+        console.log(`Blog Stats Dashboard: Tracked view for post ${postId}`);
+    },
+    
+    /**
+     * Track a post rating
+     */
+    trackPostRating: function(postId, rating) {
+        // Create post stats if it doesn't exist
+        if (!this.statsData.posts[postId]) {
+            const post = document.querySelector(`.blog-post[data-post-id="${postId}"]`);
+            this.statsData.posts[postId] = {
+                id: postId,
+                title: post?.querySelector('.post-title')?.textContent || 'Untitled Post',
+                views: 0,
+                ratings: {
+                    average: 0,
+                    count: 0,
+                    total: 0
+                },
+                shares: 0,
+                viewDates: []
+            };
+        }
+        
+        // Update rating stats
+        this.statsData.posts[postId].ratings.count++;
+        this.statsData.posts[postId].ratings.total += rating;
+        this.statsData.posts[postId].ratings.average = 
+            this.statsData.posts[postId].ratings.total / this.statsData.posts[postId].ratings.count;
+        
+        // Update the rating display in the DOM if it exists
+        const starsContainer = document.querySelector(`.blog-post-stats[data-post-id="${postId}"] .blog-post-stats-stars`);
+        const ratingCountElement = document.querySelector(`.blog-post-stats[data-post-id="${postId}"] .blog-post-stats-count`);
+        
+        if (starsContainer) {
+            // Update the stars display
+            const starElements = starsContainer.querySelectorAll('.blog-post-stats-star');
+            starElements.forEach((star, index) => {
+                if (index < Math.round(this.statsData.posts[postId].ratings.average)) {
+                    star.classList.add('filled');
+                    star.textContent = 'star';
+                } else {
+                    star.classList.remove('filled');
+                    star.textContent = 'star_border';
+                }
+            });
+        }
+        
+        if (ratingCountElement) {
+            ratingCountElement.textContent = `(${this.statsData.posts[postId].ratings.count})`;
+        }
+        
+        // Save the updated stats
+        this.saveStatsData();
+        
+        console.log(`Blog Stats Dashboard: Tracked rating of ${rating} for post ${postId}`);
+    },
+    
+    /**
+     * Track a post share
+     */
+    trackPostShare: function(postId) {
+        // Create post stats if it doesn't exist
+        if (!this.statsData.posts[postId]) {
+            const post = document.querySelector(`.blog-post[data-post-id="${postId}"]`);
+            this.statsData.posts[postId] = {
+                id: postId,
+                title: post?.querySelector('.post-title')?.textContent || 'Untitled Post',
+                views: 0,
+                ratings: {
+                    average: 0,
+                    count: 0,
+                    total: 0
+                },
+                shares: 0,
+                viewDates: []
+            };
+        }
+        
+        // Increment share count
+        this.statsData.posts[postId].shares++;
+        
+        // Save the updated stats
+        this.saveStatsData();
+        
+        console.log(`Blog Stats Dashboard: Tracked share for post ${postId}`);
+    },
+    
+    /**
+     * Track a website view
+     */
+    trackWebsiteView: function() {
+        // Increment total views
+        this.statsData.website.totalViews++;
+        
+        // Track daily, weekly, and monthly views
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+        const weekStr = this.getWeekString(now);
+        const monthStr = dateStr.substring(0, 7); // YYYY-MM
+        
+        // Daily views
+        this.statsData.website.dailyViews[dateStr] = 
+            (this.statsData.website.dailyViews[dateStr] || 0) + 1;
+        
+        // Weekly views
+        this.statsData.website.weeklyViews[weekStr] = 
+            (this.statsData.website.weeklyViews[weekStr] || 0) + 1;
+        
+        // Monthly views
+        this.statsData.website.monthlyViews[monthStr] = 
+            (this.statsData.website.monthlyViews[monthStr] || 0) + 1;
+        
+        // Save the updated stats
+        this.saveStatsData();
+        
+        console.log('Blog Stats Dashboard: Tracked website view');
+    },
+    
+    /**
+     * Get a string representation of the week (YYYY-Www)
+     */
+    getWeekString: function(date) {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+        const week = Math.floor((d.getTime() - new Date(d.getFullYear(), 0, 4).getTime()) / 86400000 / 7) + 1;
+        return `${d.getFullYear()}-W${week.toString().padStart(2, '0')}`;
+    },
+    
+    /**
+     * Update the list of top posts
+     */
+    updateTopPosts: function() {
+        // Convert posts object to array
+        const postsArray = Object.values(this.statsData.posts);
+        
+        // Sort by views (descending)
+        postsArray.sort((a, b) => b.views - a.views);
+        
+        // Take the top 3 posts
+        this.statsData.topPosts = postsArray.slice(0, 3);
+        
+        // Update top posts display if on dashboard
+        this.updateTopPostsDisplay();
+    },
+    
+    /**
+     * Update the top posts display in the dashboard
+     */
+    updateTopPostsDisplay: function() {
+        const topPostsContainer = document.getElementById('top-posts-list');
+        if (!topPostsContainer) return;
+        
+        // Clear the current content
+        topPostsContainer.innerHTML = '';
+        
+        // Add each top post
+        this.statsData.topPosts.forEach((post, index) => {
+            const postElement = document.createElement('div');
+            postElement.className = 'top-post-item';
+            
+            const rankBadge = document.createElement('div');
+            rankBadge.className = 'rank-badge';
+            rankBadge.textContent = index + 1;
+            
+            const postInfo = document.createElement('div');
+            postInfo.className = 'post-info';
+            
+            const postTitle = document.createElement('h4');
+            postTitle.className = 'post-title';
+            postTitle.textContent = post.title;
+            
+            const postStats = document.createElement('div');
+            postStats.className = 'post-stats';
+            
+            const viewsSpan = document.createElement('span');
+            viewsSpan.className = 'post-views';
+            viewsSpan.innerHTML = `<i class="material-icons">visibility</i> ${post.views}`;
+            
+            const ratingsSpan = document.createElement('span');
+            ratingsSpan.className = 'post-ratings';
+            ratingsSpan.innerHTML = `<i class="material-icons">star</i> ${post.ratings.average.toFixed(1)}`;
+            
+            const sharesSpan = document.createElement('span');
+            sharesSpan.className = 'post-shares';
+            sharesSpan.innerHTML = `<i class="material-icons">share</i> ${post.shares}`;
+            
+            // Assemble the elements
+            postStats.appendChild(viewsSpan);
+            postStats.appendChild(ratingsSpan);
+            postStats.appendChild(sharesSpan);
+            
+            postInfo.appendChild(postTitle);
+            postInfo.appendChild(postStats);
+            
+            postElement.appendChild(rankBadge);
+            postElement.appendChild(postInfo);
+            
+            topPostsContainer.appendChild(postElement);
+        });
+    },
+    
+            return;
+        }
+        
+        // Create a hidden container for stats if needed
+        const hiddenContainer = document.createElement('div');
+        hiddenContainer.id = 'stats-charts-container';
+        hiddenContainer.style.display = 'none';
+        document.body.appendChild(hiddenContainer);
+    }
+        this.initSharesChart();
+        
+        // Also update stats summary values
+        this.updateStatsSummary();
+    },
+    
+    /**
+     * Initialize the views chart
+     */
+    initViewsChart: function() {
+        const viewsChartCanvas = document.getElementById('views-chart');
+        if (!viewsChartCanvas) return;
+        
+        // Prepare data for the views chart
+        const labels = [];
+        const websiteData = [];
+        const postData = [];
+        
+        // Get the last 7 days
+        const dates = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            dates.push(date);
+        }
+        
+        // Format dates and get view counts
+        dates.forEach(date => {
+            const dateStr = date.toISOString().split('T')[0];
+            const dateLabel = date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            labels.push(dateLabel);
+            
+            // Website views for this date
+            websiteData.push(this.statsData.website.dailyViews[dateStr] || 0);
+            
+            // Total post views for this date
+            let totalPostViews = 0;
+            Object.values(this.statsData.posts).forEach(post => {
+                const viewsOnDate = post.viewDates.filter(viewDate => 
+                    viewDate.startsWith(dateStr)
+                ).length;
+                totalPostViews += viewsOnDate;
+            });
+            postData.push(totalPostViews);
+        });
+        
+        // Create the chart
+        if (window.viewsChart) {
+            window.viewsChart.destroy();
+        }
+        
+        // Dark theme chart configuration
+        Chart.defaults.color = '#e0e0e0'; // Light text for all charts
+        Chart.defaults.borderColor = '#3c3f48'; // Dark borders
+        
+        window.viewsChart = new Chart(viewsChartCanvas, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Website Views',
+                        data: websiteData,
+                        backgroundColor: 'rgba(232, 242, 76, 0.2)', // Fooodis yellow with transparency
+                        borderColor: 'rgba(232, 242, 76, 1)', // Fooodis yellow
+                        borderWidth: 2,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Post Views',
+                        data: postData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Views (Last 7 Days)',
+                        color: '#e8f24c' // Fooodis yellow for title
+                    },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#e0e0e0' // Light text for legend
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(30, 33, 39, 0.8)', // Dark background for tooltip
+                        titleColor: '#e8f24c', // Fooodis yellow for tooltip title
+                        bodyColor: '#e0e0e0' // Light text for tooltip body
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(60, 63, 72, 0.5)' // Subtle grid lines
+                        },
+                        ticks: {
+                            color: '#a0a0a0' // Light gray for axis ticks
+                        },
+                        title: {
+                            display: true,
+                            text: 'Views',
+                            color: '#e0e0e0' // Light text for axis title
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(60, 63, 72, 0.5)' // Subtle grid lines
+                        },
+                        ticks: {
+                            color: '#a0a0a0' // Light gray for axis ticks
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            color: '#e0e0e0' // Light text for axis title
+                        }
+                    }
+                }
+            }
+        });
+        
+        console.log('Blog Stats Dashboard: Views chart initialized');
+    },
+    
+    /**
+     * Initialize the ratings chart
+     */
+    initRatingsChart: function() {
+        const ratingsChartCanvas = document.getElementById('ratings-chart');
+        if (!ratingsChartCanvas) return;
+        
+        // Prepare data for the ratings chart
+        const postsArray = Object.values(this.statsData.posts)
+            .filter(post => post.ratings.count > 0) // Only include posts with ratings
+            .sort((a, b) => b.ratings.average - a.ratings.average) // Sort by highest rating
+            .slice(0, 5); // Show top 5 rated posts
+        
+        const labels = postsArray.map(post => this.truncateTitle(post.title, 20));
+        const data = postsArray.map(post => post.ratings.average);
+        
+        // Generate Fooodis-themed colors for the bars
+        const backgroundColor = postsArray.map((_, i) => {
+            // Use variations of Fooodis yellow and blue
+            return i % 2 === 0 ? 'rgba(232, 242, 76, 0.7)' : 'rgba(54, 162, 235, 0.7)';
+        });
+        
+        // Create the chart
+        if (window.ratingsChart) {
+            window.ratingsChart.destroy();
+        }
+        
+        window.ratingsChart = new Chart(ratingsChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Average Rating',
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    borderColor: backgroundColor.map(color => color.replace('0.7', '1')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Top Rated Posts',
+                        color: '#e8f24c' // Fooodis yellow for title
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(30, 33, 39, 0.8)', // Dark background for tooltip
+                        titleColor: '#e8f24c', // Fooodis yellow for tooltip title
+                        bodyColor: '#e0e0e0', // Light text for tooltip body
+                        callbacks: {
+                            title: function(context) {
+                                return postsArray[context[0].dataIndex].title;
+                            },
+                            label: function(context) {
+                                const post = postsArray[context.dataIndex];
+                                return [
+                                    `Rating: ${post.ratings.average.toFixed(1)}/5`,
+                                    `Votes: ${post.ratings.count}`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 5,
+                        grid: {
+                            color: 'rgba(60, 63, 72, 0.5)' // Subtle grid lines
+                        },
+                        ticks: {
+                            color: '#a0a0a0' // Light gray for axis ticks
+                        },
+                        title: {
+                            display: true,
+                            text: 'Rating (out of 5)',
+                            color: '#e0e0e0' // Light text for axis title
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(60, 63, 72, 0.5)' // Subtle grid lines
+                        },
+                        ticks: {
+                            color: '#a0a0a0' // Light gray for axis ticks
+                        }
+                    }
+                }
+            }
+        });
+        
+        console.log('Blog Stats Dashboard: Ratings chart initialized');
+    },
+    
+    /**
+     * Initialize the shares chart
+     */
+    initSharesChart: function() {
+        const sharesChartCanvas = document.getElementById('shares-chart');
+        if (!sharesChartCanvas) return;
+        
+        // Prepare data for the shares chart
+        const postsArray = Object.values(this.statsData.posts)
+            .filter(post => post.shares > 0) // Only include posts with shares
+            .sort((a, b) => b.shares - a.shares) // Sort by most shares
+            .slice(0, 5); // Show top 5 shared posts
+        
+        const labels = postsArray.map(post => this.truncateTitle(post.title, 20));
+        const data = postsArray.map(post => post.shares);
+        
+        // Create the chart
+        if (window.sharesChart) {
+            window.sharesChart.destroy();
+        }
+        
+        window.sharesChart = new Chart(sharesChartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Shares',
+                    data: data,
+                    backgroundColor: [
+                        'rgba(232, 242, 76, 0.7)', // Fooodis yellow
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 99, 132, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(232, 242, 76, 1)', // Fooodis yellow
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Share Distribution',
+                        color: '#e8f24c' // Fooodis yellow for title
+                    },
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#e0e0e0', // Light text for legend
+                            padding: 10
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(30, 33, 39, 0.8)', // Dark background for tooltip
+                        titleColor: '#e8f24c', // Fooodis yellow for tooltip title
+                        bodyColor: '#e0e0e0', // Light text for tooltip body
+                        callbacks: {
+                            title: function(context) {
+                                return postsArray[context[0].dataIndex].title;
+                            },
+                            label: function(context) {
+                                const value = context.raw;
+                                const total = data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `Shares: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        console.log('Blog Stats Dashboard: Shares chart initialized');
+    },
+    
+    /**
+     * Update the stats summary on the dashboard
+     */
+    updateStatsSummary: function() {
+        // Update total views
+        const totalViewsElement = document.getElementById('total-views-count');
+        if (totalViewsElement) {
+            totalViewsElement.textContent = this.statsData.website.totalViews;
+        }
+        
+        // Update total post views
+        const totalPostViewsElement = document.getElementById('post-views-count');
+        if (totalPostViewsElement) {
+            const totalPostViews = Object.values(this.statsData.posts).reduce((sum, post) => sum + post.views, 0);
+            totalPostViewsElement.textContent = totalPostViews;
+        }
+        
+        // Update total ratings
+        const totalRatingsElement = document.getElementById('total-ratings-count');
+        if (totalRatingsElement) {
+            const totalRatings = Object.values(this.statsData.posts).reduce((sum, post) => sum + post.ratings.count, 0);
+            totalRatingsElement.textContent = totalRatings;
+        }
+        
+        // Update total shares
+        const totalSharesElement = document.getElementById('total-shares-count');
+        if (totalSharesElement) {
+            const totalShares = Object.values(this.statsData.posts).reduce((sum, post) => sum + post.shares, 0);
+            totalSharesElement.textContent = totalShares;
+        }
+        
+        // Update average rating
+        const averageRatingElement = document.getElementById('average-rating-value');
+        if (averageRatingElement) {
+            let totalRatings = 0;
+            let totalRatingSum = 0;
+            
+            Object.values(this.statsData.posts).forEach(post => {
+                totalRatings += post.ratings.count;
+                totalRatingSum += post.ratings.total;
+            });
+            
+            const averageRating = totalRatings > 0 ? totalRatingSum / totalRatings : 0;
+            averageRatingElement.textContent = averageRating.toFixed(1);
+        }
+    },
+    
+    /**
+     * Truncate a title to a specific length
+     */
+    truncateTitle: function(title, maxLength) {
+        if (title.length <= maxLength) return title;
+        return title.substring(0, maxLength - 3) + '...';
+    }
+};
+
+/**
+ * Force a complete refresh of the stats data
+ */
+BlogStatsDashboard.forceRefresh = function() {
+    console.log('Blog Stats Dashboard: Forcing complete refresh of stats data');
+    
+    // Clear existing data
+    localStorage.removeItem('blog_stats_data');
+    localStorage.removeItem('blog_stats_version');
+    
+    // Reset the stats data object
+    this.statsData = {
+        posts: {},
+        website: {
+            totalViews: 0,
+            dailyViews: {},
+            weeklyViews: {},
+            monthlyViews: {}
+        },
+        topPosts: []
+    };
+    
+    // Initialize with fresh data
+    this.initializeDefaultData();
+    
+    // Update displays
+    this.updateTopPostsDisplay();
+    this.updateStatsSummary();
+    
+    // Reinitialize charts
+    this.initCharts();
+    
+    console.log('Blog Stats Dashboard: Data refresh complete');
+};
+
+// Initialize the stats dashboard when the page loads
+window.addEventListener('load', function() {
+    // Add Chart.js library dynamically if not already loaded
+    if (typeof Chart === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.onload = function() {
+            if (window.location.pathname.includes('dashboard')) {
+                // Force refresh when on dashboard page
+                BlogStatsDashboard.init();
+                BlogStatsDashboard.forceRefresh();
+            } else {
+                BlogStatsDashboard.init();
+            }
+        };
+        document.head.appendChild(script);
+    } else {
+        if (window.location.pathname.includes('dashboard')) {
+            // Force refresh when on dashboard page
+            BlogStatsDashboard.init();
+            BlogStatsDashboard.forceRefresh();
+        } else {
+            BlogStatsDashboard.init();
+        }
+    }
+});
