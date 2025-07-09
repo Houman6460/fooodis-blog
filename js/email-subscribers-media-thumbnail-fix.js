@@ -59,40 +59,22 @@
      * Monitor existing modals for dynamic content changes
      */
     function monitorExistingModals() {
-        // Set up a mutation observer to watch for changes in the document
-        const observer = new MutationObserver((mutations) => {
-            for (const mutation of mutations) {
-                if (mutation.addedNodes.length) {
-                    for (const node of mutation.addedNodes) {
-                        if (node.nodeType === Node.ELEMENT_NODE) {
-                            // Check if this is a media modal or contains one
-                            if (node.classList && node.classList.contains('media-selection-modal')) {
-                                fixMediaThumbnails(node);
-                            } else if (node.querySelector && node.querySelector('.media-selection-modal')) {
-                                fixMediaThumbnails(node.querySelector('.media-selection-modal'));
-                            }
+        const existingModals = document.querySelectorAll('.modal');
+        existingModals.forEach(modal => {
+            console.log('Monitoring existing modal:', modal);
 
-                            // Also check for media items being added
-                            if (node.classList && node.classList.contains('media-item')) {
-                                fixSingleMediaThumbnail(node);
-                            } else if (node.querySelector && node.querySelector('.media-item')) {
-                                const items = node.querySelectorAll('.media-item');
-                                items.forEach(fixSingleMediaThumbnail);
-                            }
-                        }
-                    }
+            // Validate that modal is a proper Node before observing
+            if (modal && modal.nodeType === Node.ELEMENT_NODE && window.modalObserver) {
+                try {
+                    window.modalObserver.observe(modal, {
+                        childList: true,
+                        subtree: true
+                    });
+                } catch (error) {
+                    console.warn('Failed to observe modal:', error);
                 }
             }
         });
-
-        // Start observing
-        observer.observe(document.body, { 
-            childList: true, 
-            subtree: true 
-        });
-
-        // Also periodically check for modals
-        setInterval(fixAllMediaThumbnails, 3000);
     }
 
     /**

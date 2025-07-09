@@ -679,8 +679,12 @@ class AutomationCategoryManager {
         }, 3000);
     }
 
-    // Create global instance
-    window.AutomationCategoryManager = new AutomationCategoryManager();
+}; // End of AutomationCategoryManager class
+}
+
+// Create global instance
+if (typeof window.automationCategoryManager === 'undefined') {
+    window.automationCategoryManager = new window.AutomationCategoryManager();
 }
 
 // Initialize the AutomationCategoryManager when the page loads
