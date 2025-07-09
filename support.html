@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/footer-bubbles.css">
     <link rel="stylesheet" href="css/support-portal.css">
+    <link rel="stylesheet" href="css/chatbot-management.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <style>
@@ -810,6 +811,56 @@
 
     <!-- Notification System -->
     <div id="notifications" class="notifications-container"></div>
+    
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="chatbot-widget">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <i class="fas fa-robot"></i>
+                <span data-lang-en="Fooodis Assistant" data-lang-sv="Fooodis Assistent">Fooodis Assistant</span>
+            </div>
+            <div class="chatbot-controls">
+                <button class="chatbot-minimize" title="Minimize">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="chatbot-close" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="welcome-message">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <span data-lang-en="👋 Hello! I'm your Fooodis support assistant. How can I help you today?" 
+                              data-lang-sv="👋 Hej! Jag är din Fooodis supportassistent. Hur kan jag hjälpa dig idag?">
+                            👋 Hello! I'm your Fooodis support assistant. How can I help you today?
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input-area">
+            <div class="chatbot-input-container">
+                <input type="text" 
+                       id="chatbot-input" 
+                       placeholder="Type your message..." 
+                       data-lang-en-placeholder="Type your message..." 
+                       data-lang-sv-placeholder="Skriv ditt meddelande...">
+                <button id="chatbot-send" class="chatbot-send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chatbot Toggle Button -->
+    <div id="chatbot-toggle" class="chatbot-toggle">
+        <i class="fas fa-comments"></i>
+        <span class="chatbot-notification-badge" id="chatbot-notification-badge">0</span>
+    </div>
 
     <!-- Fooodis Footer with Bubble Animation -->
     <footer class="fooodis-footer">
@@ -995,5 +1046,28 @@
         document.addEventListener('DOMContentLoaded', createBubbles);
     </script>
     <script src="js/support-portal.js"></script>
+    
+    <!-- Chatbot Integration Scripts -->
+    <script src="js/storage-manager.js"></script>
+    <script src="js/chatbot-widget.js"></script>
+    <script src="js/chatbot-management.js"></script>
+    <script src="js/chatbot-message-enhancer.js"></script>
+    <script src="js/chatbot-integration-fixes.js"></script>
+    <script src="js/node-flow-builder.js"></script>
+    
+    <!-- Initialize Chatbot -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize chatbot after page loads
+            setTimeout(() => {
+                if (typeof window.ChatbotWidget !== 'undefined') {
+                    window.chatbotWidget = new ChatbotWidget();
+                    console.log('✅ Chatbot initialized on support page');
+                } else {
+                    console.warn('⚠️ ChatbotWidget not available');
+                }
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
