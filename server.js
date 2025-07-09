@@ -84,6 +84,9 @@ try {
 // API routes - only mount if they are valid router functions
 if (typeof chatbotAPI === 'function' || (chatbotAPI && typeof chatbotAPI.handle === 'function')) {
     app.use('/api/chatbot', chatbotAPI);
+    console.log('✅ Chatbot API routes mounted successfully');
+} else {
+    console.warn('⚠️ Chatbot API not properly loaded');
 }
 
 if (typeof systemHealthAPI === 'function' || (systemHealthAPI && typeof systemHealthAPI.handle === 'function')) {

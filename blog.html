@@ -81,60 +81,13 @@
     <script src="js/blog.js" type="text/javascript"></script>
 
     <!-- Fooodis AI Chatbot Widget -->
-    <!-- ChatbotManager must be loaded BEFORE the widget for local OpenAI integration -->
+    <!-- Load chatbot components in proper order -->
     <script src="js/chatbot-management.js"></script>
     <script src="js/chatbot-message-enhancer.js"></script>
     <script src="js/chatbot-widget.js"></script>
     <script src="js/chatbot-integration-fixes.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Blog: Initializing chatbot widget...');
-        
-        // Initialize chatbot with retry mechanism
-        function initializeChatbot() {
-          if (typeof window.FoodisChatbot !== 'undefined') {
-            try {
-              window.FoodisChatbot.init({
-                apiEndpoint: window.location.origin + '/api/chatbot',
-                position: 'bottom-right',
-                primaryColor: '#e8f24c',
-                language: 'en',
-                enabled: true,
-                assistants: [{
-                  id: 'fooodis-assistant',
-                  name: 'Fooodis Assistant',
-                  assistantId: ''
-                }]
-              });
-              console.log('Blog: Chatbot initialized successfully');
-              return true;
-            } catch (error) {
-              console.error('Blog: Error initializing chatbot:', error);
-              return false;
-            }
-          } else {
-            console.warn('Blog: FoodisChatbot not available yet, retrying...');
-            return false;
-          }
-        }
-        
-        // Try to initialize immediately
-        if (!initializeChatbot()) {
-          // Retry with increasing delays
-          let retryCount = 0;
-          const maxRetries = 5;
-          
-          function retryInitialization() {
-            if (retryCount < maxRetries && !initializeChatbot()) {
-              retryCount++;
-              setTimeout(retryInitialization, 500 * retryCount);
-            }
-          }
-          
-          retryInitialization();
-        }
-      });
-    </script>
+    <script src="js/chatbot-integration-patch.js"></script>
+    <script src="js/chatbot-initialization.js"></script>
     <!-- Remove duplicate blog.js reference as it's already loaded above -->
     <script class="u-script" defer="" src="js/footer-bubbles.js" type="text/javascript"></script>
     <script class="u-script" defer="" src="js/advertising-banners.js" type="text/javascript"></script>

@@ -1,62 +1,86 @@
 
 /**
- * FoodisChatbot Initialization
- * Fixes the "FoodisChatbot is not defined" error
+ * 🤖 CHATBOT INITIALIZATION COORDINATOR
+ * Ensures proper chatbot startup sequence
  */
 
-// Define FoodisChatbot if it doesn't exist
-if (typeof FoodisChatbot === 'undefined') {
-    window.FoodisChatbot = {
+(function() {
+    'use strict';
+
+    window.ChatbotInitializer = {
         initialized: false,
-        
+        retryCount: 0,
+        maxRetries: 10,
+
         init: function() {
-            if (this.initialized) return;
-            
-            console.log('FoodisChatbot: Initializing...');
-            
-            // Basic chatbot functionality
-            this.setupEventListeners();
-            this.loadChatbotUI();
-            
-            this.initialized = true;
-            console.log('FoodisChatbot: Initialized successfully');
+            if (this.initialized) {
+                console.log('🤖 Chatbot already initialized');
+                return;
+            }
+
+            console.log('🤖 Starting chatbot initialization...');
+            this.checkAndInitialize();
         },
-        
-        setupEventListeners: function() {
-            // Add any chatbot event listeners here
-            document.addEventListener('DOMContentLoaded', () => {
-                const chatbotContainer = document.getElementById('chatbot-container');
-                if (chatbotContainer) {
-                    console.log('FoodisChatbot: Container found');
+
+        checkAndInitialize: function() {
+            const self = this;
+            
+            // Check if all required components are loaded
+            const hasWidget = typeof window.FoodisChatbot !== 'undefined';
+            const hasEnhancer = typeof window.ChatbotMessageEnhancer !== 'undefined';
+            const hasIntegrationFixes = typeof window.ChatbotMessageEnhancer !== 'undefined';
+
+            if (hasWidget) {
+                try {
+                    // Initialize chatbot with proper configuration
+                    window.FoodisChatbot.init({
+                        apiEndpoint: window.location.origin + '/api/chatbot',
+                        position: 'bottom-right',
+                        primaryColor: '#e8f24c',
+                        language: 'en',
+                        enabled: true,
+                        assistants: [{
+                            id: 'fooodis-assistant',
+                            name: 'Fooodis Assistant',
+                            assistantId: ''
+                        }]
+                    });
+
+                    this.initialized = true;
+                    console.log('✅ Chatbot initialized successfully');
+                    
+                    // Trigger success event
+                    document.dispatchEvent(new CustomEvent('chatbotInitialized'));
+                    
+                } catch (error) {
+                    console.error('❌ Chatbot initialization error:', error);
+                    this.retryInitialization();
                 }
-            });
-        },
-        
-        loadChatbotUI: function() {
-            // Load chatbot UI components
-            try {
-                // Basic chatbot UI setup
-                console.log('FoodisChatbot: UI components loaded');
-            } catch (error) {
-                console.warn('FoodisChatbot: Error loading UI components:', error);
+            } else {
+                console.log('⏳ Chatbot widget not ready, retrying...');
+                this.retryInitialization();
             }
         },
-        
-        sendMessage: function(message) {
-            console.log('FoodisChatbot: Sending message:', message);
-            // Implement message sending logic
-        },
-        
-        receiveMessage: function(response) {
-            console.log('FoodisChatbot: Received response:', response);
-            // Implement message receiving logic
+
+        retryInitialization: function() {
+            this.retryCount++;
+            
+            if (this.retryCount < this.maxRetries) {
+                const delay = Math.min(1000 * this.retryCount, 5000);
+                setTimeout(() => this.checkAndInitialize(), delay);
+            } else {
+                console.error('❌ Chatbot initialization failed after', this.maxRetries, 'attempts');
+            }
         }
     };
-    
-    // Auto-initialize when script loads
-    setTimeout(() => {
-        if (typeof window !== 'undefined') {
-            window.FoodisChatbot.init();
-        }
-    }, 100);
-}
+
+    // Auto-start initialization
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => window.ChatbotInitializer.init(), 100);
+        });
+    } else {
+        setTimeout(() => window.ChatbotInitializer.init(), 100);
+    }
+
+})();
