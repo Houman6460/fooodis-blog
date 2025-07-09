@@ -19,6 +19,13 @@
     function initNavigationFix() {
         console.log('Dashboard Navigation Fix: Setting up navigation...');
 
+        // Check for reload loops before proceeding
+        const pageLoadCount = parseInt(sessionStorage.getItem('pageLoadCount') || '0');
+        if (pageLoadCount > 3) {
+            console.warn('Dashboard Navigation Fix: High page load count detected, skipping navigation setup to prevent loops');
+            return;
+        }
+
         // Remove any existing event listeners to prevent conflicts
         removeExistingListeners();
 

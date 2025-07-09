@@ -121,31 +121,26 @@
         
         // Add session-based redirect prevention
         const redirectCount = parseInt(sessionStorage.getItem('authRedirectCount') || '0');
-        if (redirectCount > 2) {
-            console.log('Auth Integration Fix: Too many redirects, stopping authentication checks');
+        const pageLoadCount = parseInt(sessionStorage.getItem('pageLoadCount') || '0');
+        
+        // Enhanced protection against redirect loops
+        if (redirectCount > 1 || pageLoadCount > 3) {
+            console.log('Auth Integration Fix: Too many redirects detected, stopping all authentication checks to prevent loops');
             sessionStorage.removeItem('authRedirectCount');
             return;
         }
         
         const authResult = initializeAuth();
         
-        // If on login page and already authenticated, redirect to dashboard
+        // DISABLED: Automatic redirects to prevent loops
+        // Instead, just log the authentication status
         if (currentPage.endsWith('login.html') && authResult) {
-            console.log('Auth Integration Fix: Already authenticated, redirecting to dashboard');
-            sessionStorage.setItem('authRedirectCount', (redirectCount + 1).toString());
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 500);
+            console.log('Auth Integration Fix: User is authenticated but on login page - no automatic redirect');
             return;
         }
         
-        // If on protected page and not authenticated, redirect to login
         if (!publicPages.some(page => currentPage.endsWith(page)) && !authResult) {
-            console.log('Auth Integration Fix: Redirecting to login - not authenticated');
-            sessionStorage.setItem('authRedirectCount', (redirectCount + 1).toString());
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 500);
+            console.log('Auth Integration Fix: User not authenticated on protected page - no automatic redirect');
             return;
         }
         
