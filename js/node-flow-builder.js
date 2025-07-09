@@ -1326,7 +1326,9 @@ class NodeFlowBuilder {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
-                    <button type="button" class="btn btn-primary modal-update" data-node-id="${node.id}">Update Node</button>
+                    <button type="button" class="btn btn-primary modal-update" data-node-id="${node.id}">
+                        <i class="fas fa-save"></i> Update Node
+                    </button>
                 </div>
             </div>
         `;
@@ -1430,13 +1432,48 @@ class NodeFlowBuilder {
                                     <h5>${category.category}</h5>
                                     ${category.intents.map(intent => `
                                         <label class="checkbox-label">
-                                            <input type="checkbox" value="${intent}" ${node.data.intents.includes(intent) ? 'checked' : ''}>
+                                            <input type="checkbox" value="${intent}" ${node.data.intents && node.data.intents.includes(intent) ? 'checked' : ''}>
                                             ${intent}
                                         </label>
                                     `).join('')}
                                 </div>
                             `).join('')}
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-intent-description">Description (Optional)</label>
+                        <textarea id="edit-intent-description" class="form-control" rows="3" placeholder="Describe what this intent detection handles...">${node.data.description || ''}</textarea>
+                    </div>
+                `;
+                break;
+                
+            case 'condition':
+                formHTML += `
+                    <div class="form-group">
+                        <label for="edit-condition">Condition Expression</label>
+                        <input type="text" id="edit-condition" class="form-control" value="${node.data.condition || ''}" placeholder="e.g., user.language === 'swedish'">
+                        <small class="form-text text-muted">Enter a JavaScript-like condition expression</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-condition-description">Description</label>
+                        <textarea id="edit-condition-description" class="form-control" rows="2" placeholder="Describe when this condition should be true...">${node.data.description || ''}</textarea>
+                    </div>
+                `;
+                break;
+                
+            case 'message':
+                formHTML += `
+                    <div class="form-group">
+                        <label for="edit-message-content">Message Content</label>
+                        <textarea id="edit-message-content" class="form-control" rows="4" placeholder="Enter the message to display...">${node.data.message || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Message Type</label>
+                        <select id="edit-message-type" class="form-control">
+                            <option value="text" ${node.data.messageType === 'text' ? 'selected' : ''}>Text Message</option>
+                            <option value="quick-reply" ${node.data.messageType === 'quick-reply' ? 'selected' : ''}>Quick Reply</option>
+                            <option value="carousel" ${node.data.messageType === 'carousel' ? 'selected' : ''}>Carousel</option>
+                        </select>
                     </div>
                 `;
                 break;
@@ -1450,26 +1487,33 @@ class NodeFlowBuilder {
         if (!node) return;
 
         // Update common fields
-        node.data.title = document.getElementById('edit-node-title').value;
+        const titleInput = document.getElementById('edit-node-title');
+        if (titleInput) {
+            node.data.title = titleInput.value;
+        }
 
         // Update type-specific fields
         switch (node.type) {
             case 'welcome':
-                node.data.messages.english = document.getElementById('edit-message-en').value;
-                node.data.messages.swedish = document.getElementById('edit-message-sv').value;
+                const messageEn = document.getElementById('edit-message-en');
+                const messageSv = document.getElementById('edit-message-sv');
+                if (messageEn) node.data.messages.english = messageEn.value;
+                if (messageSv) node.data.messages.swedish = messageSv.value;
                 break;
                 
             case 'handoff':
-                const selectedDept = document.getElementById('edit-department').value;
-                const selectedAgent = document.getElementById('edit-agent').value;
-                const handoffMessage = document.getElementById('edit-handoff-message').value;
-                const dept = this.masterTemplate.departments.find(d => d.id === selectedDept);
+                const selectedDept = document.getElementById('edit-department');
+                const selectedAgent = document.getElementById('edit-agent');
+                const handoffMessage = document.getElementById('edit-handoff-message');
                 
-                node.data.department = selectedDept;
-                node.data.selectedAgent = selectedAgent;
-                node.data.handoffMessage = handoffMessage || 'Transferring you to a human agent...';
-                node.data.agents = dept ? dept.agents : [];
-                node.data.color = dept ? dept.color : '#34495e';
+                if (selectedDept) {
+                    const dept = this.masterTemplate.departments.find(d => d.id === selectedDept.value);
+                    node.data.department = selectedDept.value;
+                    node.data.agents = dept ? dept.agents : [];
+                    node.data.color = dept ? dept.color : '#34495e';
+                }
+                if (selectedAgent) node.data.selectedAgent = selectedAgent.value;
+                if (handoffMessage) node.data.handoffMessage = handoffMessage.value || 'Transferring you to a human agent...';
                 
                 // Validate and serialize node data properly
                 node.data = this.validateNodeData(node.type, node.data);
@@ -1479,13 +1523,35 @@ class NodeFlowBuilder {
                 const checkedIntents = Array.from(document.querySelectorAll('.intent-checkboxes input:checked'))
                     .map(input => input.value);
                 node.data.intents = checkedIntents;
+                console.log('Updated intent node with intents:', checkedIntents);
+                break;
+                
+            case 'condition':
+                const conditionInput = document.getElementById('edit-condition');
+                if (conditionInput) {
+                    node.data.condition = conditionInput.value;
+                }
+                break;
+                
+            case 'message':
+                const messageContent = document.getElementById('edit-message-content');
+                if (messageContent) {
+                    node.data.message = messageContent.value;
+                }
                 break;
         }
 
         this.renderNodes();
-        document.querySelector('.node-modal').remove();
+        this.renderConnections();
+        
+        // Close modal
+        const modal = document.querySelector('.node-modal');
+        if (modal) {
+            modal.remove();
+        }
+        
         this.showToast('Node updated successfully', 'success');
-        this.autoSave(); // 🔧 FIX 3: Auto-save when updating node
+        this.autoSave(); // Auto-save when updating node
     }
 
     deleteNode(nodeId) {
