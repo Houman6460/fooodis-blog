@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 5000;
 
 // Configure express to trust proxy for proper IP detection (more secure setting)
 app.set('trust proxy', 1);
@@ -110,10 +110,10 @@ if (typeof authAPI === 'function' || (authAPI && typeof authAPI.handle === 'func
 // Note: Static serving is now handled by express.static('.') above
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Fooodis Blog System server running on http://localhost:${PORT}`);
-  console.log(`- Dashboard: http://localhost:${PORT}/dashboard.html`);
-  console.log(`- Login: http://localhost:${PORT}/login.html`);
-  console.log(`- Profile: http://localhost:${PORT}/profile.html`);
-  console.log(`- API Health: http://localhost:${PORT}/api/system-health`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Fooodis Blog System server running on http://0.0.0.0:${PORT}`);
+  console.log(`- Dashboard: http://0.0.0.0:${PORT}/dashboard.html`);
+  console.log(`- Login: http://0.0.0.0:${PORT}/login.html`);
+  console.log(`- Profile: http://0.0.0.0:${PORT}/profile.html`);
+  console.log(`- API Health: http://0.0.0.0:${PORT}/api/system-health`);
 });
