@@ -1,7 +1,9 @@
 {
   "enabled": true,
+  "aiProvider": "claude",
   "openaiApiKey": "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",
-  "defaultModel": "gpt-3.5-turbo",
+  "anthropicApiKey": "",
+  "defaultModel": "claude-3-opus-20240229",
   "chatbotName": "Fooodis Assistant",
   "welcomeMessage": "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?\n\n🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?",
   "assistants": [

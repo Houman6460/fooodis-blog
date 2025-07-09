@@ -225,24 +225,47 @@ router.post('/', async (req, res) => {
             conversation.currentAgent = selectedAgent;
         }
 
-        // PERFORMANCE FIX: Use fast OpenAI Chat API instead of slow Assistant API
-        if (settings.openaiApiKey) {
-            console.log('🚀 Using FAST OpenAI Chat API for instant responses');
+        // Detect language for bilingual support
+        const detectedLanguage = detectLanguage(message);
+        console.log('🌐 Detected language:', detectedLanguage);
+
+        // Check which AI provider to use based on settings
+        if (settings.aiProvider === 'claude' && settings.anthropicApiKey) {
+            console.log('🤖 Using Claude Opus for responses');
             
-            // Detect language for bilingual support
-            const detectedLanguage = detectLanguage(message);
-            console.log('🌐 Detected language:', detectedLanguage);
+            try {
+                aiResponse = await getClaudeResponse(message, conversation, settings, selectedAgent, detectedLanguage);
+                console.log('✅ Claude response received');
+            } catch (error) {
+                console.error('Claude API error:', error);
+                console.log('🔄 Falling back to OpenAI due to Claude error');
+                
+                // Fallback to OpenAI if available
+                if (settings.openaiApiKey) {
+                    try {
+                        aiResponse = await getFastOpenAIResponse(message, conversation, settings, selectedAgent, detectedLanguage);
+                        console.log('✅ OpenAI fallback response received');
+                    } catch (openaiError) {
+                        console.error('OpenAI fallback also failed:', openaiError);
+                        aiResponse = getDynamicFallbackResponse(message, conversation, selectedAgent);
+                    }
+                } else {
+                    aiResponse = getDynamicFallbackResponse(message, conversation, selectedAgent);
+                }
+            }
+        } else if (settings.openaiApiKey) {
+            console.log('🚀 Using OpenAI Chat API for responses');
             
             try {
                 aiResponse = await getFastOpenAIResponse(message, conversation, settings, selectedAgent, detectedLanguage);
-                console.log('✅ Fast OpenAI response received');
+                console.log('✅ OpenAI response received');
             } catch (error) {
                 console.error('OpenAI Chat API error:', error);
                 console.log('🔄 Falling back to dynamic response due to OpenAI error');
                 aiResponse = getDynamicFallbackResponse(message, conversation, selectedAgent);
             }
         } else {
-            console.log('ℹ️ No OpenAI API key, using dynamic fallback');
+            console.log('ℹ️ No AI API keys configured, using dynamic fallback');
             aiResponse = getDynamicFallbackResponse(message, conversation, selectedAgent);
         }
 
@@ -283,6 +306,106 @@ router.post('/', async (req, res) => {
         });
     }
 });
+
+// Get Claude response using Anthropic API
+async function getClaudeResponse(message, conversation, settings, selectedAgent, detectedLanguage) {
+    console.log('🤖 Starting Claude Opus API call...');
+    const startTime = Date.now();
+    
+    // COMPREHENSIVE NULL SAFETY - ensure selectedAgent is never null
+    const safeAgent = selectedAgent || {
+        name: 'Sarah Johnson',
+        personality: 'friendly and knowledgeable customer support representative for Fooodis'
+    };
+    
+    console.log('🔍 Agent check - selectedAgent:', selectedAgent ? 'exists' : 'null', 'safeAgent:', safeAgent.name);
+    
+    // Build bilingual system prompt based on detected language
+    const languageInstruction = detectedLanguage === 'swedish' 
+        ? 'Respond in Swedish (svenska). Use natural Swedish language throughout your response.'
+        : 'Respond in English unless the user specifically writes in Swedish.';
+    
+    // Use safe agent with guaranteed non-null values
+    const agentName = safeAgent.name;
+    const agentPersonality = safeAgent.personality;
+    const agentPrompt = safeAgent.prompt || '';
+    
+    const systemPrompt = `You are ${agentName}, a ${agentPersonality} for Fooodis.
+${languageInstruction}
+
+${agentPersonality}
+
+${agentPrompt ? `IMPORTANT PROMPT: ${agentPrompt}
+
+` : ''}Context: Fooodis is a modern food delivery and restaurant platform. Help customers with:
+- Menu questions and recommendations
+- Order status and delivery tracking  
+- Account and payment issues
+- Restaurant information and locations
+- Technical support
+
+Provide helpful, accurate, and friendly responses. If you include URLs, make them clickable by using proper markdown links like [POS System](https://fooodis.com/fooodis/Pos.html).`;
+
+    // Build conversation history for context
+    const messages = [];
+    
+    // Add recent conversation history (last 6 messages for context)
+    if (conversation.messages && conversation.messages.length > 0) {
+        const recentMessages = conversation.messages.slice(-6);
+        for (const msg of recentMessages) {
+            if (msg.sender === 'user') {
+                messages.push({ role: 'user', content: msg.content });
+            } else if (msg.sender === 'assistant') {
+                messages.push({ role: 'assistant', content: msg.content });
+            }
+        }
+    }
+    
+    // Add current user message
+    messages.push({ role: 'user', content: message });
+    
+    console.log('📝 Claude API request - Language:', detectedLanguage, 'Messages:', messages.length);
+    
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${settings.anthropicApiKey}`,
+                'Content-Type': 'application/json',
+                'anthropic-version': '2023-06-01',
+                'anthropic-beta': 'messages-2023-12-15'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-opus-20240229',
+                max_tokens: 1000,
+                temperature: 0.7,
+                system: systemPrompt,
+                messages: messages
+            })
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Claude API error:', errorText);
+            throw new Error(`Claude API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const responseTime = Date.now() - startTime;
+        
+        console.log(`⚡ Claude Opus response completed in ${responseTime}ms`);
+        
+        const aiResponse = data.content[0].text.trim();
+        console.log('✅ Claude response length:', aiResponse.length, 'chars');
+        
+        return aiResponse;
+        
+    } catch (error) {
+        const responseTime = Date.now() - startTime;
+        console.error(`❌ Claude API failed after ${responseTime}ms:`, error);
+        throw error;
+    }
+}
 
 // Get OpenAI response using Assistant API
 async function getOpenAIResponse(message, conversation, settings, assistant, selectedAgent) {
