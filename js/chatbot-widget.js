@@ -278,7 +278,7 @@
             if (!this.widget || !this.currentAgent) return;
 
             const headerText = this.widget.querySelector('.header-text h4');
-            const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .message-avatar img');
+            const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .chatbot-avatar-header img, .message-avatar img');
 
             if (headerText) {
                 headerText.textContent = this.currentAgent.name;
@@ -287,7 +287,15 @@
             avatarImages.forEach(img => {
                 img.src = this.currentAgent.avatar;
                 img.alt = this.currentAgent.name + ' Avatar';
+                // Force image reload to ensure it displays
+                img.style.display = 'block';
+                img.onerror = function() {
+                    console.warn('Avatar failed to load:', img.src);
+                    img.src = this.getDefaultAvatar();
+                }.bind(this);
             });
+
+            console.log('🖼️ Updated agent header with avatar:', this.currentAgent.avatar);
         },
 
         setupAvatarUpdateListener: function() {
@@ -319,13 +327,23 @@
         updateAvatar: function(avatarUrl) {
             this.config.avatar = avatarUrl;
 
+            // Update current agent avatar
+            if (this.currentAgent) {
+                this.currentAgent.avatar = avatarUrl;
+            }
+
             // Update all avatar images in the widget
-            const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .message-avatar img');
-            avatarImages.forEach(img => {
+            const avatarImages = this.widget?.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .chatbot-avatar-header img, .message-avatar img');
+            avatarImages?.forEach(img => {
                 img.src = avatarUrl;
+                img.style.display = 'block';
+                img.onerror = function() {
+                    console.warn('Avatar failed to load:', avatarUrl);
+                    img.src = this.getDefaultAvatar();
+                }.bind(this);
             });
 
-            console.log('Avatar updated in chatbot widget:', avatarUrl);
+            console.log('🖼️ Avatar updated in chatbot widget:', avatarUrl);
         },
 
         updateFileUploadVisibility: function() {
@@ -375,7 +393,7 @@
                                 </button>
                             </div>
                             <div class="agent-info">
-                                <div class="chatbot-avatar-small">
+                                <div class="chatbot-avatar-header">
                                     <img src="${agentAvatar}" alt="${agentName} Avatar" />
                                 </div>
                                 <div class="header-text">
@@ -565,6 +583,22 @@
                     width: 100% !important;
                     height: 100% !important;
                     object-fit: cover !important;
+                }
+
+                .chatbot-avatar-header {
+                    width: 50px !important;
+                    height: 50px !important;
+                    border-radius: 50% !important;
+                    overflow: hidden !important;
+                    border: 2px solid #e8f24c !important;
+                    flex-shrink: 0 !important;
+                }
+
+                .chatbot-avatar-header img {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                    display: block !important;
                 }
 
                 .header-text h4 {
