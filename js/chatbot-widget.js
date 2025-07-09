@@ -284,18 +284,49 @@
                 headerText.textContent = this.currentAgent.name;
             }
 
+            // Get the correct avatar URL
+            let avatarUrl = this.currentAgent.avatar;
+            
+            // If no avatar or it's the default, try to get from settings
+            if (!avatarUrl || avatarUrl === this.getDefaultAvatar()) {
+                if (this.chatbotSettings && this.chatbotSettings.avatar) {
+                    avatarUrl = this.chatbotSettings.avatar;
+                } else if (this.availableAgents && this.availableAgents.length > 0) {
+                    // Try to find the current agent in available agents list
+                    const foundAgent = this.availableAgents.find(agent => 
+                        agent.id === this.currentAgent.id || agent.name === this.currentAgent.name
+                    );
+                    if (foundAgent && foundAgent.avatar) {
+                        avatarUrl = foundAgent.avatar;
+                    }
+                }
+            }
+
+            // Update all avatar images
             avatarImages.forEach(img => {
-                img.src = this.currentAgent.avatar;
+                img.src = avatarUrl || this.getDefaultAvatar();
                 img.alt = this.currentAgent.name + ' Avatar';
-                // Force image reload to ensure it displays
                 img.style.display = 'block';
+                img.style.objectFit = 'cover';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                
                 img.onerror = function() {
                     console.warn('Avatar failed to load:', img.src);
                     img.src = this.getDefaultAvatar();
                 }.bind(this);
+                
+                img.onload = function() {
+                    console.log('✅ Avatar loaded successfully:', img.src);
+                };
             });
 
-            console.log('🖼️ Updated agent header with avatar:', this.currentAgent.avatar);
+            // Update current agent avatar reference
+            if (avatarUrl && avatarUrl !== this.getDefaultAvatar()) {
+                this.currentAgent.avatar = avatarUrl;
+            }
+
+            console.log('🖼️ Updated agent header with avatar:', avatarUrl);
         },
 
         setupAvatarUpdateListener: function() {
@@ -905,13 +936,33 @@
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}`;
 
-            const avatar = sender === 'user' ? 
-                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAxMS4ySDExLjJDMTIgMTEuMiAxNS41IDEyLjIgMTUuNSAxNC4yWiIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4KPC9zdmc+' :
-                (this.currentAgent?.avatar || this.getDefaultAvatar());
+            let avatar;
+            if (sender === 'user') {
+                avatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAxMS4ySDExLjJDMTIgMTEuMiAxNS41IDEyLjIgMTUuNSAxNC4yWiIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4KPC9zdmc+';
+            } else {
+                // For assistant messages, use current agent avatar
+                avatar = this.currentAgent?.avatar;
+                
+                // If no avatar, try to get from settings or use default
+                if (!avatar || avatar === this.getDefaultAvatar()) {
+                    avatar = this.chatbotSettings?.avatar || this.config.avatar || this.getDefaultAvatar();
+                }
+            }
+
+            const avatarImg = document.createElement('img');
+            avatarImg.src = avatar;
+            avatarImg.alt = sender + ' Avatar';
+            avatarImg.style.width = '100%';
+            avatarImg.style.height = '100%';
+            avatarImg.style.objectFit = 'cover';
+            avatarImg.onerror = function() {
+                console.warn('Message avatar failed to load:', avatar);
+                avatarImg.src = this.getDefaultAvatar();
+            }.bind(this);
 
             messageElement.innerHTML = `
                 <div class="message-avatar">
-                    <img src="${avatar}" alt="${sender} Avatar" />
+                    ${avatarImg.outerHTML}
                 </div>
                 <div class="message-content" style="color: #333333 !important; background: ${sender === 'user' ? '#e8f24c' : '#f8f9fa'} !important;">${content}</div>
             `;
@@ -1171,15 +1222,22 @@
                 const randomIndex = Math.floor(Math.random() * this.availableAgents.length);
                 const selectedAgent = this.availableAgents[randomIndex];
                 
+                // Ensure we get the proper avatar
+                let agentAvatar = selectedAgent.avatar;
+                if (!agentAvatar || agentAvatar === this.getDefaultAvatar()) {
+                    // Try to get avatar from chatbot settings
+                    agentAvatar = this.chatbotSettings?.avatar || this.config.avatar || this.getDefaultAvatar();
+                }
+                
                 this.currentAgent = {
                     id: selectedAgent.id,
                     name: selectedAgent.name,
-                    avatar: selectedAgent.avatar || this.config.avatar || this.getDefaultAvatar(),
+                    avatar: agentAvatar,
                     personality: selectedAgent.personality || selectedAgent.description,
                     assignedAssistantId: selectedAgent.assistantId
                 };
                 
-                console.log('✅ Selected agent:', this.currentAgent.name);
+                console.log('✅ Selected agent:', this.currentAgent.name, 'with avatar:', agentAvatar);
             } else {
                 // Fallback to default agents from config
                 console.log('⚠️ No available agents, using config fallback');
