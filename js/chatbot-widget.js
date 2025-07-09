@@ -122,16 +122,16 @@
                 if (settings) {
                     this.chatbotSettings = settings;
 
-                    // Simplified avatar handling - use any valid avatar URL
+                    // Enhanced avatar handling with absolute URL conversion
                     let avatarUrl = this.getDefaultAvatar();
                     if (settings.avatar && settings.avatar.trim() !== '' && this.isValidAvatarUrl(settings.avatar)) {
-                        avatarUrl = settings.avatar;
-                        console.log('🖼️ Using uploaded avatar from settings');
+                        avatarUrl = this.getAbsoluteAvatarUrl(settings.avatar);
+                        console.log('🖼️ Using uploaded avatar from settings:', avatarUrl.substring(0, 50) + '...');
                     } else {
-                        console.log('🖼️ Using default avatar');
+                        console.log('🖼️ Using default avatar (settings avatar invalid or missing)');
                     }
 
-                    // Set configuration
+                    // Set configuration with validated URL
                     this.config.avatar = avatarUrl;
                     this.config.enabled = settings.enabled !== false;
                     this.config.allowFileUpload = settings.allowFileUpload !== false;
@@ -165,17 +165,48 @@
         },
 
         isValidAvatarUrl: function(url) {
-            if (!url || typeof url !== 'string') return false;
+            if (!url || typeof url !== 'string' || url.trim() === '') return false;
+            
+            // Allow data URIs, HTTP(S) URLs, and local paths
             return url.startsWith('data:image/') || 
                    url.startsWith('http://') || 
                    url.startsWith('https://') || 
                    url.startsWith('/') || 
-                   url.startsWith('./');
+                   url.startsWith('./') ||
+                   url.match(/\.(jpg|jpeg|png|gif|svg|webp)$/i);
+        },
+
+        getAbsoluteAvatarUrl: function(avatarUrl) {
+            if (!avatarUrl) return this.getDefaultAvatar();
+            
+            // Already absolute or data URI
+            if (avatarUrl.startsWith('data:') || 
+                avatarUrl.startsWith('http://') || 
+                avatarUrl.startsWith('https://')) {
+                return avatarUrl;
+            }
+            
+            // Convert relative paths for online hosting
+            const baseUrl = window.location.origin;
+            if (avatarUrl.startsWith('./')) {
+                return baseUrl + '/' + avatarUrl.substring(2);
+            } else if (avatarUrl.startsWith('/')) {
+                return baseUrl + avatarUrl;
+            }
+            
+            // Default fallback
+            return this.getDefaultAvatar();
         },
 
         getDefaultAvatar: function() {
-            // Return a simple, reliable default avatar
-            return 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Ccircle cx="20" cy="20" r="20" fill="%23e8f24c"/%3E%3Cpath d="M20 10c2 0 4 2 4 4s-2 4-4 4-4-2-4-4 2-4 4-4zm0 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" fill="%2326282f"/%3E%3C/svg%3E';
+            // Return a robust, always-working default avatar
+            return 'data:image/svg+xml;base64,' + btoa(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="20" fill="#e8f24c"/>
+                    <circle cx="20" cy="15" r="6" fill="#26282f"/>
+                    <path d="M8 35c0-6 5-10 12-10s12 4 12 10z" fill="#26282f"/>
+                </svg>
+            `);
         },
 
         loadLanguagePreference: function() {
@@ -324,24 +355,9 @@
         setAvatarImage: function(imgElement, avatarUrl, index) {
             if (!imgElement) return;
 
-            // Clear existing handlers
-            imgElement.onerror = null;
-            imgElement.onload = null;
+            console.log(`🖼️ Setting avatar ${index} with URL:`, avatarUrl?.substring(0, 50) + '...');
 
-            // Set up error handling
-            imgElement.onerror = () => {
-                console.warn(`Avatar ${index} failed to load, using default`);
-                if (avatarUrl !== this.getDefaultAvatar()) {
-                    imgElement.src = this.getDefaultAvatar();
-                }
-            };
-
-            imgElement.onload = () => {
-                console.log(`✅ Avatar ${index} loaded successfully`);
-                imgElement.style.display = 'block';
-            };
-
-            // Set essential styles
+            // Set essential styles immediately
             imgElement.style.display = 'block';
             imgElement.style.objectFit = 'cover';
             imgElement.style.width = '100%';
@@ -350,8 +366,42 @@
             imgElement.style.backgroundColor = '#e8f24c';
             imgElement.alt = (this.currentAgent?.name || 'Assistant') + ' Avatar';
 
+            // Clear existing handlers
+            imgElement.onerror = null;
+            imgElement.onload = null;
+
+            // Validate avatar URL first
+            if (!avatarUrl || typeof avatarUrl !== 'string' || avatarUrl.trim() === '') {
+                console.warn(`Avatar ${index} URL is invalid, using default`);
+                imgElement.src = this.getDefaultAvatar();
+                return;
+            }
+
+            // Set up error handling with immediate fallback
+            imgElement.onerror = () => {
+                console.warn(`Avatar ${index} failed to load (${avatarUrl?.substring(0, 50)}...), using default`);
+                imgElement.src = this.getDefaultAvatar();
+                imgElement.style.display = 'block';
+            };
+
+            imgElement.onload = () => {
+                console.log(`✅ Avatar ${index} loaded successfully`);
+                imgElement.style.display = 'block';
+            };
+
+            // For online hosting, convert relative paths to absolute
+            let finalAvatarUrl = avatarUrl;
+            if (avatarUrl.startsWith('./') || avatarUrl.startsWith('/images/')) {
+                // Convert to absolute URL for online hosting
+                const baseUrl = window.location.origin;
+                finalAvatarUrl = avatarUrl.startsWith('./') 
+                    ? baseUrl + '/' + avatarUrl.substring(2)
+                    : baseUrl + avatarUrl;
+                console.log(`🔧 Converted relative path to absolute: ${finalAvatarUrl}`);
+            }
+
             // Set the source to trigger loading
-            imgElement.src = avatarUrl;
+            imgElement.src = finalAvatarUrl;
         },
 
         setupAvatarUpdateListener: function() {

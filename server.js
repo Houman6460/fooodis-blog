@@ -33,7 +33,13 @@ app.use(cors({
 // Middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Serve static files
 app.use(express.static('.'));
+
+// Explicitly serve images directory for avatar support
+app.use('/images', express.static('images'));
+app.use('/images/avatars', express.static('images/avatars'));
 
 // Import API routes with error handling
 let chatbotAPI, systemHealthAPI, databaseAPI, recoveryAPI, ticketsAPI, authAPI;
@@ -109,7 +115,6 @@ if (typeof authAPI === 'function' || (authAPI && typeof authAPI.handle === 'func
     app.use('/api/auth', authAPI);
 }
 
-// Serve static files from the current directory
 // Note: Static serving is now handled by express.static('.') above
 
 // Start the server
