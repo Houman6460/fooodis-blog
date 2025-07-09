@@ -1280,8 +1280,8 @@ class NodeFlowBuilder {
                             ">
                             <button id="test-send-btn" style="
                                 padding: 10px 20px; 
-                                background: #007bff; 
-                                color: white; 
+                                background: #e8f24c; 
+                                color: #000; 
                                 border: none; 
                                 border-radius: 4px; 
                                 cursor: pointer;
@@ -1333,7 +1333,7 @@ class NodeFlowBuilder {
                     justify-content: flex-start;
                 ">
                     <div class="message-content" style="
-                        background: #007bff; 
+                        background: #4a4a4a; 
                         color: white; 
                         padding: 12px 16px; 
                         border-radius: 18px 18px 18px 4px; 
@@ -1351,7 +1351,7 @@ class NodeFlowBuilder {
                     justify-content: flex-start;
                 ">
                     <div class="message-content" style="
-                        background: #007bff; 
+                        background: #4a4a4a; 
                         color: white; 
                         padding: 12px 16px; 
                         border-radius: 18px 18px 18px 4px; 
@@ -1407,7 +1407,7 @@ class NodeFlowBuilder {
         `;
         typingIndicator.innerHTML = `
             <div class="message-content" style="
-                background: #007bff; 
+                background: #4a4a4a; 
                 color: white; 
                 padding: 12px 16px; 
                 border-radius: 18px 18px 18px 4px; 
@@ -1433,7 +1433,7 @@ class NodeFlowBuilder {
             `;
             botMessage.innerHTML = `
                 <div class="message-content" style="
-                    background: #007bff; 
+                    background: #4a4a4a; 
                     color: white; 
                     padding: 12px 16px; 
                     border-radius: 18px 18px 18px 4px; 
