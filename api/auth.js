@@ -13,6 +13,24 @@ const router = express.Router();
 let users = [];
 let userIdCounter = 1;
 
+// Initialize with default admin user
+async function initializeDefaultUser() {
+    const defaultAdmin = {
+        id: userIdCounter++,
+        name: 'Logoland Admin',
+        email: 'info@logoland.se',
+        password: await hashPassword('Ejimineh1236460'),
+        createdAt: new Date().toISOString(),
+        isActive: true,
+        isAdmin: true
+    };
+    users.push(defaultAdmin);
+    console.log('Default admin user initialized: info@logoland.se');
+}
+
+// Initialize default user on startup
+initializeDefaultUser().catch(console.error);
+
 // JWT secret (in production, use environment variable)
 const JWT_SECRET = process.env.JWT_SECRET || 'fooodis-customer-portal-secret-key';
 
