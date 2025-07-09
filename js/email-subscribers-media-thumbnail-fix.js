@@ -59,19 +59,20 @@
      * Monitor existing modals for dynamic content changes
      */
     function monitorExistingModals() {
-        const existingModals = document.querySelectorAll('.modal');
-        existingModals.forEach(modal => {
-            console.log('Monitoring existing modal:', modal);
+        // Find existing modal elements and monitor them
+        const existingModals = document.querySelectorAll('.modal, [id*="modal"], [class*="Modal"]');
 
-            // Validate that modal is a proper Node before observing
-            if (modal && modal.nodeType === Node.ELEMENT_NODE && window.modalObserver) {
+        existingModals.forEach(modal => {
+            // Ensure the element is a valid Node before observing
+            if (modal && modal.nodeType === Node.ELEMENT_NODE && modal instanceof Element) {
+                console.log('Monitoring existing modal:', modal.id || modal.className);
                 try {
-                    window.modalObserver.observe(modal, {
+                    modalObserver.observe(modal, {
                         childList: true,
                         subtree: true
                     });
-                } catch (error) {
-                    console.warn('Failed to observe modal:', error);
+                } catch (e) {
+                    console.warn('Failed to observe modal:', e.message);
                 }
             }
         });
