@@ -8,7 +8,7 @@
     <title>Fooodis Blog</title>
 
     <!-- EMERGENCY FIX: Core browser functions interception -->
-
+    
 
     <!-- TEMPLATE FIX: Replaces hardcoded default template -->
     <script src="js/template-replacement.js"></script>
@@ -42,7 +42,7 @@
     <link rel="stylesheet" href="css/email-popup-enhanced.css">
     <link rel="stylesheet" href="css/email-collection-popup.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    
     <!-- Chatbot Widget Styles -->
     <style>
         /* Ensure chatbot widget appears above all other elements */
@@ -51,12 +51,12 @@
             z-index: 999999 !important;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         }
-
+        
         #fooodis-chatbot.bottom-right {
             bottom: 20px !important;
             right: 20px !important;
         }
-
+        
         .chatbot-button {
             width: 60px !important;
             height: 60px !important;
@@ -70,7 +70,7 @@
             transition: all 0.3s ease !important;
             position: relative !important;
         }
-
+        
         .chatbot-button:hover {
             transform: scale(1.1) !important;
         }
@@ -198,7 +198,7 @@
 
     <!-- Blog Media Integration - Connects media gallery with blog editing -->
     <script src="js/blog-media-integration.js"></script>
-
+    
     <!-- Chatbot Message Enhancer Integration - Fixes button link generation -->
     <script src="js/chatbot-message-enhancer-integration.js"></script>
 
@@ -216,36 +216,7 @@
 
     <!-- Force Popup Display - Guarantees popup shows up on the page -->
     <script src="js/force-popup-display.js"></script>
-
-    <!-- Chatbot Initialization Script -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Blog: Initializing chatbot widget...');
-
-        // Wait for FoodisChatbot to be available
-        function initializeChatbot() {
-          if (typeof window.FoodisChatbot !== 'undefined') {
-            try {
-              window.FoodisChatbot.init({
-                apiEndpoint: window.location.origin + '/api/chatbot',
-                position: 'bottom-right',
-                primaryColor: '#e8f24c',
-                language: 'en'
-              });
-              console.log('✅ Blog: Chatbot initialized successfully');
-            } catch (error) {
-              console.error('❌ Blog: Error initializing chatbot:', error);
-            }
-          } else {
-            console.log('⏳ Blog: Waiting for FoodisChatbot...');
-            setTimeout(initializeChatbot, 500);
-          }
-        }
-
-        // Start initialization
-        initializeChatbot();
-      });
-    </script></head>
+</head>
 
 <body class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-home-page="https://sweedtaset.nicepage.io/Fooodis.html?version=487c2819-ec2d-4d07-3d04-c9739ff0c4c2" data-home-page-title="Fooodis" data-include-products="true" data-lang="en" data-path-to-root="./">
     <!-- Original Fooodis Header - Exact Copy -->
