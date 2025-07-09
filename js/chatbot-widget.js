@@ -296,7 +296,7 @@
                 headerText.textContent = this.currentAgent.name;
             }
 
-            // Get the correct avatar URL with proper fallback chain - prioritize uploaded settings avatar
+            // Get the correct avatar URL with robust fallback chain
             let avatarUrl = this.getDefaultAvatar(); // Always start with working default
             
             // Priority chain: chatbotSettings.avatar (uploaded) > currentAgent.avatar > config.avatar > default
@@ -324,27 +324,38 @@
 
             console.log('🖼️ Final avatar URL:', avatarUrl.substring(0, 100) + '...');
 
-            // Update all avatar images
+            // Update all avatar images with enhanced error handling
             avatarImages.forEach((img, index) => {
                 console.log(`🖼️ Updating avatar image ${index + 1}:`, img);
                 
-                img.src = avatarUrl;
+                // Clear any previous error handlers
+                img.onerror = null;
+                img.onload = null;
+                
+                // Set up error handler before setting src
+                img.onerror = function() {
+                    console.warn('Avatar failed to load:', img.src);
+                    console.log('🔄 Falling back to default avatar');
+                    img.src = this.getDefaultAvatar();
+                    img.style.display = 'block';
+                }.bind(this);
+                
+                img.onload = function() {
+                    console.log('✅ Avatar loaded successfully for image', index + 1);
+                    img.style.display = 'block';
+                };
+                
+                // Set attributes and styles
                 img.alt = this.currentAgent.name + ' Avatar';
                 img.style.display = 'block';
                 img.style.objectFit = 'cover';
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.borderRadius = '50%';
+                img.style.backgroundColor = '#e8f24c';
                 
-                img.onerror = function() {
-                    console.warn('Avatar failed to load:', img.src);
-                    console.log('🔄 Falling back to default avatar');
-                    img.src = this.getDefaultAvatar();
-                }.bind(this);
-                
-                img.onload = function() {
-                    console.log('✅ Avatar loaded successfully for image', index + 1);
-                };
+                // Set src last to trigger loading
+                img.src = avatarUrl;
             });
 
             // Update current agent avatar reference
@@ -446,7 +457,7 @@
                     <!-- Chat Button -->
                     <div class="chatbot-button" id="chatbot-button">
                         <div class="chatbot-avatar">
-                            <img src="${agentAvatar}" alt="${agentName} Avatar" />
+                            <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="this.src='${this.getDefaultAvatar()}'; this.style.display='block';" />
                         </div>
                         <div class="notification-badge" id="notification-badge">1</div>
                     </div>
@@ -466,7 +477,7 @@
                             </div>
                             <div class="agent-info">
                                 <div class="chatbot-avatar-header">
-                                    <img src="${agentAvatar}" alt="${agentName} Avatar" />
+                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="this.src='${this.getDefaultAvatar()}'; this.style.display='block';" />
                                 </div>
                                 <div class="header-text">
                                     <h4>${agentName}</h4>
@@ -480,7 +491,7 @@
                         <div class="chatbot-messages" id="chatbot-messages">
                             <div class="message assistant">
                                 <div class="message-avatar">
-                                    <img src="${agentAvatar}" alt="${agentName} Avatar" />
+                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="this.src='${this.getDefaultAvatar()}'; this.style.display='block';" />
                                 </div>
                                 <div class="message-content">${this.getInitialWelcomeMessage()}</div>
                             </div>
@@ -1000,15 +1011,27 @@
             }
 
             const avatarImg = document.createElement('img');
-            avatarImg.src = avatar;
             avatarImg.alt = sender + ' Avatar';
             avatarImg.style.width = '100%';
             avatarImg.style.height = '100%';
             avatarImg.style.objectFit = 'cover';
+            avatarImg.style.display = 'block';
+            avatarImg.style.backgroundColor = '#e8f24c';
+            avatarImg.style.borderRadius = '50%';
+            
+            // Set up error handler before setting src
             avatarImg.onerror = function() {
                 console.warn('Message avatar failed to load:', avatar);
                 avatarImg.src = this.getDefaultAvatar();
+                avatarImg.style.display = 'block';
             }.bind(this);
+            
+            avatarImg.onload = function() {
+                avatarImg.style.display = 'block';
+            };
+            
+            // Set src last to trigger loading
+            avatarImg.src = avatar;
 
             messageElement.innerHTML = `
                 <div class="message-avatar">
