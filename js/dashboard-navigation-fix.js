@@ -26,16 +26,58 @@
             return;
         }
 
-        // Remove any existing event listeners to prevent conflicts
-        removeExistingListeners();
+        // Wait a bit for all elements to be ready
+        setTimeout(() => {
+            try {
+                // Remove any existing event listeners to prevent conflicts
+                removeExistingListeners();
 
-        // Set up the navigation system
-        setupNavigation();
+                // Set up the navigation system
+                setupNavigation();
 
-        // Ensure the first section is active by default
-        setDefaultActiveSection();
+                // Ensure the first section is active by default
+                setDefaultActiveSection();
 
-        console.log('Dashboard Navigation Fix: Navigation setup complete');
+                // Set up additional fallback event listeners
+                setupFallbackListeners();
+
+                console.log('Dashboard Navigation Fix: Navigation setup complete');
+            } catch (error) {
+                console.error('Dashboard Navigation Fix: Error during initialization:', error);
+                // Try a simpler fallback
+                setupSimpleFallback();
+            }
+        }, 100);
+    }
+
+    function setupFallbackListeners() {
+        // Add a global click listener as fallback
+        document.addEventListener('click', function(e) {
+            const clickedElement = e.target.closest('.nav-item, .sidebar-nav li');
+            if (clickedElement) {
+                const sectionId = clickedElement.getAttribute('data-section');
+                if (sectionId && !e.defaultPrevented) {
+                    e.preventDefault();
+                    switchToSection(sectionId);
+                }
+            }
+        });
+    }
+
+    function setupSimpleFallback() {
+        console.log('Dashboard Navigation Fix: Setting up simple fallback...');
+        
+        // Simple direct event binding
+        const navItems = document.querySelectorAll('[data-section]');
+        navItems.forEach(item => {
+            item.onclick = function(e) {
+                e.preventDefault();
+                const sectionId = this.getAttribute('data-section');
+                if (sectionId) {
+                    switchToSection(sectionId);
+                }
+            };
+        });
     }
 
     function removeExistingListeners() {
@@ -48,15 +90,21 @@
     }
 
     function setupNavigation() {
-        // Get all navigation items
-        const navItems = document.querySelectorAll('.nav-item, .sidebar-nav li, [data-section]');
+        // Get all navigation items with multiple selectors
+        const navItems = document.querySelectorAll('.nav-item, .sidebar-nav li, [data-section], .nav-link');
         
         console.log(`Dashboard Navigation Fix: Found ${navItems.length} navigation items`);
 
         navItems.forEach(navItem => {
-            navItem.addEventListener('click', function(e) {
+            // Remove any existing listeners first
+            const clone = navItem.cloneNode(true);
+            navItem.parentNode.replaceChild(clone, navItem);
+            
+            clone.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
+
+                console.log('Dashboard Navigation Fix: Nav item clicked:', this);
 
                 // Get the section ID from data-section attribute
                 let sectionId = this.getAttribute('data-section');
@@ -66,7 +114,11 @@
                     // Try href attribute
                     const href = this.getAttribute('href');
                     if (href && href.startsWith('#')) {
-                        sectionId = href.substring(1).replace('-section', '');
+                        sectionId = href.substring(1);
+                        // Remove '-section' suffix if present
+                        if (sectionId.endsWith('-section')) {
+                            sectionId = sectionId.replace('-section', '');
+                        }
                     }
                     
                     // Try to get from text content as fallback
@@ -106,10 +158,24 @@
             'settings': 'settings'
         };
 
+        // Also try direct matches
+        const directMatches = [
+            'create-post', 'manage-posts', 'ai-config', 'ai-automation', 
+            'ai-assistant', 'scheduled-posts', 'categories', 'media-library',
+            'blog-stats', 'ad-management', 'advertising', 'profile',
+            'email-management', 'chatbot-management', 'support-tickets', 'settings'
+        ];
+
+        if (directMatches.includes(text)) {
+            return text;
+        }
+
         return textMap[text] || null;
     }
 
     function switchToSection(sectionId) {
+        console.log(`Dashboard Navigation Fix: Switching to section: ${sectionId}`);
+        
         // Remove active class from all sections
         const allSections = document.querySelectorAll('.dashboard-section');
         allSections.forEach(section => {
@@ -129,9 +195,21 @@
             targetSection.classList.add('active');
             targetSection.style.display = 'block';
             console.log(`Dashboard Navigation Fix: Activated section: ${sectionId}`);
+            
+            // Force a reflow to ensure the display change takes effect
+            targetSection.offsetHeight;
         } else {
             console.error(`Dashboard Navigation Fix: Section not found: ${sectionId}-section`);
-            return;
+            // Try alternative section ID formats
+            const altSection = document.getElementById(sectionId);
+            if (altSection && altSection.classList.contains('dashboard-section')) {
+                altSection.classList.add('active');
+                altSection.style.display = 'block';
+                console.log(`Dashboard Navigation Fix: Activated alternative section: ${sectionId}`);
+            } else {
+                console.error(`Dashboard Navigation Fix: No section found for: ${sectionId}`);
+                return;
+            }
         }
 
         // Add active class to clicked nav item
@@ -141,8 +219,19 @@
             console.log(`Dashboard Navigation Fix: Activated nav item: ${sectionId}`);
         }
 
+        // Also try to find nav item by href
+        const hrefNavItem = document.querySelector(`a[href="#${sectionId}"]`);
+        if (hrefNavItem) {
+            hrefNavItem.closest('.nav-item, li').classList.add('active');
+        }
+
         // Trigger any section-specific initialization
         initializeSectionFeatures(sectionId);
+        
+        // Update URL hash without triggering page reload
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, null, `#${sectionId}`);
+        }
     }
 
     function setDefaultActiveSection() {
