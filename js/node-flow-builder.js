@@ -1206,14 +1206,20 @@ class NodeFlowBuilder {
                 position: relative; 
                 background: #2a2a2a; 
                 border-radius: 8px; 
-                width: 90%; 
+                width: 90vw; 
                 max-width: 1000px; 
-                height: 80%; 
+                height: 80vh; 
                 max-height: 700px; 
+                min-height: 500px;
                 display: flex; 
                 flex-direction: column;
                 border: 1px solid #444;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                margin: 0 auto;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
             ">
                 <div class="modal-header" style="
                     padding: 20px; 

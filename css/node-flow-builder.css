@@ -22,6 +22,8 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
 }
 
 .test-flow-modal .modal-content.large {
@@ -32,12 +34,17 @@
     max-width: 1000px !important;
     height: 80vh !important;
     max-height: 700px !important;
+    min-height: 500px !important;
     display: flex !important;
     flex-direction: column !important;
     border: 1px solid #444 !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-    margin: auto !important;
-    transform: translate(0, 0) !important;
+    margin: 0 auto !important;
+    transform: none !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
 }
 
 .test-chat-container {
