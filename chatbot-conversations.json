@@ -122,5 +122,34 @@
     },
     "lastUserMessage": "how could I register",
     "messageCount": 6
+  },
+  {
+    "id": "conv_1752082697743_ltreejelg",
+    "messages": [
+      {
+        "role": "user",
+        "content": "menu",
+        "timestamp": "2025-07-09T17:38:29.470Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Hi there! I'd be happy to help you with our menu. Fooodis offers a variety of delicious options, including appetizers, main courses, desserts, and beverages. \n\nIf you have specific dietary preferences or are looking for recommendations, feel free to let me know! Otherwise, you can browse our full menu on the [Fooodis website](https://fooodis.com/menu). \n\nWhat are you in the mood for?",
+        "timestamp": "2025-07-09T17:38:31.998Z"
+      }
+    ],
+    "createdAt": "2025-07-09T17:38:29.470Z",
+    "lastMessageAt": "2025-07-09T17:38:29.470Z",
+    "language": "en",
+    "status": "active",
+    "threadId": null,
+    "agent": {
+      "id": "support-assistant",
+      "name": "Sarah Johnson - Customer Support",
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "personality": "Professional assistant",
+      "assignedAssistantId": "asst_To6VWuiz6x72KsYDMxaWUsb6"
+    },
+    "lastUserMessage": "menu",
+    "messageCount": 2
   }
 ]
