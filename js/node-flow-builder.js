@@ -1383,10 +1383,16 @@ class NodeFlowBuilder {
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
         
-        // Update node handler - Enhanced for Intent Detection
+        // Update node handler - Enhanced for Intent Detection with forced save
         modal.querySelector('.modal-update').addEventListener('click', (e) => {
             const nodeId = e.target.getAttribute('data-node-id');
             this.updateNodeFromModal(nodeId);
+            
+            // Force immediate save after modal update
+            setTimeout(() => {
+                this.saveFlow();
+                this.showToast('Changes saved successfully', 'success');
+            }, 100);
         });
         
         // Handle department change for handoff nodes
@@ -1408,12 +1414,28 @@ class NodeFlowBuilder {
                 });
             });
             
-            // Special handling for checkboxes in intent categories
+            // Special handling for checkboxes in intent categories with immediate save
             const checkboxes = form.querySelectorAll('.intent-checkboxes input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', () => {
                     console.log('Checkbox changed:', checkbox.value, checkbox.checked);
-                    this.scheduleAutoSave();
+                    
+                    // Immediate auto-save for checkbox changes
+                    const nodeId = form.getAttribute('data-node-id');
+                    const node = this.nodes.find(n => n.id === nodeId);
+                    
+                    if (node && node.type === 'intent') {
+                        // Update intents immediately
+                        const currentCheckedIntents = Array.from(form.querySelectorAll('.intent-checkboxes input[type="checkbox"]:checked'))
+                            .map(input => input.value);
+                        
+                        node.data.intents = currentCheckedIntents;
+                        
+                        // Save immediately
+                        this.autoSave();
+                        
+                        console.log('Immediately saved intent changes:', currentCheckedIntents);
+                    }
                 });
             });
         }
@@ -1586,10 +1608,22 @@ class NodeFlowBuilder {
                 break;
                 
             case 'intent':
-                const checkedIntents = Array.from(document.querySelectorAll('.intent-checkboxes input[type="checkbox"]:checked'))
-                    .map(input => input.value);
+                // Get all checkboxes from the intent categories section
+                const intentModal = document.querySelector('.node-modal');
+                const checkedIntents = [];
+                
+                if (intentModal) {
+                    const checkboxes = intentModal.querySelectorAll('.intent-checkboxes input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            checkedIntents.push(checkbox.value);
+                        }
+                    });
+                }
+                
                 const intentDescription = document.getElementById('edit-intent-description');
                 
+                // Update node data
                 node.data.intents = checkedIntents;
                 if (intentDescription) {
                     node.data.description = intentDescription.value;
@@ -1598,8 +1632,11 @@ class NodeFlowBuilder {
                 console.log('Updated intent node with intents:', checkedIntents);
                 console.log('Updated intent node description:', node.data.description);
                 
-                // Force re-render to show updated intents
-                this.renderNodes();
+                // Validate that intents array is properly set
+                if (!Array.isArray(node.data.intents)) {
+                    node.data.intents = [];
+                }
+                
                 break;
                 
             case 'condition':
@@ -1885,9 +1922,8 @@ class NodeFlowBuilder {
         
         this.autoSaveTimeout = setTimeout(() => {
             this.saveFlow();
-            this.showToast('Auto-saved', 'success');
             console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
-        }, 1000); // Save after 1 second of inactivity
+        }, 500); // Save after 500ms of inactivity
     }
 }
 
