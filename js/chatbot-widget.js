@@ -625,11 +625,18 @@
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
                     font-size: 14px !important;
                     line-height: 1.4 !important;
+                    color: #333333 !important;
                 }
 
                 .message.user .message-content {
                     background: #e8f24c !important;
                     color: #26282f !important;
+                }
+
+                .message.assistant .message-content {
+                    background: #f8f9fa !important;
+                    color: #333333 !important;
+                    border: 1px solid #e9ecef !important;
                 }
 
                 .chatbot-typing {
@@ -844,6 +851,9 @@
             const message = messageInput.value.trim();
             if (!message) return;
 
+            // Play send sound
+            this.playSound('send');
+
             // Add user message to chat
             this.addMessage(message, 'user');
             messageInput.value = '';
@@ -859,6 +869,11 @@
             const messagesContainer = document.getElementById('chatbot-messages');
             if (!messagesContainer) return;
 
+            // Play receive sound for assistant messages
+            if (sender === 'assistant') {
+                this.playSound('receive');
+            }
+
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}`;
 
@@ -870,7 +885,7 @@
                 <div class="message-avatar">
                     <img src="${avatar}" alt="${sender} Avatar" />
                 </div>
-                <div class="message-content">${content}</div>
+                <div class="message-content" style="color: #333333 !important; background: ${sender === 'user' ? '#e8f24c' : '#f8f9fa'} !important;">${content}</div>
             `;
 
             messagesContainer.appendChild(messageElement);
@@ -889,6 +904,16 @@
             if (typingIndicator) {
                 typingIndicator.style.display = 'flex';
                 this.isTyping = true;
+                
+                // Play typing sound
+                this.playSound('typing');
+                
+                // Update typing text with agent name
+                const agentName = this.currentAgent?.name || 'Assistant';
+                const typingText = typingIndicator.querySelector('span');
+                if (typingText) {
+                    typingText.textContent = `${agentName} is typing...`;
+                }
             }
         },
 
@@ -897,6 +922,50 @@
             if (typingIndicator) {
                 typingIndicator.style.display = 'none';
                 this.isTyping = false;
+            }
+        },
+
+        playSound: function(type) {
+            try {
+                let frequency, duration;
+
+                switch(type) {
+                    case 'send':
+                        frequency = 800;
+                        duration = 200;
+                        break;
+                    case 'receive':
+                        frequency = 600;
+                        duration = 300;
+                        break;
+                    case 'typing':
+                        frequency = 400;
+                        duration = 100;
+                        break;
+                    default:
+                        return;
+                }
+
+                // Create audio context
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration / 1000);
+
+                console.log(`🔊 Playing ${type} sound at ${frequency}Hz for ${duration}ms`);
+            } catch (error) {
+                console.warn('Sound playback failed:', error);
             }
         },
 
@@ -959,18 +1028,22 @@
                 console.warn('⚠️ API endpoint failed:', apiError);
             }
 
-            // Enhanced fallback response
-            this.hideTyping();
-            const fallbackResponse = this.generateIntelligentFallback(message);
-            this.addMessage(fallbackResponse, 'assistant');
+            // Enhanced fallback response with typing simulation
+            setTimeout(() => {
+                this.hideTyping();
+                const fallbackResponse = this.generateIntelligentFallback(message);
+                this.addMessage(fallbackResponse, 'assistant');
+            }, 1000 + Math.random() * 2000); // Simulate realistic typing delay
 
         } catch (error) {
             console.error('💥 Error processing message:', error);
-            this.hideTyping();
-            const errorResponse = this.currentLanguage === 'sv' 
-                ? 'Jag kan inte svara just nu på grund av tekniska problem. Vänligen försök igen om ett ögonblick.'
-                : 'I\'m unable to respond right now due to technical issues. Please try again in a moment.';
-            this.addMessage(errorResponse, 'assistant');
+            setTimeout(() => {
+                this.hideTyping();
+                const errorResponse = this.currentLanguage === 'sv' 
+                    ? 'Jag kan inte svara just nu på grund av tekniska problem. Vänligen försök igen om ett ögonblick.'
+                    : 'I\'m unable to respond right now due to technical issues. Please try again in a moment.';
+                this.addMessage(errorResponse, 'assistant');
+            }, 500);
         }
     },
 
