@@ -92,7 +92,7 @@
         window.ChatbotInitializer.init();
     }
 
-    // Blog page specific avatar loading
+    // Blog page specific avatar loading with enhanced detection
     function ensureBlogPageAvatar() {
         // Check if we're on blog page
         if (window.location.pathname.includes('blog.html') || 
@@ -100,11 +100,14 @@
 
             console.log('🔧 Blog page detected, ensuring avatar loads correctly');
 
-            // Try to get avatar from various storage locations
+            // Enhanced avatar source checking
             const avatarSources = [
                 localStorage.getItem('chatbot-widget-avatar'),
+                localStorage.getItem('chatbot-current-avatar'),
+                localStorage.getItem('dashboard-avatar-cache'),
                 localStorage.getItem('chatbot-avatar-settings'),
-                localStorage.getItem('fooodis-chatbot-settings')
+                localStorage.getItem('fooodis-chatbot-settings'),
+                sessionStorage.getItem('chatbot-avatar-current')
             ];
 
             let avatarUrl = null;
@@ -113,11 +116,13 @@
                     try {
                         if (source.startsWith('http') || source.startsWith('data:') || source.startsWith('/') || source.startsWith('images/')) {
                             avatarUrl = source;
+                            console.log('📥 Found direct avatar URL:', source.substring(0, 50) + '...');
                             break;
                         } else {
                             const parsed = JSON.parse(source);
                             if (parsed.avatar) {
                                 avatarUrl = parsed.avatar;
+                                console.log('📥 Found parsed avatar URL:', parsed.avatar.substring(0, 50) + '...');
                                 break;
                             }
                         }
@@ -127,22 +132,102 @@
                 }
             }
 
-            if (avatarUrl) {
-                console.log('🖼️ Found avatar for blog page:', avatarUrl.substring(0, 50) + '...');
-
-                // Wait for chatbot to initialize, then update avatar
-                const checkAndUpdateAvatar = () => {
-                    if (window.FoodisChatbot && window.FoodisChatbot.updateAvatar) {
-                        window.FoodisChatbot.updateAvatar(avatarUrl);
-                        console.log('✅ Avatar updated on blog page');
-                    } else {
-                        setTimeout(checkAndUpdateAvatar, 100);
-                    }
-                };
-
-                setTimeout(checkAndUpdateAvatar, 500);
+            // If no avatar found locally, try server config
+            if (!avatarUrl) {
+                console.log('📥 No local avatar found, trying server config...');
+                fetch('/chatbot-config.json')
+                    .then(response => response.json())
+                    .then(config => {
+                        if (config.avatar) {
+                            avatarUrl = config.avatar;
+                            console.log('📥 Found avatar from server config:', avatarUrl.substring(0, 50) + '...');
+                            applyAvatarToBlogChatbot(avatarUrl);
+                        }
+                    })
+                    .catch(error => console.warn('Failed to fetch server config:', error));
+            } else {
+                applyAvatarToBlogChatbot(avatarUrl);
             }
         }
+    }
+
+    // Apply avatar specifically for blog page chatbot
+    function applyAvatarToBlogChatbot(avatarUrl) {
+        if (!avatarUrl) return;
+
+        console.log('🖼️ Applying avatar to blog page chatbot:', avatarUrl.substring(0, 50) + '...');
+
+        // Make URL absolute
+        let absoluteUrl = avatarUrl;
+        if (!avatarUrl.startsWith('http') && !avatarUrl.startsWith('data:')) {
+            const baseUrl = window.location.origin;
+            if (avatarUrl.startsWith('./')) {
+                absoluteUrl = baseUrl + '/' + avatarUrl.substring(2);
+            } else if (avatarUrl.startsWith('/')) {
+                absoluteUrl = baseUrl + avatarUrl;
+            } else if (avatarUrl.startsWith('images/')) {
+                absoluteUrl = baseUrl + '/' + avatarUrl;
+            } else {
+                absoluteUrl = baseUrl + '/images/avatars/' + avatarUrl;
+            }
+        }
+
+        let retryCount = 0;
+        const maxRetries = 15;
+
+        // Enhanced avatar application with multiple retries
+        const checkAndUpdateAvatar = () => {
+            retryCount++;
+            
+            if (window.FoodisChatbot) {
+                let applied = false;
+                
+                // Try multiple methods
+                if (typeof window.FoodisChatbot.updateAvatar === 'function') {
+                    window.FoodisChatbot.updateAvatar(absoluteUrl);
+                    applied = true;
+                    console.log('✅ Avatar applied via updateAvatar method');
+                }
+                
+                if (window.FoodisChatbot.config) {
+                    window.FoodisChatbot.config.avatar = absoluteUrl;
+                    applied = true;
+                    console.log('✅ Avatar applied to config');
+                }
+                
+                if (window.FoodisChatbot.currentAgent) {
+                    window.FoodisChatbot.currentAgent.avatar = absoluteUrl;
+                    applied = true;
+                    console.log('✅ Avatar applied to current agent');
+                }
+                
+                // Force refresh all avatars
+                if (window.FoodisChatbot.setupAllAvatars) {
+                    setTimeout(() => {
+                        window.FoodisChatbot.setupAllAvatars();
+                        console.log('✅ All avatars refreshed');
+                    }, 100);
+                }
+                
+                if (applied) {
+                    // Store for persistence
+                    localStorage.setItem('chatbot-widget-avatar', absoluteUrl);
+                    localStorage.setItem('chatbot-current-avatar', absoluteUrl);
+                    sessionStorage.setItem('chatbot-avatar-current', absoluteUrl);
+                    return;
+                }
+            }
+            
+            // Retry if not successful and within limit
+            if (retryCount < maxRetries) {
+                const delay = Math.min(200 * retryCount, 2000);
+                setTimeout(checkAndUpdateAvatar, delay);
+            } else {
+                console.warn('⚠️ Failed to apply avatar after', maxRetries, 'attempts');
+            }
+        };
+
+        checkAndUpdateAvatar();
     }
 
     // Initialize chatbot when DOM is ready
