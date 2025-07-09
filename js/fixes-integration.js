@@ -1,242 +1,311 @@
 
-// Fixes Integration - Coordinates all system fixes and ensures proper loading order
-class FixesIntegration {
-    constructor() {
-        this.loadedFixes = new Set();
-        this.pendingFixes = new Map();
-        this.dependencies = new Map();
-        this.initialize();
-    }
-
-    initialize() {
-        console.log('Fixes Integration: Initializing system...');
-        this.setupDependencies();
-        this.loadCriticalFixes();
-        this.setupGlobalErrorHandling();
-        this.monitorSystemHealth();
-    }
-
-    setupDependencies() {
-        // Define fix dependencies
-        this.dependencies.set('chatbot-management', ['auth-manager']);
-        this.dependencies.set('automation-category-manager', ['ai-automation']);
-        this.dependencies.set('enhanced-banner-fixed', []);
-        this.dependencies.set('automation-card-fix', ['ai-automation']);
-        this.dependencies.set('email-subscribers-media-thumbnail-fix', []);
-    }
-
-    loadCriticalFixes() {
-        const criticalFixes = [
-            'comprehensive-error-prevention',
-            'enhanced-banner-fixed', 
-            'automation-card-fix',
-            'email-subscribers-media-thumbnail-fix'
-        ];
-
-        criticalFixes.forEach(fix => {
-            this.loadFix(fix);
-        });
-    }
-
-    loadFix(fixName) {
-        if (this.loadedFixes.has(fixName)) {
-            console.log('Fixes Integration: Fix already loaded:', fixName);
-            return Promise.resolve();
+// Fixes Integration - Comprehensive fix loading and management system
+(function() {
+    'use strict';
+    
+    console.log('Fixes Integration: Starting comprehensive fix system');
+    
+    class FixesIntegration {
+        constructor() {
+            this.loadedFixes = new Set();
+            this.criticalFixes = [
+                'force-v2-section',
+                'icon-stabilizer', 
+                'immediate-init',
+                'status-card-rebuild',
+                'storage-initialization-fix'
+            ];
+            this.systemHealth = {
+                lastCheck: null,
+                status: 'initializing',
+                issues: []
+            };
+            this.init();
         }
-
-        const dependencies = this.dependencies.get(fixName) || [];
-        const pendingDeps = dependencies.filter(dep => !this.loadedFixes.has(dep));
-
-        if (pendingDeps.length > 0) {
-            console.log('Fixes Integration: Waiting for dependencies:', pendingDeps);
-            this.pendingFixes.set(fixName, dependencies);
-            return Promise.reject(new Error(`Dependencies not met: ${pendingDeps.join(', ')}`));
+        
+        init() {
+            console.log('Fixes Integration: Initializing fix management system');
+            
+            // Initialize core systems first
+            this.initializeCoreObjects();
+            
+            // Load critical fixes
+            this.loadCriticalFixes();
+            
+            // Set up monitoring
+            this.setupMonitoring();
+            
+            // Set up global error handling
+            this.setupErrorHandling();
+            
+            console.log('Fixes Integration: System initialized');
         }
-
-        return this.executeFix(fixName);
-    }
-
-    executeFix(fixName) {
-        return new Promise((resolve, reject) => {
+        
+        initializeCoreObjects() {
+            // Ensure all critical objects exist
+            if (!window.FoodisChatbot) {
+                window.FoodisChatbot = {
+                    initialized: true,
+                    conversations: [],
+                    config: {},
+                    api: {}
+                };
+            }
+            
+            if (!window.FoodisAutomation) {
+                window.FoodisAutomation = {
+                    initialized: true,
+                    paths: [],
+                    status: {},
+                    scheduler: {}
+                };
+            }
+            
+            // Fix for Color Format Fix loops
+            if (!window.EmailPopupEnhancer) {
+                window.EmailPopupEnhancer = {
+                    hexToRgb: function(hex) {
+                        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                        return result ? {
+                            r: parseInt(result[1], 16),
+                            g: parseInt(result[2], 16),
+                            b: parseInt(result[3], 16)
+                        } : null;
+                    }
+                };
+                console.log('Fixes Integration: EmailPopupEnhancer initialized');
+            }
+        }
+        
+        loadCriticalFixes() {
+            console.log('Fixes Integration: Loading critical fixes');
+            
+            this.criticalFixes.forEach(fixName => {
+                this.loadFix(fixName);
+            });
+        }
+        
+        loadFix(fixName) {
+            if (this.loadedFixes.has(fixName)) {
+                return;
+            }
+            
+            console.log(`Fixes Integration: Loading fix - ${fixName}`);
+            
             try {
-                console.log('Fixes Integration: Executing fix:', fixName);
-                
-                // Mark as loaded immediately to prevent cycles
-                this.loadedFixes.add(fixName);
-                
-                // Execute fix-specific logic
-                switch (fixName) {
-                    case 'comprehensive-error-prevention':
-                        this.enableErrorPrevention();
-                        break;
-                    case 'enhanced-banner-fixed':
-                        this.ensureEnhancedBanner();
-                        break;
-                    case 'automation-card-fix':
-                        this.ensureAutomationCardFix();
-                        break;
-                    case 'email-subscribers-media-thumbnail-fix':
-                        this.ensureEmailThumbnailFix();
-                        break;
-                    default:
-                        console.log('Fixes Integration: Generic fix execution for:', fixName);
+                // Check if script already exists
+                const existingScript = document.querySelector(`script[src*="${fixName}"]`);
+                if (existingScript) {
+                    this.loadedFixes.add(fixName);
+                    return;
                 }
-
-                // Check for pending fixes that can now be loaded
-                this.checkPendingFixes();
                 
-                resolve();
-                console.log('Fixes Integration: Fix executed successfully:', fixName);
+                // Load the fix
+                const script = document.createElement('script');
+                script.src = `js/${fixName}.js`;
+                script.async = true;
+                
+                script.onload = () => {
+                    this.loadedFixes.add(fixName);
+                    console.log(`Fixes Integration: Successfully loaded ${fixName}`);
+                };
+                
+                script.onerror = () => {
+                    console.warn(`Fixes Integration: Failed to load ${fixName}`);
+                    this.handleMissingFix(fixName);
+                };
+                
+                document.head.appendChild(script);
                 
             } catch (error) {
-                console.error('Fixes Integration: Error executing fix:', fixName, error);
-                this.loadedFixes.delete(fixName); // Remove on failure
-                reject(error);
+                console.error(`Fixes Integration: Error loading ${fixName}:`, error);
+                this.handleMissingFix(fixName);
             }
-        });
-    }
-
-    enableErrorPrevention() {
-        // Global error prevention
-        if (typeof window.comprehensiveErrorPrevention !== 'undefined') {
-            console.log('Fixes Integration: Error prevention already active');
-            return;
         }
-
-        window.addEventListener('error', (event) => {
-            console.warn('Fixes Integration: Caught global error:', event.error);
-            this.handleGlobalError(event.error);
-        });
-
-        window.addEventListener('unhandledrejection', (event) => {
-            console.warn('Fixes Integration: Caught unhandled rejection:', event.reason);
-            this.handleGlobalError(event.reason);
-        });
-    }
-
-    ensureEnhancedBanner() {
-        if (typeof window.enhancedBannerFixed === 'undefined') {
-            console.warn('Fixes Integration: Enhanced banner not found, will retry');
-            setTimeout(() => this.ensureEnhancedBanner(), 1000);
-        }
-    }
-
-    ensureAutomationCardFix() {
-        if (typeof window.automationCardFix === 'undefined') {
-            console.warn('Fixes Integration: Automation card fix not found, will retry');
-            setTimeout(() => this.ensureAutomationCardFix(), 1000);
-        }
-    }
-
-    ensureEmailThumbnailFix() {
-        // Check if email thumbnail fix is properly initialized
-        const emailModals = document.querySelectorAll('.modal');
-        if (emailModals.length > 0) {
-            console.log('Fixes Integration: Email thumbnail fix monitoring', emailModals.length, 'modals');
-        }
-    }
-
-    checkPendingFixes() {
-        const readyFixes = [];
         
-        this.pendingFixes.forEach((dependencies, fixName) => {
-            const pendingDeps = dependencies.filter(dep => !this.loadedFixes.has(dep));
-            if (pendingDeps.length === 0) {
-                readyFixes.push(fixName);
+        handleMissingFix(fixName) {
+            console.log(`Fixes Integration: Implementing fallback for ${fixName}`);
+            
+            // Implement basic fallbacks for critical fixes
+            switch (fixName) {
+                case 'immediate-init':
+                    this.implementImmediateInitFallback();
+                    break;
+                case 'force-v2-section':
+                    this.implementForceV2Fallback();
+                    break;
+                case 'icon-stabilizer':
+                    this.implementIconStabilizerFallback();
+                    break;
+                case 'status-card-rebuild':
+                    this.implementStatusCardFallback();
+                    break;
+                case 'storage-initialization-fix':
+                    this.implementStorageFixFallback();
+                    break;
             }
-        });
-
-        readyFixes.forEach(fixName => {
-            this.pendingFixes.delete(fixName);
+            
+            this.loadedFixes.add(fixName + '-fallback');
+        }
+        
+        implementImmediateInitFallback() {
+            console.log('Fixes Integration: Implementing immediate init fallback');
+            this.initializeCoreObjects();
+        }
+        
+        implementForceV2Fallback() {
+            console.log('Fixes Integration: Implementing V2 section fallback');
+            const v2Sections = document.querySelectorAll('[id*="v2"], [class*="v2"]');
+            v2Sections.forEach(section => {
+                section.style.display = 'block';
+                section.style.visibility = 'visible';
+            });
+        }
+        
+        implementIconStabilizerFallback() {
+            console.log('Fixes Integration: Implementing icon stabilizer fallback');
+            const icons = document.querySelectorAll('i[class*="fa-"], .icon');
+            icons.forEach(icon => {
+                icon.style.visibility = 'visible';
+                icon.style.display = 'inline-block';
+            });
+        }
+        
+        implementStatusCardFallback() {
+            console.log('Fixes Integration: Implementing status card fallback');
+            // Basic status card rebuild functionality
+            window.rebuildStatusCards = function() {
+                console.log('Status cards rebuild triggered (fallback)');
+            };
+        }
+        
+        implementStorageFixFallback() {
+            console.log('Fixes Integration: Implementing storage fix fallback');
+            // Ensure basic storage keys exist
+            const defaults = {
+                'aiConfig': '{}',
+                'aiAutomationPaths': '[]'
+            };
+            
+            Object.keys(defaults).forEach(key => {
+                if (!localStorage.getItem(key)) {
+                    localStorage.setItem(key, defaults[key]);
+                }
+            });
+        }
+        
+        setupErrorHandling() {
+            window.addEventListener('error', (error) => {
+                this.handleGlobalError(error);
+            });
+            
+            window.addEventListener('unhandledrejection', (event) => {
+                this.handleGlobalError(event.reason);
+            });
+        }
+        
+        handleGlobalError(error) {
+            const errorMsg = error.toString();
+            console.log(`Fixes Integration: Handling error - ${errorMsg}`);
+            
+            // Try to recover from common errors
+            if (errorMsg.includes('not defined')) {
+                this.attemptRecovery(error);
+            }
+        }
+        
+        attemptRecovery(error) {
+            const errorMsg = error.toString();
+            
+            if (errorMsg.includes('FoodisChatbot is not defined')) {
+                console.log('Fixes Integration: Attempting FoodisChatbot recovery');
+                this.initializeCoreObjects();
+            } else if (errorMsg.includes('AutomationCategoryManager')) {
+                console.log('Fixes Integration: Attempting AutomationCategoryManager recovery');
+                this.loadFix('automation-category-manager');
+            }
+        }
+        
+        setupMonitoring() {
+            // Monitor system health every 30 seconds
+            setInterval(() => {
+                this.checkSystemHealth();
+            }, 30000);
+            
+            // Initial health check
+            setTimeout(() => {
+                this.checkSystemHealth();
+            }, 5000);
+        }
+        
+        checkSystemHealth() {
+            const healthStatus = {
+                timestamp: new Date().toISOString(),
+                criticalObjects: this.checkCriticalObjects(),
+                loadedFixes: Array.from(this.loadedFixes),
+                domReady: document.readyState === 'complete',
+                errors: []
+            };
+            
+            this.systemHealth = {
+                lastCheck: healthStatus.timestamp,
+                status: healthStatus.criticalObjects.every(obj => obj.exists) ? 'healthy' : 'degraded',
+                details: healthStatus
+            };
+            
+            console.log('Fixes Integration: System health check completed', this.systemHealth.status);
+        }
+        
+        checkCriticalObjects() {
+            const criticalPaths = [
+                'window.FoodisChatbot',
+                'window.FoodisAutomation', 
+                'window.FoodisConfig',
+                'window.EmailPopupEnhancer'
+            ];
+            
+            return criticalPaths.map(path => ({
+                path,
+                exists: this.checkObjectPath(path)
+            }));
+        }
+        
+        checkObjectPath(path) {
+            try {
+                const parts = path.split('.');
+                let obj = window;
+                for (let i = 1; i < parts.length; i++) {
+                    obj = obj[parts[i]];
+                    if (obj === undefined) return false;
+                }
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        // Public methods
+        getSystemHealth() {
+            return this.systemHealth;
+        }
+        
+        reloadFix(fixName) {
+            this.loadedFixes.delete(fixName);
             this.loadFix(fixName);
-        });
-    }
-
-    setupGlobalErrorHandling() {
-        // Override console.error to track errors
-        const originalError = console.error;
-        console.error = (...args) => {
-            originalError.apply(console, args);
-            this.logError('Console Error', args.join(' '));
-        };
-    }
-
-    handleGlobalError(error) {
-        this.logError('Global Error', error.toString());
+        }
         
-        // Try to recover from common errors
-        if (error.toString().includes('not defined')) {
-            this.attemptRecovery(error);
+        getLoadedFixes() {
+            return Array.from(this.loadedFixes);
         }
     }
-
-    attemptRecovery(error) {
-        const errorMsg = error.toString();
-        
-        if (errorMsg.includes('FoodisChatbot is not defined')) {
-            console.log('Fixes Integration: Attempting to recover from FoodisChatbot error');
-            this.loadFix('chatbot-management');
-        } else if (errorMsg.includes('AutomationCategoryManager')) {
-            console.log('Fixes Integration: Attempting to recover from AutomationCategoryManager error');
-            this.loadFix('automation-category-manager');
-        }
-    }
-
-    logError(type, message) {
-        const timestamp = new Date().toISOString();
-        console.log(`[${timestamp}] ${type}: ${message}`);
-    }
-
-    monitorSystemHealth() {
-        setInterval(() => {
-            this.checkSystemHealth();
-        }, 30000); // Check every 30 seconds
-    }
-
-    checkSystemHealth() {
-        const criticalSystems = [
-            'window.aiAutomation',
-            'window.authManager', 
-            'window.enhancedBannerFixed',
-            'window.automationCardFix'
-        ];
-
-        const healthStatus = criticalSystems.map(system => {
-            const exists = this.checkObjectPath(system);
-            return { system, exists };
-        });
-
-        const failedSystems = healthStatus.filter(s => !s.exists);
-        
-        if (failedSystems.length > 0) {
-            console.warn('Fixes Integration: System health check failed:', 
-                failedSystems.map(s => s.system));
-        } else {
-            console.log('Fixes Integration: System health check passed');
-        }
-    }
-
-    checkObjectPath(path) {
-        try {
-            return path.split('.').reduce((obj, prop) => obj && obj[prop], window) !== undefined;
-        } catch {
-            return false;
-        }
-    }
-
-    getStatus() {
-        return {
-            loadedFixes: Array.from(this.loadedFixes),
-            pendingFixes: Array.from(this.pendingFixes.keys()),
-            totalFixes: this.loadedFixes.size + this.pendingFixes.size
-        };
-    }
-}
-
-// Initialize fixes integration system
-window.fixesIntegration = new FixesIntegration();
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = FixesIntegration;
-}
+    
+    // Initialize the fixes integration system
+    window.fixesIntegration = new FixesIntegration();
+    
+    // Global diagnostic function
+    window.diagnoseFixes = function() {
+        return window.fixesIntegration.getSystemHealth();
+    };
+    
+    console.log('Fixes Integration: Comprehensive fix system is now active');
+})();
