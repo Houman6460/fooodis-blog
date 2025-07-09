@@ -27,23 +27,17 @@
             // Check if all required components are loaded
             const hasWidget = typeof window.FoodisChatbot !== 'undefined';
             const hasEnhancer = typeof window.ChatbotMessageEnhancer !== 'undefined';
-            const hasRegistration = typeof window.FoodisRegistrationForm !== 'undefined';
-
-            console.log('🔍 Component check:', {
-                widget: hasWidget,
-                enhancer: hasEnhancer,
-                registration: hasRegistration,
-                attempt: this.retryCount + 1
-            });
+            const hasIntegrationFixes = typeof window.ChatbotMessageEnhancer !== 'undefined';
 
             if (hasWidget) {
                 try {
-                    // Initialize chatbot widget
+                    // Initialize chatbot with proper configuration
                     window.FoodisChatbot.init({
                         apiEndpoint: window.location.origin + '/api/chatbot',
                         position: 'bottom-right',
                         primaryColor: '#e8f24c',
                         language: 'en',
+                        enabled: true,
                         assistants: [{
                             id: 'fooodis-assistant',
                             name: 'Fooodis Assistant',
@@ -54,21 +48,21 @@
                     this.initialized = true;
                     console.log('✅ Chatbot initialized successfully');
 
-                    // Initialize registration form if available
-                    if (hasRegistration && window.FoodisRegistrationForm.init) {
-                        window.FoodisRegistrationForm.init();
-                        console.log('✅ Registration form initialized');
-                    }
+                    // Trigger success event
+                    document.dispatchEvent(new CustomEvent('chatbotInitialized'));
 
-                    return;
                 } catch (error) {
                     console.error('❌ Chatbot initialization error:', error);
+                    this.retryInitialization();
                 }
+            } else {
+                console.log('⏳ Chatbot widget not ready, retrying...');
+                this.retryInitialization();
             }
+        },
 
-            // Retry logic
+        retryInitialization: function() {
             this.retryCount++;
-            console.log('🔄 Retrying initialization in', Math.min(1000 * this.retryCount, 5000), 'ms, attempt', this.retryCount, 'of', this.maxRetries);
 
             if (this.retryCount < this.maxRetries) {
                 const delay = Math.min(1000 * this.retryCount, 5000);
@@ -90,55 +84,160 @@
 
 })();
 
-// Blog page specific avatar loading with enhanced detection
+// Fix avatar loading issues on the blog page by checking storage and updating the avatar URL.
 (function() {
     'use strict';
 
+    function initializeChatbot() {
+        window.ChatbotInitializer.init();
+    }
+
+    // Blog page specific avatar loading with enhanced detection
     function ensureBlogPageAvatar() {
         // Check if we're on blog page
         if (window.location.pathname.includes('blog.html') || 
             window.location.pathname.endsWith('blog')) {
 
-            console.log('🔧 Blog page detected, ensuring avatar setup...');
+            console.log('🔧 Blog page detected, ensuring avatar loads correctly');
 
-            let attempts = 0;
-            const maxAttempts = 20;
+            // Enhanced avatar source checking
+            const avatarSources = [
+                localStorage.getItem('chatbot-widget-avatar'),
+                localStorage.getItem('chatbot-current-avatar'),
+                localStorage.getItem('dashboard-avatar-cache'),
+                localStorage.getItem('chatbot-avatar-settings'),
+                localStorage.getItem('fooodis-chatbot-settings'),
+                sessionStorage.getItem('chatbot-avatar-current')
+            ];
 
-            const checkAndUpdateAvatar = () => {
-                attempts++;
-
-                if (window.FoodisChatbot && window.FoodisChatbot.setupAllAvatars) {
-                    console.log('🖼️ Setting up avatars on blog page, attempt:', attempts);
-                    window.FoodisChatbot.setupAllAvatars();
-
-                    // Also update with any stored avatar
-                    const storedAvatar = localStorage.getItem('chatbot-widget-avatar') || 
-                                       localStorage.getItem('fooodis-chatbot-avatar');
-                    if (storedAvatar && window.FoodisChatbot.updateAvatar) {
-                        window.FoodisChatbot.updateAvatar(storedAvatar);
-                        console.log('🖼️ Updated with stored avatar');
+            let avatarUrl = null;
+            for (const source of avatarSources) {
+                if (source) {
+                    try {
+                        if (source.startsWith('http') || source.startsWith('data:') || source.startsWith('/') || source.startsWith('images/')) {
+                            avatarUrl = source;
+                            console.log('📥 Found direct avatar URL:', source.substring(0, 50) + '...');
+                            break;
+                        } else {
+                            const parsed = JSON.parse(source);
+                            if (parsed.avatar) {
+                                avatarUrl = parsed.avatar;
+                                console.log('📥 Found parsed avatar URL:', parsed.avatar.substring(0, 50) + '...');
+                                break;
+                            }
+                        }
+                    } catch (e) {
+                        continue;
                     }
-                    return;
                 }
+            }
 
-                if (attempts < maxAttempts) {
-                    setTimeout(checkAndUpdateAvatar, 500);
-                } else {
-                    console.warn('⚠️ Could not setup avatars after', maxAttempts, 'attempts');
-                }
-            };
-
-            checkAndUpdateAvatar();
+            // If no avatar found locally, try server config
+            if (!avatarUrl) {
+                console.log('📥 No local avatar found, trying server config...');
+                fetch('/chatbot-config.json')
+                    .then(response => response.json())
+                    .then(config => {
+                        if (config.avatar) {
+                            avatarUrl = config.avatar;
+                            console.log('📥 Found avatar from server config:', avatarUrl.substring(0, 50) + '...');
+                            applyAvatarToBlogChatbot(avatarUrl);
+                        }
+                    })
+                    .catch(error => console.warn('Failed to fetch server config:', error));
+            } else {
+                applyAvatarToBlogChatbot(avatarUrl);
+            }
         }
     }
 
-    // Initialize avatar setup when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(ensureBlogPageAvatar, 1000);
-        });
-    } else {
-        setTimeout(ensureBlogPageAvatar, 1000);
+    // Apply avatar specifically for blog page chatbot
+    function applyAvatarToBlogChatbot(avatarUrl) {
+        if (!avatarUrl) return;
+
+        console.log('🖼️ Applying avatar to blog page chatbot:', avatarUrl.substring(0, 50) + '...');
+
+        // Make URL absolute
+        let absoluteUrl = avatarUrl;
+        if (!avatarUrl.startsWith('http') && !avatarUrl.startsWith('data:')) {
+            const baseUrl = window.location.origin;
+            if (avatarUrl.startsWith('./')) {
+                absoluteUrl = baseUrl + '/' + avatarUrl.substring(2);
+            } else if (avatarUrl.startsWith('/')) {
+                absoluteUrl = baseUrl + avatarUrl;
+            } else if (avatarUrl.startsWith('images/')) {
+                absoluteUrl = baseUrl + '/' + avatarUrl;
+            } else {
+                absoluteUrl = baseUrl + '/images/avatars/' + avatarUrl;
+            }
+        }
+
+        let retryCount = 0;
+        const maxRetries = 15;
+
+        // Enhanced avatar application with multiple retries
+        const checkAndUpdateAvatar = () => {
+            retryCount++;
+            
+            if (window.FoodisChatbot) {
+                let applied = false;
+                
+                // Try multiple methods
+                if (typeof window.FoodisChatbot.updateAvatar === 'function') {
+                    window.FoodisChatbot.updateAvatar(absoluteUrl);
+                    applied = true;
+                    console.log('✅ Avatar applied via updateAvatar method');
+                }
+                
+                if (window.FoodisChatbot.config) {
+                    window.FoodisChatbot.config.avatar = absoluteUrl;
+                    applied = true;
+                    console.log('✅ Avatar applied to config');
+                }
+                
+                if (window.FoodisChatbot.currentAgent) {
+                    window.FoodisChatbot.currentAgent.avatar = absoluteUrl;
+                    applied = true;
+                    console.log('✅ Avatar applied to current agent');
+                }
+                
+                // Force refresh all avatars
+                if (window.FoodisChatbot.setupAllAvatars) {
+                    setTimeout(() => {
+                        window.FoodisChatbot.setupAllAvatars();
+                        console.log('✅ All avatars refreshed');
+                    }, 100);
+                }
+                
+                if (applied) {
+                    // Store for persistence
+                    localStorage.setItem('chatbot-widget-avatar', absoluteUrl);
+                    localStorage.setItem('chatbot-current-avatar', absoluteUrl);
+                    sessionStorage.setItem('chatbot-avatar-current', absoluteUrl);
+                    return;
+                }
+            }
+            
+            // Retry if not successful and within limit
+            if (retryCount < maxRetries) {
+                const delay = Math.min(200 * retryCount, 2000);
+                setTimeout(checkAndUpdateAvatar, delay);
+            } else {
+                console.warn('⚠️ Failed to apply avatar after', maxRetries, 'attempts');
+            }
+        };
+
+        checkAndUpdateAvatar();
     }
 
+    // Initialize chatbot when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeChatbot();
+            ensureBlogPageAvatar();
+        });
+    } else {
+        initializeChatbot();
+        ensureBlogPageAvatar();
+    }
 })();

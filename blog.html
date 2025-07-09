@@ -78,55 +78,6 @@
             transform: scale(1.1) !important;
         }
     </style>
-    
-    <!-- Chatbot Widget Scripts - Load in correct order -->
-    <script src="js/chatbot-message-enhancer.js"></script>
-    <script src="js/chatbot-widget.js"></script>
-    <script src="js/chatbot-registration-form.js"></script>
-    <script src="js/chatbot-integration-fixes.js"></script>
-    <script src="js/chatbot-integration-patch.js"></script>
-    
-    <!-- Chatbot Initialization Script -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Blog: Initializing chatbot widget...');
-        
-        // Check if FoodisChatbot is available
-        if (typeof window.FoodisChatbot !== 'undefined') {
-          try {
-            window.FoodisChatbot.init({
-              apiEndpoint: window.location.origin + '/api/chatbot',
-              position: 'bottom-right',
-              primaryColor: '#e8f24c',
-              language: 'en',
-              assistants: [{
-                id: 'fooodis-assistant',
-                name: 'Fooodis Assistant',
-                assistantId: ''
-              }]
-            });
-            console.log('Blog: Chatbot initialized successfully');
-          } catch (error) {
-            console.error('Blog: Error initializing chatbot:', error);
-          }
-        } else {
-          console.error('Blog: FoodisChatbot not found');
-          
-          // Retry after a short delay
-          setTimeout(function() {
-            if (typeof window.FoodisChatbot !== 'undefined') {
-              window.FoodisChatbot.init({
-                apiEndpoint: window.location.origin + '/api/chatbot',
-                position: 'bottom-right',
-                primaryColor: '#e8f24c',
-                language: 'en'
-              });
-              console.log('Blog: Chatbot initialized on retry');
-            }
-          }, 1000);
-        }
-      });
-    </script>
     <!-- Main scripts -->
     <script>
         // Load scripts conditionally to avoid 404 errors
@@ -134,6 +85,11 @@
             'js/jquery.js',
             'js/nicepage.js',
             'js/blog.js',
+            'js/chatbot-widget.js',
+            'js/chatbot-message-enhancer.js',
+            'js/chatbot-integration-fixes.js',
+            'js/chatbot-integration-patch.js',
+            'js/chatbot-initialization.js',
             'js/footer-bubbles.js',
             'js/advertising-banners.js',
             'js/social-icons-fix.js'
@@ -281,6 +237,9 @@
 
     <!-- Force Popup Display - Guarantees popup shows up on the page -->
     <script src="js/force-popup-display.js"></script>
+
+    <!-- Unified Chatbot Avatar Fix - Single optimized solution -->
+    <script src="js/chatbot-avatar-unified-fix.js"></script>
 
     <!-- Blog enhancement scripts removed to prevent 404 errors -->
 </head>
