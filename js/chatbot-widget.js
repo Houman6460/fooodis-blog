@@ -901,61 +901,99 @@
         },
 
         processMessage: async function(message) {
-            try {
-                // Generate conversation ID if not exists
-                if (!this.conversationId) {
-                    this.conversationId = 'conv_' + Date.now() + '_'+ Math.random().toString(36).substr(2, 9);
-                }
+        try {
+            // Generate conversation ID if not exists
+            if (!this.conversationId) {
+                this.conversationId = 'conv_' + Date.now() + '_'+ Math.random().toString(36).substr(2, 9);
+            }
 
-                // Try to use chatbot manager if available
-                if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
-                    const response = await window.chatbotManager.generateAgentResponse({
+            console.log('🤖 Processing message:', message.substring(0, 50) + '...');
+
+            // Try to use chatbot manager if available
+            if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
+                console.log('🔄 Using chatbot manager for response');
+                const response = await window.chatbotManager.generateAgentResponse({
+                    message: message,
+                    conversationId: this.conversationId,
+                    language: this.currentLanguage || 'en',
+                    agent: this.currentAgent,
+                    userName: this.userName,
+                    userRegistered: this.userRegistered,
+                    recentMessages: this.messages.slice(-5)
+                });
+
+                this.hideTyping();
+                if (response && response.success) {
+                    this.addMessage(response.message, 'assistant');
+                    return;
+                } else {
+                    console.warn('⚠️ Manager response failed, trying API fallback');
+                }
+            }
+
+            // Try API endpoint
+            try {
+                console.log('🌐 Trying API endpoint:', this.config.apiEndpoint);
+                const response = await fetch(this.config.apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
                         message: message,
                         conversationId: this.conversationId,
                         language: this.currentLanguage || 'en',
-                        agent: this.currentAgent,
-                        userName: this.userName,
-                        userRegistered: this.userRegistered,
-                        recentMessages: this.messages.slice(-5)
-                    });
+                        agent: this.currentAgent
+                    })
+                });
 
+                if (response.ok) {
+                    const data = await response.json();
                     this.hideTyping();
-                    if (response.success) {
-                        this.addMessage(response.message, 'assistant');
-                    } else {
-                        this.addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
-                    }
-                } else {
-                    // Fallback to API call
-                    const response = await fetch(this.config.apiEndpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            message: message,
-                            conversationId: this.conversationId,
-                            language: this.currentLanguage || 'en'
-                        })
-                    });
-
-                    this.hideTyping();
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.success) {
-                            this.addMessage(data.message, 'assistant');
-                        } else {
-                            this.addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
-                        }
-                    } else {
-                        this.addMessage('Sorry, I\'m having trouble connecting. Please try again later.', 'assistant');
+                    if (data.success && data.message) {
+                        this.addMessage(data.message, 'assistant');
+                        return;
                     }
                 }
-            } catch (error) {
-                console.error('Error processing message:', error);
-                this.hideTyping();
-                this.addMessage('Sorry, I\'m having trouble processing your request. Please try again.', 'assistant');
+            } catch (apiError) {
+                console.warn('⚠️ API endpoint failed:', apiError);
+            }
+
+            // Enhanced fallback response
+            this.hideTyping();
+            const fallbackResponse = this.generateIntelligentFallback(message);
+            this.addMessage(fallbackResponse, 'assistant');
+
+        } catch (error) {
+            console.error('💥 Error processing message:', error);
+            this.hideTyping();
+            const errorResponse = this.currentLanguage === 'sv' 
+                ? 'Jag kan inte svara just nu på grund av tekniska problem. Vänligen försök igen om ett ögonblick.'
+                : 'I\'m unable to respond right now due to technical issues. Please try again in a moment.';
+            this.addMessage(errorResponse, 'assistant');
+        }
+    },
+
+        generateIntelligentFallback: function(message) {
+            // Basic keyword-based fallback
+            const messageLower = message.toLowerCase();
+
+            if (messageLower.includes('order') || messageLower.includes('delivery')) {
+                return this.currentLanguage === 'sv'
+                    ? "Jag kan hjälpa dig med beställningar och leveranser. Vad vill du veta?"
+                    : "I can help you with orders and deliveries. What would you like to know?";
+            } else if (messageLower.includes('menu') || messageLower.includes('food')) {
+                return this.currentLanguage === 'sv'
+                    ? "Jag kan visa dig vår meny. Vilken typ av mat är du intresserad av?"
+                    : "I can show you our menu. What kind of food are you interested in?";
+            } else if (messageLower.includes('hours') || messageLower.includes('open')) {
+                return this.currentLanguage === 'sv'
+                    ? "Våra öppettider är 10:00 till 22:00 varje dag."
+                    : "Our opening hours are 10:00 AM to 10:00 PM every day.";
+            } else {
+                return this.currentLanguage === 'sv'
+                    ? "Jag är ledsen, jag förstod inte det. Kan du omformulera din fråga?"
+                    : "I'm sorry, I didn't understand that. Could you please rephrase your question?";
             }
         },
 
@@ -985,6 +1023,78 @@
             };
 
             reader.readAsDataURL(file);
-        }
+        },
+
+        loadFromConfigFile: function() {
+            // Try to load settings from config file as fallback
+            fetch('./chatbot-config.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(config => {
+                    console.log('📄 Loaded config from file:', config);
+
+                    this.chatbotSettings = {
+                        enabled: config.enabled !== false,
+                        chatbotName: config.chatbotName || 'Fooodis Assistant',
+                        welcomeMessage: config.welcomeMessage || this.getInitialWelcomeMessage(),
+                        avatar: config.avatar || this.getDefaultAvatar(),
+                        allowFileUpload: config.allowFileUpload !== false,
+                        assistants: config.assistants || [],
+                        openaiApiKey: config.openaiApiKey || '',
+                        defaultModel: config.defaultModel || 'gpt-4'
+                    };
+
+                    // Store API key for manager access
+                    if (config.openaiApiKey) {
+                        localStorage.setItem('openai-api-key', config.openaiApiKey);
+                        localStorage.setItem('OPENAI_API_KEY', config.openaiApiKey);
+                    }
+
+                    // Update available agents
+                    if (this.chatbotSettings.assistants && this.chatbotSettings.assistants.length > 0) {
+                        this.availableAgents = this.chatbotSettings.assistants.filter(a => 
+                            a.status === 'active' || a.enabled !== false
+                        );
+                        console.log('📋 Loaded', this.availableAgents.length, 'active agents from config');
+                    }
+
+                    // Set current agent
+                    if (this.availableAgents && this.availableAgents.length > 0) {
+                        this.currentAgent = {
+                            id: this.availableAgents[0].id,
+                            name: this.availableAgents[0].name,
+                            avatar: this.availableAgents[0].avatar || this.chatbotSettings.avatar,
+                            personality: this.availableAgents[0].personality || 'Friendly assistant',
+                            assignedAssistantId: this.availableAgents[0].assistantId
+                        };
+                    } else {
+                        this.setDefaultAgent();
+                    }
+
+                    // Save to localStorage for future use
+                    localStorage.setItem('fooodis-chatbot-settings', JSON.stringify(this.chatbotSettings));
+                    localStorage.setItem('chatbot-settings-backup', JSON.stringify(this.chatbotSettings));
+                    console.log('✅ Config loaded and saved to localStorage');
+                })
+                .catch(error => {
+                    console.error('❌ Failed to load config file:', error);
+                    this.setDefaultAgent();
+                });
+        },
+
+        setDefaultAgent: function() {
+            this.currentAgent = {
+                id: 'default-assistant',
+                name: 'Fooodis Assistant',
+                avatar: this.getDefaultAvatar(),
+                personality: 'Friendly Fooodis assistant',
+                assignedAssistantId: null
+            };
+            console.log('🤖 Set default agent:', this.currentAgent.name);
+        },
     };
 })();
