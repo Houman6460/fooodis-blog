@@ -98,17 +98,31 @@
             try {
                 console.log('🔧 Widget: Starting loadSavedSettings...');
 
-                // Try multiple storage locations including backup
+                // Try multiple storage locations including backup and cross-page sync
                 let settings = null;
-                const storageKeys = ['fooodis-chatbot-settings', 'chatbot-settings-backup'];
+                const storageKeys = [
+                    'fooodis-chatbot-settings', 
+                    'chatbot-settings-backup',
+                    'chatbot-widget-settings', // Additional key for widget-specific settings
+                    'chatbot-avatar-settings'   // Avatar-specific backup
+                ];
 
                 for (const key of storageKeys) {
                     const savedSettings = localStorage.getItem(key);
                     if (savedSettings) {
-                        settings = JSON.parse(savedSettings);
-                        console.log('📦 Widget loaded settings from:', key);
-                        console.log('🖼️ Settings avatar:', settings.avatar ? 'Present' : 'Missing');
-                        break;
+                        try {
+                            settings = JSON.parse(savedSettings);
+                            console.log('📦 Widget loaded settings from:', key);
+                            console.log('🖼️ Settings avatar:', settings.avatar ? 'Present' : 'Missing');
+                            
+                            // If we found valid settings, break
+                            if (settings && (settings.avatar || settings.chatbotName)) {
+                                break;
+                            }
+                        } catch (parseError) {
+                            console.warn('Failed to parse settings from', key, parseError);
+                            continue;
+                        }
                     }
                 }
 
@@ -187,19 +201,46 @@
                 return avatarUrl;
             }
             
-            // Convert relative paths for online hosting
-            const baseUrl = window.location.origin;
+            // Get base URL - handle both direct access and iframe contexts
+            let baseUrl = window.location.origin;
+            
+            // If we're in an iframe or different context, try to get the parent URL
+            if (window.parent && window.parent !== window) {
+                try {
+                    baseUrl = window.parent.location.origin;
+                } catch (e) {
+                    // Cross-origin iframe, use current origin
+                    baseUrl = window.location.origin;
+                }
+            }
+            
+            // Convert relative paths with robust handling
             if (avatarUrl.startsWith('./')) {
                 return baseUrl + '/' + avatarUrl.substring(2);
             } else if (avatarUrl.startsWith('/')) {
                 return baseUrl + avatarUrl;
             } else if (avatarUrl.startsWith('images/')) {
-                // Handle images/avatars/ paths
                 return baseUrl + '/' + avatarUrl;
+            } else {
+                // Handle bare filenames by checking common avatar locations
+                const commonPaths = [
+                    'images/avatars/',
+                    'images/',
+                    'avatars/',
+                    ''
+                ];
+                
+                for (const path of commonPaths) {
+                    const fullPath = baseUrl + '/' + path + avatarUrl;
+                    // Return the first valid-looking path (we'll handle validation in setAvatarImage)
+                    if (path === 'images/avatars/') {
+                        return fullPath;
+                    }
+                }
+                
+                // Default to images/avatars/ path
+                return baseUrl + '/images/avatars/' + avatarUrl;
             }
-            
-            // Default fallback
-            return this.getDefaultAvatar();
         },
 
         getDefaultAvatar: function() {
@@ -448,12 +489,38 @@
                 this.currentAgent.avatar = avatarUrl;
             }
 
+            // Store avatar in multiple locations for persistence
+            try {
+                const avatarData = {
+                    avatar: avatarUrl,
+                    timestamp: Date.now(),
+                    page: window.location.pathname
+                };
+                
+                localStorage.setItem('chatbot-avatar-settings', JSON.stringify(avatarData));
+                localStorage.setItem('chatbot-widget-avatar', avatarUrl);
+                
+                // Also update main settings if they exist
+                const mainSettings = localStorage.getItem('fooodis-chatbot-settings');
+                if (mainSettings) {
+                    try {
+                        const settings = JSON.parse(mainSettings);
+                        settings.avatar = avatarUrl;
+                        localStorage.setItem('fooodis-chatbot-settings', JSON.stringify(settings));
+                    } catch (e) {
+                        console.warn('Could not update main settings with avatar');
+                    }
+                }
+            } catch (error) {
+                console.error('Error storing avatar settings:', error);
+            }
+
             // Update all avatar images in the widget
             if (this.widget) {
                 this.setupAllAvatars();
             }
 
-            console.log('🖼️ Avatar updated in chatbot widget');
+            console.log('🖼️ Avatar updated and persisted in chatbot widget');
         },
 
         updateFileUploadVisibility: function() {
