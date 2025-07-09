@@ -20,13 +20,13 @@ class NodeFlowBuilder {
         this.tempConnectionStart = null;
         this.masterTemplate = this.getMasterTemplate();
         this.autoSaveTimeout = null;
-
+        
         // Sync with ChatbotManager if available
         this.syncWithChatbotManager();
-
+        
         // Load saved flow data from localStorage
         this.loadFlow();
-
+        
         this.init();
     }
 
@@ -171,16 +171,16 @@ class NodeFlowBuilder {
                 </button>
             </div>
         `;
-
+        
         flowContainer.appendChild(this.canvas);
-
+        
         // Initialize zoom functionality with mouse wheel
         this.canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
             const delta = e.deltaY > 0 ? -0.1 : 0.1;
             this.updateZoom(delta);
         });
-
+        
         // Setup node dragging functionality
         this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
         document.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
@@ -268,7 +268,7 @@ class NodeFlowBuilder {
 
         // Node interaction events
         document.addEventListener('click', (e) => this.handleClick(e));
-
+        
         // Language selector
         const languageSelector = document.getElementById('nodeLanguageSelector');
         if (languageSelector) {
@@ -289,12 +289,12 @@ class NodeFlowBuilder {
                 this.draggedNode = node;
                 const rect = nodeElement.getBoundingClientRect();
                 const canvasRect = this.canvas.getBoundingClientRect();
-
+                
                 this.draggedNode.dragOffset = {
                     x: (e.clientX - canvasRect.left) / this.zoom - node.position.x,
                     y: (e.clientY - canvasRect.top) / this.zoom - node.position.y
                 };
-
+                
                 e.preventDefault();
             }
         }
@@ -302,14 +302,14 @@ class NodeFlowBuilder {
 
     handleClick(e) {
         const target = e.target;
-
+        
         // Handle connection points
         if (target.classList.contains('connection-point')) {
             this.handleConnectionPoint(target, e);
             e.stopPropagation();
             return;
         }
-
+        
         // Handle node edit button
         if (target.classList.contains('node-edit-btn') || target.closest('.node-edit-btn')) {
             const nodeElement = target.closest('.flow-node');
@@ -323,7 +323,7 @@ class NodeFlowBuilder {
             e.stopPropagation();
             return;
         }
-
+        
         // Handle node delete button
         if (target.classList.contains('node-delete-btn') || target.closest('.node-delete-btn') || 
             target.classList.contains('fa-trash') || target.closest('.fa-trash')) {
@@ -337,12 +337,12 @@ class NodeFlowBuilder {
             e.stopPropagation();
             return;
         }
-
+        
         // Handle toolbar buttons
         if (target.closest('.toolbar-btn')) {
             const btn = target.closest('.toolbar-btn');
             const action = btn.dataset.action;
-
+            
             switch(action) {
                 case 'add-welcome':
                     this.addNode('welcome');
@@ -383,7 +383,7 @@ class NodeFlowBuilder {
         const nodeElement = connectionPoint.closest('.flow-node');
         const nodeId = nodeElement.dataset.nodeId;
         const connectionType = connectionPoint.dataset.type;
-
+        
         if (!this.isConnecting) {
             // Start connection
             this.isConnecting = true;
@@ -394,7 +394,7 @@ class NodeFlowBuilder {
             };
             connectionPoint.classList.add('connecting');
             this.showToast('Drag to target connection point', 'info');
-
+            
             // Create temporary connection line that follows mouse
             this.createTempConnectionLine(connectionPoint);
         } else {
@@ -408,7 +408,7 @@ class NodeFlowBuilder {
                     fromType: this.connectionStart.type,
                     toType: connectionType
                 };
-
+                
                 // Validate connection (output to input only)
                 if (this.connectionStart.type === 'output' && connectionType === 'input') {
                     this.connections.push(connection);
@@ -419,7 +419,7 @@ class NodeFlowBuilder {
                     this.showToast('Invalid connection: connect output to input only', 'error');
                 }
             }
-
+            
             // Reset connection state and remove temp line
             this.clearTempConnectionLine();
             this.isConnecting = false;
@@ -431,10 +431,10 @@ class NodeFlowBuilder {
     createTempConnectionLine(startPoint) {
         // Remove any existing temp line
         this.clearTempConnectionLine();
-
+        
         const connectionsContainer = document.getElementById('flow-connections');
         if (!connectionsContainer) return;
-
+        
         // Create SVG for temp line
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('id', 'temp-connection-line');
@@ -445,7 +445,7 @@ class NodeFlowBuilder {
         svg.style.height = '100%';
         svg.style.pointerEvents = 'none';
         svg.style.zIndex = '10';
-
+        
         // Create path element
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('id', 'temp-connection-path');
@@ -453,15 +453,15 @@ class NodeFlowBuilder {
         path.setAttribute('stroke-width', '3');
         path.setAttribute('fill', 'none');
         path.setAttribute('stroke-dasharray', '8,4');
-
+        
         svg.appendChild(path);
         connectionsContainer.appendChild(svg);
-
+        
         // Store start position for mouse movement
         const nodeElement = startPoint.closest('.flow-node');
         const canvasRect = this.canvas.getBoundingClientRect();
         const nodeRect = nodeElement.getBoundingClientRect();
-
+        
         this.tempConnectionStart = {
             x: nodeRect.left - canvasRect.left + (startPoint.dataset.type === 'output' ? 150 : 0),
             y: nodeRect.top - canvasRect.top + 25
@@ -471,20 +471,20 @@ class NodeFlowBuilder {
     updateTempConnectionLine(mouseX, mouseY) {
         const tempPath = document.getElementById('temp-connection-path');
         if (!tempPath || !this.tempConnectionStart) return;
-
+        
         const canvasRect = this.canvas.getBoundingClientRect();
         const endX = mouseX - canvasRect.left;
         const endY = mouseY - canvasRect.top;
-
+        
         // Create curved path from start to mouse position
         const startX = this.tempConnectionStart.x;
         const startY = this.tempConnectionStart.y;
-
+        
         const controlPoint1X = startX + (endX - startX) * 0.5;
         const controlPoint1Y = startY;
         const controlPoint2X = endX - (endX - startX) * 0.5;
         const controlPoint2Y = endY;
-
+        
         const pathData = `M ${startX} ${startY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${endX} ${endY}`;
         tempPath.setAttribute('d', pathData);
     }
@@ -666,17 +666,17 @@ class NodeFlowBuilder {
     renderConnections() {
         const svg = document.getElementById('flow-connections');
         if (!svg) return;
-
+        
         svg.innerHTML = ''; // Clear existing connections
-
+        
         // Remove ALL existing disconnect buttons from everywhere
         document.querySelectorAll('.disconnect-btn').forEach(btn => btn.remove());
-
+        
         this.connections.forEach(connection => {
             const connectionElement = this.createConnectionElement(connection);
             svg.appendChild(connectionElement);
         });
-
+        
         // Create disconnect buttons after all connections are rendered
         this.createDisconnectButtons();
     }
@@ -724,7 +724,7 @@ class NodeFlowBuilder {
         const controlPoint2Y = endY;
 
         const pathData = `M ${startX} ${startY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${endX} ${endY}`;
-
+        
         path.setAttribute('d', pathData);
         path.setAttribute('stroke', '#6272a4');
         path.setAttribute('stroke-width', '2');
@@ -732,7 +732,7 @@ class NodeFlowBuilder {
         path.classList.add('connection-line');
         path.style.cursor = 'pointer';
         path.setAttribute('data-connection-id', connection.id);
-
+        
         // Add invisible wider path for easier clicking
         const invisiblePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         invisiblePath.setAttribute('d', pathData);
@@ -742,40 +742,40 @@ class NodeFlowBuilder {
         invisiblePath.classList.add('connection-line');
         invisiblePath.style.cursor = 'pointer';
         invisiblePath.setAttribute('data-connection-id', connection.id);
-
+        
         // Add hover effect and click handler to both paths
         const handleMouseEnter = () => {
             path.setAttribute('stroke', '#ff6b6b');
             path.setAttribute('stroke-width', '3');
         };
-
+        
         const handleMouseLeave = () => {
             path.setAttribute('stroke', '#6272a4');
             path.setAttribute('stroke-width', '2');
         };
-
+        
         const handleConnectionClick = (e) => {
             e.preventDefault();
             e.stopPropagation();
             console.log('Connection clicked! Event target:', e.target);
             console.log('Connection ID from path:', path.getAttribute('data-connection-id'));
             console.log('Connection ID from invisible:', invisiblePath.getAttribute('data-connection-id'));
-
+            
             const connectionId = connection.id;
             console.log('Using connection ID:', connectionId, 'from:', fromNode.id, 'to:', toNode.id);
-
+            
             if (connectionId) {
                 this.showConnectionRemovalDialog(connectionId, fromNode, toNode);
             } else {
                 console.error('No connection ID found');
             }
         };
-
+        
         // Add event listeners to both paths
         path.addEventListener('mouseenter', handleMouseEnter);
         path.addEventListener('mouseleave', handleMouseLeave);
         path.addEventListener('click', handleConnectionClick);
-
+        
         invisiblePath.addEventListener('mouseenter', handleMouseEnter);
         invisiblePath.addEventListener('mouseleave', handleMouseLeave);
         invisiblePath.addEventListener('click', handleConnectionClick);
@@ -789,34 +789,34 @@ class NodeFlowBuilder {
     // Create all disconnect buttons after connections are rendered
     createDisconnectButtons() {
         console.log('Creating disconnect buttons for', this.connections.length, 'connections');
-
+        
         this.connections.forEach(connection => {
             const fromNode = this.nodes.find(n => n.id === connection.from);
             const toNode = this.nodes.find(n => n.id === connection.to);
-
+            
             if (!fromNode || !toNode) {
                 console.log('Cannot find nodes for connection:', connection.id);
                 return;
             }
-
+            
             // Calculate midpoint of connection relative to canvas
             const startX = fromNode.position.x + 150; // Node center
             const startY = fromNode.position.y + 40;
             const endX = toNode.position.x + 150;
             const endY = toNode.position.y + 40;
-
+            
             // Position relative to canvas container (not viewport)
             const midX = (startX + endX) / 2;
             const midY = (startY + endY) / 2;
-
+            
             console.log(`Connection ${connection.id}: from (${startX}, ${startY}) to (${endX}, ${endY}), mid (${midX}, ${midY})`);
-
+            
             // Create simple red button
             const btn = document.createElement('div');
             btn.className = 'disconnect-btn';
             btn.innerHTML = '×';
             btn.dataset.connectionId = connection.id;
-
+            
             // Apply styles directly for reliable positioning
             btn.style.position = 'absolute';
             btn.style.left = midX + 'px';
@@ -837,16 +837,15 @@ class NodeFlowBuilder {
             btn.style.border = '2px solid white';
             btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
             btn.style.pointerEvents = 'auto'; // Ensure clickable
-
+            
             // Add click handler
             btn.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                ```text
-console.log('Disconnect button clicked for:', connection.id);
+                console.log('Disconnect button clicked for:', connection.id);
                 this.removeConnection(connection.id);
             };
-
+            
             // Add to the actual canvas element (this.canvas with class node-flow-canvas)
             if (this.canvas) {
                 this.canvas.appendChild(btn);
@@ -870,7 +869,7 @@ console.log('Disconnect button clicked for:', connection.id);
             fromNode: fromNode ? fromNode.id : 'null',
             toNode: toNode ? toNode.id : 'null'
         });
-
+        
         const modal = document.createElement('div');
         modal.className = 'node-modal connection-removal-modal';
         modal.innerHTML = `
@@ -906,7 +905,7 @@ console.log('Disconnect button clicked for:', connection.id);
         modal.querySelector('.modal-close').addEventListener('click', closeModal);
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
-
+        
         // Remove connection handler
         modal.querySelector('.modal-remove').addEventListener('click', (e) => {
             const connectionId = e.target.getAttribute('data-connection-id');
@@ -919,30 +918,30 @@ console.log('Disconnect button clicked for:', connection.id);
     removeConnection(connectionId) {
         console.log('removeConnection called with ID:', connectionId);
         console.log('Current connections:', this.connections);
-
+        
         const connectionIndex = this.connections.findIndex(c => c.id === connectionId);
         console.log('Found connection index:', connectionIndex);
-
+        
         if (connectionIndex === -1) {
             console.error('Connection not found with ID:', connectionId);
             this.showToast('Connection not found', 'error');
             return;
         }
-
+        
         const connection = this.connections[connectionIndex];
         console.log('Removing connection:', connection);
-
+        
         this.connections.splice(connectionIndex, 1);
-
+        
         // Re-render connections
         this.renderConnections();
-
+        
         // Show success message
         this.showToast('Connection removed successfully', 'success');
-
+        
         // Auto-save the updated flow
         this.autoSave();
-
+        
         console.log(`Connection removed: ${connection.from} -> ${connection.to}`);
         console.log('Remaining connections:', this.connections);
     }
@@ -956,13 +955,13 @@ console.log('Disconnect button clicked for:', connection.id);
 
         const modal = document.createElement('div');
         modal.className = 'node-modal disconnect-modal';
-
+        
         const connectionsHtml = this.connections.map(conn => {
             const fromNode = this.nodes.find(n => n.id === conn.from);
             const toNode = this.nodes.find(n => n.id === conn.to);
             const fromTitle = fromNode ? fromNode.data.title : 'Unknown';
             const toTitle = toNode ? toNode.data.title : 'Unknown';
-
+            
             return `
                 <div class="connection-item" data-connection-id="${conn.id}">
                     <div class="connection-info">
@@ -1003,13 +1002,13 @@ console.log('Disconnect button clicked for:', connection.id);
         modal.querySelector('.modal-close').addEventListener('click', closeModal);
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
-
+        
         // Disconnect connection handlers
         modal.querySelectorAll('.disconnect-connection').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const connectionId = e.target.closest('.disconnect-connection').getAttribute('data-connection-id');
                 console.log('Disconnect button clicked for connection:', connectionId);
-
+                
                 if (connectionId) {
                     this.removeConnection(connectionId);
                     // Remove the connection item from the dialog
@@ -1017,7 +1016,7 @@ console.log('Disconnect button clicked for:', connection.id);
                     if (connectionItem) {
                         connectionItem.remove();
                     }
-
+                    
                     // Close modal if no more connections
                     if (this.connections.length === 0) {
                         closeModal();
@@ -1124,13 +1123,13 @@ console.log('Disconnect button clicked for:', connection.id);
                 const flowData = JSON.parse(savedFlow);
                 this.nodes = flowData.nodes || [];
                 this.connections = flowData.connections || [];
-
+                
                 // Set language if language selector exists
                 const languageSelector = document.getElementById('nodeLanguageSelector');
                 if (languageSelector && flowData.metadata && flowData.metadata.language) {
                     languageSelector.value = flowData.metadata.language;
                 }
-
+                
                 this.renderNodes();
                 this.renderConnections();
                 this.showToast('Flow loaded from saved state', 'info');
@@ -1178,11 +1177,11 @@ console.log('Disconnect button clicked for:', connection.id);
     initializeTestFlow() {
         const messagesContainer = document.getElementById('test-chat-messages');
         const welcomeNode = this.nodes.find(node => node.type === 'welcome');
-
+        
         if (welcomeNode) {
             const language = document.getElementById('nodeLanguageSelector').value;
             const message = welcomeNode.data.messages[language] || welcomeNode.data.messages.english;
-
+            
             messagesContainer.innerHTML = `
                 <div class="test-message bot">
                     <div class="message-content">${message}</div>
@@ -1194,11 +1193,11 @@ console.log('Disconnect button clicked for:', connection.id);
     sendTestMessage() {
         const input = document.getElementById('test-message-input');
         const message = input.value.trim();
-
+        
         if (!message) return;
 
         const messagesContainer = document.getElementById('test-chat-messages');
-
+        
         // Add user message
         const userMessage = document.createElement('div');
         userMessage.className = 'test-message user';
@@ -1222,10 +1221,10 @@ console.log('Disconnect button clicked for:', connection.id);
     processTestMessage(message) {
         // Simple intent matching for testing
         const lowerMessage = message.toLowerCase();
-
+        
         // Detect language based on Swedish keywords or previous context
         const isSwedish = this.detectSwedish(message);
-
+        
         const messages = {
             menu: {
                 english: "I'll connect you with our Menu Management specialist to help with your menu questions.",
@@ -1252,9 +1251,9 @@ console.log('Disconnect button clicked for:', connection.id);
                 swedish: "Jag förstår att du behöver hjälp. Låt mig koppla dig till vårt Kundsupportteam för allmän assistans."
             }
         };
-
+        
         const lang = isSwedish ? 'swedish' : 'english';
-
+        
         if (lowerMessage.includes('menu') || lowerMessage.includes('food') || lowerMessage.includes('meny') || lowerMessage.includes('mat')) {
             return messages.menu[lang];
         } else if (lowerMessage.includes('billing') || lowerMessage.includes('payment') || lowerMessage.includes('faktur') || lowerMessage.includes('betalning')) {
@@ -1266,27 +1265,27 @@ console.log('Disconnect button clicked for:', connection.id);
         } else if (lowerMessage.includes('sales') || lowerMessage.includes('plan') || lowerMessage.includes('pricing') || lowerMessage.includes('försäljning') || lowerMessage.includes('pris')) {
             return messages.sales[lang];
         }
-
+        
         return messages.general[lang];
     }
-
+    
     detectSwedish(message) {
         // Check for Swedish keywords and patterns
         const swedishKeywords = ['hej', 'tack', 'ja', 'nej', 'kan', 'vill', 'behöver', 'hjälp', 'hur', 'vad', 'när', 'var', 'varför', 'vilken', 'svenska'];
         const lowerMessage = message.toLowerCase();
-
+        
         // Check for Swedish keywords
         for (const keyword of swedishKeywords) {
             if (lowerMessage.includes(keyword)) {
                 return true;
             }
         }
-
+        
         // Check if window.chatbotCurrentLanguage is set to Swedish
         if (typeof window !== 'undefined' && window.chatbotCurrentLanguage === 'swedish') {
             return true;
         }
-
+        
         return false;
     }
 
@@ -1341,13 +1340,13 @@ console.log('Disconnect button clicked for:', connection.id);
         modal.querySelector('.modal-close').addEventListener('click', closeModal);
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
-
+        
         // Update node handler
         modal.querySelector('.modal-update').addEventListener('click', (e) => {
             const nodeId = e.target.getAttribute('data-node-id');
             this.updateNodeFromModal(nodeId);
         });
-
+        
         // Handle department change for handoff nodes
         const departmentSelect = modal.querySelector('#edit-department');
         if (departmentSelect) {
@@ -1359,12 +1358,12 @@ console.log('Disconnect button clicked for:', connection.id);
     updateAgentsList(departmentId) {
         const agentSelect = document.querySelector('#edit-agent');
         if (!agentSelect) return;
-
+        
         const availableAgents = this.getAvailableAgents();
         const departmentAgents = availableAgents.filter(agent => 
             !departmentId || agent.department === departmentId
         );
-
+        
         agentSelect.innerHTML = '<option value="">Any Available Agent</option>' + 
             departmentAgents.map(agent => 
                 `<option value="${agent.id}">${agent.name} (${agent.department})</option>`
@@ -1392,11 +1391,11 @@ console.log('Disconnect button clicked for:', connection.id);
                     </div>
                 `;
                 break;
-
+                
             case 'handoff':
                 const availableAgents = this.getAvailableAgents();
                 const departmentAgents = this.getAgentsByDepartment();
-
+                
                 formHTML += `
                     <div class="form-group">
                         <label>Department</label>
@@ -1422,7 +1421,7 @@ console.log('Disconnect button clicked for:', connection.id);
                     </div>
                 `;
                 break;
-
+                
             case 'intent':
                 formHTML += `
                     <div class="form-group">
@@ -1447,7 +1446,7 @@ console.log('Disconnect button clicked for:', connection.id);
                     </div>
                 `;
                 break;
-
+                
             case 'condition':
                 formHTML += `
                     <div class="form-group">
@@ -1461,7 +1460,7 @@ console.log('Disconnect button clicked for:', connection.id);
                     </div>
                 `;
                 break;
-
+                
             case 'message':
                 formHTML += `
                     <div class="form-group">
@@ -1483,105 +1482,76 @@ console.log('Disconnect button clicked for:', connection.id);
         return formHTML;
     }
 
-    updateAgentsList(departmentId) {
-        const agentSelect = document.querySelector('#edit-agent');
-        if (!agentSelect) return;
-
-        const department = this.masterTemplate.departments.find(dept => dept.id === departmentId);
-        const agents = department ? department.agents : [];
-
-        agentSelect.innerHTML = '<option value="">Any Available Agent</option>';
-        agents.forEach(agent => {
-            const option = document.createElement('option');
-            option.value = agent;
-            option.textContent = agent;
-            agentSelect.appendChild(option);
-        });
-    }
-
     updateNodeFromModal(nodeId) {
         const node = this.nodes.find(n => n.id === nodeId);
-        if (!node) {
-            this.showToast('Node not found', 'error');
-            return;
+        if (!node) return;
+
+        // Update common fields
+        const titleInput = document.getElementById('edit-node-title');
+        if (titleInput) {
+            node.data.title = titleInput.value;
         }
 
-        try {
-            // Get form values based on node type
-            switch (node.type) {
-                case 'welcome':
-                    const englishMessage = document.getElementById('edit-english-message')?.value || '';
-                    const swedishMessage = document.getElementById('edit-swedish-message')?.value || '';
-                    const bilingualMessage = document.getElementById('edit-bilingual-message')?.value || '';
-
-                    node.data.messages = {
-                        english: englishMessage,
-                        swedish: swedishMessage,
-                        bilingual: bilingualMessage
-                    };
-                    break;
-
-                case 'intent':
-                    // Collect selected intents from checkboxes
-                    const selectedIntents = [];
-                    const intentCheckboxes = document.querySelectorAll('#edit-node-form input[type="checkbox"]:checked');
-                    intentCheckboxes.forEach(checkbox => {
-                        selectedIntents.push(checkbox.value);
-                    });
-
-                    node.data.intents = selectedIntents;
-                    break;
-
-                case 'handoff':
-                    const department = document.getElementById('edit-department')?.value || '';
-                    const selectedAgent = document.getElementById('edit-agent')?.value || '';
-                    const handoffMessage = document.getElementById('edit-handoff-message')?.value || 'Transferring you to a human agent...';
-
-                    node.data.department = department;
-                    node.data.selectedAgent = selectedAgent;
-                    node.data.handoffMessage = handoffMessage;
-
-                    // Update agents list based on department
-                    const deptData = this.masterTemplate.departments.find(d => d.id === department);
-                    if (deptData) {
-                        node.data.agents = deptData.agents;
-                        node.data.color = deptData.color;
-                    }
-                    break;
-
-                case 'condition':
-                    const condition = document.getElementById('edit-condition')?.value || '';
-                    node.data.condition = condition;
-                    break;
-
-                case 'message':
-                    const messageContent = document.getElementById('edit-message-content')?.value || '';
-                    node.data.content = messageContent;
-                    break;
-            }
-
-            // Update node title if provided
-            const nodeTitle = document.getElementById('edit-node-title')?.value;
-            if (nodeTitle && nodeTitle.trim()) {
-                node.data.title = nodeTitle.trim();
-            }
-
-            // Re-render nodes to show updated data
-            this.renderNodes();
-            this.renderConnections();
-
-            // Auto-save the updated flow
-            this.autoSave();
-
-            // Close the modal
-            document.querySelector('.node-modal')?.remove();
-
-            this.showToast('Node updated successfully', 'success');
-
-        } catch (error) {
-            console.error('Error updating node:', error);
-            this.showToast('Error updating node: ' + error.message, 'error');
+        // Update type-specific fields
+        switch (node.type) {
+            case 'welcome':
+                const messageEn = document.getElementById('edit-message-en');
+                const messageSv = document.getElementById('edit-message-sv');
+                if (messageEn) node.data.messages.english = messageEn.value;
+                if (messageSv) node.data.messages.swedish = messageSv.value;
+                break;
+                
+            case 'handoff':
+                const selectedDept = document.getElementById('edit-department');
+                const selectedAgent = document.getElementById('edit-agent');
+                const handoffMessage = document.getElementById('edit-handoff-message');
+                
+                if (selectedDept) {
+                    const dept = this.masterTemplate.departments.find(d => d.id === selectedDept.value);
+                    node.data.department = selectedDept.value;
+                    node.data.agents = dept ? dept.agents : [];
+                    node.data.color = dept ? dept.color : '#34495e';
+                }
+                if (selectedAgent) node.data.selectedAgent = selectedAgent.value;
+                if (handoffMessage) node.data.handoffMessage = handoffMessage.value || 'Transferring you to a human agent...';
+                
+                // Validate and serialize node data properly
+                node.data = this.validateNodeData(node.type, node.data);
+                break;
+                
+            case 'intent':
+                const checkedIntents = Array.from(document.querySelectorAll('.intent-checkboxes input:checked'))
+                    .map(input => input.value);
+                node.data.intents = checkedIntents;
+                console.log('Updated intent node with intents:', checkedIntents);
+                break;
+                
+            case 'condition':
+                const conditionInput = document.getElementById('edit-condition');
+                if (conditionInput) {
+                    node.data.condition = conditionInput.value;
+                }
+                break;
+                
+            case 'message':
+                const messageContent = document.getElementById('edit-message-content');
+                if (messageContent) {
+                    node.data.message = messageContent.value;
+                }
+                break;
         }
+
+        this.renderNodes();
+        this.renderConnections();
+        
+        // Close modal
+        const modal = document.querySelector('.node-modal');
+        if (modal) {
+            modal.remove();
+        }
+        
+        this.showToast('Node updated successfully', 'success');
+        this.autoSave(); // Auto-save when updating node
     }
 
     deleteNode(nodeId) {
@@ -1614,7 +1584,7 @@ console.log('Disconnect button clicked for:', connection.id);
     // Validate and ensure proper serialization of node data
     validateNodeData(nodeType, data) {
         const validatedData = { ...data };
-
+        
         switch (nodeType) {
             case 'message':
                 validatedData.messages = validatedData.messages || { english: '', swedish: '' };
@@ -1630,7 +1600,7 @@ console.log('Disconnect button clicked for:', connection.id);
                 validatedData.intents = validatedData.intents || [];
                 break;
         }
-
+        
         return validatedData;
     }
 
@@ -1638,13 +1608,13 @@ console.log('Disconnect button clicked for:', connection.id);
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.textContent = message;
-
+        
         document.body.appendChild(toast);
-
+        
         setTimeout(() => {
             toast.classList.add('show');
         }, 100);
-
+        
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
@@ -1657,16 +1627,16 @@ console.log('Disconnect button clicked for:', connection.id);
             this.panOffset.y = e.clientY;
             this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
         }
-
+        
         // Handle node dragging
         if (this.draggedNode) {
             const rect = this.canvas.getBoundingClientRect();
             const x = (e.clientX - rect.left) / this.zoom;
             const y = (e.clientY - rect.top) / this.zoom;
-
+            
             this.draggedNode.position.x = x - this.draggedNode.dragOffset.x;
             this.draggedNode.position.y = y - this.draggedNode.dragOffset.y;
-
+            
             // Clear any duplicate node elements before updating position
             const allNodeElements = document.querySelectorAll(`[data-node-id="${this.draggedNode.id}"]`);
             if (allNodeElements.length > 1) {
@@ -1675,17 +1645,17 @@ console.log('Disconnect button clicked for:', connection.id);
                     allNodeElements[i].remove();
                 }
             }
-
+            
             // Update only the dragged node's position
             const nodeElement = document.querySelector(`[data-node-id="${this.draggedNode.id}"]`);
             if (nodeElement) {
                 nodeElement.style.left = this.draggedNode.position.x + 'px';
                 nodeElement.style.top = this.draggedNode.position.y + 'px';
             }
-
+            
             this.renderConnections(); // Update connections when nodes move
         }
-
+        
         // Update temp connection line
         if (this.isConnecting) {
             this.updateTempConnectionLine(e.clientX, e.clientY);
@@ -1711,7 +1681,7 @@ console.log('Disconnect button clicked for:', connection.id);
             }
             this.showToast('Connection cancelled', 'info');
         }
-
+        
         // 🔧 FIX 2: Handle connection deletion by clicking on connection lines
         if (e.target.classList.contains('connection-line') || e.target.closest('.connection-line')) {
             const connectionLine = e.target.classList.contains('connection-line') ? e.target : e.target.closest('.connection-line');
@@ -1721,7 +1691,7 @@ console.log('Disconnect button clicked for:', connection.id);
             }
             return;
         }
-
+        
         // Deselect any selected nodes when clicking empty canvas
         if (e.target === this.canvas || e.target.classList.contains('flow-background')) {
             this.selectedNode = null;
@@ -1744,13 +1714,13 @@ console.log('Disconnect button clicked for:', connection.id);
             position: { x: 200, y: 200 },
             data: this.getDefaultNodeData(type)
         });
-
+        
         this.nodes.push(newNode);
-
+        
         // Force a complete re-render to avoid DOM inconsistencies
         // This ensures header-added nodes behave the same as template nodes
         this.renderNodes();
-
+        
         this.autoSave(); // Auto-save when adding node
         this.showToast(`${type} node added`, 'success');
     }
@@ -1824,7 +1794,7 @@ console.log('Disconnect button clicked for:', connection.id);
         if (this.autoSaveTimeout) {
             clearTimeout(this.autoSaveTimeout);
         }
-
+        
         this.autoSaveTimeout = setTimeout(() => {
             this.saveFlow();
             console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
