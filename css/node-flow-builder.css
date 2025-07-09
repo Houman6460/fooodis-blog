@@ -1,190 +1,110 @@
-/**
- * Node Flow Builder CSS
- * Visual chatbot flow builder styling
- */
 
-/* Container and Layout */
+/* Node Flow Builder Styles */
 .node-flow-container {
     position: relative;
     width: 100%;
     height: 600px;
+    min-height: 600px;
     background: #1a1a1a;
     border: 1px solid #333;
     border-radius: 8px;
     overflow: hidden;
-    margin-top: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .node-flow-canvas {
     position: relative;
     width: 100%;
-    height: calc(100% - 60px);
-    min-height: 540px;
-    overflow: visible !important;
-    cursor: grab;
-    transform-origin: 0 0;
-    transition: transform 0.2s ease;
-    background: #1a1a1a;
-    min-height: 600px;
-}
-
-.node-flow-canvas:active {
-    cursor: grabbing;
-}
-
-.flow-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
     height: 100%;
-    pointer-events: none;
-    background-image: 
-        radial-gradient(circle, #333 1px, transparent 1px);
+    background: 
+        linear-gradient(90deg, #333 1px, transparent 1px),
+        linear-gradient(180deg, #333 1px, transparent 1px);
     background-size: 20px 20px;
-    opacity: 0.3;
+    background-position: -1px -1px;
 }
 
-.flow-nodes {
-    position: relative;
-    z-index: 10;
-    overflow: visible !important;
-    min-height: 100%;
-    min-width: 100%;
-}
-
-.flow-connections {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    pointer-events: none;
-}
-
-/* Toolbar Styling */
 .node-flow-toolbar {
     display: flex;
-    align-items: center;
-    gap: 15px;
+    gap: 10px;
     padding: 15px;
-    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-    border: 1px solid #444;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    background: #2a2a2a;
+    border-bottom: 1px solid #333;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .toolbar-section {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
+    padding: 0 15px;
+    border-right: 1px solid #444;
 }
 
-.toolbar-section:not(:last-child) {
-    border-right: 1px solid #dee2e6;
-    padding-right: 15px;
+.toolbar-section:last-child {
+    border-right: none;
 }
 
 .toolbar-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
-    border: 1px solid #555;
-    color: #e0e0e0;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 13px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-}
-
-.toolbar-btn:hover {
-    background: linear-gradient(135deg, #4a4a4a 0%, #3d3d3d 100%);
-    border-color: #666;
+    gap: 5px;
+    padding: 8px 12px;
+    background: #3a3a3a;
     color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.toolbar-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-}
-
-.toolbar-btn i {
+    border: 1px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
     font-size: 12px;
 }
 
-/* Node Styling */
+.toolbar-btn:hover {
+    background: #4a4a4a;
+    border-color: #666;
+}
+
+.toolbar-btn:active {
+    background: #2a2a2a;
+}
+
+/* Node Styles */
 .flow-node {
     position: absolute;
-    min-width: 180px;
-    max-width: 280px;
-    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-    border: 2px solid #444;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    width: 200px;
+    min-height: 100px;
+    background: #2a2a2a;
+    border: 2px solid #555;
+    border-radius: 8px;
     cursor: move;
-    transition: all 0.2s ease;
+    user-select: none;
     z-index: 10;
-    overflow: hidden;
 }
 
 .flow-node:hover {
-    border-color: #555;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-    transform: translateY(-2px);
+    border-color: #777;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .flow-node.selected {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    border-color: #e8f24c;
+    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.3);
 }
 
-.flow-node.welcome {
-    border-color: #28a745;
-}
-
-.flow-node.intent {
-    border-color: #ffc107;
-}
-
-.flow-node.handoff {
-    border-color: #dc3545;
-}
-
-.flow-node.condition {
-    border-color: #6f42c1;
-}
-
-.flow-node.message {
-    border-color: #17a2b8;
-}
-
-/* Node Header */
 .node-header {
-    background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
-    padding: 10px 12px;
-    border-bottom: 1px solid #444;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 8px 12px;
+    background: #333;
+    border-bottom: 1px solid #555;
+    border-radius: 6px 6px 0 0;
 }
 
 .node-title {
-    color: #fff;
+    font-size: 12px;
     font-weight: 600;
-    font-size: 14px;
-    flex: 1;
+    color: #fff;
+    margin: 0;
 }
 
 .node-controls {
@@ -193,79 +113,202 @@
 }
 
 .node-btn {
-    background: transparent;
-    border: 1px solid #555;
-    color: #ccc;
     padding: 4px 6px;
-    border-radius: 4px;
+    background: #444;
+    border: 1px solid #666;
+    border-radius: 3px;
+    color: #fff;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 12px;
+    font-size: 10px;
+    transition: background 0.2s;
 }
 
 .node-btn:hover {
-    background: #444;
-    color: #fff;
-    border-color: #666;
+    background: #555;
 }
 
-/* Node Content */
 .node-content {
     padding: 12px;
-    color: #e0e0e0;
-    font-size: 13px;
+    color: #ccc;
+    font-size: 11px;
     line-height: 1.4;
 }
 
-.node-content p {
-    margin: 0 0 8px 0;
-    color: #ccc;
+.node-message {
+    max-height: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.node-content p:last-child {
-    margin-bottom: 0;
+.node-intents {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
-/* Connection Points */
-.node-connection-points {
+.intent-tag {
+    padding: 2px 6px;
+    background: #444;
+    border-radius: 10px;
+    font-size: 9px;
+    color: #e8f24c;
+}
+
+.agent-tag {
+    padding: 2px 6px;
+    background: #4a4a4a;
+    border-radius: 10px;
+    font-size: 9px;
+    color: #87ceeb;
+}
+
+.node-connections {
+    position: relative;
+    height: 20px;
+}
+
+.connection-point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    background: #333;
+    cursor: crosshair;
+    transition: all 0.2s;
+}
+
+.connection-point.input {
+    left: -7px;
+    top: 4px;
+}
+
+.connection-point.output {
+    right: -7px;
+    top: 4px;
+}
+
+.connection-point:hover {
+    border-color: #e8f24c;
+    background: #e8f24c;
+    transform: scale(1.2);
+}
+
+.connection-point.connecting {
+    border-color: #00d4aa;
+    background: #00d4aa;
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+/* Flow Node Types */
+.flow-node-welcome {
+    border-color: #4CAF50;
+}
+
+.flow-node-intent {
+    border-color: #2196F3;
+}
+
+.flow-node-handoff {
+    border-color: #FF9800;
+}
+
+.flow-node-condition {
+    border-color: #9C27B0;
+}
+
+.flow-node-message {
+    border-color: #607D8B;
+}
+
+/* Connection Lines */
+.flow-connections {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
+    z-index: 1;
 }
 
-.connection-point {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #007bff;
-    border: 2px solid #1a1a1a;
-    border-radius: 50%;
+.connection-line {
+    stroke: #6272a4;
+    stroke-width: 2;
+    fill: none;
+    pointer-events: stroke;
     cursor: pointer;
-    pointer-events: all;
-    transition: all 0.2s ease;
-    z-index: 20;
 }
 
-.connection-point:hover {
-    width: 14px;
-    height: 14px;
-    margin: -2px 0 0 -2px;
-    background: #0056b3;
+.connection-line:hover {
+    stroke: #ff6b6b;
+    stroke-width: 3;
 }
 
-.connection-point.input {
-    top: 50%;
-    left: -6px;
-    transform: translateY(-50%);
+/* Disconnect Buttons */
+.disconnect-btn {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff4757;
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: all 0.2s;
 }
 
-.connection-point.output {
-    top: 50%;
-    right: -6px;
-    transform: translateY(-50%);
+.disconnect-btn:hover {
+    background: #ff3742;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Canvas Controls */
+.canvas-zoom-controls {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background: rgba(42, 42, 42, 0.9);
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #555;
+}
+
+.canvas-zoom-btn {
+    padding: 6px 8px;
+    background: #444;
+    border: 1px solid #666;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+
+.canvas-zoom-btn:hover {
+    background: #555;
+}
+
+.canvas-zoom-level {
+    color: #ccc;
+    font-size: 11px;
+    margin: 0 8px;
 }
 
 /* Modals */
@@ -275,10 +318,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 999999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    z-index: 10000;
 }
 
 .modal-overlay {
@@ -287,325 +327,224 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 1;
-    animation: fadeIn 0.3s ease;
+    background: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
 }
 
 .modal-content {
-    position: relative;
-    background: #282a36;
-    border: 1px solid #44475a;
-    border-radius: 12px;
-    padding: 24px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 80vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2a2a2a;
+    border: 1px solid #555;
+    border-radius: 8px;
+    min-width: 400px;
+    max-width: 90vw;
+    max-height: 90vh;
     overflow-y: auto;
-    z-index: 2;
-    animation: slideIn 0.3s ease;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+.modal-content.large {
+    min-width: 800px;
+    min-height: 600px;
 }
 
 .modal-header {
-    background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
-    padding: 16px 20px;
-    border-bottom: 1px solid #444;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #555;
+    background: #333;
+    border-radius: 8px 8px 0 0;
 }
 
-.modal-title {
+.modal-header h3 {
     color: #fff;
-    font-weight: 600;
-    font-size: 16px;
     margin: 0;
+    font-size: 16px;
 }
 
 .modal-close {
-    background: transparent;
+    background: none;
     border: none;
     color: #ccc;
     font-size: 20px;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-close:hover {
     color: #fff;
-    background: #444;
 }
 
 .modal-body {
     padding: 20px;
-    color: #e0e0e0;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-/* Form Elements */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    display: block;
-    color: #fff;
-    font-weight: 500;
-    margin-bottom: 6px;
-    font-size: 14px;
-}
-
-.form-control {
-    width: 100%;
-    background: #1a1a1a;
-    border: 1px solid #555;
-    color: #e0e0e0;
-    padding: 10px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.2s ease;
-}
-
-.form-control:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-}
-
-.form-control::placeholder {
-    color: #888;
-}
-
-textarea.form-control {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* Language selector styling */
-#nodeLanguageSelector {
-    background: #44475a;
-    border: 1px solid #6272a4;
-    color: #f8f8f2;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    min-width: 140px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-#nodeLanguageSelector:hover {
-    border-color: #bd93f9;
-    background: #4c4f69;
-}
-
-#nodeLanguageSelector:focus {
-    outline: none;
-    border-color: #bd93f9;
-    box-shadow: 0 0 0 2px rgba(189, 147, 249, 0.2);
-}
-
-#nodeLanguageSelector option {
-    background: #44475a;
-    color: #f8f8f2;
-    padding: 8px;
-}
-
-/* Toast Notifications */
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1100;
-}
-
-.toast {
-    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    animation: toastSlideIn 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 300px;
-}
-
-@keyframes toastSlideIn {
-    from {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.toast.success {
-    border-left: 4px solid #28a745;
-}
-
-.toast.error {
-    border-left: 4px solid #dc3545;
-}
-
-.toast.info {
-    border-left: 4px solid #17a2b8;
-}
-
-.toast-message {
-    color: #e0e0e0;
-    font-size: 14px;
-    flex: 1;
-}
-
-.toast-close {
-    background: transparent;
-    border: none;
     color: #ccc;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 2px;
 }
 
-.toast-close:hover {
-    color: #fff;
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    border-top: 1px solid #555;
+    background: #333;
+    border-radius: 0 0 8px 8px;
 }
 
 /* Test Flow Modal */
-.test-flow-modal .modal-content {
-    max-width: 600px;
+.test-chat-container {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
 }
 
-.test-messages {
-    background: #1a1a1a;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 16px;
-    max-height: 300px;
+.test-chat-messages {
+    flex: 1;
     overflow-y: auto;
-    margin-bottom: 16px;
+    padding: 15px;
+    background: #1a1a1a;
+    border: 1px solid #555;
+    border-radius: 6px;
+    margin-bottom: 15px;
 }
 
 .test-message {
-    margin-bottom: 12px;
-    padding: 8px 12px;
-    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.test-message.user {
+    justify-content: flex-end;
+}
+
+.test-message.bot {
+    justify-content: flex-start;
+}
+
+.message-content {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 18px;
     font-size: 14px;
     line-height: 1.4;
 }
 
-.test-message.user {
-    background: #007bff;
-    color: white;
-    margin-left: 20%;
-    text-align: right;
+.test-message.user .message-content {
+    background: #e8f24c;
+    color: #000;
 }
 
-.test-message.bot {
-    background: #333;
-    color: #e0e0e0;
-    margin-right: 20%;
+.test-message.bot .message-content {
+    background: #444;
+    color: #fff;
 }
 
-.test-input-area {
+.test-chat-input {
     display: flex;
     gap: 10px;
 }
 
-.test-input {
+.test-chat-input input {
     flex: 1;
+    padding: 10px;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #fff;
 }
 
-/* Canvas zoom controls */
-.canvas-zoom-controls {
-    position: fixed !important;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(40, 42, 54, 0.95);
-    border: 1px solid #44475a;
-    border-radius: 8px;
-    padding: 8px 12px;
-    z-index: 10000;
-    transform: none !important;
-    scale: 1 !important;
-    pointer-events: auto;
-    will-change: auto;
-}
-
-.canvas-zoom-btn {
-    background: transparent;
-    border: 1px solid #6272a4;
-    color: #f8f8f2;
-    width: 32px;
-    height: 32px;
+.test-chat-input button {
+    padding: 10px 20px;
+    background: #e8f24c;
+    color: #000;
+    border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: 600;
+}
+
+/* Standalone Components */
+.standalone-flow-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
+    padding: 15px;
+    background: #333;
+    border-bottom: 1px solid #555;
 }
 
-.canvas-zoom-btn:hover {
-    background: #6272a4;
-    color: #282a36;
-    transform: scale(1.05);
+.standalone-flow-header h3 {
+    color: #fff;
+    margin: 0;
 }
 
-.canvas-zoom-level {
-    color: #f8f8f2;
-    font-size: 14px;
-    font-weight: 500;
-    min-width: 45px;
-    text-align: center;
+.flow-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.standalone-flow-canvas {
+    height: 500px;
+}
+
+.standalone-toolbar {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background: #2a2a2a;
+    border-bottom: 1px solid #555;
+    align-items: center;
+}
+
+.toolbar-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.toolbar-label {
+    color: #ccc;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .node-flow-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .toolbar-section {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    .toolbar-btn {
-        flex: 1;
-        min-width: 120px;
-    }
-    
-    .modal-content {
-        width: 95%;
-        margin: 10px;
+    .node-flow-container {
+        height: 400px;
+        min-height: 400px;
     }
     
     .flow-node {
-        min-width: 150px;
-        max-width: 200px;
+        width: 150px;
+        min-height: 80px;
+    }
+    
+    .toolbar-section {
+        padding: 0 10px;
+    }
+    
+    .toolbar-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+    
+    .modal-content {
+        min-width: 300px;
+        margin: 20px;
+    }
+    
+    .modal-content.large {
+        min-width: 95vw;
+        min-height: 70vh;
     }
 }
