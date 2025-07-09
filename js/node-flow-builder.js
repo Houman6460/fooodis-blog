@@ -1189,19 +1189,104 @@ class NodeFlowBuilder {
         // Open a test preview modal
         const modal = document.createElement('div');
         modal.className = 'test-flow-modal';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        modal.style.zIndex = '10000';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        
         modal.innerHTML = `
-            <div class="modal-overlay"></div>
-            <div class="modal-content large">
-                <div class="modal-header">
-                    <h3>Test Flow Preview</h3>
-                    <button class="modal-close">&times;</button>
+            <div class="modal-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);"></div>
+            <div class="modal-content large" style="
+                position: relative; 
+                background: #2a2a2a; 
+                border-radius: 8px; 
+                width: 90%; 
+                max-width: 1000px; 
+                height: 80%; 
+                max-height: 700px; 
+                display: flex; 
+                flex-direction: column;
+                border: 1px solid #444;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            ">
+                <div class="modal-header" style="
+                    padding: 20px; 
+                    border-bottom: 1px solid #444; 
+                    display: flex; 
+                    justify-content: space-between; 
+                    align-items: center;
+                    background: #333;
+                    border-radius: 8px 8px 0 0;
+                ">
+                    <h3 style="margin: 0; color: #fff; font-size: 18px;">Test Flow Preview</h3>
+                    <button class="modal-close" style="
+                        background: #555; 
+                        border: none; 
+                        color: #fff; 
+                        font-size: 20px; 
+                        width: 30px; 
+                        height: 30px; 
+                        border-radius: 4px; 
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <div class="test-chat-container">
-                        <div class="test-chat-messages" id="test-chat-messages"></div>
-                        <div class="test-chat-input">
-                            <input type="text" id="test-message-input" placeholder="Type a message to test the flow...">
-                            <button onclick="nodeFlowBuilder.sendTestMessage()">Send</button>
+                <div class="modal-body" style="
+                    flex: 1; 
+                    padding: 20px; 
+                    display: flex; 
+                    flex-direction: column;
+                    overflow: hidden;
+                ">
+                    <div class="test-chat-container" style="
+                        display: flex; 
+                        flex-direction: column; 
+                        height: 100%;
+                        background: #1a1a1a;
+                        border-radius: 8px;
+                        border: 1px solid #333;
+                    ">
+                        <div class="test-chat-messages" id="test-chat-messages" style="
+                            flex: 1; 
+                            padding: 20px; 
+                            overflow-y: auto; 
+                            background: #1a1a1a;
+                            border-radius: 8px 8px 0 0;
+                        "></div>
+                        <div class="test-chat-input" style="
+                            padding: 15px; 
+                            border-top: 1px solid #333; 
+                            display: flex; 
+                            gap: 10px;
+                            background: #2a2a2a;
+                            border-radius: 0 0 8px 8px;
+                        ">
+                            <input type="text" id="test-message-input" placeholder="Type a message to test the flow..." style="
+                                flex: 1; 
+                                padding: 10px; 
+                                border: 1px solid #555; 
+                                border-radius: 4px; 
+                                background: #333; 
+                                color: #fff;
+                                outline: none;
+                            ">
+                            <button id="test-send-btn" style="
+                                padding: 10px 20px; 
+                                background: #007bff; 
+                                color: white; 
+                                border: none; 
+                                border-radius: 4px; 
+                                cursor: pointer;
+                                font-weight: 500;
+                            ">Send</button>
                         </div>
                     </div>
                 </div>
@@ -1214,6 +1299,21 @@ class NodeFlowBuilder {
         // Close modal handlers
         modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
         modal.querySelector('.modal-overlay').addEventListener('click', () => modal.remove());
+        
+        // Send button handler
+        modal.querySelector('#test-send-btn').addEventListener('click', () => this.sendTestMessage());
+        
+        // Enter key handler for input
+        modal.querySelector('#test-message-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.sendTestMessage();
+            }
+        });
+        
+        // Focus the input
+        setTimeout(() => {
+            modal.querySelector('#test-message-input').focus();
+        }, 100);
     }
 
     initializeTestFlow() {
@@ -1221,12 +1321,44 @@ class NodeFlowBuilder {
         const welcomeNode = this.nodes.find(node => node.type === 'welcome');
         
         if (welcomeNode) {
-            const language = document.getElementById('nodeLanguageSelector').value;
-            const message = welcomeNode.data.messages[language] || welcomeNode.data.messages.english;
+            const language = document.getElementById('nodeLanguageSelector')?.value || 'en';
+            const message = welcomeNode.data.messages[language === 'sv' ? 'swedish' : 'english'] || 
+                           welcomeNode.data.messages.english || 
+                           "Hello! I'm your Fooodis assistant. How can I help you today?";
             
             messagesContainer.innerHTML = `
-                <div class="test-message bot">
-                    <div class="message-content">${message}</div>
+                <div class="test-message bot" style="
+                    margin-bottom: 15px; 
+                    display: flex; 
+                    justify-content: flex-start;
+                ">
+                    <div class="message-content" style="
+                        background: #007bff; 
+                        color: white; 
+                        padding: 12px 16px; 
+                        border-radius: 18px 18px 18px 4px; 
+                        max-width: 70%;
+                        word-wrap: break-word;
+                        line-height: 1.4;
+                    ">${message}</div>
+                </div>
+            `;
+        } else {
+            messagesContainer.innerHTML = `
+                <div class="test-message bot" style="
+                    margin-bottom: 15px; 
+                    display: flex; 
+                    justify-content: flex-start;
+                ">
+                    <div class="message-content" style="
+                        background: #007bff; 
+                        color: white; 
+                        padding: 12px 16px; 
+                        border-radius: 18px 18px 18px 4px; 
+                        max-width: 70%;
+                        word-wrap: break-word;
+                        line-height: 1.4;
+                    ">Hello! I'm your Fooodis assistant. How can I help you today?</div>
                 </div>
             `;
         }
@@ -1243,21 +1375,76 @@ class NodeFlowBuilder {
         // Add user message
         const userMessage = document.createElement('div');
         userMessage.className = 'test-message user';
-        userMessage.innerHTML = `<div class="message-content">${message}</div>`;
+        userMessage.style.cssText = `
+            margin-bottom: 15px; 
+            display: flex; 
+            justify-content: flex-end;
+        `;
+        userMessage.innerHTML = `
+            <div class="message-content" style="
+                background: #444; 
+                color: white; 
+                padding: 12px 16px; 
+                border-radius: 18px 18px 4px 18px; 
+                max-width: 70%;
+                word-wrap: break-word;
+                line-height: 1.4;
+            ">${message}</div>
+        `;
         messagesContainer.appendChild(userMessage);
+
+        // Clear input and scroll
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Show typing indicator
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'test-message bot typing';
+        typingIndicator.style.cssText = `
+            margin-bottom: 15px; 
+            display: flex; 
+            justify-content: flex-start;
+        `;
+        typingIndicator.innerHTML = `
+            <div class="message-content" style="
+                background: #007bff; 
+                color: white; 
+                padding: 12px 16px; 
+                border-radius: 18px 18px 18px 4px; 
+                max-width: 70%;
+                word-wrap: break-word;
+                line-height: 1.4;
+                opacity: 0.7;
+            ">Typing...</div>
+        `;
+        messagesContainer.appendChild(typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
         // Simulate bot response based on flow
         setTimeout(() => {
+            typingIndicator.remove();
             const botResponse = this.processTestMessage(message);
             const botMessage = document.createElement('div');
             botMessage.className = 'test-message bot';
-            botMessage.innerHTML = `<div class="message-content">${botResponse}</div>`;
+            botMessage.style.cssText = `
+                margin-bottom: 15px; 
+                display: flex; 
+                justify-content: flex-start;
+            `;
+            botMessage.innerHTML = `
+                <div class="message-content" style="
+                    background: #007bff; 
+                    color: white; 
+                    padding: 12px 16px; 
+                    border-radius: 18px 18px 18px 4px; 
+                    max-width: 70%;
+                    word-wrap: break-word;
+                    line-height: 1.4;
+                ">${botResponse}</div>
+            `;
             messagesContainer.appendChild(botMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 1000);
-
-        input.value = '';
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 1500);
     }
 
     processTestMessage(message) {
