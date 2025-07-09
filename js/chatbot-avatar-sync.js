@@ -127,12 +127,6 @@
         },
 
         applyToWidget: function() {
-            // Don't apply stored avatar if an agent is currently active
-            if (this.isAgentActive()) {
-                console.log('🔄 Agent is active, not applying stored avatar');
-                return;
-            }
-
             const avatar = this.getStoredAvatar();
             if (!avatar) {
                 console.log('📭 No uploaded avatar found for application');
@@ -219,11 +213,6 @@
         setupCrossPageSync: function() {
             window.addEventListener('storage', (e) => {
                 if (e.key && (e.key.includes('avatar') || e.key.includes('chatbot'))) {
-                    // Don't override if an agent is currently active
-                    if (this.isAgentActive()) {
-                        console.log('🔄 Avatar change detected but agent is active, ignoring');
-                        return;
-                    }
                     console.log('🔄 Avatar change detected from another page');
                     setTimeout(() => this.applyToWidget(), 100);
                 }
@@ -233,10 +222,7 @@
                 if (e.detail && e.detail.avatar) {
                     console.log('🔄 Avatar update event received');
                     this.storeAvatar(e.detail.avatar);
-                    // Don't apply if agent is active
-                    if (!this.isAgentActive()) {
-                        this.applyToWidget();
-                    }
+                    this.applyToWidget();
                 }
             });
 
@@ -247,15 +233,6 @@
                     this.applyAvatarToWidget(e.detail.agent.avatar);
                 }
             });
-        },
-
-        isAgentActive: function() {
-            // Check if chatbot has an active agent (not general settings)
-            if (window.FoodisChatbot && window.FoodisChatbot.currentAgent) {
-                const agent = window.FoodisChatbot.currentAgent;
-                return agent && !agent.isGeneral && agent.name !== 'Fooodis Assistant';
-            }
-            return false;
         }
     };
 
@@ -277,11 +254,8 @@
         // Periodic check
         setInterval(() => {
             if (window.FoodisChatbot && !window.FoodisChatbot.config?.avatar) {
-                // Only reapply if no agent is active
-                if (!AvatarSync.isAgentActive()) {
-                    console.log('🔄 Avatar missing, reapplying...');
-                    AvatarSync.applyToWidget();
-                }
+                console.log('🔄 Avatar missing, reapplying...');
+                AvatarSync.applyToWidget();
             }
         }, 5000);
 

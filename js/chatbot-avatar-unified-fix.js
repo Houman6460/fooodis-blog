@@ -87,12 +87,6 @@
         scheduleUpdate: function() {
             if (this.isProcessing || !this.targetAvatar) return;
             
-            // Don't update if an agent is currently active
-            if (this.isAgentActive()) {
-                console.log('🔄 Agent is active, skipping avatar update');
-                return;
-            }
-            
             // Use requestAnimationFrame for better performance
             if (!this.isUpdating) {
                 this.isUpdating = true;
@@ -101,15 +95,6 @@
                     this.isUpdating = false;
                 });
             }
-        },
-
-        isAgentActive: function() {
-            // Check if chatbot has an active agent (not general settings)
-            if (window.FoodisChatbot && window.FoodisChatbot.currentAgent) {
-                const agent = window.FoodisChatbot.currentAgent;
-                return agent && !agent.isGeneral && agent.name !== 'Fooodis Assistant';
-            }
-            return false;
         },
 
         performUpdate: function() {
@@ -223,11 +208,8 @@
                 if (e.key && (e.key.includes('avatar') || e.key.includes('chatbot'))) {
                     clearTimeout(storageTimeout);
                     storageTimeout = setTimeout(() => {
-                        // Don't update if agent is active
-                        if (!this.isAgentActive()) {
-                            this.loadTargetAvatar();
-                            this.scheduleUpdate();
-                        }
+                        this.loadTargetAvatar();
+                        this.scheduleUpdate();
                     }, 100);
                 }
             });
