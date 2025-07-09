@@ -87,19 +87,15 @@
             'js/blog.js',
             'js/chatbot-widget.js',
             'js/chatbot-message-enhancer.js',
+            'js/chatbot-avatar-sync.js',
             'js/chatbot-integration-fixes.js',
             'js/chatbot-integration-patch.js',
             'js/chatbot-initialization.js',
+            'js/chatbot-avatar-override.js',
             'js/footer-bubbles.js',
             'js/advertising-banners.js',
             'js/social-icons-fix.js'
         ];
-
-        // Master Avatar Fix (replaces all other avatar scripts)
-        requiredScripts.push('js/chatbot-avatar-master-fix.js');
-
-        // Add Complete Avatar Management System
-        requiredScripts.push('js/chatbot-avatar-complete-fix.js');
 
         requiredScripts.forEach(scriptSrc => {
             fetch(scriptSrc, { method: 'HEAD' })
@@ -657,7 +653,7 @@
 
     <!-- Fix console errors -->
     <script src="js/console-error-fixer.js"></script>
-
+    
     <!-- Handle missing scripts to prevent 404 errors -->
     <script src="js/missing-scripts-handler.js"></script>
 
