@@ -20,8 +20,8 @@
     
     console.log('Reload Prevention: Page load count:', pageLoadCount);
     
-    // If more than 3 loads in 5 seconds, prevent further redirects
-    if (pageLoadCount > 3) {
+    // If more than 5 loads in 5 seconds, prevent further redirects
+    if (pageLoadCount > 5) {
         console.warn('Reload Prevention: Rapid reload detected, blocking redirects');
         
         // Override location changes temporarily
@@ -84,13 +84,14 @@
         }
     }
     
-    // Reduce frequency of automatic checks
+    // Reduce frequency of automatic checks more gradually
     const originalSetInterval = window.setInterval;
     window.setInterval = function(callback, delay) {
-        // Increase delay for very frequent intervals
-        if (delay < 1000) {
-            console.log('Reload Prevention: Increasing interval delay from', delay, 'to', Math.max(delay * 2, 1000));
-            delay = Math.max(delay * 2, 1000);
+        // Increase delay for very frequent intervals, but less aggressively
+        if (delay < 500) {
+            const newDelay = Math.max(delay * 1.5, 500);
+            console.log('Reload Prevention: Increasing interval delay from', delay, 'to', newDelay);
+            delay = newDelay;
         }
         return originalSetInterval.call(this, callback, delay);
     };

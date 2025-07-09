@@ -21,15 +21,25 @@
         return false;
     }
     
-    // Login function with debouncing
+    // Login function with enhanced debouncing
     let loginInProgress = false;
+    let lastLoginAttempt = 0;
     window.loginUser = function(username, password) {
+        const now = Date.now();
+        
+        // Prevent rapid login attempts
+        if (now - lastLoginAttempt < 2000) {
+            console.log('Auth Integration Fix: Login attempt too soon, ignoring');
+            return false;
+        }
+        
         if (loginInProgress) {
             console.log('Auth Integration Fix: Login already in progress, ignoring');
             return false;
         }
         
         loginInProgress = true;
+        lastLoginAttempt = now;
         console.log('Auth Integration Fix: Attempting login for:', username);
         
         // Simple authentication for now (replace with real API call)
@@ -60,10 +70,14 @@
             
             console.log('Auth Integration Fix: Login successful for:', user.name);
             
-            // Small delay before redirect to ensure storage is written
+            // Clear any redirect tracking
+            sessionStorage.removeItem('authRedirectCount');
+            
+            // Delay before redirect to ensure storage is written and prevent loops
             setTimeout(() => {
+                loginInProgress = false;
                 window.location.href = 'dashboard.html';
-            }, 100);
+            }, 1000);
             
             return true;
         } else {
@@ -105,21 +119,39 @@
             return;
         }
         
-        if (!publicPages.some(page => currentPage.endsWith(page))) {
-            const authResult = initializeAuth();
-            if (!authResult) {
-                console.log('Auth Integration Fix: Redirecting to login - not authenticated');
-                // Add flag to prevent loops
-                window.location.href = 'login.html?redirecting=true';
-                return;
-            }
+        // Add session-based redirect prevention
+        const redirectCount = parseInt(sessionStorage.getItem('authRedirectCount') || '0');
+        if (redirectCount > 2) {
+            console.log('Auth Integration Fix: Too many redirects, stopping authentication checks');
+            sessionStorage.removeItem('authRedirectCount');
+            return;
         }
         
+        const authResult = initializeAuth();
+        
         // If on login page and already authenticated, redirect to dashboard
-        if (currentPage.endsWith('login.html') && initializeAuth()) {
+        if (currentPage.endsWith('login.html') && authResult) {
             console.log('Auth Integration Fix: Already authenticated, redirecting to dashboard');
-            window.location.href = 'dashboard.html';
+            sessionStorage.setItem('authRedirectCount', (redirectCount + 1).toString());
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 500);
             return;
+        }
+        
+        // If on protected page and not authenticated, redirect to login
+        if (!publicPages.some(page => currentPage.endsWith(page)) && !authResult) {
+            console.log('Auth Integration Fix: Redirecting to login - not authenticated');
+            sessionStorage.setItem('authRedirectCount', (redirectCount + 1).toString());
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 500);
+            return;
+        }
+        
+        // Reset redirect count on successful auth check
+        if (authResult) {
+            sessionStorage.removeItem('authRedirectCount');
         }
     }
     
