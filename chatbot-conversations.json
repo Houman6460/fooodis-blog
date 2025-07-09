@@ -151,5 +151,34 @@
     },
     "lastUserMessage": "menu",
     "messageCount": 2
+  },
+  {
+    "id": "conv_1752090323860_vr4tn682n",
+    "messages": [
+      {
+        "role": "user",
+        "content": "do you have discount code?",
+        "timestamp": "2025-07-09T19:46:19.957Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Currently, we don't have any active discount codes available. However, we often run promotions and special offers. I recommend checking our website or subscribing to our newsletter to stay updated on any future discounts. If you have any other questions or need assistance, feel free to ask!",
+        "timestamp": "2025-07-09T19:46:21.402Z"
+      }
+    ],
+    "createdAt": "2025-07-09T19:46:19.957Z",
+    "lastMessageAt": "2025-07-09T19:46:19.957Z",
+    "language": "en",
+    "status": "active",
+    "threadId": null,
+    "agent": {
+      "id": "delivery-assistant",
+      "name": "Lisa Anderson - Delivery",
+      "avatar": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNlOGYyNGMiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDMTMuMSAyIDE0IDIuOSAxNCA0QzE0IDUuMSAxMy4xIDYgMTIgNkMxMC45IDYgMTAgNS4xIDEwIDRDMTAgMi45IDEwLjkgMiAxMiAyWk0yMSAxOVYyMEgzVjE5QzMgMTYuMzMgOSA0NSA5IDE1SDE1QzE2IDE1IDIxIDE2LjMzIDIxIDE5WiIgZmlsbD0iIzI2MjgyZiIvPgo8L3N2Zz4KPC9zdmc+",
+      "personality": "Professional assistant",
+      "assignedAssistantId": "asst_To6VWuiz6x72KsYDMxaWUsb6"
+    },
+    "lastUserMessage": "do you have discount code?",
+    "messageCount": 2
   }
 ]
