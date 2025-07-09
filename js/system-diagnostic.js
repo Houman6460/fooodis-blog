@@ -194,11 +194,11 @@
         console.log('4. Reload page: location.reload()');
     }
     
-    // Auto-run diagnostic on load (delayed)
+    // Auto-run diagnostic on load (delayed and less frequent)
     setTimeout(() => {
         console.log('System Diagnostic: Running automatic system check...');
         window.runSystemDiagnostic();
-    }, 3000);
+    }, 5000);
     
     // Keyboard shortcut for manual diagnostic
     document.addEventListener('keydown', function(e) {

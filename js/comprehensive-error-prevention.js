@@ -2,6 +2,13 @@
 (function() {
     'use strict';
 
+    // Prevent multiple executions
+    if (window.errorPreventionInitialized) {
+        console.log('Comprehensive Error Prevention: Already initialized, skipping');
+        return;
+    }
+    window.errorPreventionInitialized = true;
+
     console.log('Comprehensive Error Prevention: Initializing advanced error handling');
 
     // Global error tracking

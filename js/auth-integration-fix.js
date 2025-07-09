@@ -21,8 +21,15 @@
         return false;
     }
     
-    // Login function
+    // Login function with debouncing
+    let loginInProgress = false;
     window.loginUser = function(username, password) {
+        if (loginInProgress) {
+            console.log('Auth Integration Fix: Login already in progress, ignoring');
+            return false;
+        }
+        
+        loginInProgress = true;
         console.log('Auth Integration Fix: Attempting login for:', username);
         
         // Simple authentication for now (replace with real API call)
@@ -53,14 +60,23 @@
             
             console.log('Auth Integration Fix: Login successful for:', user.name);
             
-            // Redirect to dashboard
-            window.location.href = 'dashboard.html';
+            // Small delay before redirect to ensure storage is written
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 100);
+            
             return true;
         } else {
             console.log('Auth Integration Fix: Login failed - invalid credentials');
             alert('Invalid username or password');
+            loginInProgress = false;
             return false;
         }
+        
+        // Reset login flag after a delay
+        setTimeout(() => {
+            loginInProgress = false;
+        }, 1000);
     };
     
     // Logout function
@@ -81,14 +97,29 @@
         const currentPage = window.location.pathname;
         
         // Pages that don't require authentication
-        const publicPages = ['/login.html', '/index.html', '/'];
+        const publicPages = ['/login.html', '/index.html', '/', '/blog.html'];
+        
+        // Prevent redirect loops by checking if we're already redirecting
+        if (window.location.search.includes('redirecting=true')) {
+            console.log('Auth Integration Fix: Redirect loop detected, stopping');
+            return;
+        }
         
         if (!publicPages.some(page => currentPage.endsWith(page))) {
-            if (!initializeAuth()) {
+            const authResult = initializeAuth();
+            if (!authResult) {
                 console.log('Auth Integration Fix: Redirecting to login - not authenticated');
-                window.location.href = 'login.html';
+                // Add flag to prevent loops
+                window.location.href = 'login.html?redirecting=true';
                 return;
             }
+        }
+        
+        // If on login page and already authenticated, redirect to dashboard
+        if (currentPage.endsWith('login.html') && initializeAuth()) {
+            console.log('Auth Integration Fix: Already authenticated, redirecting to dashboard');
+            window.location.href = 'dashboard.html';
+            return;
         }
     }
     
