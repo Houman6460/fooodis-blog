@@ -44,7 +44,7 @@
             }
 
             // Initialize chat state
-            this.conversationPhase = 'welcome'; // welcome -> handoff -> agent -> personalized
+            this.conversationPhase = 'welcome';
             this.userName = localStorage.getItem('fooodis-user-name') || null;
             this.handoffComplete = false;
 
@@ -57,12 +57,18 @@
             // Check if chatbot is enabled before showing
             this.checkChatbotEnabled();
 
+            // Setup communication with dashboard
+            this.setupDashboardCommunication();
+
             // Create and inject widget
             this.createWidget();
             this.attachEventListeners();
 
             // Set up avatar update listener
             this.setupAvatarUpdateListener();
+
+            // Notify that widget is ready
+            window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
 
             console.log('Fooodis Chatbot Widget initialized successfully');
         },
@@ -182,6 +188,100 @@
                 console.error('Error fetching server config:', error);
                 this.config.enabled = true;
             }
+        },
+
+        setupDashboardCommunication: function() {
+            // Listen for dashboard events
+            if (window.chatbotEvents) {
+                window.chatbotEvents.addEventListener('settingsChanged', (e) => {
+                    this.handleDashboardSettingsChange(e.detail);
+                });
+                
+                window.chatbotEvents.addEventListener('assistantUpdate', (e) => {
+                    this.handleAssistantUpdate(e.detail);
+                });
+            }
+            
+            // Listen for manager initialization
+            window.addEventListener('chatbotManagerReady', () => {
+                console.log('🔗 Dashboard manager ready, syncing settings...');
+                this.syncWithDashboard();
+            });
+        },
+
+        handleDashboardSettingsChange: function(data) {
+            console.log('📡 Widget received settings change:', data);
+            
+            if (data.settings) {
+                // Update widget configuration
+                this.config.enabled = data.settings.enabled;
+                this.config.primaryColor = data.settings.widgetColor;
+                this.config.allowFileUpload = data.settings.allowFileUpload;
+                
+                if (data.settings.avatar) {
+                    this.updateAvatar(data.settings.avatar);
+                }
+                
+                // Update widget visibility
+                if (this.widget) {
+                    this.widget.style.display = this.config.enabled ? 'block' : 'none';
+                }
+                
+                this.updateFileUploadVisibility();
+            }
+        },
+
+        handleAssistantUpdate: function(data) {
+            console.log('📡 Widget received assistant update:', data);
+            
+            if (data.assistant && this.widget) {
+                // Update current agent if needed
+                this.currentAgent = {
+                    id: data.assistant.id,
+                    name: data.assistant.name,
+                    avatar: data.assistant.avatar || this.config.avatar,
+                    personality: data.assistant.description
+                };
+                
+                // Update header info
+                this.updateAgentHeader();
+            }
+        },
+
+        syncWithDashboard: function() {
+            if (window.chatbotManager && window.chatbotManager.isInitialized) {
+                const manager = window.chatbotManager;
+                
+                // Sync settings
+                this.config.enabled = manager.settings.enabled;
+                this.config.primaryColor = manager.settings.widgetColor;
+                this.config.allowFileUpload = manager.settings.allowFileUpload;
+                
+                if (manager.settings.avatar) {
+                    this.updateAvatar(manager.settings.avatar);
+                }
+                
+                // Get active agent
+                this.currentAgent = manager.getActiveAgent();
+                
+                console.log('✅ Widget synced with dashboard');
+            }
+        },
+
+        updateAgentHeader: function() {
+            if (!this.widget || !this.currentAgent) return;
+            
+            const headerText = this.widget.querySelector('.header-text h4');
+            const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .message-avatar img');
+            
+            if (headerText) {
+                headerText.textContent = this.currentAgent.name;
+            }
+            
+            avatarImages.forEach(img => {
+                img.src = this.currentAgent.avatar;
+                img.alt = this.currentAgent.name + ' Avatar';
+            });
         },
 
         setupAvatarUpdateListener: function() {
