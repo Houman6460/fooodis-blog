@@ -1482,24 +1482,29 @@ input:checked + .scenario-slider:before {
 }
 
 .message-content {
-    background: white !important;
-    padding: 10px 15px !important;
-    border-radius: 18px !important;
-    max-width: 80% !important;
-    word-wrap: break-word !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-    font-size: 14px !important;
-    line-height: 1.4 !important;
-    color: #333333 !important;
-}
+                    background: white !important;
+                    padding: 10px 15px !important;
+                    border-radius: 18px !important;
+                    max-width: 80% !important;
+                    word-wrap: break-word !important;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+                    font-size: 14px !important;
+                    line-height: 1.4 !important;
+                    color: #333333 !important;
+                }
 
-.message.user .message-content {
-    background: #e8f24c !important;
-    color: #26282f !important;
-}
+                .message.user .message-content {
+                    background: #e8f24c !important;
+                    color: #26282f !important;
+                }
 
-.message.assistant .message-content {
-    background: #f8f9fa !important;
-    color: #333333 !important;
-    border: 1px solid #e9ecef !important;
-}
+                .message.assistant .message-content {
+                    background: #ffffff !important;
+                    color: #333333 !important;
+                    border: 1px solid #e9ecef !important;
+                }
+
+                /* Ensure text is always dark */
+                .message-content * {
+                    color: inherit !important;
+                }

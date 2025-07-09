@@ -122,7 +122,7 @@
                     this.config.enabled = settings.enabled !== false;
                     this.config.allowFileUpload = settings.allowFileUpload !== false;
 
-                    // Load assistants/agents from settings
+                    // Load assistants/agents from settings for later selection
                     if (settings.assistants && settings.assistants.length > 0) {
                         this.availableAgents = settings.assistants.filter(agent => 
                             agent.status === 'active' || agent.enabled !== false
@@ -130,21 +130,15 @@
                         console.log('📋 Widget loaded', this.availableAgents.length, 'active agents from settings');
                     }
 
-                    // Set current agent from available agents or use chatbot name
-                    if (this.availableAgents && this.availableAgents.length > 0) {
-                        this.currentAgent = {
-                            name: this.availableAgents[0].name,
-                            avatar: this.availableAgents[0].avatar || this.config.avatar || this.getDefaultAvatar(),
-                            personality: this.availableAgents[0].personality || 'Friendly Fooodis assistant'
-                        };
-                    } else {
-                        // Use general chatbot settings
-                        this.currentAgent = {
-                            name: settings.chatbotName || 'Fooodis Assistant',
-                            avatar: this.config.avatar || this.getDefaultAvatar(),
-                            personality: 'Friendly Fooodis assistant'
-                        };
-                    }
+                    // ALWAYS start with General Settings - no agent selection yet
+                    this.currentAgent = {
+                        name: settings.chatbotName || 'Fooodis Assistant',
+                        avatar: this.config.avatar || this.getDefaultAvatar(),
+                        personality: 'General assistant',
+                        isGeneral: true // Flag to indicate this is the general settings agent
+                    };
+                    
+                    console.log('🏢 Starting with General Settings agent:', this.currentAgent.name);
                 } else {
                     console.warn('⚠️ No settings found in any storage location');
                     this.setDefaultAgent();
@@ -908,11 +902,15 @@
                 // Play typing sound
                 this.playSound('typing');
                 
-                // Update typing text with agent name
+                // Update typing text with agent name and language
                 const agentName = this.currentAgent?.name || 'Assistant';
                 const typingText = typingIndicator.querySelector('span');
                 if (typingText) {
-                    typingText.textContent = `${agentName} is typing...`;
+                    if (this.currentLanguage === 'sv') {
+                        typingText.textContent = `${agentName} skriver...`;
+                    } else {
+                        typingText.textContent = `${agentName} is typing...`;
+                    }
                 }
             }
         },
@@ -978,6 +976,21 @@
 
             console.log('🤖 Processing message:', message.substring(0, 50) + '...');
 
+            // Detect language on first message
+            if (!this.languageDetected) {
+                this.detectAndSetLanguage(message);
+                this.languageDetected = true;
+            }
+
+            // Check if this is the first user message and we need agent handoff
+            const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
+            
+            if (isFirstMessage && this.conversationPhase === 'welcome') {
+                console.log('🔄 First message detected, initiating agent handoff...');
+                await this.performAgentHandoff();
+                return;
+            }
+
             // Try to use chatbot manager if available
             if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
                 console.log('🔄 Using chatbot manager for response');
@@ -988,7 +1001,8 @@
                     agent: this.currentAgent,
                     userName: this.userName,
                     userRegistered: this.userRegistered,
-                    recentMessages: this.messages.slice(-5)
+                    recentMessages: this.messages.slice(-5),
+                    assistantId: this.currentAgent?.assignedAssistantId
                 });
 
                 this.hideTyping();
@@ -1012,7 +1026,8 @@
                         message: message,
                         conversationId: this.conversationId,
                         language: this.currentLanguage || 'en',
-                        agent: this.currentAgent
+                        agent: this.currentAgent,
+                        assistantId: this.currentAgent?.assignedAssistantId
                     })
                 });
 
@@ -1047,26 +1062,155 @@
         }
     },
 
+        detectAndSetLanguage: function(message) {
+            // Swedish language indicators
+            const swedishWords = ['hej', 'hallo', 'tjena', 'morn', 'god', 'dag', 'kväll', 'morgon', 'vad', 'hur', 'kan', 'jag', 'du', 'är', 'det', 'och', 'eller', 'tack', 'bra', 'här', 'där', 'när', 'vem', 'vilken', 'svenska', 'sverige'];
+            const englishWords = ['hello', 'hi', 'hey', 'good', 'morning', 'evening', 'what', 'how', 'can', 'you', 'are', 'is', 'and', 'or', 'thanks', 'thank', 'here', 'there', 'when', 'who', 'which', 'english'];
+            
+            const messageLower = message.toLowerCase();
+            let swedishScore = 0;
+            let englishScore = 0;
+            
+            // Check for Swedish words
+            swedishWords.forEach(word => {
+                if (messageLower.includes(word)) {
+                    swedishScore++;
+                }
+            });
+            
+            // Check for English words
+            englishWords.forEach(word => {
+                if (messageLower.includes(word)) {
+                    englishScore++;
+                }
+            });
+            
+            // Set language based on detection
+            if (swedishScore > englishScore) {
+                this.currentLanguage = 'sv';
+                console.log('🇸🇪 Swedish language detected');
+            } else {
+                this.currentLanguage = 'en';
+                console.log('🇺🇸 English language detected');
+            }
+            
+            // Save language preference
+            localStorage.setItem('fooodis-language', this.currentLanguage);
+        },
+
+        performAgentHandoff: async function() {
+            console.log('🔄 Starting agent handoff process...');
+            
+            // Show handoff message
+            const handoffMessage = this.currentLanguage === 'sv'
+                ? "Ett ögonblick, vi kopplar dig till en av våra supportagenter..."
+                : "Hold on, we're connecting you to one of our support agents...";
+            
+            this.hideTyping();
+            this.addMessage(handoffMessage, 'assistant');
+            
+            // Brief pause for realism
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Select random agent
+            this.selectRandomAgent();
+            
+            // Show typing indicator
+            this.showTyping();
+            
+            // Agent introduction after typing delay
+            setTimeout(() => {
+                this.hideTyping();
+                const introMessage = this.getAgentIntroduction();
+                this.addMessage(introMessage, 'assistant');
+                
+                // Update conversation phase
+                this.conversationPhase = 'agent';
+            }, 2000 + Math.random() * 1000);
+        },
+
+        selectRandomAgent: function() {
+            console.log('🎲 Selecting random agent from available agents...');
+            
+            // Get active agents from settings
+            if (this.availableAgents && this.availableAgents.length > 0) {
+                const randomIndex = Math.floor(Math.random() * this.availableAgents.length);
+                const selectedAgent = this.availableAgents[randomIndex];
+                
+                this.currentAgent = {
+                    id: selectedAgent.id,
+                    name: selectedAgent.name,
+                    avatar: selectedAgent.avatar || this.config.avatar || this.getDefaultAvatar(),
+                    personality: selectedAgent.personality || selectedAgent.description,
+                    assignedAssistantId: selectedAgent.assistantId
+                };
+                
+                console.log('✅ Selected agent:', this.currentAgent.name);
+            } else {
+                // Fallback to default agents from config
+                console.log('⚠️ No available agents, using config fallback');
+                this.loadAgentsFromConfig();
+            }
+            
+            // Update header to show selected agent
+            this.updateAgentHeader();
+        },
+
+        loadAgentsFromConfig: function() {
+            // Try to load from chatbot-config.json assistants
+            if (window.chatbotManager && window.chatbotManager.assistants) {
+                const activeAssistants = window.chatbotManager.assistants.filter(a => a.status === 'active');
+                if (activeAssistants.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * activeAssistants.length);
+                    const selectedAssistant = activeAssistants[randomIndex];
+                    
+                    this.currentAgent = {
+                        id: selectedAssistant.id,
+                        name: selectedAssistant.name,
+                        avatar: this.config.avatar || this.getDefaultAvatar(),
+                        personality: selectedAssistant.description || 'Professional assistant',
+                        assignedAssistantId: selectedAssistant.assistantId
+                    };
+                    
+                    console.log('✅ Selected agent from config:', this.currentAgent.name);
+                } else {
+                    this.setDefaultAgent();
+                }
+            } else {
+                this.setDefaultAgent();
+            }
+        },
+
+        getAgentIntroduction: function() {
+            const agentName = this.currentAgent?.name || 'Support Agent';
+            
+            if (this.currentLanguage === 'sv') {
+                return `Hej! Jag heter ${agentName} och jag kommer att hjälpa dig idag. Vad kan jag assistera dig med?`;
+            } else {
+                return `Hello! I'm ${agentName} and I'll be helping you today. What can I assist you with?`;
+            }
+        },
+
         generateIntelligentFallback: function(message) {
             // Basic keyword-based fallback
             const messageLower = message.toLowerCase();
 
-            if (messageLower.includes('order') || messageLower.includes('delivery')) {
+            if (messageLower.includes('order') || messageLower.includes('delivery') || messageLower.includes('beställ') || messageLower.includes('leverans')) {
                 return this.currentLanguage === 'sv'
                     ? "Jag kan hjälpa dig med beställningar och leveranser. Vad vill du veta?"
                     : "I can help you with orders and deliveries. What would you like to know?";
-            } else if (messageLower.includes('menu') || messageLower.includes('food')) {
+            } else if (messageLower.includes('menu') || messageLower.includes('food') || messageLower.includes('meny') || messageLower.includes('mat')) {
                 return this.currentLanguage === 'sv'
                     ? "Jag kan visa dig vår meny. Vilken typ av mat är du intresserad av?"
                     : "I can show you our menu. What kind of food are you interested in?";
-            } else if (messageLower.includes('hours') || messageLower.includes('open')) {
+            } else if (messageLower.includes('hours') || messageLower.includes('open') || messageLower.includes('öppet') || messageLower.includes('öppettider')) {
                 return this.currentLanguage === 'sv'
                     ? "Våra öppettider är 10:00 till 22:00 varje dag."
                     : "Our opening hours are 10:00 AM to 10:00 PM every day.";
             } else {
                 return this.currentLanguage === 'sv'
-                    ? "Jag är ledsen, jag förstod inte det. Kan du omformulera din fråga?"
-                    : "I'm sorry, I didn't understand that. Could you please rephrase your question?";
+                    ? "Tack för ditt meddelande. Kan du berätta mer om vad du behöver hjälp med?"
+                    : "Thank you for your message. Can you tell me more about what you need help with?";
             }
         },
 
@@ -1161,13 +1305,14 @@
 
         setDefaultAgent: function() {
             this.currentAgent = {
-                id: 'default-assistant',
+                id: 'general-settings',
                 name: 'Fooodis Assistant',
                 avatar: this.getDefaultAvatar(),
-                personality: 'Friendly Fooodis assistant',
-                assignedAssistantId: null
+                personality: 'General assistant',
+                assignedAssistantId: null,
+                isGeneral: true
             };
-            console.log('🤖 Set default agent:', this.currentAgent.name);
+            console.log('🏢 Set default general settings agent:', this.currentAgent.name);
         },
     };
 })();
