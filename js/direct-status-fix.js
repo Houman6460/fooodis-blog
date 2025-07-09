@@ -1,7 +1,3 @@
-Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved performance.
-```
-
-```replit_final_file
 /**
  * Direct Status Card Fix
  * A standalone solution that directly manages status cards without relying on other scripts
@@ -10,30 +6,30 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
 (function() {
     // Store status cards in this variable
     let statusCards = [];
-
+    
     // Run when DOM is fully loaded
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Direct Status Fix: Initializing...');
-
+        
         // Load status cards from storage
         loadStatusCards();
-
+        
         // Wait for DOM to be fully ready
         setTimeout(function() {
             // Create status cards container if it doesn't exist
             ensureStatusCardsContainer();
-
+            
             // Restore status cards
             restoreStatusCards();
-
+            
             // Set up mutation observer to detect when cards are added or removed
             setupMutationObserver();
-
+            
             // Set up periodic check for scheduled tasks
             setupPeriodicCheck();
         }, 2000);
     });
-
+    
     /**
      * Load status cards from storage
      */
@@ -50,7 +46,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             statusCards = [];
         }
     }
-
+    
     /**
      * Save status cards to storage
      */
@@ -62,7 +58,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             console.error('Direct Status Fix: Error saving status cards', e);
         }
     }
-
+    
     /**
      * Ensure the status cards container exists
      */
@@ -73,7 +69,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             container = document.createElement('div');
             container.id = 'automation-status-cards';
             container.className = 'automation-status-cards';
-
+            
             // Find the automation section to append to
             const automationSection = document.querySelector('#ai-automation-section');
             if (automationSection) {
@@ -81,13 +77,13 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 const insertAfter = automationSection.querySelector('.automation-paths') || 
                                    automationSection.querySelector('.section-header') ||
                                    automationSection.firstElementChild;
-
+                
                 if (insertAfter && insertAfter.nextElementSibling) {
                     automationSection.insertBefore(container, insertAfter.nextElementSibling);
                 } else {
                     automationSection.appendChild(container);
                 }
-
+                
                 console.log('Direct Status Fix: Added status cards container to automation section');
             } else {
                 // If automation section not found, add to body
@@ -97,24 +93,24 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
         }
         return container;
     }
-
+    
     /**
      * Restore status cards from storage
      */
     function restoreStatusCards() {
         const container = ensureStatusCardsContainer();
-
+        
         // Clear existing cards
         container.innerHTML = '';
-
+        
         // Create cards for each stored card
         statusCards.forEach(function(card) {
             createStatusCardElement(card, container);
         });
-
+        
         console.log('Direct Status Fix: Restored status cards', statusCards.length);
     }
-
+    
     /**
      * Create a status card element
      */
@@ -123,7 +119,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
         const cardElement = document.createElement('div');
         cardElement.className = 'automation-status-card';
         cardElement.dataset.pathId = card.pathId;
-
+        
         // Create card content
         cardElement.innerHTML = `
             <div class="card-header">
@@ -141,22 +137,22 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 <button class="btn-view-details" data-path-id="${card.pathId}">View Details</button>
             </div>
         `;
-
+        
         // Add event listeners
         cardElement.querySelector('.btn-cancel').addEventListener('click', function() {
             cancelAutomationPath(card.pathId);
         });
-
+        
         cardElement.querySelector('.btn-view-details').addEventListener('click', function() {
             viewAutomationPathDetails(card.pathId);
         });
-
+        
         // Add to container
         container.appendChild(cardElement);
-
+        
         return cardElement;
     }
-
+    
     /**
      * Set up mutation observer to detect when cards are added or removed
      */
@@ -185,7 +181,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                             }
                         });
                     }
-
+                    
                     // If cards were removed
                     if (mutation.removedNodes.length > 0) {
                         Array.from(mutation.removedNodes).forEach(function(node) {
@@ -211,14 +207,14 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 }
             });
         });
-
+        
         // Start observing
         const container = ensureStatusCardsContainer();
         observer.observe(container, { childList: true, subtree: true });
-
+        
         console.log('Direct Status Fix: Set up mutation observer');
     }
-
+    
     /**
      * Extract card data from a card element
      */
@@ -226,11 +222,11 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
         try {
             const pathId = cardElement.dataset.pathId;
             if (!pathId) return null;
-
+            
             const header = cardElement.querySelector('.card-header');
             const statusBadge = header ? header.querySelector('.status-badge') : null;
             const cardBody = cardElement.querySelector('.card-body');
-
+            
             return {
                 pathId: pathId,
                 name: header ? header.querySelector('h3').textContent : 'Unnamed Path',
@@ -246,13 +242,13 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             return null;
         }
     }
-
+    
     /**
      * Get a value from a card body element
      */
     function getCardBodyValue(cardBody, label) {
         if (!cardBody) return '';
-
+        
         const paragraphs = cardBody.querySelectorAll('p');
         for (let i = 0; i < paragraphs.length; i++) {
             const p = paragraphs[i];
@@ -261,10 +257,10 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 return p.textContent.replace(strong.textContent, '').trim();
             }
         }
-
+        
         return '';
     }
-
+    
     /**
      * Set up periodic check for scheduled tasks
      */
@@ -274,11 +270,11 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             console.log('Direct Status Fix: Running periodic check');
             checkAutomationPaths();
         }, 60000);
-
+        
         // Run an initial check
         setTimeout(checkAutomationPaths, 5000);
     }
-
+    
     /**
      * Check automation paths for scheduled tasks
      */
@@ -292,30 +288,30 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 console.error('Direct Status Fix: Error parsing paths', e);
                 return;
             }
-
+            
             // Check each path
             const now = new Date();
-
+            
             paths.forEach(function(path) {
                 // Skip paths that are not scheduled or active
                 if (!path.schedule || path.status !== 'scheduled' || path.active === false) {
                     return;
                 }
-
+                
                 // Ensure the path has a next execution time
                 if (!path.schedule.nextExecution) {
                     // Calculate next execution time
                     path.schedule.nextExecution = calculateNextExecutionTime(path.schedule);
                 }
-
+                
                 // Check if it's time to execute
                 const nextExecution = new Date(path.schedule.nextExecution);
                 if (nextExecution <= now) {
                     console.log(`Direct Status Fix: Time to execute path ${path.id}`);
-
+                    
                     // Create a status card for this path
                     createStatusCard(path);
-
+                    
                     // Try to execute the path
                     if (typeof window.executeAutomationPath === 'function') {
                         window.executeAutomationPath(path.id);
@@ -326,7 +322,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             console.error('Direct Status Fix: Error checking automation paths', e);
         }
     }
-
+    
     /**
      * Create a status card for a path
      */
@@ -350,20 +346,20 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 timestamp: new Date().toISOString()
             });
         }
-
+        
         // Save status cards
         saveStatusCards();
-
+        
         // Restore status cards to update the UI
         restoreStatusCards();
     }
-
+    
     /**
      * Get schedule text for a schedule object
      */
     function getScheduleText(schedule) {
         if (!schedule) return 'One-time';
-
+        
         let frequencyText = 'Unknown';
         switch (schedule.frequency) {
             case 'daily':
@@ -384,36 +380,36 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             default:
                 frequencyText = schedule.frequency || 'One-time';
         }
-
+        
         const timeText = schedule.time ? formatTimeForDisplay(schedule.time) : '12:00 PM';
-
+        
         return `${frequencyText} at ${timeText}`;
     }
-
+    
     /**
      * Format time for display (12-hour with AM/PM)
      */
     function formatTimeForDisplay(timeStr) {
         try {
             const [hours, minutes] = timeStr.split(':').map(Number);
-
+            
             const period = hours >= 12 ? 'PM' : 'AM';
             const displayHours = hours % 12 || 12; // Convert 0 to 12
-
+            
             return `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
         } catch (e) {
             console.error('Direct Status Fix: Error formatting time', e);
             return timeStr;
         }
     }
-
+    
     /**
      * Calculate the next execution time based on schedule
      */
     function calculateNextExecutionTime(schedule) {
         const now = new Date();
         let [hours, minutes] = [12, 0]; // Default to noon
-
+        
         // Parse time if available
         if (schedule.time) {
             const timeParts = schedule.time.split(':').map(Number);
@@ -421,11 +417,11 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 [hours, minutes] = timeParts;
             }
         }
-
+        
         // Set time to the specified hours and minutes
         const nextExecution = new Date(now);
         nextExecution.setHours(hours, minutes, 0, 0);
-
+        
         // If the time has already passed today, move to the next occurrence
         if (nextExecution <= now) {
             switch (schedule.frequency) {
@@ -433,42 +429,42 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                     // Move to tomorrow
                     nextExecution.setDate(nextExecution.getDate() + 1);
                     break;
-
+                    
                 case 'every2days':
                     // Move to day after tomorrow
                     nextExecution.setDate(nextExecution.getDate() + 2);
                     break;
-
+                    
                 case 'weekly':
                     // Move to next week
                     nextExecution.setDate(nextExecution.getDate() + 7);
                     break;
-
+                    
                 case 'biweekly':
                     // Move to two weeks later
                     nextExecution.setDate(nextExecution.getDate() + 14);
                     break;
-
+                    
                 case 'monthly':
                     // Move to next month
                     nextExecution.setMonth(nextExecution.getMonth() + 1);
                     break;
-
+                    
                 default:
                     // Default to tomorrow
                     nextExecution.setDate(nextExecution.getDate() + 1);
             }
         }
-
+        
         return nextExecution.toISOString();
     }
-
+    
     /**
      * Cancel an automation path
      */
     function cancelAutomationPath(pathId) {
         console.log(`Direct Status Fix: Cancelling automation path ${pathId}`);
-
+        
         // Update the status card
         const existingIndex = statusCards.findIndex(c => c.pathId === pathId);
         if (existingIndex !== -1) {
@@ -476,25 +472,25 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             statusCards[existingIndex].timestamp = new Date().toISOString();
             saveStatusCards();
         }
-
+        
         // Restore status cards to update the UI
         restoreStatusCards();
-
+        
         // Try to cancel the path in the main system
         try {
             // Get automation paths from storage
             let paths = JSON.parse(localStorage.getItem('aiAutomationPaths') || '[]');
-
+            
             // Find the path
             const pathIndex = paths.findIndex(p => p.id === pathId);
             if (pathIndex !== -1) {
                 // Update the path
                 paths[pathIndex].status = 'cancelled';
                 paths[pathIndex].active = false;
-
+                
                 // Save back to storage
                 localStorage.setItem('aiAutomationPaths', JSON.stringify(paths));
-
+                
                 // Update the global automationPaths variable if it exists
                 if (typeof window.automationPaths !== 'undefined') {
                     window.automationPaths = paths;
@@ -503,32 +499,32 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
         } catch (e) {
             console.error('Direct Status Fix: Error cancelling path in main system', e);
         }
-
+        
         // Show notification
         if (typeof window.showNotification === 'function') {
             window.showNotification('Automation path cancelled successfully', 'success');
         }
     }
-
+    
     /**
      * View details of an automation path
      */
     function viewAutomationPathDetails(pathId) {
         console.log(`Direct Status Fix: Viewing details for path ${pathId}`);
-
+        
         // Find the card
         const card = statusCards.find(c => c.pathId === pathId);
         if (!card) {
             console.error(`Direct Status Fix: Card not found for path ${pathId}`);
             return;
         }
-
+        
         // If there's a built-in view function, use it
         if (typeof window.viewAutomationPathDetails === 'function') {
             window.viewAutomationPathDetails(pathId);
             return;
         }
-
+        
         // Otherwise create a simple modal
         let modal = document.querySelector('#path-details-modal');
         if (!modal) {
@@ -537,7 +533,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             modal.className = 'modal';
             document.body.appendChild(modal);
         }
-
+        
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
@@ -558,20 +554,20 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 </div>
             </div>
         `;
-
+        
         // Add event listeners
         modal.querySelector('.close-btn').addEventListener('click', function() {
             modal.style.display = 'none';
         });
-
+        
         modal.querySelector('.btn-close').addEventListener('click', function() {
             modal.style.display = 'none';
         });
-
+        
         // Show the modal
         modal.style.display = 'block';
     }
-
+    
     /**
      * Get human-readable status text
      */
@@ -586,13 +582,13 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             default: return 'Unknown';
         }
     }
-
+    
     /**
      * Format date for display
      */
     function formatDate(dateStr) {
         if (!dateStr) return 'N/A';
-
+        
         try {
             const date = new Date(dateStr);
             return date.toLocaleString();
@@ -600,7 +596,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
             return dateStr;
         }
     }
-
+    
     // Add some basic styles for the status cards
     function addStyles() {
         const style = document.createElement('style');
@@ -611,14 +607,14 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
                 gap: 15px;
             }
-
+            
             .automation-status-card {
                 background-color: #2a2a2a;
                 border-radius: 8px;
                 overflow: hidden;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             }
-
+            
             .automation-status-card .card-header {
                 background-color: #333;
                 padding: 12px 15px;
@@ -626,23 +622,23 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 justify-content: space-between;
                 align-items: center;
             }
-
+            
             .automation-status-card .card-header h3 {
                 margin: 0;
                 font-size: 16px;
                 color: #fff;
             }
-
+            
             .automation-status-card .card-body {
                 padding: 15px;
                 color: #ccc;
             }
-
+            
             .automation-status-card .card-body p {
                 margin: 8px 0;
                 font-size: 14px;
             }
-
+            
             .automation-status-card .card-footer {
                 padding: 12px 15px;
                 background-color: #333;
@@ -650,7 +646,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 justify-content: flex-end;
                 gap: 10px;
             }
-
+            
             .automation-status-card .btn-cancel,
             .automation-status-card .btn-view-details {
                 padding: 6px 12px;
@@ -659,17 +655,17 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 cursor: pointer;
                 font-size: 14px;
             }
-
+            
             .automation-status-card .btn-cancel {
                 background-color: #d32f2f;
                 color: white;
             }
-
+            
             .automation-status-card .btn-view-details {
                 background-color: #2196f3;
                 color: white;
             }
-
+            
             .status-badge {
                 padding: 4px 8px;
                 border-radius: 4px;
@@ -677,31 +673,31 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 font-weight: bold;
                 color: white;
             }
-
+            
             .status-badge.scheduled {
                 background-color: #2196f3;
             }
-
+            
             .status-badge.queued {
                 background-color: #ff9800;
             }
-
+            
             .status-badge.executing {
                 background-color: #9c27b0;
             }
-
+            
             .status-badge.completed {
                 background-color: #4caf50;
             }
-
+            
             .status-badge.failed {
                 background-color: #f44336;
             }
-
+            
             .status-badge.cancelled {
                 background-color: #9e9e9e;
             }
-
+            
             /* Modal styles */
             .modal {
                 display: none;
@@ -713,7 +709,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 background-color: rgba(0, 0, 0, 0.7);
                 z-index: 1000;
             }
-
+            
             .modal-content {
                 background-color: #2a2a2a;
                 margin: 10% auto;
@@ -723,7 +719,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 border-radius: 8px;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             }
-
+            
             .modal-header {
                 padding: 15px;
                 background-color: #333;
@@ -734,17 +730,17 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
             }
-
+            
             .modal-header h2 {
                 margin: 0;
                 font-size: 18px;
             }
-
+            
             .modal-body {
                 padding: 20px;
                 color: #ccc;
             }
-
+            
             .modal-footer {
                 padding: 15px;
                 background-color: #333;
@@ -753,7 +749,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 border-bottom-left-radius: 8px;
                 border-bottom-right-radius: 8px;
             }
-
+            
             .close-btn {
                 color: white;
                 background: transparent;
@@ -761,7 +757,7 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 font-size: 20px;
                 cursor: pointer;
             }
-
+            
             .btn-close {
                 padding: 8px 16px;
                 background-color: #2196f3;
@@ -771,21 +767,10 @@ Refactored to reduce polling frequency from 5 seconds to 30 seconds for improved
                 cursor: pointer;
             }
         `;
-
+        
         document.head.appendChild(style);
     }
-
+    
     // Add styles when the script loads
     addStyles();
-
-     /**
-      * Define the function runPeriodicCheck
-      */
-    function runPeriodicCheck() {
-        console.log('Direct Status Fix: Running periodic check');
-        checkAutomationPaths();
-    }
-
-    // Run periodic check every 30 seconds (reduced from 5)
-    setInterval(runPeriodicCheck, 30000);
 })();
