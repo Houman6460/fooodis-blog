@@ -35,7 +35,20 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Serve static files
-app.use(express.static('.'));
+app.use(express.static('.', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.json')) {
+      res.setHeader('Content-Type', 'application/json');
+    }
+    // Ensure avatar images are served with correct MIME types
+    if (path.includes('/avatars/') && (path.endsWith('.jpg') || path.endsWith('.jpeg'))) {
+      res.setHeader('Content-Type', 'image/jpeg');
+    }
+    if (path.includes('/avatars/') && path.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png');
+    }
+  }
+}));
 
 // Explicitly serve images directory for avatar support
 app.use('/images', express.static('images'));

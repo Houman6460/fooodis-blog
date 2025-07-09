@@ -129,6 +129,7 @@
                         console.log('🖼️ Using uploaded avatar from settings:', avatarUrl.substring(0, 50) + '...');
                     } else {
                         console.log('🖼️ Using default avatar (settings avatar invalid or missing)');
+                        console.log('🖼️ Settings avatar value:', settings.avatar);
                     }
 
                     // Set configuration with validated URL
@@ -192,6 +193,9 @@
                 return baseUrl + '/' + avatarUrl.substring(2);
             } else if (avatarUrl.startsWith('/')) {
                 return baseUrl + avatarUrl;
+            } else if (avatarUrl.startsWith('images/')) {
+                // Handle images/avatars/ paths
+                return baseUrl + '/' + avatarUrl;
             }
             
             // Default fallback
@@ -389,16 +393,9 @@
                 imgElement.style.display = 'block';
             };
 
-            // For online hosting, convert relative paths to absolute
-            let finalAvatarUrl = avatarUrl;
-            if (avatarUrl.startsWith('./') || avatarUrl.startsWith('/images/')) {
-                // Convert to absolute URL for online hosting
-                const baseUrl = window.location.origin;
-                finalAvatarUrl = avatarUrl.startsWith('./') 
-                    ? baseUrl + '/' + avatarUrl.substring(2)
-                    : baseUrl + avatarUrl;
-                console.log(`🔧 Converted relative path to absolute: ${finalAvatarUrl}`);
-            }
+            // Convert to absolute URL using the helper function
+            const finalAvatarUrl = this.getAbsoluteAvatarUrl(avatarUrl);
+            console.log(`🔧 Final avatar URL: ${finalAvatarUrl.substring(0, 50)}...`);
 
             // Set the source to trigger loading
             imgElement.src = finalAvatarUrl;
