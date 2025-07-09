@@ -1,0 +1,1 @@
+console.log('=== CHATBOT DEBUG INFO ==='); console.log('Registration Data:', JSON.parse(localStorage.getItem('fooodis-chatbot-registrations') || '[]')); console.log('Conversation Data:', JSON.parse(localStorage.getItem('fooodis-chatbot-conversations') || '[]')); console.log('=== END DEBUG INFO ===');
