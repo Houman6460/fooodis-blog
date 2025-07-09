@@ -211,9 +211,12 @@ class NodeFlowBuilder {
                 </button>
             </div>
             <div class="toolbar-section">
-                <button class="toolbar-btn" id="save-flow-btn" title="Save Flow">
+                <button class="toolbar-btn" id="save-flow-btn" title="Manual Save">
                     <i class="fas fa-save"></i> Save
                 </button>
+                <span class="auto-save-status" id="auto-save-status">
+                    <i class="fas fa-check-circle"></i> Auto-Save Active
+                </span>
                 <button class="toolbar-btn" id="test-flow-btn" title="Test Flow">
                     <i class="fas fa-play"></i> Test
                 </button>
@@ -1120,13 +1123,19 @@ class NodeFlowBuilder {
     }
 
     saveFlow() {
+        const autoSaveStatus = document.getElementById('auto-save-status');
+        if (autoSaveStatus) {
+            autoSaveStatus.classList.add('saving');
+            autoSaveStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        }
+
         const flowData = {
             nodes: this.nodes,
             connections: this.connections,
             metadata: {
                 version: '1.0',
                 created: new Date().toISOString(),
-                language: document.getElementById('nodeLanguageSelector').value
+                language: document.getElementById('nodeLanguageSelector')?.value || 'en'
             }
         };
 
@@ -1137,6 +1146,14 @@ class NodeFlowBuilder {
         if (window.chatbotManager) {
             window.chatbotManager.updateNodeFlow(flowData);
         }
+
+        // Reset auto-save status
+        setTimeout(() => {
+            if (autoSaveStatus) {
+                autoSaveStatus.classList.remove('saving');
+                autoSaveStatus.innerHTML = '<i class="fas fa-check-circle"></i> Auto-Save Active';
+            }
+        }, 500);
 
         this.showToast('Flow saved successfully', 'success');
     }
@@ -1376,6 +1393,20 @@ class NodeFlowBuilder {
         const departmentSelect = modal.querySelector('#edit-department');
         if (departmentSelect) {
             departmentSelect.addEventListener('change', () => this.updateAgentsList(departmentSelect.value));
+        }
+
+        // Add auto-save functionality for form changes
+        const form = modal.querySelector('#edit-node-form');
+        if (form) {
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    this.scheduleAutoSave();
+                });
+                input.addEventListener('change', () => {
+                    this.scheduleAutoSave();
+                });
+            });
         }
     }
 
@@ -1832,6 +1863,19 @@ class NodeFlowBuilder {
             this.saveFlow();
             console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
         }, 500); // Save after 500ms of inactivity
+    }
+
+    scheduleAutoSave() {
+        // Immediate auto-save for form changes
+        if (this.autoSaveTimeout) {
+            clearTimeout(this.autoSaveTimeout);
+        }
+        
+        this.autoSaveTimeout = setTimeout(() => {
+            this.saveFlow();
+            this.showToast('Auto-saved', 'success');
+            console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
+        }, 1000); // Save after 1 second of inactivity
     }
 }
 
