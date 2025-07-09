@@ -60,13 +60,45 @@
         },
 
         async loadConversations() {
+            let conversationCache = null;
+            let lastConversationLoad = 0;
+            const CACHE_DURATION = 60000; // 1 minute cache
+
+            const now = Date.now();
+
+            // Use cache if available and recent
+            if (conversationCache && (now - lastConversationLoad) < CACHE_DURATION) {
+                console.log('📦 Using cached conversations');
+                this.updateConversationsList(conversationCache);
+                this.renderStats(conversationCache);
+                return;
+            }
+
+            console.log('🔄 Loading conversations from server...');
             try {
                 const response = await fetch('/api/chatbot/conversations');
                 if (response.ok) {
                     const data = await response.json();
                     if (data.success) {
+                        const mergedConversations = data.conversations;
+
+                        // Update cache
+                        conversationCache = mergedConversations;
+                        lastConversationLoad = now;
+
+                         this.conversations = mergedConversations; // Update class conversations
+
+                        // Update localStorage only if data changed
+                        const currentStored = localStorage.getItem('fooodis-chatbot-conversations');
+                        const newData = JSON.stringify(mergedConversations);
+                        if (currentStored !== newData) {
+                            localStorage.setItem('fooodis-chatbot-conversations', newData);
+                            console.log('✅ Updated conversations cache:', mergedConversations.length);
+                        }
+
                         this.conversations = data.conversations;
                         this.renderConversations();
+                        this.renderStats();
                     }
                 }
             } catch (error) {
@@ -438,7 +470,32 @@
                 this.renderDashboard();
                 this.showNotification('Chatbot reset successfully!', 'success');
             }
-        }
+        },
+
+        updateConversationsList: function(conversations) {
+            const container = document.getElementById('conversations-list');
+            if (!container) return;
+
+            if (conversations.length === 0) {
+                container.innerHTML = '<p class="no-data">No conversations yet.</p>';
+                return;
+            }
+
+            const conversationsHTML = conversations.map(conv => `
+                <div class="conversation-item" onclick="chatbotManager.viewConversation('${conv.id}')">
+                    <div class="conversation-info">
+                        <strong>Conversation ${conv.id.slice(-8)}</strong>
+                        <span class="conversation-meta">${conv.messageCount} messages • ${conv.agent}</span>
+                        <p class="last-message">${conv.lastMessage.substring(0, 100)}...</p>
+                    </div>
+                    <div class="conversation-time">
+                        ${new Date(conv.lastActivity).toLocaleDateString()}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = conversationsHTML;
+        },
     };
 
     // Event dispatcher for communication
