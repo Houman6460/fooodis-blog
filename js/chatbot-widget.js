@@ -133,11 +133,11 @@
                     if (settings) {
                         this.chatbotSettings = settings;
 
-                        // Store the uploaded avatar if available
+                        // Store the uploaded avatar if available - better detection
                         let uploadedAvatar = null;
                         if (settings.avatar && settings.avatar.trim() !== '' && 
                             settings.avatar !== this.getDefaultAvatar() && 
-                            !settings.avatar.includes('data:image/svg+xml')) {
+                            !settings.avatar.startsWith('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAi')) {
                             uploadedAvatar = settings.avatar;
                             console.log('🖼️ Found uploaded avatar in settings:', uploadedAvatar.substring(0, 50) + '...');
                         }
@@ -155,6 +155,15 @@
                             console.log('📋 Widget loaded', this.availableAgents.length, 'active agents from settings');
                         }
 
+                        // Load agents from settings.agents if available
+                        if (settings.agents && settings.agents.length > 0) {
+                            const activeAgents = settings.agents.filter(agent => agent.active !== false);
+                            if (activeAgents.length > 0) {
+                                this.availableAgents = [...(this.availableAgents || []), ...activeAgents];
+                                console.log('📋 Widget also loaded', activeAgents.length, 'agents from settings.agents');
+                            }
+                        }
+
                         // ALWAYS start with General Settings using the uploaded avatar
                         this.currentAgent = {
                             name: settings.chatbotName || 'Fooodis Assistant',
@@ -164,7 +173,7 @@
                         };
 
                         console.log('🏢 Starting with General Settings agent:', this.currentAgent.name);
-                        console.log('🖼️ Agent avatar set to:', this.currentAgent.avatar.substring(0, 50) + '...');
+                        console.log('🖼️ Agent avatar set to:', this.currentAgent.avatar ? this.currentAgent.avatar.substring(0, 50) + '...' : 'none');
                         
                         resolve(settings);
                     } else {
@@ -367,20 +376,28 @@
             if (this.chatbotSettings && this.chatbotSettings.avatar && 
                 this.chatbotSettings.avatar.trim() !== '' && 
                 this.chatbotSettings.avatar !== this.getDefaultAvatar() && 
-                !this.chatbotSettings.avatar.includes('data:image/svg+xml')) {
+                !this.chatbotSettings.avatar.startsWith('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAi')) {
                 console.log('🖼️ Using uploaded avatar from settings');
                 return this.chatbotSettings.avatar;
             }
 
-            // 2. Check current agent avatar
+            // 2. Check current agent avatar (non-default)
             if (this.currentAgent && this.currentAgent.avatar && 
                 this.currentAgent.avatar !== this.getDefaultAvatar() &&
-                !this.currentAgent.avatar.includes('data:image/svg+xml')) {
+                !this.currentAgent.avatar.startsWith('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAi')) {
                 console.log('🖼️ Using current agent avatar');
                 return this.currentAgent.avatar;
             }
 
-            // 3. Fallback to default
+            // 3. Check config avatar (uploaded avatar)
+            if (this.config.avatar && 
+                this.config.avatar !== this.getDefaultAvatar() &&
+                !this.config.avatar.startsWith('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAi')) {
+                console.log('🖼️ Using config avatar');
+                return this.config.avatar;
+            }
+
+            // 4. Fallback to default
             console.log('🖼️ Using default avatar');
             return this.getDefaultAvatar();
         },
@@ -1312,6 +1329,10 @@
             // Select random agent
             this.selectRandomAgent();
 
+            // Update UI with new agent IMMEDIATELY
+            this.updateAgentHeader();
+            this.updateAllAvatars();
+
             // Show typing indicator
             this.showTyping();
 
@@ -1323,6 +1344,11 @@
 
                 // Update conversation phase
                 this.conversationPhase = 'agent';
+                
+                // Final avatar update to ensure consistency
+                setTimeout(() => {
+                    this.updateAllAvatars();
+                }, 100);
             }, 2000 + Math.random() * 1000);
         },
 
