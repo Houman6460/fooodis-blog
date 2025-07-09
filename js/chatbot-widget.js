@@ -1,4 +1,3 @@
-
 /**
  * Fooodis AI Chatbot Widget
  * A comprehensive chatbot widget for customer interaction
@@ -50,7 +49,7 @@
 
             // Load saved settings and prepare agents
             this.loadSavedSettings();
-            
+
             // Load language preferences
             this.loadLanguagePreference();
 
@@ -76,13 +75,13 @@
         getInitialWelcomeMessage: function() {
             // Ensure language detection is loaded first
             this.loadLanguagePreference();
-            
+
             // Use General Settings welcome message for initial greeting
             if (this.chatbotSettings && this.chatbotSettings.welcomeMessage) {
                 console.log('🌐 Using configured welcome message:', this.chatbotSettings.welcomeMessage);
                 return this.chatbotSettings.welcomeMessage;
             }
-            
+
             // Fallback bilingual welcome message with proper formatting
             const fallbackMessage = `
                 <div class="bilingual-welcome">
@@ -90,7 +89,7 @@
                     <div class="welcome-sv">🇸🇪 <strong>Svenska:</strong> Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?</div>
                 </div>
             `;
-            
+
             console.log('🌐 Using fallback bilingual welcome message');
             return fallbackMessage;
         },
@@ -100,7 +99,7 @@
                 // Load from localStorage where chatbot settings are saved
                 const savedSettings = localStorage.getItem('fooodis-chatbot-settings');
                 console.log('Widget loadSavedSettings - raw savedSettings:', savedSettings);
-                
+
                 if (savedSettings) {
                     const settings = JSON.parse(savedSettings);
                     console.log('Widget loadSavedSettings - parsed settings:', settings);
@@ -113,11 +112,11 @@
 
                     // Use general settings for initial display (not agent-specific)
                     this.config.avatar = settings.avatar || this.getDefaultAvatar();
-                    
+
                     this.currentAgent = {
-                        name: settings.chatbotName || 'Fooodis Assistant',
-                        avatar: this.config.avatar,
-                        personality: 'Friendly assistant'
+                        name: settings.chatbotName || 'David Kim',
+                        avatar: this.getDefaultAvatar(),
+                        personality: 'Friendly Fooodis assistant'
                     };
 
                     // Store settings for later use
@@ -144,7 +143,7 @@
         },
 
         getDefaultAvatar: function() {
-            return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNlOGYyNGMiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDMTMuMSAyIDE0IDIuOSAxNCA0QzE0IDUuMSAxMy4xIDYgMTIgNkMxMC45IDYgMTAgNS4xIDEwIDRDMTAgMi45IDEwLjkgMiAxMiAyWk0yMSAxOVYyMEgzVjE5QzMgMTYuMzMgOCAxNSA5IDE1SDE1QzE2IDE1IDIxIDE2LjMzIDIxIDE5WiIgZmlsbD0iIzI2MjgyZiIvPgo8L3N2Zz4KPC9zdmc+';
+            return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNlOGYyNGMiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDMTMuMSAyIDE0IDIuOSAxNCA0QzE0IDUuMSAxMy4xIDYgMTIgNkMxMC45IDYgMTAgNS4xIDEwIDRDMTAgMi45IDEwLjkgMiAxMiAyWk0yMSAxOVYyMEgzVjE5QzMgMTYuMzMgOCA0NSA5IDE1SDE1QzE2IDE1IDIxIDE2LjMzIDIxIDE5WiIgZmlsbD0iIzI2MjgyZiIvPgo8L3N2Zz4KPC9zdmc+';
         },
 
         loadLanguagePreference: function() {
@@ -196,12 +195,12 @@
                 window.chatbotEvents.addEventListener('settingsChanged', (e) => {
                     this.handleDashboardSettingsChange(e.detail);
                 });
-                
+
                 window.chatbotEvents.addEventListener('assistantUpdate', (e) => {
                     this.handleAssistantUpdate(e.detail);
                 });
             }
-            
+
             // Listen for manager initialization
             window.addEventListener('chatbotManagerReady', () => {
                 console.log('🔗 Dashboard manager ready, syncing settings...');
@@ -211,29 +210,29 @@
 
         handleDashboardSettingsChange: function(data) {
             console.log('📡 Widget received settings change:', data);
-            
+
             if (data.settings) {
                 // Update widget configuration
                 this.config.enabled = data.settings.enabled;
                 this.config.primaryColor = data.settings.widgetColor;
                 this.config.allowFileUpload = data.settings.allowFileUpload;
-                
+
                 if (data.settings.avatar) {
                     this.updateAvatar(data.settings.avatar);
                 }
-                
+
                 // Update widget visibility
                 if (this.widget) {
                     this.widget.style.display = this.config.enabled ? 'block' : 'none';
                 }
-                
+
                 this.updateFileUploadVisibility();
             }
         },
 
         handleAssistantUpdate: function(data) {
             console.log('📡 Widget received assistant update:', data);
-            
+
             if (data.assistant && this.widget) {
                 // Update current agent if needed
                 this.currentAgent = {
@@ -242,7 +241,7 @@
                     avatar: data.assistant.avatar || this.config.avatar,
                     personality: data.assistant.description
                 };
-                
+
                 // Update header info
                 this.updateAgentHeader();
             }
@@ -251,33 +250,33 @@
         syncWithDashboard: function() {
             if (window.chatbotManager && window.chatbotManager.isInitialized) {
                 const manager = window.chatbotManager;
-                
+
                 // Sync settings
                 this.config.enabled = manager.settings.enabled;
                 this.config.primaryColor = manager.settings.widgetColor;
                 this.config.allowFileUpload = manager.settings.allowFileUpload;
-                
+
                 if (manager.settings.avatar) {
                     this.updateAvatar(manager.settings.avatar);
                 }
-                
+
                 // Get active agent
                 this.currentAgent = manager.getActiveAgent();
-                
+
                 console.log('✅ Widget synced with dashboard');
             }
         },
 
         updateAgentHeader: function() {
             if (!this.widget || !this.currentAgent) return;
-            
+
             const headerText = this.widget.querySelector('.header-text h4');
             const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .message-avatar img');
-            
+
             if (headerText) {
                 headerText.textContent = this.currentAgent.name;
             }
-            
+
             avatarImages.forEach(img => {
                 img.src = this.currentAgent.avatar;
                 img.alt = this.currentAgent.name + ' Avatar';
@@ -446,12 +445,12 @@
                     z-index: 999999 !important;
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
                 }
-                
+
                 #fooodis-chatbot.bottom-right {
                     bottom: 20px !important;
                     right: 20px !important;
                 }
-                
+
                 .chatbot-button {
                     width: 60px !important;
                     height: 60px !important;
@@ -465,24 +464,24 @@
                     transition: all 0.3s ease !important;
                     position: relative !important;
                 }
-                
+
                 .chatbot-button:hover {
                     transform: scale(1.1) !important;
                 }
-                
+
                 .chatbot-avatar {
                     width: 40px !important;
                     height: 40px !important;
                     border-radius: 50% !important;
                     overflow: hidden !important;
                 }
-                
+
                 .chatbot-avatar img {
                     width: 100% !important;
                     height: 100% !important;
                     object-fit: cover !important;
                 }
-                
+
                 .notification-badge {
                     position: absolute !important;
                     top: -5px !important;
@@ -498,7 +497,7 @@
                     font-size: 12px !important;
                     font-weight: bold !important;
                 }
-                
+
                 .chatbot-window {
                     display: none !important;
                     position: absolute !important;
@@ -512,28 +511,28 @@
                     flex-direction: column !important;
                     overflow: hidden !important;
                 }
-                
+
                 .chatbot-window.open {
                     display: flex !important;
                 }
-                
+
                 .chatbot-header {
                     padding: 15px !important;
                     background: #26282f !important;
                     color: white !important;
                 }
-                
+
                 .header-top {
                     display: flex !important;
                     justify-content: space-between !important;
                     align-items: center !important;
                     margin-bottom: 10px !important;
                 }
-                
+
                 .header-logo {
                     height: 25px !important;
                 }
-                
+
                 .close-button {
                     background: none !important;
                     border: none !important;
@@ -541,55 +540,55 @@
                     cursor: pointer !important;
                     padding: 5px !important;
                 }
-                
+
                 .agent-info {
                     display: flex !important;
                     align-items: center !important;
                     gap: 10px !important;
                 }
-                
+
                 .chatbot-avatar-small {
                     width: 30px !important;
                     height: 30px !important;
                     border-radius: 50% !important;
                     overflow: hidden !important;
                 }
-                
+
                 .chatbot-avatar-small img {
                     width: 100% !important;
                     height: 100% !important;
                     object-fit: cover !important;
                 }
-                
+
                 .header-text h4 {
                     margin: 0 !important;
                     font-size: 14px !important;
                     font-weight: 600 !important;
                 }
-                
+
                 .status {
                     font-size: 12px !important;
                     color: #4caf50 !important;
                 }
-                
+
                 .chatbot-messages {
                     flex: 1 !important;
                     padding: 15px !important;
                     overflow-y: auto !important;
                     background: #f8f9fa !important;
                 }
-                
+
                 .message {
                     display: flex !important;
                     margin-bottom: 15px !important;
                     align-items: flex-start !important;
                     gap: 10px !important;
                 }
-                
+
                 .message.user {
                     flex-direction: row-reverse !important;
                 }
-                
+
                 .message-avatar {
                     width: 30px !important;
                     height: 30px !important;
@@ -597,13 +596,13 @@
                     overflow: hidden !important;
                     flex-shrink: 0 !important;
                 }
-                
+
                 .message-avatar img {
                     width: 100% !important;
                     height: 100% !important;
                     object-fit: cover !important;
                 }
-                
+
                 .message-content {
                     background: white !important;
                     padding: 10px 15px !important;
@@ -614,12 +613,12 @@
                     font-size: 14px !important;
                     line-height: 1.4 !important;
                 }
-                
+
                 .message.user .message-content {
                     background: #e8f24c !important;
                     color: #26282f !important;
                 }
-                
+
                 .chatbot-typing {
                     display: none !important;
                     padding: 15px !important;
@@ -628,12 +627,12 @@
                     background: #f8f9fa !important;
                     border-top: 1px solid #e9ecef !important;
                 }
-                
+
                 .typing-indicator {
                     display: flex !important;
                     gap: 3px !important;
                 }
-                
+
                 .typing-indicator span {
                     width: 6px !important;
                     height: 6px !important;
@@ -641,32 +640,32 @@
                     border-radius: 50% !important;
                     animation: typing 1.4s infinite !important;
                 }
-                
+
                 .typing-indicator span:nth-child(2) {
                     animation-delay: 0.2s !important;
                 }
-                
+
                 .typing-indicator span:nth-child(3) {
                     animation-delay: 0.4s !important;
                 }
-                
+
                 @keyframes typing {
                     0%, 60%, 100% { transform: translateY(0); }
                     30% { transform: translateY(-10px); }
                 }
-                
+
                 .chatbot-input {
                     padding: 15px !important;
                     background: white !important;
                     border-top: 1px solid #e9ecef !important;
                 }
-                
+
                 .input-container {
                     display: flex !important;
                     gap: 10px !important;
                     align-items: center !important;
                 }
-                
+
                 .upload-btn {
                     background: none !important;
                     border: none !important;
@@ -678,11 +677,11 @@
                     align-items: center !important;
                     justify-content: center !important;
                 }
-                
+
                 .upload-btn:hover {
                     background: #f0f0f0 !important;
                 }
-                
+
                 #chatbot-message-input {
                     flex: 1 !important;
                     padding: 10px 15px !important;
@@ -691,11 +690,11 @@
                     outline: none !important;
                     font-size: 14px !important;
                 }
-                
+
                 #chatbot-message-input:focus {
                     border-color: #e8f24c !important;
                 }
-                
+
                 #chatbot-send {
                     background: #e8f24c !important;
                     border: none !important;
@@ -709,23 +708,23 @@
                     width: 40px !important;
                     height: 40px !important;
                 }
-                
+
                 #chatbot-send:hover {
                     background: #d4db43 !important;
                 }
-                
+
                 .bilingual-welcome {
                     line-height: 1.6 !important;
                 }
-                
+
                 .welcome-en, .welcome-sv {
                     margin-bottom: 8px !important;
                 }
-                
+
                 .welcome-en:last-child, .welcome-sv:last-child {
                     margin-bottom: 0 !important;
                 }
-                
+
                 /* Mobile responsive */
                 @media (max-width: 768px) {
                     .chatbot-window {
@@ -736,7 +735,7 @@
                     }
                 }
             `;
-            
+
             document.head.appendChild(styles);
         },
 
@@ -794,7 +793,7 @@
         toggleChat: function() {
             const chatWindow = document.getElementById('chatbot-window');
             const notificationBadge = document.getElementById('notification-badge');
-            
+
             if (chatWindow) {
                 if (this.isOpen) {
                     chatWindow.classList.remove('open');
@@ -802,12 +801,12 @@
                 } else {
                     chatWindow.classList.add('open');
                     this.isOpen = true;
-                    
+
                     // Hide notification badge when chat is opened
                     if (notificationBadge) {
                         notificationBadge.style.display = 'none';
                     }
-                    
+
                     // Focus on input
                     const messageInput = document.getElementById('chatbot-message-input');
                     if (messageInput) {
@@ -892,7 +891,7 @@
             try {
                 // Generate conversation ID if not exists
                 if (!this.conversationId) {
-                    this.conversationId = 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    this.conversationId = 'conv_' + Date.now() + '_'+ Math.random().toString(36).substr(2, 9);
                 }
 
                 // Try to use chatbot manager if available
