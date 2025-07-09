@@ -34,42 +34,152 @@
         init: function(options = {}) {
             console.log('Initializing Fooodis Chatbot Widget...');
 
-            // Merge configuration
-            this.config = { ...this.config, ...options };
+            try {
+                // Merge configuration
+                this.config = { ...this.config, ...options };
 
-            // Set default API endpoint if not provided
-            if (!this.config.apiEndpoint) {
-                this.config.apiEndpoint = window.location.origin + '/api/chatbot';
+                // Set default API endpoint if not provided
+                if (!this.config.apiEndpoint) {
+                    this.config.apiEndpoint = window.location.origin + '/api/chatbot';
+                }
+
+                // Initialize chat state
+                this.conversationPhase = 'welcome';
+                this.userName = localStorage.getItem('fooodis-user-name') || null;
+                this.handoffComplete = false;
+
+                // Load saved settings and prepare agents
+                this.loadSavedSettings();
+
+                // Load language preferences
+                this.loadLanguagePreference();
+
+                // Check if chatbot is enabled before showing
+                this.checkChatbotEnabled();
+
+                // Setup communication with dashboard
+                this.setupDashboardCommunication();
+
+                // Create and inject widget
+                this.createWidget();
+                this.attachEventListeners();
+
+                // Set up avatar update listener
+                this.setupAvatarUpdateListener();
+
+                // Force show widget if enabled
+                if (this.config.enabled && this.widget) {
+                    this.widget.style.display = 'block';
+                    console.log('✅ Chatbot widget displayed');
+                }
+
+                // Notify that widget is ready
+                window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
+
+                console.log('✅ Fooodis Chatbot Widget initialized successfully');
+                return true;
+
+            } catch (error) {
+                console.error('❌ Chatbot initialization failed:', error);
+                // Try emergency fallback
+                this.emergencyInit();
+                return false;
+            }
+        },
+
+        emergencyInit: function() {
+            console.log('🆘 Starting emergency chatbot initialization...');
+            
+            try {
+                // Minimal config
+                this.config = {
+                    apiEndpoint: window.location.origin + '/api/chatbot',
+                    position: 'bottom-right',
+                    primaryColor: '#e8f24c',
+                    language: 'en',
+                    enabled: true,
+                    avatar: this.getDefaultAvatar()
+                };
+
+                // Set default agent
+                this.currentAgent = {
+                    id: 'emergency-agent',
+                    name: 'Fooodis Assistant',
+                    avatar: this.getDefaultAvatar(),
+                    personality: 'Helpful assistant'
+                };
+
+                // Create minimal widget
+                this.createEmergencyWidget();
+                console.log('🆘 Emergency chatbot widget created');
+
+            } catch (emergencyError) {
+                console.error('❌ Emergency initialization failed:', emergencyError);
+            }
+        },
+
+        createEmergencyWidget: function() {
+            // Remove any existing widget
+            const existingWidget = document.getElementById('fooodis-chatbot');
+            if (existingWidget) {
+                existingWidget.remove();
             }
 
-            // Initialize chat state
-            this.conversationPhase = 'welcome';
-            this.userName = localStorage.getItem('fooodis-user-name') || null;
-            this.handoffComplete = false;
+            const widget = document.createElement('div');
+            widget.id = 'fooodis-chatbot';
+            widget.style.cssText = `
+                position: fixed !important;
+                bottom: 20px !important;
+                right: 20px !important;
+                z-index: 999999 !important;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            `;
 
-            // Load saved settings and prepare agents
-            this.loadSavedSettings();
+            widget.innerHTML = `
+                <div class="chatbot-container">
+                    <div class="chatbot-button" id="chatbot-button" style="
+                        width: 60px !important;
+                        height: 60px !important;
+                        border-radius: 50% !important;
+                        background: #e8f24c !important;
+                        cursor: pointer !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+                        transition: all 0.3s ease !important;
+                        position: relative !important;
+                    ">
+                        <div style="
+                            width: 40px !important;
+                            height: 40px !important;
+                            border-radius: 50% !important;
+                            background: #26282f !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            color: #e8f24c !important;
+                            font-size: 20px !important;
+                            font-weight: bold !important;
+                        ">💬</div>
+                    </div>
+                </div>
+            `;
 
-            // Load language preferences
-            this.loadLanguagePreference();
+            document.body.appendChild(widget);
+            this.widget = widget;
 
-            // Check if chatbot is enabled before showing
-            this.checkChatbotEnabled();
-
-            // Setup communication with dashboard
-            this.setupDashboardCommunication();
-
-            // Create and inject widget
-            this.createWidget();
-            this.attachEventListeners();
-
-            // Set up avatar update listener
-            this.setupAvatarUpdateListener();
-
-            // Notify that widget is ready
-            window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
-
-            console.log('Fooodis Chatbot Widget initialized successfully');
+            // Simple click handler
+            const button = widget.querySelector('#chatbot-button');
+            if (button) {
+                button.addEventListener('click', () => {
+                    alert('Chatbot is starting up... Please refresh the page if this message persists.');
+                    // Try to reinitialize
+                    setTimeout(() => {
+                        this.init();
+                    }, 1000);
+                });
+            }
         },
 
         getInitialWelcomeMessage: function() {
@@ -295,9 +405,12 @@
                     const settings = JSON.parse(savedSettings);
                     this.config.enabled = settings.enabled !== false;
                 } else {
+                    // Default to enabled if no settings found
+                    this.config.enabled = true;
                     // Check server config if no local settings
                     this.fetchServerConfig();
                 }
+                console.log('🔧 Chatbot enabled state:', this.config.enabled);
             } catch (error) {
                 console.error('Error checking chatbot enabled state:', error);
                 this.config.enabled = true; // Default to enabled
@@ -1609,10 +1722,6 @@
                 assignedAssistantId: null,
                 isGeneral: true
             };
-            
-            // Clear any agent-specific avatar storage
-            this.clearAgentAvatar();
-            
             console.log('🏢 Set default general settings agent:', this.currentAgent.name);
         },
 
@@ -1638,8 +1747,7 @@
             // Update current agent with the correct avatar
             this.currentAgent = {
                 ...agentData,
-                avatar: newAvatarUrl,
-                isGeneral: false // Mark as non-general agent
+                avatar: newAvatarUrl
             };
 
             // Update the widget's main avatar configuration
@@ -1656,45 +1764,21 @@
             // Add agent switch message with correct avatar
             this.addMessage(`Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`, 'assistant');
 
-            // Store the agent avatar separately to prevent reversion
-            this.storeAgentAvatar(newAvatarUrl);
+            // Store the new avatar for persistence
+            this.updateAvatar(newAvatarUrl);
 
             // Trigger avatar sync event with the new avatar
             window.dispatchEvent(new CustomEvent('chatbotAgentSwitched', {
                 detail: { 
                     agent: {
                         ...agentData,
-                        avatar: newAvatarUrl,
-                        isGeneral: false
+                        avatar: newAvatarUrl
                     },
                     previousAgent: previousAgent 
                 }
             }));
 
             console.log('✅ Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
-        },
-
-        storeAgentAvatar: function(avatarUrl) {
-            try {
-                // Store agent avatar in a separate key to prevent override
-                localStorage.setItem('chatbot-active-agent-avatar', avatarUrl);
-                localStorage.setItem('chatbot-agent-active', 'true');
-                
-                console.log('💾 Agent avatar stored separately');
-            } catch (error) {
-                console.error('Error storing agent avatar:', error);
-            }
-        },
-
-        clearAgentAvatar: function() {
-            try {
-                localStorage.removeItem('chatbot-active-agent-avatar');
-                localStorage.removeItem('chatbot-agent-active');
-                
-                console.log('🧹 Agent avatar cleared');
-            } catch (error) {
-                console.error('Error clearing agent avatar:', error);
-            }
         },
     };
 })();
