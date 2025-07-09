@@ -79,25 +79,45 @@
         }
     </style>
     <!-- Main scripts -->
-    <script src="js/jquery.js" type="text/javascript"></script>
-    <script src="js/nicepage.js" type="text/javascript"></script>
-    <script src="js/blog.js" type="text/javascript"></script>
+    <script>
+        // Load scripts conditionally to avoid 404 errors
+        const requiredScripts = [
+            'js/jquery.js',
+            'js/nicepage.js',
+            'js/blog.js',
+            'js/chatbot-widget.js',
+            'js/chatbot-message-enhancer.js',
+            'js/chatbot-avatar-sync.js',
+            'js/chatbot-integration-fixes.js',
+            'js/chatbot-integration-patch.js',
+            'js/chatbot-initialization.js',
+            'js/chatbot-avatar-override.js',
+            'js/footer-bubbles.js',
+            'js/advertising-banners.js',
+            'js/social-icons-fix.js'
+        ];
 
-    <!-- Fooodis AI Chatbot Widget -->
-    <!-- Load chatbot components in proper order -->
-    <script src="js/chatbot-widget.js"></script>
-    <script src="js/chatbot-message-enhancer.js"></script>
-    <script src="js/chatbot-avatar-sync.js"></script>
-    <script src="js/chatbot-integration-fixes.js"></script>
-    <script src="js/chatbot-integration-patch.js"></script>
-    <script src="js/chatbot-initialization.js"></script>
-    <script src="js/chatbot-avatar-override.js"></script>
-    <!-- Remove duplicate blog.js reference as it's already loaded above -->
-    <script class="u-script" defer="" src="js/footer-bubbles.js" type="text/javascript"></script>
-    <script class="u-script" defer="" src="js/advertising-banners.js" type="text/javascript"></script>
-
-    <!-- Social Icons Fix - Ensures all blog post cards have social icons -->
-    <script src="js/social-icons-fix.js" type="text/javascript"></script>
+        requiredScripts.forEach(scriptSrc => {
+            fetch(scriptSrc, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        const script = document.createElement('script');
+                        script.src = scriptSrc;
+                        script.type = 'text/javascript';
+                        if (scriptSrc.includes('footer-bubbles') || scriptSrc.includes('advertising-banners')) {
+                            script.defer = true;
+                            script.className = 'u-script';
+                        }
+                        document.head.appendChild(script);
+                    } else {
+                        console.log(`Skipping missing script: ${scriptSrc}`);
+                    }
+                })
+                .catch(() => {
+                    console.log(`Failed to load script: ${scriptSrc}`);
+                });
+        });
+    </script>
     <meta content="Nicepage 7.8.6, nicepage.com" name="generator"/>
     <meta content="origin" name="referrer"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet"/>
@@ -220,26 +240,7 @@
     <!-- Force Popup Display - Guarantees popup shows up on the page -->
     <script src="js/force-popup-display.js"></script>
 
-    <!-- Blog enhancement scripts - only load existing files -->
-    <script>
-        // Load scripts conditionally to avoid 404 errors
-        const blogScripts = [
-            'js/blog-image-fix.js',
-            'js/enhanced-banner.js'
-        ];
-
-        blogScripts.forEach(script => {
-            fetch(script, { method: 'HEAD' })
-                .then(response => {
-                    if (response.ok) {
-                        const scriptTag = document.createElement('script');
-                        scriptTag.src = script;
-                        document.head.appendChild(scriptTag);
-                    }
-                })
-                .catch(() => {});
-        });
-    </script>
+    <!-- Blog enhancement scripts removed to prevent 404 errors -->
 </head>
 
 <body class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-home-page="https://sweedtaset.nicepage.io/Fooodis.html?version=487c2819-ec2d-4d07-3d04-c9739ff0c4c2" data-home-page-title="Fooodis" data-include-products="true" data-lang="en" data-path-to-root="./">
@@ -652,6 +653,9 @@
 
     <!-- Fix console errors -->
     <script src="js/console-error-fixer.js"></script>
+    
+    <!-- Handle missing scripts to prevent 404 errors -->
+    <script src="js/missing-scripts-handler.js"></script>
 
     <!-- Enhanced blog card stats for accurate view counts -->
     <script src="js/card-stats-enhancer.js"></script>

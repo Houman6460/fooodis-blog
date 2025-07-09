@@ -18,6 +18,9 @@
         
         // Initialize the override system
         init: function() {
+            // Remove duplicates first
+            this.removeDuplicateButtons();
+            
             this.loadTargetAvatar();
             this.setupDOMObserver();
             this.forceAvatarUpdate();
@@ -122,8 +125,11 @@
             });
         },
 
-        // Force avatar update on all chatbot elements
+        // Force avatar update on all chatbot elements and remove duplicates
         forceAvatarUpdate: function() {
+            // First, remove duplicate chatbot buttons
+            this.removeDuplicateButtons();
+            
             if (!this.targetAvatar) return;
 
             const selectors = [
@@ -167,6 +173,20 @@
 
             if (updatedCount > 0) {
                 console.log(`✅ Avatar override applied to ${updatedCount} elements`);
+            }
+        },
+
+        // Remove duplicate chatbot buttons
+        removeDuplicateButtons: function() {
+            const buttons = document.querySelectorAll('.chatbot-button, #chatbot-button');
+            if (buttons.length > 1) {
+                console.log(`🗑️ Found ${buttons.length} chatbot buttons, removing duplicates...`);
+                
+                // Keep only the first one, remove the rest
+                for (let i = 1; i < buttons.length; i++) {
+                    buttons[i].remove();
+                    console.log(`🗑️ Removed duplicate chatbot button ${i + 1}`);
+                }
             }
         },
 
