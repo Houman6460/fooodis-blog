@@ -1200,7 +1200,7 @@ class NodeFlowBuilder {
                     <div class="test-chat-container">
                         <div class="test-chat-messages" id="test-chat-messages"></div>
                         <div class="test-chat-input">
-                            <input type="text" id="test-message-input" placeholder="Type a message to test the flow..." onkeypress="if(event.key==='Enter') nodeFlowBuilder.sendTestMessage()">
+                            <input type="text" id="test-message-input" placeholder="Type a message to test the flow...">
                             <button onclick="nodeFlowBuilder.sendTestMessage()">Send</button>
                         </div>
                     </div>
@@ -1220,28 +1220,15 @@ class NodeFlowBuilder {
         const messagesContainer = document.getElementById('test-chat-messages');
         const welcomeNode = this.nodes.find(node => node.type === 'welcome');
         
-        if (welcomeNode && welcomeNode.data.messages) {
-            const language = document.getElementById('nodeLanguageSelector')?.value || 'en';
-            const languageKey = language === 'sv' ? 'swedish' : 'english';
-            const message = welcomeNode.data.messages[languageKey] || welcomeNode.data.messages.english || 'Hello! How can I help you today?';
+        if (welcomeNode) {
+            const language = document.getElementById('nodeLanguageSelector').value;
+            const message = welcomeNode.data.messages[language] || welcomeNode.data.messages.english;
             
             messagesContainer.innerHTML = `
                 <div class="test-message bot">
                     <div class="message-content">${message}</div>
                 </div>
             `;
-        } else {
-            messagesContainer.innerHTML = `
-                <div class="test-message bot">
-                    <div class="message-content">Hello! I'm your Fooodis assistant. How can I help you today?</div>
-                </div>
-            `;
-        }
-        
-        // Focus on input field
-        const input = document.getElementById('test-message-input');
-        if (input) {
-            setTimeout(() => input.focus(), 100);
         }
     }
 
@@ -1256,12 +1243,8 @@ class NodeFlowBuilder {
         // Add user message
         const userMessage = document.createElement('div');
         userMessage.className = 'test-message user';
-        userMessage.innerHTML = `<div class="message-content">${this.escapeHtml(message)}</div>`;
+        userMessage.innerHTML = `<div class="message-content">${message}</div>`;
         messagesContainer.appendChild(userMessage);
-
-        // Clear input immediately
-        input.value = '';
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
         // Simulate bot response based on flow
         setTimeout(() => {
@@ -1272,12 +1255,9 @@ class NodeFlowBuilder {
             messagesContainer.appendChild(botMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }, 1000);
-    }
 
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     processTestMessage(message) {
@@ -1289,49 +1269,42 @@ class NodeFlowBuilder {
         
         const messages = {
             menu: {
-                english: "🍽️ I'll connect you with our Menu Management specialist to help with your menu questions.",
-                swedish: "🍽️ Jag kopplar dig till vår Menyhanteringsspecialist för att hjälpa dig med dina menyfrågor."
+                english: "I'll connect you with our Menu Management specialist to help with your menu questions.",
+                swedish: "Jag kopplar dig till vår Menyhanteringsspecialist för att hjälpa dig med dina menyfrågor."
             },
             billing: {
-                english: "💳 Let me transfer you to our Billing department to assist with payment-related inquiries.",
-                swedish: "💳 Låt mig överföra dig till vår Faktureringsavdelning för att hjälpa till med betalningsrelaterade frågor."
+                english: "Let me transfer you to our Billing department to assist with payment-related inquiries.",
+                swedish: "Låt mig överföra dig till vår Faktureringsavdelning för att hjälpa till med betalningsrelaterade frågor."
             },
             technical: {
-                english: "🔧 I'll connect you with our Technical Support team for assistance with technical issues.",
-                swedish: "🔧 Jag kopplar dig till vårt Tekniska Support-team för hjälp med tekniska problem."
+                english: "I'll connect you with our Technical Support team for assistance with technical issues.",
+                swedish: "Jag kopplar dig till vårt Tekniska Support-team för hjälp med tekniska problem."
             },
             delivery: {
-                english: "🚚 I'll transfer you to our Delivery team to help with order-related questions.",
-                swedish: "🚚 Jag överför dig till vårt Leveransteam för att hjälpa till med orderrelaterade frågor."
+                english: "I'll transfer you to our Delivery team to help with order-related questions.",
+                swedish: "Jag överför dig till vårt Leveransteam för att hjälpa till med orderrelaterade frågor."
             },
             sales: {
-                english: "💼 Let me connect you with our Sales team to discuss plans and pricing options.",
-                swedish: "💼 Låt mig koppla dig till vårt Säljteam för att diskutera planer och prisalternativ."
+                english: "Let me connect you with our Sales team to discuss plans and pricing options.",
+                swedish: "Låt mig koppla dig till vårt Säljteam för att diskutera planer och prisalternativ."
             },
             general: {
-                english: "👋 I understand you need help. Let me connect you with our Customer Support team for general assistance.",
-                swedish: "👋 Jag förstår att du behöver hjälp. Låt mig koppla dig till vårt Kundsupportteam för allmän assistans."
+                english: "I understand you need help. Let me connect you with our Customer Support team for general assistance.",
+                swedish: "Jag förstår att du behöver hjälp. Låt mig koppla dig till vårt Kundsupportteam för allmän assistans."
             }
         };
         
         const lang = isSwedish ? 'swedish' : 'english';
         
-        // Enhanced keyword matching
-        const menuKeywords = ['menu', 'food', 'meny', 'mat', 'dish', 'meal', 'recipe', 'ingredients'];
-        const billingKeywords = ['billing', 'payment', 'faktur', 'betalning', 'invoice', 'subscription', 'pricing'];
-        const technicalKeywords = ['technical', 'api', 'integration', 'teknisk', 'teknik', 'bug', 'error', 'system'];
-        const deliveryKeywords = ['order', 'delivery', 'beställ', 'lever', 'shipping', 'tracking'];
-        const salesKeywords = ['sales', 'plan', 'pricing', 'försäljning', 'pris', 'upgrade', 'features'];
-        
-        if (menuKeywords.some(keyword => lowerMessage.includes(keyword))) {
+        if (lowerMessage.includes('menu') || lowerMessage.includes('food') || lowerMessage.includes('meny') || lowerMessage.includes('mat')) {
             return messages.menu[lang];
-        } else if (billingKeywords.some(keyword => lowerMessage.includes(keyword))) {
+        } else if (lowerMessage.includes('billing') || lowerMessage.includes('payment') || lowerMessage.includes('faktur') || lowerMessage.includes('betalning')) {
             return messages.billing[lang];
-        } else if (technicalKeywords.some(keyword => lowerMessage.includes(keyword))) {
+        } else if (lowerMessage.includes('technical') || lowerMessage.includes('api') || lowerMessage.includes('integration') || lowerMessage.includes('teknisk') || lowerMessage.includes('teknik')) {
             return messages.technical[lang];
-        } else if (deliveryKeywords.some(keyword => lowerMessage.includes(keyword))) {
+        } else if (lowerMessage.includes('order') || lowerMessage.includes('delivery') || lowerMessage.includes('beställ') || lowerMessage.includes('lever')) {
             return messages.delivery[lang];
-        } else if (salesKeywords.some(keyword => lowerMessage.includes(keyword))) {
+        } else if (lowerMessage.includes('sales') || lowerMessage.includes('plan') || lowerMessage.includes('pricing') || lowerMessage.includes('försäljning') || lowerMessage.includes('pris')) {
             return messages.sales[lang];
         }
         
