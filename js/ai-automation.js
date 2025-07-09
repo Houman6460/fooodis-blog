@@ -1,4 +1,3 @@
-
 /**
  * AI Automation System for Fooodis Blog
  * Handles automated post generation and scheduling
@@ -13,13 +12,13 @@ window.aiAutomationInProgress = [];
  */
 function initializeAIAutomation() {
     console.log('AI Automation: Initializing...');
-    
+
     // Load saved automation paths
     loadAutomationPaths();
-    
+
     // Setup event listeners
     setupAutomationEventListeners();
-    
+
     console.log('AI Automation: Initialized successfully');
 }
 
@@ -28,40 +27,62 @@ function initializeAIAutomation() {
  */
 function loadAutomationPaths() {
     try {
-        // Try multiple storage locations for better persistence
+        // Try multiple storage locations
         let paths = [];
-        
-        // Try localStorage first
-        const savedPaths = localStorage.getItem('aiAutomationPaths');
-        if (savedPaths) {
-            paths = JSON.parse(savedPaths);
-        }
-        
-        // Try StorageManager if available
-        if (paths.length === 0 && window.StorageManager) {
-            const storagePaths = StorageManager.get('ai-automation-paths');
-            if (storagePaths && Array.isArray(storagePaths)) {
-                paths = storagePaths;
+
+        // Primary location
+        const primaryPaths = localStorage.getItem('aiAutomationPaths');
+        if (primaryPaths) {
+            try {
+                paths = JSON.parse(primaryPaths);
+            } catch (e) {
+                console.warn('AI Automation: Error parsing primary paths, trying backup');
             }
         }
-        
-        // Try alternative key
+
+        // Backup location
         if (paths.length === 0) {
-            const altPaths = localStorage.getItem('fooodis-ai-automation-paths');
-            if (altPaths) {
-                paths = JSON.parse(altPaths);
+            const backupPaths = localStorage.getItem('fooodis-ai-automation-paths');
+            if (backupPaths) {
+                try {
+                    paths = JSON.parse(backupPaths);
+                } catch (e) {
+                    console.warn('AI Automation: Error parsing backup paths');
+                }
             }
         }
-        
-        window.aiAutomationPaths = paths || [];
-        console.log('AI Automation: Loaded', window.aiAutomationPaths.length, 'automation paths');
-        
-        // Update UI if container exists
-        updateAutomationPathsDisplay();
-        
+
+        // Ensure paths is an array
+        if (!Array.isArray(paths)) {
+            paths = [];
+        }
+
+        // Clear existing paths display
+        const pathsList = document.getElementById('automationPathsList');
+        if (pathsList) {
+            pathsList.innerHTML = '';
+        }
+
+        // Load each path
+        paths.forEach((path, index) => {
+            try {
+                if (path && typeof path === 'object') {
+                    addToAutomationPathsList(path);
+                }
+            } catch (error) {
+                console.error(`AI Automation: Error loading path ${index}:`, error);
+            }
+        });
+
+        console.log('AI Automation: Loaded', paths.length, 'automation paths');
     } catch (error) {
         console.error('AI Automation: Error loading automation paths:', error);
-        window.aiAutomationPaths = [];
+
+        // Initialize empty paths list if there's an error
+        const pathsList = document.getElementById('automationPathsList');
+        if (pathsList) {
+            pathsList.innerHTML = '<div class="no-paths-message">No automation paths found. Create your first automation above.</div>';
+        }
     }
 }
 
@@ -76,23 +97,23 @@ function saveAutomationPathsToStorage() {
                 path.id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
             }
         });
-        
+
         const pathsString = JSON.stringify(window.aiAutomationPaths);
-        
+
         // Save to multiple locations for redundancy
         localStorage.setItem('aiAutomationPaths', pathsString);
         localStorage.setItem('fooodis-ai-automation-paths', pathsString);
-        
+
         // Save to StorageManager if available
         if (window.StorageManager) {
             StorageManager.set('ai-automation-paths', window.aiAutomationPaths);
         }
-        
+
         // Save to sessionStorage as backup
         sessionStorage.setItem('aiAutomationPaths', pathsString);
-        
+
         console.log('AI Automation: Saved', window.aiAutomationPaths.length, 'automation paths');
-        
+
         // Verify save was successful
         const verification = localStorage.getItem('aiAutomationPaths');
         if (verification) {
@@ -100,7 +121,7 @@ function saveAutomationPathsToStorage() {
         } else {
             console.warn('AI Automation: Save verification failed');
         }
-        
+
     } catch (error) {
         console.error('AI Automation: Error saving automation paths:', error);
     }
@@ -115,7 +136,7 @@ function setupAutomationEventListeners() {
     if (addPathBtn) {
         addPathBtn.addEventListener('click', addAutomationPath);
     }
-    
+
     // Execute automation button
     const executeBtn = document.getElementById('executeAutomation');
     if (executeBtn) {
@@ -129,20 +150,20 @@ function setupAutomationEventListeners() {
 function addAutomationPath() {
     const pathInput = document.getElementById('automationPath');
     const timeInput = document.getElementById('automationTime');
-    
+
     if (!pathInput || !timeInput) {
         console.error('AI Automation: Required input fields not found');
         return;
     }
-    
+
     const path = pathInput.value.trim();
     const time = timeInput.value;
-    
+
     if (!path || !time) {
         alert('Please enter both automation path and time');
         return;
     }
-    
+
     const newPath = {
         id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
         path: path,
@@ -150,15 +171,15 @@ function addAutomationPath() {
         created: new Date().toISOString(),
         status: 'scheduled'
     };
-    
+
     window.aiAutomationPaths.push(newPath);
     saveAutomationPathsToStorage();
     updateAutomationPathsDisplay();
-    
+
     // Clear inputs
     pathInput.value = '';
     timeInput.value = '';
-    
+
     console.log('AI Automation: Added new path:', newPath);
 }
 
@@ -168,9 +189,9 @@ function addAutomationPath() {
 function updateAutomationPathsDisplay() {
     const container = document.getElementById('automationPathsList');
     if (!container) return;
-    
+
     container.innerHTML = '';
-    
+
     window.aiAutomationPaths.forEach(path => {
         const pathElement = document.createElement('div');
         pathElement.className = 'automation-path-item';
@@ -208,20 +229,20 @@ function executeAutomation() {
         alert('No automation paths configured');
         return;
     }
-    
+
     console.log('AI Automation: Starting execution...');
-    
+
     // Implementation for automation execution
     window.aiAutomationPaths.forEach(path => {
         if (path.status === 'scheduled') {
             path.status = 'running';
             console.log('AI Automation: Executing path:', path.path);
-            
+
             // Add to in-progress tracking
             window.aiAutomationInProgress.push(path.id);
         }
     });
-    
+
     saveAutomationPathsToStorage();
     updateAutomationPathsDisplay();
 }

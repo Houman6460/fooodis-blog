@@ -19,14 +19,14 @@ class AutomationCategoryManager {
      */
     init() {
         if (this.initialized) return;
-        
+
         this.loadCategories();
         this.setupUI();
         this.attachEventListeners();
-        
+
         // Update the sidebar categories with the current categories
         this.updateSidebarCategories();
-        
+
         this.initialized = true;
         console.log('AutomationCategoryManager initialized');
     }
@@ -41,7 +41,7 @@ class AutomationCategoryManager {
         // Create category management controls
         const categoryFormGroup = this.categorySelect.closest('.form-group');
         const subcategoryFormGroup = this.subcategorySelect.closest('.form-group');
-        
+
         // Add category management controls
         const categoryControls = document.createElement('div');
         categoryControls.className = 'category-management-controls';
@@ -54,7 +54,7 @@ class AutomationCategoryManager {
             </button>
         `;
         categoryFormGroup.appendChild(categoryControls);
-        
+
         // Add subcategory management controls
         const subcategoryControls = document.createElement('div');
         subcategoryControls.className = 'category-management-controls';
@@ -67,7 +67,7 @@ class AutomationCategoryManager {
             </button>
         `;
         subcategoryFormGroup.appendChild(subcategoryControls);
-        
+
         // Add CSS styles
         this.addStyles();
     }
@@ -78,7 +78,7 @@ class AutomationCategoryManager {
     addStyles() {
         // Check if styles are already added
         if (document.getElementById('automation-category-manager-styles')) return;
-        
+
         const styleElement = document.createElement('style');
         styleElement.id = 'automation-category-manager-styles';
         styleElement.textContent = `
@@ -87,7 +87,7 @@ class AutomationCategoryManager {
                 margin-top: 5px;
                 gap: 5px;
             }
-            
+
             .btn-icon {
                 background-color: #1a1a1a;
                 color: #ffffff;
@@ -102,26 +102,26 @@ class AutomationCategoryManager {
                 transition: all 0.2s ease;
                 font-size: 12px;
             }
-            
+
             .btn-icon:hover {
                 background-color: #333333;
                 border-color: #444444;
             }
-            
+
             .btn-icon.add-category-btn:hover,
             .btn-icon.add-subcategory-btn:hover {
                 background-color: #dcd536;
                 border-color: #c9c22f;
                 color: #121212;
             }
-            
+
             .btn-icon.remove-category-btn:hover,
             .btn-icon.remove-subcategory-btn:hover {
                 background-color: #333333;
                 border-color: #444444;
                 color: #ffffff;
             }
-            
+
             .category-input-dialog {
                 position: fixed;
                 top: 50%;
@@ -135,7 +135,7 @@ class AutomationCategoryManager {
                 width: 320px;
                 border: 1px solid #333333;
             }
-            
+
             .category-input-dialog h3 {
                 margin-top: 0;
                 margin-bottom: 16px;
@@ -143,7 +143,7 @@ class AutomationCategoryManager {
                 font-size: 18px;
                 font-weight: 500;
             }
-            
+
             .category-input-dialog input {
                 width: calc(100% - 10px);
                 padding: 12px;
@@ -156,19 +156,19 @@ class AutomationCategoryManager {
                 font-size: 14px;
                 transition: border-color 0.2s ease;
             }
-            
+
             .category-input-dialog input:focus {
                 border-color: #dcd536;
                 outline: none;
                 box-shadow: 0 0 0 2px rgba(220, 213, 54, 0.2);
             }
-            
+
             .category-input-dialog .dialog-buttons {
                 display: flex;
                 justify-content: flex-end;
                 gap: 12px;
             }
-            
+
             .category-input-dialog button {
                 padding: 10px 16px;
                 border-radius: 4px;
@@ -178,29 +178,29 @@ class AutomationCategoryManager {
                 font-size: 14px;
                 transition: all 0.2s ease;
             }
-            
+
             .category-input-dialog .cancel-btn {
                 background-color: #272727;
                 color: #ffffff;
                 border: 1px solid #333333;
             }
-            
+
             .category-input-dialog .save-btn {
                 background-color: #dcd536;
                 color: #121212;
                 border: 1px solid #c9c22f;
             }
-            
+
             .category-input-dialog .cancel-btn:hover {
                 background-color: #333333;
                 border-color: #444444;
             }
-            
+
             .category-input-dialog .save-btn:hover {
                 background-color: #c9c22f;
                 border-color: #b8b124;
             }
-            
+
             .dialog-overlay {
                 position: fixed;
                 top: 0;
@@ -211,7 +211,7 @@ class AutomationCategoryManager {
                 z-index: 999;
                 backdrop-filter: blur(2px);
             }
-            
+
             .notification {
                 position: fixed;
                 bottom: 24px;
@@ -229,19 +229,19 @@ class AutomationCategoryManager {
                 max-width: 320px;
                 border: 1px solid #c9c22f;
             }
-            
+
             .notification.error {
                 background-color: #333333;
                 color: #ffffff;
                 border-color: #444444;
             }
-            
+
             .notification.show {
                 opacity: 1;
                 transform: translateY(0);
             }
         `;
-        
+
         document.head.appendChild(styleElement);
     }
 
@@ -254,23 +254,23 @@ class AutomationCategoryManager {
         const removeCategoryBtn = this.modalContainer.querySelector('.remove-category-btn');
         const addSubcategoryBtn = this.modalContainer.querySelector('.add-subcategory-btn');
         const removeSubcategoryBtn = this.modalContainer.querySelector('.remove-subcategory-btn');
-        
+
         if (addCategoryBtn) {
             addCategoryBtn.addEventListener('click', () => this.showAddCategoryDialog());
         }
-        
+
         if (removeCategoryBtn) {
             removeCategoryBtn.addEventListener('click', () => this.removeCategory());
         }
-        
+
         if (addSubcategoryBtn) {
             addSubcategoryBtn.addEventListener('click', () => this.showAddSubcategoryDialog());
         }
-        
+
         if (removeSubcategoryBtn) {
             removeSubcategoryBtn.addEventListener('click', () => this.removeSubcategory());
         }
-        
+
         // Listen for category changes to update subcategory dropdown
         this.categorySelect.addEventListener('change', () => this.updateSubcategories());
     }
@@ -318,7 +318,7 @@ class AutomationCategoryManager {
         while (this.categorySelect.options.length > 1) {
             this.categorySelect.remove(1);
         }
-        
+
         // Add each category as an option
         this.categories.forEach(category => {
             const option = document.createElement('option');
@@ -336,7 +336,7 @@ class AutomationCategoryManager {
         while (this.subcategorySelect.options.length > 1) {
             this.subcategorySelect.remove(1);
         }
-        
+
         // Add subcategories for the selected category
         const selectedCategory = this.categorySelect.value;
         if (selectedCategory) {
@@ -349,7 +349,7 @@ class AutomationCategoryManager {
                     this.subcategorySelect.appendChild(option);
                 });
             }
-            
+
             // Update placeholder text
             this.subcategorySelect.options[0].textContent = category && category.subcategories.length === 0 ? 
                 'No subcategories available' : 'Select a subcategory';
@@ -365,12 +365,12 @@ class AutomationCategoryManager {
                 this.showNotification('Category name cannot be empty', true);
                 return;
             }
-            
+
             if (this.categories.some(cat => cat.name === categoryName)) {
                 this.showNotification('Category already exists', true);
                 return;
             }
-            
+
             this.addCategory(categoryName);
         });
     }
@@ -384,17 +384,17 @@ class AutomationCategoryManager {
             name: categoryName,
             subcategories: []
         });
-        
+
         this.saveCategories();
         this.populateCategories();
-        
+
         // Select the newly added category
         this.categorySelect.value = categoryName;
         this.updateSubcategories();
-        
+
         // Update sidebar categories panel
         this.updateSidebarCategories();
-        
+
         this.showNotification(`Category "${categoryName}" added successfully`);
     }
 
@@ -407,7 +407,7 @@ class AutomationCategoryManager {
             this.showNotification('Please select a category to remove', true);
             return;
         }
-        
+
         // Find the index of the category to remove
         const categoryIndex = this.categories.findIndex(cat => cat.name === selectedCategory);
         if (categoryIndex !== -1) {
@@ -415,10 +415,10 @@ class AutomationCategoryManager {
             this.saveCategories();
             this.populateCategories();
             this.updateSubcategories();
-            
+
             // Update sidebar to reflect the removal
             this.updateSidebarCategories();
-            
+
             this.showNotification(`Category "${selectedCategory}" removed successfully`);
         }
     }
@@ -432,19 +432,19 @@ class AutomationCategoryManager {
             this.showNotification('Please select a category first', true);
             return;
         }
-        
+
         this.showInputDialog('Add New Subcategory', 'Enter subcategory name', '', (subcategoryName) => {
             if (subcategoryName.trim() === '') {
                 this.showNotification('Subcategory name cannot be empty', true);
                 return;
             }
-            
+
             const category = this.categories.find(cat => cat.name === selectedCategory);
             if (category.subcategories.includes(subcategoryName)) {
                 this.showNotification('Subcategory already exists', true);
                 return;
             }
-            
+
             this.addSubcategory(selectedCategory, subcategoryName);
         });
     }
@@ -456,15 +456,15 @@ class AutomationCategoryManager {
         // Update the sidebar categories list
         const sidebarCategoriesList = document.querySelector('.categories-container .category-list');
         const sidebarSubcategoriesList = document.querySelector('.subcategories-container .subcategory-list');
-        
+
         if (sidebarCategoriesList) {
             // Clear existing categories except static templates
             const staticItems = Array.from(sidebarCategoriesList.querySelectorAll('.static-item'));
             sidebarCategoriesList.innerHTML = '';
-            
+
             // Add static items back if any were found
             staticItems.forEach(item => sidebarCategoriesList.appendChild(item));
-            
+
             // Add all categories from our list
             this.categories.forEach(category => {
                 // Check if category already exists
@@ -480,7 +480,7 @@ class AutomationCategoryManager {
                 }
             });
         }
-        
+
         // Also update the blog sidebar if present
         const blogSidebar = document.querySelector('.blog-sidebar .categories-list');
         if (blogSidebar) {
@@ -488,14 +488,14 @@ class AutomationCategoryManager {
             this.updateBlogSidebar();
         }
     }
-    
+
     /**
      * Update the blog sidebar with categories and subcategories
      */
     updateBlogSidebar() {
         const categoriesList = document.querySelector('.blog-sidebar .categories-list');
         const subcategoriesList = document.querySelector('.blog-sidebar .subcategories-list');
-        
+
         if (categoriesList) {
             this.categories.forEach(category => {
                 if (!categoriesList.querySelector(`[data-category="${category.name}"]`)) {
@@ -511,7 +511,7 @@ class AutomationCategoryManager {
                 }
             });
         }
-        
+
         if (subcategoriesList) {
             // Add all subcategories across all categories
             this.categories.forEach(category => {
@@ -543,13 +543,13 @@ class AutomationCategoryManager {
             category.subcategories.push(subcategoryName);
             this.saveCategories();
             this.updateSubcategories();
-            
+
             // Select the newly added subcategory
             this.subcategorySelect.value = subcategoryName;
-            
+
             // Update sidebar categories and subcategories panel
             this.updateSidebarCategories();
-            
+
             this.showNotification(`Subcategory "${subcategoryName}" added successfully`);
         }
     }
@@ -560,17 +560,17 @@ class AutomationCategoryManager {
     removeSubcategory() {
         const selectedCategory = this.categorySelect.value;
         const selectedSubcategory = this.subcategorySelect.value;
-        
+
         if (!selectedCategory) {
             this.showNotification('Please select a category first', true);
             return;
         }
-        
+
         if (!selectedSubcategory) {
             this.showNotification('Please select a subcategory to remove', true);
             return;
         }
-        
+
         const category = this.categories.find(cat => cat.name === selectedCategory);
         if (category) {
             const subcategoryIndex = category.subcategories.indexOf(selectedSubcategory);
@@ -578,10 +578,10 @@ class AutomationCategoryManager {
                 category.subcategories.splice(subcategoryIndex, 1);
                 this.saveCategories();
                 this.updateSubcategories();
-                
+
                 // Update sidebar to reflect the removal
                 this.updateSidebarCategories();
-                
+
                 this.showNotification(`Subcategory "${selectedSubcategory}" removed successfully`);
             }
         }
@@ -599,7 +599,7 @@ class AutomationCategoryManager {
         const overlay = document.createElement('div');
         overlay.className = 'dialog-overlay';
         document.body.appendChild(overlay);
-        
+
         // Create dialog
         const dialog = document.createElement('div');
         dialog.className = 'category-input-dialog';
@@ -612,11 +612,11 @@ class AutomationCategoryManager {
             </div>
         `;
         document.body.appendChild(dialog);
-        
+
         // Get the input element and focus it
         const input = dialog.querySelector('input');
         input.focus();
-        
+
         // Handle enter key
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -626,18 +626,18 @@ class AutomationCategoryManager {
                 callback(value);
             }
         });
-        
+
         // Handle dialog buttons
         const cancelBtn = dialog.querySelector('.cancel-btn');
         const saveBtn = dialog.querySelector('.save-btn');
-        
+
         cancelBtn.addEventListener('click', closeDialog);
         saveBtn.addEventListener('click', () => {
             const value = input.value.trim();
             closeDialog();
             callback(value);
         });
-        
+
         // Close dialog function
         function closeDialog() {
             document.body.removeChild(dialog);
@@ -656,18 +656,18 @@ class AutomationCategoryManager {
         existingNotifications.forEach(notification => {
             document.body.removeChild(notification);
         });
-        
+
         // Create notification
         const notification = document.createElement('div');
         notification.className = `notification ${isError ? 'error' : ''}`;
         notification.textContent = message;
         document.body.appendChild(notification);
-        
+
         // Show the notification (delayed to ensure CSS transition works)
         setTimeout(() => {
             notification.classList.add('show');
         }, 10);
-        
+
         // Auto-hide after 3 seconds
         setTimeout(() => {
             notification.classList.remove('show');
@@ -678,21 +678,24 @@ class AutomationCategoryManager {
             }, 300);
         }, 3000);
     }
+
+    // Create global instance
+    window.AutomationCategoryManager = new AutomationCategoryManager();
 }
 
 // Initialize the AutomationCategoryManager when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Initializing AutomationCategoryManager...');
     const categoryManager = new AutomationCategoryManager();
-    
+
     // Store the original function for opening the automation path form
     if (window.aiAutomation && typeof window.aiAutomation.openAutomationPathForm === 'function') {
         const originalOpenForm = window.aiAutomation.openAutomationPathForm;
-        
+
         window.aiAutomation.openAutomationPathForm = function(existingPath = null) {
             // Call the original function first
             originalOpenForm.call(window.aiAutomation, existingPath);
-            
+
             // Initialize our category manager with a slight delay to ensure the form is visible
             console.log('Automation path form opened, initializing category manager...');
             setTimeout(() => {
@@ -702,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         };
     }
-    
+
     // Also attach to all open form buttons as a backup
     const openPathBtns = document.querySelectorAll('.add-path-btn, .edit-path-btn');
     openPathBtns.forEach(btn => {
@@ -715,7 +718,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         });
     });
-    
+
     // Initialize immediately as well for testing
     setTimeout(() => {
         try {
@@ -727,7 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error initializing category manager:', e);
         }
     }, 1000);
-    
+
     // Make the manager available globally
     window.automationCategoryManager = categoryManager;
 });
