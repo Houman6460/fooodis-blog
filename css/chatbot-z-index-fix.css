@@ -1,0 +1,38 @@
+
+/* 🎯 CHATBOT Z-INDEX OPTIMIZATION */
+
+/* Base chatbot elements */
+.chatbot-widget,
+.chatbot-container {
+    z-index: 1000 !important;
+}
+
+/* Chatbot button */
+#chatbot-button,
+.chatbot-button {
+    z-index: 1001 !important;
+}
+
+/* Chatbot modal/popup */
+.chatbot-modal,
+.chatbot-popup,
+.chatbot-window {
+    z-index: 1002 !important;
+}
+
+/* Chatbot overlay */
+.chatbot-overlay {
+    z-index: 999 !important;
+}
+
+/* Remove excessive z-index values */
+[style*="z-index: 10000"],
+[style*="z-index: 999999"] {
+    z-index: 1002 !important;
+}
+
+/* Ensure proper stacking context */
+.chatbot-avatar,
+.chatbot-avatar img {
+    z-index: inherit;
+}
