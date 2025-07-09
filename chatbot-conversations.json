@@ -75,5 +75,52 @@
     },
     "lastUserMessage": "I need to know about foodis",
     "messageCount": 4
+  },
+  {
+    "id": "conv_1752082086398_pw6hr3z5y",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hi",
+        "timestamp": "2025-07-09T17:28:06.579Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Hello! How can I assist you today? If you have any questions about our menu, order status, or anything else related to Fooodis, feel free to ask!",
+        "timestamp": "2025-07-09T17:28:08.896Z"
+      },
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-09T17:28:25.140Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Fooodis is a modern food delivery and restaurant platform designed to make ordering food easy and convenient. We partner with a variety of restaurants to offer a wide selection of cuisines, allowing customers to browse menus, place orders, and enjoy delicious meals from the comfort of their homes.\n\nHere are some key features of Fooodis:\n\n- **Diverse Menu Options**: You can explore a vast array of dishes from various restaurants in your area.\n- **Order Tracking**: Once you place an order, you can easily track its status until it arrives at your doorstep.\n- **User-Friendly Account Management**: You can manage your account, payment methods, and order history seamlessly.\n- **Restaurant Information**: Learn more about the restaurants we partner with, including their locations, hours, and specialties.\n- **Technical Support**: If you encounter any issues, our support team is here to help!\n\nIf you have specific questions or need assistance with anything particular, feel free to ask!",
+        "timestamp": "2025-07-09T17:28:30.151Z"
+      },
+      {
+        "role": "user",
+        "content": "how could I register",
+        "timestamp": "2025-07-09T17:28:46.657Z"
+      },
+      {
+        "role": "assistant",
+        "content": "To register for Fooodis, you can follow these simple steps:\n\n1. Visit our website at [Fooodis](https://fooodis.com).\n2. Click on the \"Sign Up\" or \"Register\" button, usually located at the top right corner of the homepage.\n3. Fill out the required information, such as your name, email address, and password.\n4. Once you've completed the form, click on the \"Create Account\" button.\n5. You may need to verify your email address by clicking on a link sent to your inbox.\n\nIf you encounter any issues during the registration process, feel free to ask for help!",
+        "timestamp": "2025-07-09T17:28:50.297Z"
+      }
+    ],
+    "createdAt": "2025-07-09T17:28:06.579Z",
+    "lastMessageAt": "2025-07-09T17:28:46.657Z",
+    "language": "en",
+    "status": "active",
+    "threadId": null,
+    "agent": {
+      "name": "Fooodis Assistant",
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "personality": "Friendly Fooodis assistant"
+    },
+    "lastUserMessage": "how could I register",
+    "messageCount": 6
   }
 ]
