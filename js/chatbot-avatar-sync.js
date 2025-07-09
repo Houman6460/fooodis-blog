@@ -225,6 +225,14 @@
                     this.applyToWidget();
                 }
             });
+
+            window.addEventListener('chatbotAgentSwitched', (e) => {
+                if (e.detail && e.detail.agent && e.detail.agent.avatar) {
+                    console.log('🔄 Agent switched event received for:', e.detail.agent.name);
+                    this.storeAvatar(e.detail.agent.avatar);
+                    this.applyAvatarToWidget(e.detail.agent.avatar);
+                }
+            });
         }
     };
 

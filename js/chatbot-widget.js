@@ -114,7 +114,7 @@
                             settings = JSON.parse(savedSettings);
                             console.log('📦 Widget loaded settings from:', key);
                             console.log('🖼️ Settings avatar:', settings.avatar ? 'Present' : 'Missing');
-                            
+
                             // If we found valid settings, break
                             if (settings && (settings.avatar || settings.chatbotName)) {
                                 break;
@@ -157,7 +157,7 @@
                             agent.active !== false
                         );
                         console.log('📋 Widget loaded', this.availableAgents.length, 'active agents from settings');
-                        
+
                         // Ensure all agents inherit the uploaded avatar if they don't have one
                         this.availableAgents.forEach(agent => {
                             if (!agent.avatar || agent.avatar === this.getDefaultAvatar()) {
@@ -201,7 +201,7 @@
 
         isValidAvatarUrl: function(url) {
             if (!url || typeof url !== 'string' || url.trim() === '') return false;
-            
+
             // Allow data URIs, HTTP(S) URLs, and local paths
             return url.startsWith('data:image/') || 
                    url.startsWith('http://') || 
@@ -213,17 +213,17 @@
 
         getAbsoluteAvatarUrl: function(avatarUrl) {
             if (!avatarUrl) return this.getDefaultAvatar();
-            
+
             // Already absolute or data URI
             if (avatarUrl.startsWith('data:') || 
                 avatarUrl.startsWith('http://') || 
                 avatarUrl.startsWith('https://')) {
                 return avatarUrl;
             }
-            
+
             // Get base URL - handle both direct access and iframe contexts
             let baseUrl = window.location.origin;
-            
+
             // If we're in an iframe or different context, try to get the parent URL
             if (window.parent && window.parent !== window) {
                 try {
@@ -233,7 +233,7 @@
                     baseUrl = window.location.origin;
                 }
             }
-            
+
             // Convert relative paths with robust handling
             if (avatarUrl.startsWith('./')) {
                 return baseUrl + '/' + avatarUrl.substring(2);
@@ -249,7 +249,7 @@
                     'avatars/',
                     ''
                 ];
-                
+
                 for (const path of commonPaths) {
                     const fullPath = baseUrl + '/' + path + avatarUrl;
                     // Return the first valid-looking path (we'll handle validation in setAvatarImage)
@@ -257,7 +257,7 @@
                         return fullPath;
                     }
                 }
-                
+
                 // Default to images/avatars/ path
                 return baseUrl + '/images/avatars/' + avatarUrl;
             }
@@ -445,7 +445,7 @@
             // Set up error handling with cascading fallbacks
             const setFallback = () => {
                 console.warn(`Avatar ${index} failed to load, trying fallbacks...`);
-                
+
                 // Try different avatar sources
                 const fallbacks = [
                     this.config.avatar,
@@ -453,7 +453,7 @@
                     localStorage.getItem('chatbot-widget-avatar'),
                     this.getDefaultAvatar()
                 ];
-                
+
                 for (const fallback of fallbacks) {
                     if (fallback && fallback !== avatarUrl && this.isValidAvatarUrl(fallback)) {
                         console.log(`🔄 Trying fallback avatar ${index}:`, fallback.substring(0, 50) + '...');
@@ -461,7 +461,7 @@
                         return;
                     }
                 }
-                
+
                 // Final fallback to default
                 imgElement.src = this.getDefaultAvatar();
                 imgElement.style.display = 'block';
@@ -536,10 +536,10 @@
                     timestamp: Date.now(),
                     page: window.location.pathname
                 };
-                
+
                 localStorage.setItem('chatbot-avatar-settings', JSON.stringify(avatarData));
                 localStorage.setItem('chatbot-widget-avatar', avatarUrl);
-                
+
                 // Also update main settings if they exist
                 const mainSettings = localStorage.getItem('fooodis-chatbot-settings');
                 if (mainSettings) {
@@ -579,7 +579,7 @@
 
             // Get agent info and avatar
             const agentName = this.currentAgent ? this.currentAgent.name : 'Fooodis Assistant';
-            
+
             // Use a reliable avatar URL
             let agentAvatar = this.config.avatar || this.getDefaultAvatar();
 
@@ -1133,7 +1133,7 @@
 
             let avatar;
             if (sender === 'user') {
-                avatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAMTIuMkgxMS4yQzEyIDExLjIgMTUuNSAxMi4yIDE1LjUgMTQuMloiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz48L3N2Zz4=';
+                avatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAMTIuMkgxMS4yQzEyIDExLjIgMTU.NSAxMi4yIDE1LjUgMTQuMloiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz48L3N2Zz4=';
             } else {
                 // For assistant messages, use config avatar (which includes uploaded avatar)
                 avatar = this.config.avatar || this.getDefaultAvatar();
@@ -1421,7 +1421,7 @@
 
             // Get the uploaded avatar from settings to maintain consistency
             let avatarUrl = this.config.avatar || this.getDefaultAvatar();
-            
+
             // Get active agents from settings
             if (this.availableAgents && this.availableAgents.length > 0) {
                 const randomIndex = Math.floor(Math.random() * this.availableAgents.length);
@@ -1611,12 +1611,46 @@
             console.log('🏢 Set default general settings agent:', this.currentAgent.name);
         },
 
-        switchToRandomAgent: function() {
-            this.selectRandomAgent();
-            this.updateAgentHeader(); // Update UI with new agent details
+        switchAgent: function(agentData) {
+            if (!agentData) return;
 
-            const introMessage = this.getAgentIntroduction();
-            this.addMessage(introMessage, 'assistant');
+            console.log('🔄 Switching to agent:', agentData.name);
+
+            // Store previous agent state
+            const previousAgent = this.currentAgent;
+
+            // Update current agent
+            this.currentAgent = agentData;
+
+            // Force avatar update immediately
+            if (agentData.avatar) {
+                console.log('🖼️ Applying agent avatar:', agentData.avatar.substring(0, 50) + '...');
+                this.updateAvatar(agentData.avatar);
+            }
+
+            // Update header with new agent info
+            this.updateAgentHeader();
+
+            // Force re-render all avatars with agent-specific avatar
+            setTimeout(() => {
+                this.setupAllAvatars();
+            }, 100);
+
+            // Add agent switch message
+            this.addMessage({
+                text: `Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`,
+                sender: 'bot',
+                timestamp: new Date(),
+                avatar: agentData.avatar
+            });
+
+            // Trigger avatar sync event
+            window.dispatchEvent(new CustomEvent('chatbotAgentSwitched', {
+                detail: { 
+                    agent: agentData,
+                    previousAgent: previousAgent 
+                }
+            }));
         },
     };
 })();

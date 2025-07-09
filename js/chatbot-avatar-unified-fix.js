@@ -214,6 +214,15 @@
                 }
             });
 
+            // Listen for agent switching events
+            window.addEventListener('chatbotAgentSwitched', (e) => {
+                if (e.detail && e.detail.agent && e.detail.agent.avatar) {
+                    console.log('🔄 Agent switched, updating avatar to:', e.detail.agent.avatar.substring(0, 50) + '...');
+                    this.targetAvatar = this.makeAbsoluteUrl(e.detail.agent.avatar);
+                    this.scheduleUpdate();
+                }
+            });
+
             // Optimized DOM observer with debouncing
             if (this.observer) return;
             
