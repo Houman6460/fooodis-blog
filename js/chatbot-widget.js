@@ -1609,6 +1609,10 @@
                 assignedAssistantId: null,
                 isGeneral: true
             };
+            
+            // Clear any agent-specific avatar storage
+            this.clearAgentAvatar();
+            
             console.log('🏢 Set default general settings agent:', this.currentAgent.name);
         },
 
@@ -1634,7 +1638,8 @@
             // Update current agent with the correct avatar
             this.currentAgent = {
                 ...agentData,
-                avatar: newAvatarUrl
+                avatar: newAvatarUrl,
+                isGeneral: false // Mark as non-general agent
             };
 
             // Update the widget's main avatar configuration
@@ -1651,21 +1656,45 @@
             // Add agent switch message with correct avatar
             this.addMessage(`Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`, 'assistant');
 
-            // Store the new avatar for persistence
-            this.updateAvatar(newAvatarUrl);
+            // Store the agent avatar separately to prevent reversion
+            this.storeAgentAvatar(newAvatarUrl);
 
             // Trigger avatar sync event with the new avatar
             window.dispatchEvent(new CustomEvent('chatbotAgentSwitched', {
                 detail: { 
                     agent: {
                         ...agentData,
-                        avatar: newAvatarUrl
+                        avatar: newAvatarUrl,
+                        isGeneral: false
                     },
                     previousAgent: previousAgent 
                 }
             }));
 
             console.log('✅ Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
+        },
+
+        storeAgentAvatar: function(avatarUrl) {
+            try {
+                // Store agent avatar in a separate key to prevent override
+                localStorage.setItem('chatbot-active-agent-avatar', avatarUrl);
+                localStorage.setItem('chatbot-agent-active', 'true');
+                
+                console.log('💾 Agent avatar stored separately');
+            } catch (error) {
+                console.error('Error storing agent avatar:', error);
+            }
+        },
+
+        clearAgentAvatar: function() {
+            try {
+                localStorage.removeItem('chatbot-active-agent-avatar');
+                localStorage.removeItem('chatbot-agent-active');
+                
+                console.log('🧹 Agent avatar cleared');
+            } catch (error) {
+                console.error('Error clearing agent avatar:', error);
+            }
         },
     };
 })();
