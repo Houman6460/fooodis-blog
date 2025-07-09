@@ -1131,41 +1131,45 @@
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}`;
 
-            let avatar;
-            if (sender === 'user') {
-                avatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAMTIuMkgxMS4yQzEyIDExLjIgMTU.NSAxMi4yIDE1LjUgMTQuMloiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz48L3N2Zz4=';
-            } else {
+            let avatarHtml = '';
+
+            // Only show avatar for assistant/system messages, not for user messages
+            if (sender === 'assistant' || sender === 'system') {
                 // For assistant messages, use config avatar (which includes uploaded avatar)
-                avatar = this.config.avatar || this.getDefaultAvatar();
+                const avatar = this.config.avatar || this.getDefaultAvatar();
+
+                const avatarImg = document.createElement('img');
+                avatarImg.alt = sender + ' Avatar';
+                avatarImg.style.width = '100%';
+                avatarImg.style.height = '100%';
+                avatarImg.style.objectFit = 'cover';
+                avatarImg.style.display = 'block';
+                avatarImg.style.backgroundColor = '#e8f24c';
+                avatarImg.style.borderRadius = '50%';
+
+                // Set up error handler before setting src
+                avatarImg.onerror = function() {
+                    console.warn('Message avatar failed to load:', avatar);
+                    avatarImg.src = this.getDefaultAvatar();
+                    avatarImg.style.display = 'block';
+                }.bind(this);
+
+                avatarImg.onload = function() {
+                    avatarImg.style.display = 'block';
+                };
+
+                // Set src last to trigger loading
+                avatarImg.src = avatar;
+
+                avatarHtml = `
+                    <div class="message-avatar">
+                        ${avatarImg.outerHTML}
+                    </div>
+                `;
             }
 
-            const avatarImg = document.createElement('img');
-            avatarImg.alt = sender + ' Avatar';
-            avatarImg.style.width = '100%';
-            avatarImg.style.height = '100%';
-            avatarImg.style.objectFit = 'cover';
-            avatarImg.style.display = 'block';
-            avatarImg.style.backgroundColor = '#e8f24c';
-            avatarImg.style.borderRadius = '50%';
-
-            // Set up error handler before setting src
-            avatarImg.onerror = function() {
-                console.warn('Message avatar failed to load:', avatar);
-                avatarImg.src = this.getDefaultAvatar();
-                avatarImg.style.display = 'block';
-            }.bind(this);
-
-            avatarImg.onload = function() {
-                avatarImg.style.display = 'block';
-            };
-
-            // Set src last to trigger loading
-            avatarImg.src = avatar;
-
             messageElement.innerHTML = `
-                <div class="message-avatar">
-                    ${avatarImg.outerHTML}
-                </div>
+                ${avatarHtml}
                 <div class="message-content" style="color: #333333 !important; background: ${sender === 'user' ? '#e8f24c' : '#f8f9fa'} !important;">${content}</div>
             `;
 
@@ -1439,7 +1443,7 @@
                 };
 
                 console.log('✅ Selected agent:', agentData.name, 'with avatar:', agentAvatar.substring(0, 50) + '...');
-                
+
                 // Use switchAgent to properly handle the avatar change
                 this.switchAgent(agentData);
             } else {
@@ -1618,7 +1622,7 @@
 
             // Get the correct avatar URL for the new agent
             let newAvatarUrl = agentData.avatar;
-            
+
             // If agent doesn't have a specific avatar, use the general uploaded avatar
             if (!newAvatarUrl || newAvatarUrl === this.getDefaultAvatar()) {
                 newAvatarUrl = this.config.avatar || this.getDefaultAvatar();
