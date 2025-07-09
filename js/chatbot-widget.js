@@ -1399,7 +1399,7 @@
             // Brief pause for realism
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            // Select random agent
+            // Select random agent (this will call switchAgent internally)
             this.selectRandomAgent();
 
             // Show typing indicator
@@ -1419,9 +1419,6 @@
         selectRandomAgent: function() {
             console.log('🎲 Selecting random agent from available agents...');
 
-            // Get the uploaded avatar from settings to maintain consistency
-            let avatarUrl = this.config.avatar || this.getDefaultAvatar();
-
             // Get active agents from settings
             if (this.availableAgents && this.availableAgents.length > 0) {
                 const randomIndex = Math.floor(Math.random() * this.availableAgents.length);
@@ -1429,10 +1426,10 @@
 
                 // Use agent's specific avatar if available, otherwise use the general uploaded avatar
                 const agentAvatar = selectedAgent.avatar && selectedAgent.avatar !== this.getDefaultAvatar() 
-                    ? this.getAbsoluteAvatarUrl(selectedAgent.avatar)
-                    : avatarUrl;
+                    ? selectedAgent.avatar
+                    : this.config.avatar || this.getDefaultAvatar();
 
-                this.currentAgent = {
+                const agentData = {
                     id: selectedAgent.id,
                     name: selectedAgent.name || selectedAgent.realName,
                     avatar: agentAvatar,
@@ -1441,15 +1438,15 @@
                     department: selectedAgent.department
                 };
 
-                console.log('✅ Selected agent:', this.currentAgent.name, 'with avatar:', agentAvatar.substring(0, 50) + '...');
+                console.log('✅ Selected agent:', agentData.name, 'with avatar:', agentAvatar.substring(0, 50) + '...');
+                
+                // Use switchAgent to properly handle the avatar change
+                this.switchAgent(agentData);
             } else {
                 // Fallback to default agents from config
                 console.log('⚠️ No available agents, using config fallback');
                 this.loadAgentsFromConfig();
             }
-
-            // Update header to show selected agent
-            this.updateAgentHeader();
         },
 
         loadAgentsFromConfig: function() {
@@ -1619,38 +1616,52 @@
             // Store previous agent state
             const previousAgent = this.currentAgent;
 
-            // Update current agent
-            this.currentAgent = agentData;
-
-            // Force avatar update immediately
-            if (agentData.avatar) {
-                console.log('🖼️ Applying agent avatar:', agentData.avatar.substring(0, 50) + '...');
-                this.updateAvatar(agentData.avatar);
+            // Get the correct avatar URL for the new agent
+            let newAvatarUrl = agentData.avatar;
+            
+            // If agent doesn't have a specific avatar, use the general uploaded avatar
+            if (!newAvatarUrl || newAvatarUrl === this.getDefaultAvatar()) {
+                newAvatarUrl = this.config.avatar || this.getDefaultAvatar();
             }
+
+            // Convert to absolute URL
+            newAvatarUrl = this.getAbsoluteAvatarUrl(newAvatarUrl);
+
+            // Update current agent with the correct avatar
+            this.currentAgent = {
+                ...agentData,
+                avatar: newAvatarUrl
+            };
+
+            // Update the widget's main avatar configuration
+            this.config.avatar = newAvatarUrl;
+
+            console.log('🖼️ Switching to agent avatar:', newAvatarUrl.substring(0, 50) + '...');
 
             // Update header with new agent info
             this.updateAgentHeader();
 
-            // Force re-render all avatars with agent-specific avatar
-            setTimeout(() => {
-                this.setupAllAvatars();
-            }, 100);
+            // Force immediate avatar update on all elements
+            this.setupAllAvatars();
 
-            // Add agent switch message
-            this.addMessage({
-                text: `Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`,
-                sender: 'bot',
-                timestamp: new Date(),
-                avatar: agentData.avatar
-            });
+            // Add agent switch message with correct avatar
+            this.addMessage(`Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`, 'assistant');
 
-            // Trigger avatar sync event
+            // Store the new avatar for persistence
+            this.updateAvatar(newAvatarUrl);
+
+            // Trigger avatar sync event with the new avatar
             window.dispatchEvent(new CustomEvent('chatbotAgentSwitched', {
                 detail: { 
-                    agent: agentData,
+                    agent: {
+                        ...agentData,
+                        avatar: newAvatarUrl
+                    },
                     previousAgent: previousAgent 
                 }
             }));
+
+            console.log('✅ Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
         },
     };
 })();
