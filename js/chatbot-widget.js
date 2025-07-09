@@ -96,6 +96,8 @@
 
         loadSavedSettings: function() {
             try {
+                console.log('🔧 Widget: Starting loadSavedSettings...');
+                
                 // Try multiple storage locations including backup
                 let settings = null;
                 const storageKeys = ['fooodis-chatbot-settings', 'chatbot-settings-backup'];
@@ -105,6 +107,7 @@
                     if (savedSettings) {
                         settings = JSON.parse(savedSettings);
                         console.log('📦 Widget loaded settings from:', key);
+                        console.log('🖼️ Settings avatar:', settings.avatar ? 'Present' : 'Missing');
                         break;
                     }
                 }
@@ -149,8 +152,12 @@
                         isGeneral: true // Flag to indicate this is the general settings agent
                     };
 
+                    // Ensure config avatar is also set
+                    this.config.avatar = this.currentAgent.avatar;
+
                     console.log('🏢 Starting with General Settings agent:', this.currentAgent.name);
                     console.log('🖼️ Agent avatar set to:', this.currentAgent.avatar.substring(0, 50) + '...');
+                    console.log('🖼️ Config avatar set to:', this.config.avatar.substring(0, 50) + '...');
                 } else {
                     console.warn('⚠️ No settings found in any storage location');
                     this.setDefaultAgent();
