@@ -119,17 +119,17 @@
                 if (settings) {
                     this.chatbotSettings = settings;
 
-                    // Priority chain for avatar: settings.avatar > default
-                    let avatarUrl = this.getDefaultAvatar(); // Start with working default
-
-                    if (settings.avatar && settings.avatar.trim() !== '' && settings.avatar !== this.getDefaultAvatar()) {
-                        avatarUrl = settings.avatar;
-                        console.log('🖼️ Using uploaded settings avatar:', avatarUrl.substring(0, 50) + '...');
-                    } else {
-                        console.log('🖼️ Using default avatar (no uploaded avatar found)');
+                    // Store the uploaded avatar if available
+                    let uploadedAvatar = null;
+                    if (settings.avatar && settings.avatar.trim() !== '' && 
+                        settings.avatar !== this.getDefaultAvatar() && 
+                        !settings.avatar.includes('data:image/svg+xml')) {
+                        uploadedAvatar = settings.avatar;
+                        console.log('🖼️ Found uploaded avatar in settings:', uploadedAvatar.substring(0, 50) + '...');
                     }
 
-                    this.config.avatar = avatarUrl;
+                    // Set configuration
+                    this.config.avatar = uploadedAvatar || this.getDefaultAvatar();
                     this.config.enabled = settings.enabled !== false;
                     this.config.allowFileUpload = settings.allowFileUpload !== false;
 
@@ -144,7 +144,7 @@
                     // ALWAYS start with General Settings using the uploaded avatar
                     this.currentAgent = {
                         name: settings.chatbotName || 'Fooodis Assistant',
-                        avatar: avatarUrl, // Use the prioritized avatar
+                        avatar: uploadedAvatar || this.getDefaultAvatar(),
                         personality: 'General assistant',
                         isGeneral: true // Flag to indicate this is the general settings agent
                     };
@@ -296,53 +296,36 @@
                 headerText.textContent = this.currentAgent.name;
             }
 
-            // Get the correct avatar URL with robust fallback chain
-            let avatarUrl = this.getDefaultAvatar(); // Always start with working default
-
-            // Priority chain: chatbotSettings.avatar (uploaded) > currentAgent.avatar > config.avatar > default
-            if (this.chatbotSettings && this.chatbotSettings.avatar && this.chatbotSettings.avatar.trim() !== '' && this.chatbotSettings.avatar !== this.getDefaultAvatar()) {
+            // Get the uploaded avatar from settings first
+            let avatarUrl = this.getDefaultAvatar();
+            
+            if (this.chatbotSettings && this.chatbotSettings.avatar && 
+                this.chatbotSettings.avatar.trim() !== '' && 
+                !this.chatbotSettings.avatar.includes('data:image/svg+xml')) {
                 avatarUrl = this.chatbotSettings.avatar;
-                console.log('🖼️ Using uploaded settings avatar (priority 1)');
-            } else if (this.currentAgent && this.currentAgent.avatar && this.currentAgent.avatar.trim() !== '' && this.currentAgent.avatar !== this.getDefaultAvatar()) {
-                avatarUrl = this.currentAgent.avatar;
-                console.log('🖼️ Using current agent avatar (priority 2)');
-            } else if (this.config.avatar && this.config.avatar.trim() !== '' && this.config.avatar !== this.getDefaultAvatar()) {
-                avatarUrl = this.config.avatar;
-                console.log('🖼️ Using config avatar (priority 3)');
-            } else if (this.availableAgents && this.availableAgents.length > 0) {
-                // Try to find the current agent in available agents list
-                const foundAgent = this.availableAgents.find(agent => 
-                    agent.id === this.currentAgent.id || agent.name === this.currentAgent.name
-                );
-                if (foundAgent && foundAgent.avatar && foundAgent.avatar.trim() !== '' && foundAgent.avatar !== this.getDefaultAvatar()) {
-                    avatarUrl = foundAgent.avatar;
-                    console.log('🖼️ Using found agent avatar (priority 4)');
-                }
+                console.log('🖼️ Using uploaded settings avatar');
             } else {
-                console.log('🖼️ Using default avatar (no uploaded avatars found)');
+                console.log('🖼️ Using default avatar (no uploaded avatar available)');
             }
 
             console.log('🖼️ Final avatar URL:', avatarUrl.substring(0, 100) + '...');
 
             // Update all avatar images with enhanced error handling
             avatarImages.forEach((img, index) => {
-                console.log(`🖼️ Updating avatar image ${index + 1}:`, img);
+                console.log(`🖼️ Updating avatar image ${index + 1}`);
 
-                // Clear any previous error handlers
+                // Clear any previous handlers
                 img.onerror = null;
                 img.onload = null;
 
-                // Set up error handler before setting src
+                // Set up error handler
                 img.onerror = function() {
-                    console.warn('Avatar failed to load:', img.src);
-                    console.log('🔄 Falling back to default avatar');
+                    console.warn('Avatar failed to load, using default');
                     img.src = this.getDefaultAvatar();
-                    img.style.display = 'block';
                 }.bind(this);
 
                 img.onload = function() {
                     console.log('✅ Avatar loaded successfully for image', index + 1);
-                    img.style.display = 'block';
                 };
 
                 // Set attributes and styles
@@ -354,15 +337,15 @@
                 img.style.borderRadius = '50%';
                 img.style.backgroundColor = '#e8f24c';
 
-                // Set src last to trigger loading
+                // Set src to trigger loading
                 img.src = avatarUrl;
             });
 
-            // Update current agent avatar reference
+            // Update references
             this.currentAgent.avatar = avatarUrl;
             this.config.avatar = avatarUrl;
 
-            console.log('🖼️ Updated agent header with avatar:', avatarUrl.substring(0, 50) + '...');
+            console.log('🖼️ Updated agent header with avatar');
         },
 
         setupAvatarUpdateListener: function() {
@@ -427,22 +410,18 @@
                 existingWidget.remove();
             }
 
-            // Ensure we have current agent info and valid avatar
+            // Get agent info and avatar
             const agentName = this.currentAgent ? this.currentAgent.name : 'Fooodis Assistant';
-            let agentAvatar = this.getDefaultAvatar(); // Start with default
+            let agentAvatar = this.getDefaultAvatar();
 
-            // Priority chain for avatar: uploaded settings avatar first
-            if (this.chatbotSettings && this.chatbotSettings.avatar && this.chatbotSettings.avatar.trim() !== '' && this.chatbotSettings.avatar !== this.getDefaultAvatar()) {
+            // Use uploaded avatar if available
+            if (this.chatbotSettings && this.chatbotSettings.avatar && 
+                this.chatbotSettings.avatar.trim() !== '' && 
+                !this.chatbotSettings.avatar.includes('data:image/svg+xml')) {
                 agentAvatar = this.chatbotSettings.avatar;
-                console.log('🖼️ Using uploaded settings avatar for widget creation');
-            } else if (this.currentAgent && this.currentAgent.avatar && this.currentAgent.avatar !== this.getDefaultAvatar()) {
-                agentAvatar = this.currentAgent.avatar;
-                console.log('🖼️ Using current agent avatar for widget creation');
-            } else if (this.config.avatar && this.config.avatar !== this.getDefaultAvatar()) {
-                agentAvatar = this.config.avatar;
-                console.log('🖼️ Using config avatar for widget creation');
+                console.log('🖼️ Using uploaded avatar for widget creation');
             } else {
-                console.log('🖼️ Using default avatar for widget creation (no uploaded avatar)');
+                console.log('🖼️ Using default avatar for widget creation');
             }
 
             console.log('🖼️ Creating widget with avatar:', agentAvatar.substring(0, 50) + '...');
@@ -997,15 +976,13 @@
             if (sender === 'user') {
                 avatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAxMS4ySDExLjJDMTIgMTEuMiAxNS41IDEyLjIgMTUuNSAxNC4yWiIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4KPC9zdmc+';
             } else {
-                // For assistant messages, prioritize uploaded settings avatar
-                avatar = this.getDefaultAvatar(); // Start with default
+                // For assistant messages, use uploaded avatar if available
+                avatar = this.getDefaultAvatar();
 
-                if (this.chatbotSettings && this.chatbotSettings.avatar && this.chatbotSettings.avatar.trim() !== '' && this.chatbotSettings.avatar !== this.getDefaultAvatar()) {
+                if (this.chatbotSettings && this.chatbotSettings.avatar && 
+                    this.chatbotSettings.avatar.trim() !== '' && 
+                    !this.chatbotSettings.avatar.includes('data:image/svg+xml')) {
                     avatar = this.chatbotSettings.avatar;
-                } else if (this.currentAgent && this.currentAgent.avatar && this.currentAgent.avatar !== this.getDefaultAvatar()) {
-                    avatar = this.currentAgent.avatar;
-                } else if (this.config.avatar && this.config.avatar !== this.getDefaultAvatar()) {
-                    avatar = this.config.avatar;
                 }
             }
 
@@ -1289,27 +1266,29 @@
         selectRandomAgent: function() {
             console.log('🎲 Selecting random agent from available agents...');
 
+            // Get the uploaded avatar from settings to maintain consistency
+            let avatarUrl = this.getDefaultAvatar();
+            if (this.chatbotSettings && this.chatbotSettings.avatar && 
+                this.chatbotSettings.avatar.trim() !== '' && 
+                !this.chatbotSettings.avatar.includes('data:image/svg+xml')) {
+                avatarUrl = this.chatbotSettings.avatar;
+                console.log('🖼️ Using uploaded avatar for agent switch');
+            }
+
             // Get active agents from settings
             if (this.availableAgents && this.availableAgents.length > 0) {
                 const randomIndex = Math.floor(Math.random() * this.availableAgents.length);
                 const selectedAgent = this.availableAgents[randomIndex];
 
-                // Ensure we get the proper avatar
-                let agentAvatar = selectedAgent.avatar;
-                if (!agentAvatar || agentAvatar === this.getDefaultAvatar()) {
-                    // Try to get avatar from chatbot settings
-                    agentAvatar = this.chatbotSettings?.avatar || this.config.avatar || this.getDefaultAvatar();
-                }
-
                 this.currentAgent = {
                     id: selectedAgent.id,
                     name: selectedAgent.name,
-                    avatar: agentAvatar,
+                    avatar: avatarUrl, // Use consistent uploaded avatar
                     personality: selectedAgent.personality || selectedAgent.description,
                     assignedAssistantId: selectedAgent.assistantId
                 };
 
-                console.log('✅ Selected agent:', this.currentAgent.name, 'with avatar:', agentAvatar);
+                console.log('✅ Selected agent:', this.currentAgent.name);
             } else {
                 // Fallback to default agents from config
                 console.log('⚠️ No available agents, using config fallback');
