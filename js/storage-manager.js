@@ -8,10 +8,10 @@
 const StorageManager = {
     // Storage prefix for all keys
     PREFIX: 'fooodis-',
-    
+
     // Default storage engine (localStorage)
     storageEngine: window.localStorage,
-    
+
     /**
      * Save data to storage
      * @param {string} key - The key to store data under (without prefix)
@@ -31,38 +31,49 @@ const StorageManager = {
             onSuccess: null,
             onError: null
         };
-        
+
         // Merge options with defaults
         const settings = { ...defaults, ...options };
-        
+
         try {
             // Convert data to string if needed
             let dataString = typeof data === 'string' ? data : JSON.stringify(data);
-            
+
             // Compress data if requested
             if (settings.compress && dataString.length > 10000) {
                 dataString = this._compressData(dataString);
             }
-            
+
+            // Throttle saves - don't save the same data within 5 seconds
+            const throttleKey = 'throttle_' + fullKey;
+            const lastSave = this.storageEngine.getItem(throttleKey);
+            const now = Date.now();
+
+            if (lastSave && (now - parseInt(lastSave)) < 5000) {
+                console.log('StorageManager: Save throttled for key:', key);
+                return true;
+            }
+
             // Try to save to primary storage
             this.storageEngine.setItem(fullKey, dataString);
-            
+            this.storageEngine.setItem(throttleKey, now.toString());
+
             // Verify data was saved correctly
             const savedData = this.storageEngine.getItem(fullKey);
             if (!savedData) {
                 throw new Error('Data verification failed - storage may be full');
             }
-            
+
             // Call success callback if provided
             if (typeof settings.onSuccess === 'function') {
                 settings.onSuccess();
             }
-            
+
             console.log(`StorageManager: Successfully saved data to ${fullKey}`);
             return true;
         } catch (error) {
             console.error(`StorageManager: Error saving data to ${fullKey}:`, error);
-            
+
             // Try backup storage if requested
             if (settings.useBackup) {
                 try {
@@ -71,33 +82,33 @@ const StorageManager = {
                         const reducedData = this._reduceDataSize(data);
                         this.storageEngine.setItem(fullKey, JSON.stringify(reducedData));
                         console.log(`StorageManager: Saved reduced data to ${fullKey}`);
-                        
+
                         // Call error callback if provided
                         if (typeof settings.onError === 'function') {
                             settings.onError(error, 'reduced');
                         }
-                        
+
                         return true;
                     }
-                    
+
                     // Try session storage as fallback
                     window.sessionStorage.setItem(fullKey, typeof data === 'string' ? data : JSON.stringify(data));
                     console.log(`StorageManager: Saved data to session storage as fallback for ${fullKey}`);
-                    
+
                     // Call error callback if provided
                     if (typeof settings.onError === 'function') {
                         settings.onError(error, 'session');
                     }
-                    
+
                     return true;
                 } catch (backupError) {
                     console.error(`StorageManager: Backup storage also failed for ${fullKey}:`, backupError);
-                    
+
                     // Call error callback if provided
                     if (typeof settings.onError === 'function') {
                         settings.onError(backupError, 'failed');
                     }
-                    
+
                     return false;
                 }
             } else {
@@ -105,12 +116,12 @@ const StorageManager = {
                 if (typeof settings.onError === 'function') {
                     settings.onError(error, 'failed');
                 }
-                
+
                 return false;
             }
         }
     },
-    
+
     /**
      * Load data from storage
      * @param {string} key - The key to load data from (without prefix)
@@ -129,14 +140,14 @@ const StorageManager = {
             onSuccess: null,
             onError: null
         };
-        
+
         // Merge options with defaults
         const settings = { ...defaults, ...options };
-        
+
         try {
             // Try to load from primary storage
             let dataString = this.storageEngine.getItem(fullKey);
-            
+
             // If not found, try backup storage if requested
             if (!dataString && settings.useBackup) {
                 dataString = window.sessionStorage.getItem(fullKey);
@@ -144,52 +155,52 @@ const StorageManager = {
                     console.log(`StorageManager: Loaded data from session storage for ${fullKey}`);
                 }
             }
-            
+
             // If still not found, return default value
             if (!dataString) {
                 console.log(`StorageManager: No data found for ${fullKey}, using default value`);
                 return settings.defaultValue;
             }
-            
+
             // Try to parse data as JSON
             try {
                 // Check if data is compressed
                 if (dataString.startsWith('COMPRESSED:')) {
                     dataString = this._decompressData(dataString);
                 }
-                
+
                 const parsedData = JSON.parse(dataString);
-                
+
                 // Call success callback if provided
                 if (typeof settings.onSuccess === 'function') {
                     settings.onSuccess(parsedData);
                 }
-                
+
                 console.log(`StorageManager: Successfully loaded data from ${fullKey}`);
                 return parsedData;
             } catch (parseError) {
                 console.error(`StorageManager: Error parsing data from ${fullKey}:`, parseError);
-                
+
                 // Call error callback if provided
                 if (typeof settings.onError === 'function') {
                     settings.onError(parseError, 'parse');
                 }
-                
+
                 // Return the raw string if JSON parsing fails
                 return dataString;
             }
         } catch (error) {
             console.error(`StorageManager: Error loading data from ${fullKey}:`, error);
-            
+
             // Call error callback if provided
             if (typeof settings.onError === 'function') {
                 settings.onError(error, 'load');
             }
-            
+
             return settings.defaultValue;
         }
     },
-    
+
     /**
      * Remove data from storage
      * @param {string} key - The key to remove (without prefix)
@@ -197,18 +208,18 @@ const StorageManager = {
      */
     remove: function(key) {
         const fullKey = this.PREFIX + key;
-        
+
         try {
             // Remove from primary storage
             this.storageEngine.removeItem(fullKey);
-            
+
             // Also remove from session storage
             try {
                 window.sessionStorage.removeItem(fullKey);
             } catch (sessionError) {
                 console.warn(`StorageManager: Could not remove from session storage for ${fullKey}:`, sessionError);
             }
-            
+
             console.log(`StorageManager: Successfully removed data for ${fullKey}`);
             return true;
         } catch (error) {
@@ -216,7 +227,7 @@ const StorageManager = {
             return false;
         }
     },
-    
+
     /**
      * Clear all storage (only items with our prefix)
      * @returns {boolean} - Whether the clear was successful
@@ -231,7 +242,7 @@ const StorageManager = {
                     keys.push(key);
                 }
             }
-            
+
             // Remove each key
             keys.forEach(key => {
                 this.storageEngine.removeItem(key);
@@ -241,7 +252,7 @@ const StorageManager = {
                     // Ignore session storage errors
                 }
             });
-            
+
             console.log(`StorageManager: Successfully cleared all data (${keys.length} items)`);
             return true;
         } catch (error) {
@@ -249,7 +260,7 @@ const StorageManager = {
             return false;
         }
     },
-    
+
     /**
      * Check if storage is available
      * @returns {boolean} - Whether storage is available
@@ -266,14 +277,14 @@ const StorageManager = {
             return false;
         }
     },
-    
+
     /**
      * Get all keys in storage (only with our prefix)
      * @returns {Array} - Array of keys (without prefix)
      */
     getKeys: function() {
         const keys = [];
-        
+
         try {
             for (let i = 0; i < this.storageEngine.length; i++) {
                 const key = this.storageEngine.key(i);
@@ -284,10 +295,10 @@ const StorageManager = {
         } catch (error) {
             console.error('StorageManager: Error getting keys:', error);
         }
-        
+
         return keys;
     },
-    
+
     /**
      * Compress data to save space
      * @private
@@ -302,14 +313,14 @@ const StorageManager = {
                 .replace(/\s+/g, ' ')
                 .replace(/:\s+/g, ':')
                 .replace(/,\s+/g, ',');
-            
+
             return 'COMPRESSED:' + compressed;
         } catch (error) {
             console.error('StorageManager: Error compressing data:', error);
             return data;
         }
     },
-    
+
     /**
      * Decompress data
      * @private
@@ -325,7 +336,7 @@ const StorageManager = {
             return data;
         }
     },
-    
+
     /**
      * Reduce data size for large objects
      * @private
@@ -337,20 +348,20 @@ const StorageManager = {
         if (typeof data !== 'object' || data === null) {
             return data;
         }
-        
+
         // If array, reduce each item
         if (Array.isArray(data)) {
             // If array is very large, only keep essential items
             if (data.length > 100) {
                 return data.slice(0, 100);
             }
-            
+
             return data.map(item => this._reduceDataSize(item));
         }
-        
+
         // For objects, handle special cases
         const reducedData = {};
-        
+
         // Copy only essential properties
         for (const key in data) {
             // Skip large binary data like images
@@ -359,11 +370,11 @@ const StorageManager = {
                 reducedData[key] = '[IMAGE DATA REMOVED DUE TO SIZE]';
                 continue;
             }
-            
+
             // Recursively reduce nested objects
             reducedData[key] = this._reduceDataSize(data[key]);
         }
-        
+
         return reducedData;
     }
 };
@@ -372,7 +383,7 @@ const StorageManager = {
 // Check if storage is available and set up fallback if needed
 if (!StorageManager.isAvailable()) {
     console.error('StorageManager: Storage is not available, using fallback');
-    
+
     // Use in-memory storage as fallback
     const memoryStorage = {};
     StorageManager.storageEngine = {
@@ -412,7 +423,7 @@ console.log('StorageManager: Initialized successfully and available globally');
 // Also ensure initialization after DOM is loaded (for backward compatibility)
 document.addEventListener('DOMContentLoaded', function() {
     console.log('StorageManager: DOM loaded, ensuring initialization is complete');
-    
+
     // Re-expose StorageManager to window object to ensure it's available
     window.StorageManager = StorageManager;
     window.isStorageManagerAvailable = true;

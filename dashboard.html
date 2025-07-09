@@ -52,6 +52,9 @@
     <script src="js/direct-automation-patch.js"></script>
     <!-- Storage Manager Fix - Ensures all required methods are available -->
     <script src="js/storage-manager-fix.js"></script>
+    
+    <!-- Storage Cleanup System - Prevents localStorage bloat -->
+    <script src="js/storage-cleanup.js"></script>
 
     <!-- Media Selector Redesign - Implements dark-themed media selector matching the sample image -->
     <script src="js/media-selector-redesign.js"></script>
@@ -3159,9 +3162,9 @@
                 subtree: true
             });
 
-            // Set up a periodic check for scheduled tasks
-            setInterval(checkScheduledTasks, 60000); // Check every minute
-            setTimeout(checkScheduledTasks, 5000); // Initial check after 5 seconds
+            // Set up a periodic check for scheduled tasks (reduced frequency)
+            setInterval(checkScheduledTasks, 300000); // Check every 5 minutes
+            setTimeout(checkScheduledTasks, 10000); // Initial check after 10 seconds
 
             // Extract data from a status card element
             function extractCardData(cardElement) {
