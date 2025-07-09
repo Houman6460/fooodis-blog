@@ -97,7 +97,7 @@
         loadSavedSettings: function() {
             try {
                 console.log('🔧 Widget: Starting loadSavedSettings...');
-                
+
                 // Try multiple storage locations including backup
                 let settings = null;
                 const storageKeys = ['fooodis-chatbot-settings', 'chatbot-settings-backup'];
@@ -305,7 +305,7 @@
 
             // Get the uploaded avatar from settings first
             let avatarUrl = this.getDefaultAvatar();
-            
+
             if (this.chatbotSettings && this.chatbotSettings.avatar && 
                 this.chatbotSettings.avatar.trim() !== '' && 
                 !this.chatbotSettings.avatar.includes('data:image/svg+xml')) {
@@ -443,7 +443,7 @@
                     <!-- Chat Button -->
                     <div class="chatbot-button" id="chatbot-button">
                         <div class="chatbot-avatar">
-                            <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="this.src='${this.getDefaultAvatar()}'; this.style.display='block';" />
+                            <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="console.log('Avatar load failed, using fallback'); this.src='${this.getDefaultAvatar()}'; this.style.display='block';" onload="console.log('Avatar loaded successfully');" />
                         </div>
                         <div class="notification-badge" id="notification-badge">1</div>
                     </div>
@@ -463,7 +463,7 @@
                             </div>
                             <div class="agent-info">
                                 <div class="chatbot-avatar-header">
-                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="this.src='${this.getDefaultAvatar()}'; this.style.display='block';" />
+                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="console.log('Avatar load failed, using fallback'); this.src='${this.getDefaultAvatar()}'; this.style.display='block';" onload="console.log('Avatar loaded successfully');" />
                                 </div>
                                 <div class="header-text">
                                     <h4>${agentName}</h4>
@@ -477,7 +477,7 @@
                         <div class="chatbot-messages" id="chatbot-messages">
                             <div class="message assistant">
                                 <div class="message-avatar">
-                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="this.src='${this.getDefaultAvatar()}'; this.style.display='block';" />
+                                    <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" onerror="console.log('Avatar load failed, using fallback'); this.src='${this.getDefaultAvatar()}'; this.style.display='block';" onload="console.log('Avatar loaded successfully');" />
                                 </div>
                                 <div class="message-content">${this.getInitialWelcomeMessage()}</div>
                             </div>
@@ -981,7 +981,7 @@
 
             let avatar;
             if (sender === 'user') {
-                avatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAxMS4ySDExLjJDMTIgMTEuMiAxNS41IDEyLjIgMTUuNSAxNC4yWiIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4KPC9zdmc+';
+                avatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiM2NjY2NjYiLz4KPHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMUM5LjggMSAxMC41IDEuNyAxMC41IDIuNUMxMC41IDMuMyA5LjggNCA5IDRDOC4yIDQgNy41IDMuMyA3LjUgMi41QzcuNSAxLjcgOC4yIDEgOSAxWk0xNS41IDE0LjJWMTVIMi41VjE0LjJDMi41IDEyLjIgNiAxMS4yIDYuOCAMTIuMkgxMS4yQzEyIDExLjIgMTUuNSAxMi4yIDE1LjUgMTQuMloiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz48L3N2Zz4=';
             } else {
                 // For assistant messages, use uploaded avatar if available
                 avatar = this.getDefaultAvatar();
