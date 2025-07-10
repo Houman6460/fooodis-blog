@@ -249,7 +249,7 @@
                 skipButton: "Skip",
                 submitButton: "Submit"
             },
-            swedish: {
+            svenska: {
                 title: "Låt oss komma igång!",
                 subtitle: "Vänligen ange din information för att fortsätta",
                 nameLabel: "Ditt namn",
@@ -279,8 +279,8 @@
                 return;
             }
 
-            // Get the correct translations
-            const translations = language === 'svenska' ? this.translations.swedish : this.translations.english;
+            // Get the correct translations - now using the exact key names
+            const translations = this.translations[language];
             
             if (!translations) {
                 console.error('❌ No translations found for language:', language);
