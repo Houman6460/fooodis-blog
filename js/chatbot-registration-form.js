@@ -1,7 +1,7 @@
 
 /**
  * 🔐 CHATBOT REGISTRATION FORM SYSTEM
- * Single-page bilingual registration form for the chatbot
+ * Safe registration form integration for the chatbot
  */
 
 (function() {
@@ -10,7 +10,8 @@
     window.ChatbotRegistrationForm = {
         initialized: false,
         formData: {},
-        currentLanguage: 'en', // Start with English
+        currentStep: 1,
+        totalSteps: 3,
         
         init: function() {
             if (this.initialized) return;
@@ -35,23 +36,8 @@
             const formOverlay = this.createFormOverlay();
             chatbotWindow.appendChild(formOverlay);
             
-            // Set initial language from browser or saved preference
-            this.detectInitialLanguage();
-            this.updateLanguageDisplay();
-        },
-
-        detectInitialLanguage: function() {
-            // Check saved language preference
-            const savedLang = localStorage.getItem('fooodis-language');
-            if (savedLang === 'sv' || savedLang === 'swedish') {
-                this.currentLanguage = 'sv';
-            } else if (savedLang === 'en' || savedLang === 'english') {
-                this.currentLanguage = 'en';
-            } else {
-                // Detect from browser language
-                const browserLang = navigator.language || navigator.userLanguage;
-                this.currentLanguage = browserLang.startsWith('sv') ? 'sv' : 'en';
-            }
+            // Show first step
+            this.showStep(1);
         },
 
         createFormOverlay: function() {
@@ -61,91 +47,88 @@
             
             overlay.innerHTML = `
                 <div class="registration-container">
-                    <!-- Language Tabs -->
-                    <div class="language-tabs">
-                        <button type="button" class="language-tab" data-lang="en">
-                            English
-                        </button>
-                        <button type="button" class="language-tab" data-lang="sv">
-                            Svenska
-                        </button>
+                    <div class="registration-header">
+                        <h3>Welcome to Fooodis!</h3>
+                        <p>Let's get you set up in just a few steps</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 33%"></div>
+                        </div>
+                        <span class="step-indicator">Step 1 of 3</span>
                     </div>
                     
-                    <!-- Form Content -->
-                    <div class="form-content">
-                        <!-- English Content -->
-                        <div class="language-content" data-lang="en">
-                            <h2>Let's Get Started!</h2>
-                            <p>Please provide your information to continue</p>
-                            
+                    <div class="registration-content">
+                        <!-- Step 1: Basic Information -->
+                        <div class="form-step" id="step-1">
+                            <h4>Basic Information</h4>
                             <div class="form-group">
-                                <label>Your Name</label>
-                                <input type="text" id="name-en" placeholder="Your full name" required>
+                                <label for="reg-name">Full Name *</label>
+                                <input type="text" id="reg-name" required>
                             </div>
-                            
                             <div class="form-group">
-                                <input type="email" id="email-en" placeholder="info@logloland.se" required>
+                                <label for="reg-email">Email Address *</label>
+                                <input type="email" id="reg-email" required>
                             </div>
-                            
                             <div class="form-group">
-                                <input type="tel" id="phone-en" placeholder="0978980709" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Are you currently using a delivery system for your restaurant?</label>
-                                <div class="select-wrapper">
-                                    <select id="delivery-system-en" required>
-                                        <option value="">Please select an option</option>
-                                        <option value="fooodis">Yes, I'm currently using Fooodis</option>
-                                        <option value="other">Yes, I'm using another system</option>
-                                        <option value="none">No, I'm looking for a solution</option>
-                                    </select>
-                                </div>
+                                <label for="reg-phone">Phone Number</label>
+                                <input type="tel" id="reg-phone">
                             </div>
                         </div>
-                        
-                        <!-- Swedish Content -->
-                        <div class="language-content" data-lang="sv" style="display: none;">
-                            <h2>Låt oss komma igång!</h2>
-                            <p>Vänligen ange din information för att fortsätta</p>
-                            
+
+                        <!-- Step 2: Restaurant Information -->
+                        <div class="form-step" id="step-2" style="display: none;">
+                            <h4>Restaurant Information</h4>
                             <div class="form-group">
-                                <label>Ditt Namn</label>
-                                <input type="text" id="name-sv" placeholder="Ditt fullständiga namn" required>
+                                <label for="reg-restaurant-name">Restaurant Name *</label>
+                                <input type="text" id="reg-restaurant-name" required>
                             </div>
-                            
                             <div class="form-group">
-                                <input type="email" id="email-sv" placeholder="info@logloland.se" required>
+                                <label for="reg-restaurant-type">Restaurant Type</label>
+                                <select id="reg-restaurant-type">
+                                    <option value="">Select type...</option>
+                                    <option value="fast-food">Fast Food</option>
+                                    <option value="casual-dining">Casual Dining</option>
+                                    <option value="fine-dining">Fine Dining</option>
+                                    <option value="cafe">Cafe</option>
+                                    <option value="bakery">Bakery</option>
+                                    <option value="other">Other</option>
+                                </select>
                             </div>
-                            
                             <div class="form-group">
-                                <input type="tel" id="phone-sv" placeholder="7-987870" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Använder du för närvarande ett leveranssystem för din restaurang?</label>
-                                <div class="select-wrapper">
-                                    <select id="delivery-system-sv" required>
-                                        <option value="">Vänligen välj ett alternativ</option>
-                                        <option value="fooodis">Ja, jag använder för närvarande Fooodis</option>
-                                        <option value="other">Ja, jag använder ett annat leveranssystem</option>
-                                        <option value="none">Nej, jag söker efter en lösning</option>
-                                    </select>
-                                </div>
+                                <label for="reg-location">Location</label>
+                                <input type="text" id="reg-location" placeholder="City, Country">
                             </div>
                         </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="form-actions">
-                            <button type="button" class="btn-submit" id="submit-registration">
-                                <span data-lang="en">Get Started</span>
-                                <span data-lang="sv">Kom igång</span>
-                            </button>
-                            <button type="button" class="btn-cancel" id="cancel-registration">
-                                <span data-lang="en">Cancel</span>
-                                <span data-lang="sv">Avbryt</span>
-                            </button>
+
+                        <!-- Step 3: Preferences -->
+                        <div class="form-step" id="step-3" style="display: none;">
+                            <h4>Preferences</h4>
+                            <div class="form-group">
+                                <label for="reg-language">Preferred Language</label>
+                                <select id="reg-language">
+                                    <option value="en">English</option>
+                                    <option value="sv">Swedish</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="reg-notifications">
+                                    Send me updates and notifications
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="reg-terms" required>
+                                    I agree to the Terms of Service and Privacy Policy *
+                                </label>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <div class="registration-actions">
+                        <button type="button" class="btn-secondary" id="prev-step" style="display: none;">Previous</button>
+                        <button type="button" class="btn-primary" id="next-step">Next</button>
+                        <button type="button" class="btn-primary" id="submit-registration" style="display: none;">Complete Registration</button>
+                        <button type="button" class="btn-cancel" id="cancel-registration">Cancel</button>
                     </div>
                 </div>
             `;
@@ -153,11 +136,57 @@
             return overlay;
         },
 
+        showStep: function(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.style.display = 'none';
+            });
+            
+            // Show current step
+            const currentStep = document.getElementById(`step-${stepNumber}`);
+            if (currentStep) {
+                currentStep.style.display = 'block';
+            }
+            
+            // Update progress
+            const progressFill = document.querySelector('.progress-fill');
+            const stepIndicator = document.querySelector('.step-indicator');
+            
+            if (progressFill) {
+                progressFill.style.width = `${(stepNumber / this.totalSteps) * 100}%`;
+            }
+            
+            if (stepIndicator) {
+                stepIndicator.textContent = `Step ${stepNumber} of ${this.totalSteps}`;
+            }
+            
+            // Update buttons
+            const prevBtn = document.getElementById('prev-step');
+            const nextBtn = document.getElementById('next-step');
+            const submitBtn = document.getElementById('submit-registration');
+            
+            if (prevBtn) {
+                prevBtn.style.display = stepNumber > 1 ? 'inline-block' : 'none';
+            }
+            
+            if (nextBtn) {
+                nextBtn.style.display = stepNumber < this.totalSteps ? 'inline-block' : 'none';
+            }
+            
+            if (submitBtn) {
+                submitBtn.style.display = stepNumber === this.totalSteps ? 'inline-block' : 'none';
+            }
+            
+            this.currentStep = stepNumber;
+        },
+
         setupEventListeners: function() {
             // Use event delegation for dynamically created elements
             document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('language-tab')) {
-                    this.switchLanguage(e.target.dataset.lang);
+                if (e.target.id === 'next-step') {
+                    this.nextStep();
+                } else if (e.target.id === 'prev-step') {
+                    this.prevStep();
                 } else if (e.target.id === 'submit-registration') {
                     this.submitRegistration();
                 } else if (e.target.id === 'cancel-registration') {
@@ -166,120 +195,93 @@
             });
         },
 
-        switchLanguage: function(lang) {
-            this.currentLanguage = lang;
-            this.updateLanguageDisplay();
-            
-            // Save language preference
-            localStorage.setItem('fooodis-language', lang);
-            
-            // Sync form data between languages
-            this.syncFormData();
-        },
-
-        updateLanguageDisplay: function() {
-            const overlay = document.getElementById('registration-form-overlay');
-            if (!overlay) return;
-
-            // Update active tab
-            overlay.querySelectorAll('.language-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.lang === this.currentLanguage);
-            });
-
-            // Show/hide language content
-            overlay.querySelectorAll('.language-content').forEach(content => {
-                content.style.display = content.dataset.lang === this.currentLanguage ? 'block' : 'none';
-            });
-
-            // Update button text
-            overlay.querySelectorAll('[data-lang]').forEach(element => {
-                if (element.dataset.lang !== this.currentLanguage) {
-                    element.style.display = 'none';
-                } else {
-                    element.style.display = 'inline';
+        nextStep: function() {
+            if (this.validateCurrentStep()) {
+                this.saveCurrentStepData();
+                if (this.currentStep < this.totalSteps) {
+                    this.showStep(this.currentStep + 1);
                 }
-            });
+            }
         },
 
-        syncFormData: function() {
-            // Sync data between English and Swedish forms
-            const languages = ['en', 'sv'];
-            const fields = ['name', 'email', 'phone', 'delivery-system'];
-
-            fields.forEach(field => {
-                const enField = document.getElementById(`${field}-en`);
-                const svField = document.getElementById(`${field}-sv`);
-
-                if (enField && svField) {
-                    if (this.currentLanguage === 'en' && enField.value) {
-                        svField.value = enField.value;
-                    } else if (this.currentLanguage === 'sv' && svField.value) {
-                        enField.value = svField.value;
-                    }
-                }
-            });
+        prevStep: function() {
+            if (this.currentStep > 1) {
+                this.showStep(this.currentStep - 1);
+            }
         },
 
-        validateForm: function() {
-            const currentFields = document.querySelectorAll(`[id$="-${this.currentLanguage}"]`);
+        validateCurrentStep: function() {
+            const currentStepElement = document.getElementById(`step-${this.currentStep}`);
+            const requiredFields = currentStepElement.querySelectorAll('[required]');
+            
             let isValid = true;
-
-            currentFields.forEach(field => {
-                if (field.hasAttribute('required') && !field.value.trim()) {
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
                     field.classList.add('error');
                     isValid = false;
                 } else {
                     field.classList.remove('error');
                 }
             });
-
+            
             if (!isValid) {
-                const errorMessage = this.currentLanguage === 'sv' 
-                    ? 'Vänligen fyll i alla obligatoriska fält'
-                    : 'Please fill in all required fields';
-                this.showError(errorMessage);
+                this.showError('Please fill in all required fields');
             }
-
+            
             return isValid;
         },
 
+        saveCurrentStepData: function() {
+            const currentStepElement = document.getElementById(`step-${this.currentStep}`);
+            const inputs = currentStepElement.querySelectorAll('input, select');
+            
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    this.formData[input.id] = input.checked;
+                } else {
+                    this.formData[input.id] = input.value;
+                }
+            });
+        },
+
         submitRegistration: function() {
-            if (!this.validateForm()) {
+            if (!this.validateCurrentStep()) {
                 return;
             }
-
-            // Collect form data
-            const lang = this.currentLanguage;
-            const formData = {
-                name: document.getElementById(`name-${lang}`).value,
-                email: document.getElementById(`email-${lang}`).value,
-                phone: document.getElementById(`phone-${lang}`).value,
-                deliverySystem: document.getElementById(`delivery-system-${lang}`).value,
-                language: lang,
-                registrationDate: new Date().toISOString()
-            };
-
+            
+            this.saveCurrentStepData();
+            
             // Show loading state
             const submitBtn = document.getElementById('submit-registration');
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = this.currentLanguage === 'sv' 
-                    ? 'Registrerar...' 
-                    : 'Registering...';
+                submitBtn.textContent = 'Registering...';
             }
-
+            
             // Process registration
-            this.processRegistration(formData);
+            this.processRegistration();
         },
 
-        processRegistration: function(formData) {
+        processRegistration: function() {
             // Create user object
             const userData = {
                 id: 'user_' + Date.now(),
-                ...formData,
+                name: this.formData['reg-name'],
+                email: this.formData['reg-email'],
+                phone: this.formData['reg-phone'],
+                restaurant: {
+                    name: this.formData['reg-restaurant-name'],
+                    type: this.formData['reg-restaurant-type'],
+                    location: this.formData['reg-location']
+                },
+                preferences: {
+                    language: this.formData['reg-language'] || 'en',
+                    notifications: this.formData['reg-notifications'] || false
+                },
+                registrationDate: new Date().toISOString(),
                 status: 'active'
             };
-
+            
             // Save to localStorage
             try {
                 const existingUsers = JSON.parse(localStorage.getItem('chatbot-users') || '[]');
@@ -297,10 +299,7 @@
                 
             } catch (error) {
                 console.error('Registration error:', error);
-                const errorMessage = this.currentLanguage === 'sv'
-                    ? 'Registrering misslyckades. Vänligen försök igen.'
-                    : 'Registration failed. Please try again.';
-                this.showError(errorMessage);
+                this.showError('Registration failed. Please try again.');
             }
         },
 
@@ -328,26 +327,14 @@
         showSuccess: function() {
             const overlay = document.getElementById('registration-form-overlay');
             if (overlay) {
-                const successMessage = this.currentLanguage === 'sv'
-                    ? {
-                        title: 'Välkommen till Fooodis!',
-                        message: 'Din registrering är klar. Du kan nu njuta av alla våra funktioner.',
-                        button: 'Börja chatta'
-                    }
-                    : {
-                        title: 'Welcome to Fooodis!',
-                        message: 'Your registration is complete. You can now enjoy all our features.',
-                        button: 'Start Chatting'
-                    };
-
                 overlay.innerHTML = `
-                    <div class="registration-container success">
-                        <div class="success-content">
+                    <div class="registration-container">
+                        <div class="success-message">
                             <div class="success-icon">✅</div>
-                            <h3>${successMessage.title}</h3>
-                            <p>${successMessage.message}</p>
-                            <button type="button" class="btn-submit" onclick="window.ChatbotRegistrationForm.closeForm()">
-                                ${successMessage.button}
+                            <h3>Welcome to Fooodis!</h3>
+                            <p>Your registration is complete. You can now enjoy all our features.</p>
+                            <button type="button" class="btn-primary" onclick="window.ChatbotRegistrationForm.closeForm()">
+                                Start Chatting
                             </button>
                         </div>
                     </div>
@@ -370,9 +357,9 @@
             errorDiv.className = 'error-message';
             errorDiv.textContent = message;
             
-            const formContent = document.querySelector('.form-content');
-            if (formContent) {
-                formContent.insertBefore(errorDiv, formContent.firstChild);
+            const header = document.querySelector('.registration-header');
+            if (header) {
+                header.appendChild(errorDiv);
             }
             
             setTimeout(() => {
@@ -381,11 +368,7 @@
         },
 
         cancelRegistration: function() {
-            const confirmMessage = this.currentLanguage === 'sv'
-                ? 'Är du säker på att du vill avbryta registreringen?'
-                : 'Are you sure you want to cancel registration?';
-                
-            if (confirm(confirmMessage)) {
+            if (confirm('Are you sure you want to cancel registration?')) {
                 this.closeForm();
             }
         },
@@ -398,14 +381,12 @@
             
             // Reset form data
             this.formData = {};
+            this.currentStep = 1;
             
             // Send welcome message
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
                 setTimeout(() => {
-                    const welcomeMessage = this.currentLanguage === 'sv'
-                        ? 'Välkommen till Fooodis! Hur kan jag hjälpa dig idag?'
-                        : 'Welcome to Fooodis! How can I help you today?';
-                    window.FoodisChatbot.addMessage(welcomeMessage, 'assistant');
+                    window.FoodisChatbot.addMessage('Welcome to Fooodis! How can I help you today?', 'assistant');
                 }, 500);
             }
         },
@@ -422,7 +403,7 @@
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    background: rgba(0, 0, 0, 0.9);
+                    background: rgba(0, 0, 0, 0.8);
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -431,69 +412,56 @@
                 }
                 
                 .registration-container {
-                    background: #f5f5f5;
-                    border-radius: 20px;
-                    padding: 0;
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
                     max-width: 320px;
                     width: 95%;
-                    max-height: 480px;
-                    overflow: hidden;
+                    max-height: 450px;
+                    overflow-y: auto;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
                 }
                 
-                .language-tabs {
-                    display: flex;
-                    background: #e8e8e8;
-                    border-radius: 20px 20px 0 0;
+                .registration-header {
+                    text-align: center;
+                    margin-bottom: 30px;
+                }
+                
+                .registration-header h3 {
+                    color: #26282f;
+                    margin-bottom: 10px;
+                    font-size: 24px;
+                }
+                
+                .registration-header p {
+                    color: #666;
+                    margin-bottom: 20px;
+                }
+                
+                .progress-bar {
+                    width: 100%;
+                    height: 6px;
+                    background: #e0e0e0;
+                    border-radius: 3px;
                     overflow: hidden;
+                    margin-bottom: 10px;
                 }
                 
-                .language-tab {
-                    flex: 1;
-                    padding: 15px 20px;
-                    border: none;
-                    background: transparent;
+                .progress-fill {
+                    height: 100%;
+                    background: linear-gradient(45deg, #e8f24c, #d4e547);
+                    transition: width 0.3s ease;
+                }
+                
+                .step-indicator {
+                    font-size: 12px;
                     color: #666;
-                    font-size: 16px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    position: relative;
                 }
                 
-                .language-tab.active {
-                    color: #333;
-                    background: #f5f5f5;
-                }
-                
-                .language-tab.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    height: 3px;
-                    background: #e8f24c;
-                }
-                
-                .form-content {
-                    padding: 30px 25px;
-                    background: #f5f5f5;
-                }
-                
-                .language-content h2 {
-                    color: #333;
-                    margin: 0 0 8px 0;
-                    font-size: 28px;
-                    font-weight: bold;
-                    text-align: center;
-                }
-                
-                .language-content p {
-                    color: #666;
-                    margin: 0 0 25px 0;
-                    font-size: 14px;
-                    text-align: center;
+                .form-step h4 {
+                    color: #26282f;
+                    margin-bottom: 20px;
+                    font-size: 18px;
                 }
                 
                 .form-group {
@@ -502,111 +470,92 @@
                 
                 .form-group label {
                     display: block;
-                    margin-bottom: 8px;
-                    color: #666;
-                    font-size: 14px;
+                    margin-bottom: 5px;
+                    color: #26282f;
                     font-weight: 500;
                 }
                 
                 .form-group input,
                 .form-group select {
                     width: 100%;
-                    padding: 12px 15px;
-                    border: none;
-                    border-radius: 8px;
-                    background: white;
+                    padding: 12px;
+                    border: 2px solid #e0e0e0;
+                    border-radius: 6px;
                     font-size: 14px;
-                    color: #333;
-                    box-sizing: border-box;
-                    outline: none;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    transition: border-color 0.3s ease;
                 }
                 
                 .form-group input:focus,
                 .form-group select:focus {
-                    box-shadow: 0 2px 8px rgba(232, 242, 76, 0.3);
+                    outline: none;
+                    border-color: #e8f24c;
                 }
                 
-                .form-group input.error,
-                .form-group select.error {
-                    border: 2px solid #ff4444;
+                .form-group input.error {
+                    border-color: #ff4444;
                 }
                 
-                .select-wrapper {
-                    position: relative;
-                }
-                
-                .select-wrapper::after {
-                    content: '▼';
-                    position: absolute;
-                    right: 15px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    color: #666;
-                    pointer-events: none;
-                    font-size: 12px;
-                }
-                
-                .form-group select {
-                    appearance: none;
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                    padding-right: 40px;
-                    background: white;
+                .checkbox-label {
+                    display: flex !important;
+                    align-items: center;
                     cursor: pointer;
                 }
                 
-                .form-actions {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                    margin-top: 25px;
+                .checkbox-label input[type="checkbox"] {
+                    width: auto !important;
+                    margin-right: 10px;
                 }
                 
-                .btn-submit,
+                .registration-actions {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 30px;
+                    gap: 10px;
+                }
+                
+                .btn-primary,
+                .btn-secondary,
                 .btn-cancel {
                     padding: 12px 24px;
                     border: none;
-                    border-radius: 25px;
-                    font-size: 16px;
-                    font-weight: 600;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 500;
                     cursor: pointer;
                     transition: all 0.3s ease;
-                    text-align: center;
                 }
                 
-                .btn-submit {
+                .btn-primary {
                     background: #e8f24c;
-                    color: #333;
-                    order: 1;
+                    color: #26282f;
                 }
                 
-                .btn-submit:hover:not(:disabled) {
+                .btn-primary:hover {
                     background: #d4e547;
                     transform: translateY(-1px);
                 }
                 
-                .btn-submit:disabled {
-                    opacity: 0.6;
-                    cursor: not-allowed;
-                    transform: none;
+                .btn-secondary {
+                    background: #f0f0f0;
+                    color: #26282f;
+                }
+                
+                .btn-secondary:hover {
+                    background: #e0e0e0;
                 }
                 
                 .btn-cancel {
-                    background: transparent;
-                    color: #666;
-                    order: 2;
-                    font-size: 14px;
-                    padding: 8px 16px;
+                    background: #ff4444;
+                    color: white;
                 }
                 
                 .btn-cancel:hover {
-                    color: #333;
+                    background: #cc3333;
                 }
                 
-                .success-content {
+                .success-message {
                     text-align: center;
-                    padding: 40px 25px;
+                    padding: 40px 20px;
                 }
                 
                 .success-icon {
@@ -614,41 +563,40 @@
                     margin-bottom: 20px;
                 }
                 
-                .success-content h3 {
-                    color: #333;
+                .success-message h3 {
+                    color: #26282f;
                     margin-bottom: 15px;
-                    font-size: 24px;
                 }
                 
-                .success-content p {
+                .success-message p {
                     color: #666;
                     margin-bottom: 30px;
-                    font-size: 14px;
                 }
                 
                 .error-message {
                     background: #ffebee;
                     color: #c62828;
-                    padding: 10px 15px;
-                    border-radius: 8px;
-                    margin-bottom: 20px;
+                    padding: 10px;
+                    border-radius: 6px;
+                    margin-top: 10px;
                     font-size: 14px;
-                    text-align: center;
-                }
-                
-                /* Hide elements based on language */
-                [data-lang]:not([data-lang=""]) {
-                    display: none;
                 }
                 
                 @media (max-width: 768px) {
                     .registration-container {
-                        width: 98%;
-                        max-height: 500px;
+                        padding: 20px;
+                        width: 95%;
                     }
                     
-                    .form-content {
-                        padding: 25px 20px;
+                    .registration-actions {
+                        flex-direction: column;
+                    }
+                    
+                    .btn-primary,
+                    .btn-secondary,
+                    .btn-cancel {
+                        width: 100%;
+                        margin-bottom: 10px;
                     }
                 }
             `;
