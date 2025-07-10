@@ -899,8 +899,7 @@
                     padding: 15px !important;
                     align-items: center !important;
                     gap: 10px !important;
-                    background: #f8f9fa !important;
-                    border-top: 1px solid #e9ecef !important;
+                    background: #f8f9fa !importantborder-top: 1px solid #e9ecef !important;
                 }
 
                 .typing-indicator {
@@ -1272,6 +1271,14 @@
                 this.detectAndSetLanguage(message);
                 this.languageDetected = true;
             }
+
+            // Check if user is new and show registration form
+            if (this.shouldShowRegistrationForm()) {
+                this.showRegistrationForm();
+            }
+
+            // Add registration form trigger
+            this.addRegistrationFormTrigger();
 
             // Check if this is the first user message and we need agent handoff
             const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
@@ -1666,6 +1673,47 @@
             }));
 
             console.log('✅ Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
+        },
+
+        shouldShowRegistrationForm: function() {
+            // Check if user is already registered
+            const currentUser = localStorage.getItem('chatbot-current-user');
+            return !currentUser;
+        },
+
+        addRegistrationFormTrigger: function() {
+            // Add registration option to chat
+            const self = this;
+
+            // Check for registration keywords in messages
+            const originalAddMessage = this.addMessage;
+            this.addMessage = function(message, type) {
+                originalAddMessage.call(this, message, type);
+
+                // If user asks about registration or account
+                if (type === 'user' && message.toLowerCase().includes('register')) {
+                    setTimeout(() => {
+                        self.triggerRegistrationForm();
+                    }, 1000);
+                }
+            };
+        },
+
+        triggerRegistrationForm: function() {
+            if (window.ChatbotRegistrationForm) {
+                window.ChatbotRegistrationForm.showRegistrationForm();
+            }
+        },
+
+        showRegistrationForm: function() {
+            // Show registration form
+            if (window.ChatbotRegistrationForm) {
+                window.ChatbotRegistrationForm.showRegistrationForm();
+            } else {
+                // Fallback: show simple registration message
+                this.addMessage('Welcome! To get started, I\'ll need some basic information. Would you like to register now?', 'assistant');
+                this.addMessage('Type "register" to begin registration', 'assistant');
+            }
         },
     };
 })();
