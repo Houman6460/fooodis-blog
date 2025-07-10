@@ -35,8 +35,12 @@
             const formOverlay = this.createFormOverlay();
             chatbotWindow.appendChild(formOverlay);
 
-            // Show first step
-            this.showStep(1);
+            // Initialize language switching after DOM is ready
+            setTimeout(() => {
+                // Set initial language state
+                this.switchLanguage('swedish');
+                console.log('🔐 Registration form shown and language switching initialized');
+            }, 100);
         },
 
         // Create form HTML structure
@@ -58,13 +62,13 @@
 
                     <form class="registration-form" id="registrationForm">
                         <div class="form-group">
-                            <label for="userName" class="field-label" data-en="Your Name" data-sv="Houman">Houman</label>
-                            <input type="text" id="userName" name="userName" placeholder="info@logoland.se" required>
+                            <label for="userName" class="field-label" data-en="Your Name" data-sv="Ditt namn">Ditt namn</label>
+                            <input type="text" id="userName" name="userName" placeholder="Ange ditt namn" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="userPhone" class="field-label" data-en="Your Phone" data-sv="">Phone</label>
-                            <input type="tel" id="userPhone" name="userPhone" placeholder="7-987870" required>
+                            <label for="userPhone" class="field-label" data-en="Your Phone" data-sv="Din telefon">Din telefon</label>
+                            <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" required>
                         </div>
 
                         <div class="form-group">
@@ -155,56 +159,94 @@
 
         // Set up language switching functionality
         setupLanguageSwitching: function() {
-            const langTabs = document.querySelectorAll('.lang-tab');
-            const self = this;
+            // Use event delegation to handle dynamically created language tabs
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('lang-tab')) {
+                    // Remove active class from all tabs within the same form
+                    const formContainer = e.target.closest('.registration-container');
+                    if (formContainer) {
+                        const allTabs = formContainer.querySelectorAll('.lang-tab');
+                        allTabs.forEach(tab => tab.classList.remove('active'));
+                        
+                        // Add active class to clicked tab
+                        e.target.classList.add('active');
 
-            langTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    langTabs.forEach(t => t.classList.remove('active'));
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-
-                    // Get selected language
-                    const selectedLang = this.getAttribute('data-lang');
-                    self.switchLanguage(selectedLang);
-                });
+                        // Get selected language
+                        const selectedLang = e.target.getAttribute('data-lang');
+                        this.switchLanguage(selectedLang);
+                    }
+                }
             });
         },
 
         // Switch form language
         switchLanguage: function(language) {
-            const elements = document.querySelectorAll('[data-en][data-sv]');
+            console.log('🌐 Switching language to:', language);
+            
+            // Find elements within the registration form only
+            const registrationContainer = document.querySelector('.registration-container');
+            if (!registrationContainer) {
+                console.warn('Registration container not found');
+                return;
+            }
+
+            const elements = registrationContainer.querySelectorAll('[data-en][data-sv]');
 
             elements.forEach(element => {
                 if (language === 'english') {
-                    element.textContent = element.getAttribute('data-en');
+                    const englishText = element.getAttribute('data-en');
+                    if (englishText) {
+                        element.textContent = englishText;
+                    }
                 } else if (language === 'swedish') {
-                    element.textContent = element.getAttribute('data-sv');
+                    const swedishText = element.getAttribute('data-sv');
+                    if (swedishText) {
+                        element.textContent = swedishText;
+                    }
                 }
             });
 
-            // Update select options
-            const selectOptions = document.querySelectorAll('#systemUsage option[data-en][data-sv]');
+            // Update select options within the form
+            const selectOptions = registrationContainer.querySelectorAll('#systemUsage option[data-en][data-sv]');
             selectOptions.forEach(option => {
                 if (language === 'english') {
-                    option.textContent = option.getAttribute('data-en');
+                    const englishText = option.getAttribute('data-en');
+                    if (englishText) {
+                        option.textContent = englishText;
+                    }
                 } else if (language === 'swedish') {
-                    option.textContent = option.getAttribute('data-sv');
+                    const swedishText = option.getAttribute('data-sv');
+                    if (swedishText) {
+                        option.textContent = swedishText;
+                    }
                 }
             });
 
             // Update placeholders
-            const nameInput = document.getElementById('userName');
-            const phoneInput = document.getElementById('userPhone');
+            const nameInput = registrationContainer.querySelector('#userName');
+            const phoneInput = registrationContainer.querySelector('#userPhone');
 
             if (language === 'english') {
-                if (nameInput) nameInput.placeholder = 'info@logoland.se';
-                if (phoneInput) phoneInput.placeholder = '0978980709';
+                if (nameInput) {
+                    nameInput.placeholder = 'Enter your name';
+                    nameInput.previousElementSibling.textContent = 'Your Name';
+                }
+                if (phoneInput) {
+                    phoneInput.placeholder = '+46 70 123 45 67';
+                    phoneInput.previousElementSibling.textContent = 'Your Phone';
+                }
             } else if (language === 'swedish') {
-                if (nameInput) nameInput.placeholder = 'info@logoland.se';
-                if (phoneInput) phoneInput.placeholder = '7-987870';
+                if (nameInput) {
+                    nameInput.placeholder = 'Ange ditt namn';
+                    nameInput.previousElementSibling.textContent = 'Ditt namn';
+                }
+                if (phoneInput) {
+                    phoneInput.placeholder = '+46 70 123 45 67';
+                    phoneInput.previousElementSibling.textContent = 'Din telefon';
+                }
             }
+
+            console.log('✅ Language switched successfully to:', language);
         },
 
         // Set up form submission
