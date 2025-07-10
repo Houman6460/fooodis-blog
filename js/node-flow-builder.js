@@ -739,7 +739,7 @@ class NodeFlowBuilder {
         connectionsContainer.innerHTML = '';
         document.querySelectorAll('.disconnect-btn').forEach(btn => btn.remove());
 
-        // Create main SVG container with proper scaling
+        // Create main SVG container that follows canvas transformations
         const mainSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         mainSvg.setAttribute('id', 'main-connections-svg');
         mainSvg.style.position = 'absolute';
@@ -749,12 +749,7 @@ class NodeFlowBuilder {
         mainSvg.style.height = '100%';
         mainSvg.style.pointerEvents = 'none';
         mainSvg.style.zIndex = '1';
-        
-        // Set viewBox for proper scaling
-        const canvasWidth = 4000;
-        const canvasHeight = 4000;
-        mainSvg.setAttribute('viewBox', `0 0 ${canvasWidth} ${canvasHeight}`);
-        mainSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        mainSvg.style.overflow = 'visible';
 
         connectionsContainer.appendChild(mainSvg);
 
@@ -776,8 +771,8 @@ class NodeFlowBuilder {
 
         if (!fromNode || !toNode) return null;
 
-        // Calculate connection points (adjusted for zoom-independent coordinates)
-        const fromX = fromNode.position.x + 150; // Node width (output point)
+        // Calculate connection points using node positions directly
+        const fromX = fromNode.position.x + 200; // Node width (output point)
         const fromY = fromNode.position.y + 50;  // Node height center
         const toX = toNode.position.x;           // Input point (left side)
         const toY = toNode.position.y + 50;      // Node height center
@@ -857,7 +852,7 @@ class NodeFlowBuilder {
             }
 
             // Calculate precise connection points (same as in createConnectionPath)
-            const startX = fromNode.position.x + 150; // Output connection point
+            const startX = fromNode.position.x + 200; // Output connection point
             const startY = fromNode.position.y + 50;  // Node center height
             const endX = toNode.position.x;           // Input connection point
             const endY = toNode.position.y + 50;      // Node center height
@@ -874,17 +869,12 @@ class NodeFlowBuilder {
             btn.innerHTML = '×';
             btn.dataset.connectionId = connection.id;
 
-            // Fixed button size that doesn't scale with zoom for consistent appearance
-            const buttonSize = 20;
-            const fontSize = 14;
-            const borderWidth = 2;
-
-            // Apply styles with proper positioning
+            // Apply styles with proper positioning that follows canvas transformations
             btn.style.position = 'absolute';
             btn.style.left = midX + 'px';
             btn.style.top = midY + 'px';
-            btn.style.width = buttonSize + 'px';
-            btn.style.height = buttonSize + 'px';
+            btn.style.width = '20px';
+            btn.style.height = '20px';
             btn.style.backgroundColor = '#ff4757';
             btn.style.color = 'white';
             btn.style.borderRadius = '50%';
@@ -892,11 +882,11 @@ class NodeFlowBuilder {
             btn.style.alignItems = 'center';
             btn.style.justifyContent = 'center';
             btn.style.cursor = 'pointer';
-            btn.style.fontSize = fontSize + 'px';
+            btn.style.fontSize = '14px';
             btn.style.fontWeight = 'bold';
-            btn.style.zIndex = '10000';
+            btn.style.zIndex = '1000';
             btn.style.transform = 'translate(-50%, -50%)';
-            btn.style.border = borderWidth + 'px solid white';
+            btn.style.border = '2px solid white';
             btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
             btn.style.pointerEvents = 'auto';
             btn.style.transition = 'all 0.2s ease';
@@ -904,7 +894,7 @@ class NodeFlowBuilder {
             // Add hover effect
             btn.addEventListener('mouseenter', () => {
                 btn.style.backgroundColor = '#ff3742';
-                btn.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                btn.style.transform = 'translate(-50%, -50%) scale(1.2)';
             });
 
             btn.addEventListener('mouseleave', () => {
@@ -920,17 +910,11 @@ class NodeFlowBuilder {
                 this.removeConnection(connection.id);
             };
 
-            // Add to the flow-nodes container so it scales with the transform
+            // Add to the flow-nodes container so it follows canvas transformations
             const nodesContainer = document.getElementById('flow-nodes');
             if (nodesContainer) {
                 nodesContainer.appendChild(btn);
                 console.log('Added disconnect button to nodes container for connection:', connection.id);
-            } else {
-                // Fallback to canvas
-                if (this.canvas) {
-                    this.canvas.appendChild(btn);
-                    console.log('Added disconnect button to canvas for connection:', connection.id);
-                }
             }
         });
     }
@@ -2277,7 +2261,6 @@ class NodeFlowBuilder {
     updateCanvasTransform() {
         const nodesContainer = document.getElementById('flow-nodes');
         const connectionsContainer = document.getElementById('flow-connections');
-        const mainSvg = document.getElementById('main-connections-svg');
         
         const transform = `translate(${this.panOffset.x}px, ${this.panOffset.y}px) scale(${this.zoom})`;
         
@@ -2288,17 +2271,11 @@ class NodeFlowBuilder {
             connectionsContainer.style.transform = transform;
         }
         
-        // Update SVG viewBox for proper scaling of connections
-        if (mainSvg) {
-            const canvasWidth = 4000 / this.zoom;
-            const canvasHeight = 4000 / this.zoom;
-            const offsetX = -this.panOffset.x / this.zoom;
-            const offsetY = -this.panOffset.y / this.zoom;
-            mainSvg.setAttribute('viewBox', `${offsetX} ${offsetY} ${canvasWidth} ${canvasHeight}`);
+        // Update zoom level display
+        const zoomLevel = document.querySelector('.canvas-zoom-level');
+        if (zoomLevel) {
+            zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
         }
-        
-        // Update disconnect button positions and sizes when zoom changes
-        this.updateDisconnectButtonScaling();
     }
 
     handleCanvasMouseDown(e) {

@@ -12,25 +12,25 @@
 
 /* Disconnect Button Alignment */
 .disconnect-btn {
-    position: absolute !important;
-    width: 20px !important;
-    height: 20px !important;
-    background-color: #ff4757 !important;
-    color: white !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
-    z-index: 10000 !important;
-    transform: translate(-50%, -50%) !important;
-    border: 2px solid white !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
-    pointer-events: auto !important;
-    transition: all 0.2s ease !important;
-    user-select: none !important;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #ff4757;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    pointer-events: auto;
+    transition: all 0.2s ease;
+    user-select: none;
 }
 
 /* Test Flow Modal Styles */
@@ -387,6 +387,11 @@
     height: 100%;
     pointer-events: none;
     z-index: 1;
+    overflow: visible;
+}
+
+#main-connections-svg {
+    overflow: visible;
 }
 
 .connection-line {
