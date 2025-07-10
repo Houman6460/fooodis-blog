@@ -891,15 +891,17 @@ class NodeFlowBuilder {
             btn.style.pointerEvents = 'auto';
             btn.style.transition = 'all 0.2s ease';
 
-            // Add hover effect
+            // Add hover effect with proper zoom scaling
             btn.addEventListener('mouseenter', () => {
                 btn.style.backgroundColor = '#ff3742';
-                btn.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                const counterScale = 1 / this.zoom;
+                btn.style.transform = `translate(-50%, -50%) scale(${counterScale * 1.2})`;
             });
 
             btn.addEventListener('mouseleave', () => {
                 btn.style.backgroundColor = '#ff4757';
-                btn.style.transform = 'translate(-50%, -50%) scale(1)';
+                const counterScale = 1 / this.zoom;
+                btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
             });
 
             // Add click handler
@@ -2271,6 +2273,9 @@ class NodeFlowBuilder {
             connectionsContainer.style.transform = transform;
         }
         
+        // Update disconnect button scaling to maintain visual size
+        this.updateDisconnectButtonScaling();
+        
         // Update zoom level display
         const zoomLevel = document.querySelector('.canvas-zoom-level');
         if (zoomLevel) {
@@ -2292,11 +2297,13 @@ class NodeFlowBuilder {
     }
 
     updateDisconnectButtonScaling() {
-        // Remove this function's scaling behavior as buttons now maintain fixed size
-        // The buttons will maintain their original size regardless of zoom for better visibility
         const disconnectButtons = document.querySelectorAll('.disconnect-btn');
         disconnectButtons.forEach(btn => {
-            // Keep buttons at consistent size for better usability
+            // Counter-scale the buttons to maintain visual size at all zoom levels
+            const counterScale = 1 / this.zoom;
+            btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
+            
+            // Maintain consistent visual size
             btn.style.width = '20px';
             btn.style.height = '20px';
             btn.style.fontSize = '14px';
