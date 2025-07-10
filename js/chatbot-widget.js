@@ -1693,10 +1693,24 @@
                 originalAddMessage.call(this, message, type);
 
                 // If user asks about registration or account
-                if (type === 'user' && message.toLowerCase().includes('register')) {
+                if (type === 'user' && (
+                    message.toLowerCase().includes('register') || 
+                    message.toLowerCase().includes('form') ||
+                    message.toLowerCase().includes('information')
+                )) {
                     setTimeout(() => {
                         self.triggerRegistrationForm();
                     }, 1000);
+                }
+            };
+
+            // Add console command for manual testing
+            window.showChatbotForm = function() {
+                console.log('🧪 Manual form trigger activated');
+                if (window.ChatbotRegistrationForm) {
+                    window.ChatbotRegistrationForm.showRegistrationForm();
+                } else {
+                    console.warn('Registration form not available');
                 }
             };
         },
@@ -1708,9 +1722,15 @@
         },
 
         showRegistrationForm: function() {
-            // Show registration form
-            if (window.ChatbotRegistrationForm) {
-                window.ChatbotRegistrationForm.showRegistrationForm();
+            // Show registration form safely
+            if (window.ChatbotRegistrationForm && typeof window.ChatbotRegistrationForm.showRegistrationForm === 'function') {
+                // Check if form should be shown
+                if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+                    window.ChatbotRegistrationForm.showRegistrationForm();
+                    console.log('✅ Registration form displayed safely');
+                } else {
+                    console.log('🔒 Registration form skipped - user already registered');
+                }
             } else {
                 // Fallback: show simple registration message
                 this.addMessage('Welcome! To get started, I\'ll need some basic information. Would you like to register now?', 'assistant');

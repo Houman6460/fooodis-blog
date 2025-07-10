@@ -21,6 +21,26 @@
             this.initialized = true;
         },
 
+        shouldShowRegistrationForm: function() {
+            // Check if user is already registered or has skipped registration
+            const currentUser = localStorage.getItem('chatbot-current-user');
+            if (!currentUser) return true;
+
+            try {
+                const userData = JSON.parse(currentUser);
+                // Only show form again if user skipped and it's been more than 24 hours
+                if (userData.skipped) {
+                    const skipTime = new Date(userData.timestamp);
+                    const now = new Date();
+                    const hoursPassed = (now - skipTime) / (1000 * 60 * 60);
+                    return hoursPassed > 24; // Ask again after 24 hours if skipped
+                }
+                return false; // User has filled out form
+            } catch (error) {
+                return true; // If data is corrupted, show form
+            }
+        },
+
         // Show registration form when needed
         showRegistrationForm: function() {
             const chatbotWidget = document.querySelector('#fooodis-chatbot');
@@ -172,7 +192,7 @@
                     if (formContainer) {
                         const allTabs = formContainer.querySelectorAll('.lang-tab');
                         allTabs.forEach(tab => tab.classList.remove('active'));
-                        
+
                         // Add active class to clicked tab
                         e.target.classList.add('active');
 
@@ -225,7 +245,7 @@
         // Switch form language with complete isolation
         switchLanguage: function(language) {
             console.log('🌐 Switching language to:', language);
-            
+
             // Find elements within the registration form only
             const registrationContainer = document.querySelector('.registration-container');
             if (!registrationContainer) {
@@ -240,7 +260,7 @@
             // Update all text content with complete language isolation
             const formTitle = registrationContainer.querySelector('.form-title');
             const formSubtitle = registrationContainer.querySelector('.form-subtitle');
-            
+
             if (formTitle) formTitle.textContent = translations.title;
             if (formSubtitle) formSubtitle.textContent = translations.subtitle;
 
@@ -255,7 +275,7 @@
             const nameInput = registrationContainer.querySelector('#userName');
             const restaurantInput = registrationContainer.querySelector('#restaurantName');
             const phoneInput = registrationContainer.querySelector('#userPhone');
-            
+
             if (nameInput) nameInput.placeholder = translations.namePlaceholder;
             if (restaurantInput) restaurantInput.placeholder = translations.restaurantPlaceholder;
             if (phoneInput) phoneInput.placeholder = translations.phonePlaceholder;
@@ -270,7 +290,7 @@
             // Update buttons
             const skipBtn = registrationContainer.querySelector('.skip-btn');
             const submitBtn = registrationContainer.querySelector('.submit-btn');
-            
+
             if (skipBtn) skipBtn.textContent = translations.skipButton;
             if (submitBtn) submitBtn.textContent = translations.submitButton;
 
@@ -340,7 +360,7 @@
         saveToUserLeads: function(formData) {
             try {
                 const existingLeads = JSON.parse(localStorage.getItem('user-leads') || '[]');
-                
+
                 // Check if lead already exists (by phone or name+restaurant)
                 const existingLead = existingLeads.find(lead => 
                     lead.phone === formData.phone || 
@@ -355,17 +375,17 @@
                         source: 'chatbot_registration',
                         status: 'new'
                     };
-                    
+
                     existingLeads.push(leadData);
                     localStorage.setItem('user-leads', JSON.stringify(existingLeads));
-                    
+
                     console.log('💼 New lead saved:', leadData.name);
                 } else {
                     // Update existing lead with conversation ID
                     existingLead.conversationId = formData.conversationId;
                     existingLead.lastContact = formData.timestamp;
                     localStorage.setItem('user-leads', JSON.stringify(existingLeads));
-                    
+
                     console.log('💼 Existing lead updated:', existingLead.name);
                 }
             } catch (error) {
@@ -402,7 +422,7 @@
                     const latestAnonymous = recentConversations.find(conv => 
                         !conv.userName || conv.userName === 'Anonymous User'
                     );
-                    
+
                     if (latestAnonymous) {
                         latestAnonymous.userName = formData.name;
                         latestAnonymous.restaurantName = formData.restaurantName;
@@ -644,6 +664,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             window.ChatbotRegistrationForm.init();
+
+             // Show the registration form if needed, after a delay
+             if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+                setTimeout(() => {
+                    window.ChatbotRegistrationForm.showRegistrationForm();
+                }, 1500); // Delay showing form
+            }
         }, 100);
     });
 
