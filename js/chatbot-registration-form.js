@@ -1,16 +1,16 @@
 /**
  * 🔐 CHATBOT REGISTRATION FORM SYSTEM
- * Safe registration form integration for the chatbot
+ * Complete bilingual registration form with proper language switching
  */
-
+```
+```javascript
 (function() {
     'use strict';
 
     window.ChatbotRegistrationForm = {
         initialized: false,
         formData: {},
-        currentStep: 1,
-        totalSteps: 3,
+        currentLanguage: 'english',
 
         init: function() {
             if (this.initialized) return;
@@ -55,25 +55,14 @@
             const formOverlay = this.createFormOverlay();
             chatbotWindow.appendChild(formOverlay);
 
-            // Initialize language switching immediately
-            this.switchLanguage('english');
-            
-            // Ensure English tab is active initially
-            const englishTab = formOverlay.querySelector('.lang-tab[data-lang="english"]');
-            if (englishTab) {
-                englishTab.classList.add('active');
-            }
-            
-            // Remove active class from svenska tab initially
-            const svenskaTab = formOverlay.querySelector('.lang-tab[data-lang="svenska"]');
-            if (svenskaTab) {
-                svenskaTab.classList.remove('active');
-            }
-            
-            console.log('🔐 Registration form shown and language switching initialized');
+            // Set initial language to English
+            this.currentLanguage = 'english';
+            this.updateFormLanguage();
+
+            console.log('🔐 Registration form shown with bilingual support');
         },
 
-        // Create form HTML structure
+        // Create complete form HTML structure with both languages
         createFormOverlay: function() {
             const overlay = document.createElement('div');
             overlay.className = 'registration-overlay';
@@ -127,110 +116,47 @@
             return overlay;
         },
 
-        // Show specific step
-        showStep: function(stepNumber) {
-            //No steps anymore
-        },
-
         setupEventListeners: function() {
-             this.setupLanguageSwitching();
-             this.setupFormSubmission();
+            // Use event delegation for all form interactions
+            document.addEventListener('click', this.handleClick.bind(this));
+            document.addEventListener('submit', this.handleSubmit.bind(this));
+        },
 
-            // Use event delegation for dynamically created elements
-            document.addEventListener('click', (e) => {
-                if (e.target.id === 'next-step') {
-                    this.nextStep();
-                } else if (e.target.id === 'prev-step') {
-                    this.prevStep();
-                } else if (e.target.id === 'submit-registration') {
-                    this.submitRegistration();
-                } else if (e.target.id === 'cancel-registration') {
-                    this.cancelRegistration();
+        handleClick: function(e) {
+            // Language tab switching
+            if (e.target.classList.contains('lang-tab')) {
+                e.preventDefault();
+                const selectedLang = e.target.getAttribute('data-lang');
+                console.log('🌐 Language tab clicked:', selectedLang);
+
+                // Update active tab
+                const formContainer = e.target.closest('.registration-container');
+                if (formContainer) {
+                    const allTabs = formContainer.querySelectorAll('.lang-tab');
+                    allTabs.forEach(tab => tab.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    // Switch language
+                    this.currentLanguage = selectedLang;
+                    this.updateFormLanguage();
                 }
-            });
-        },
+            }
 
-        nextStep: function() {
-           //No steps anymore
-        },
-
-        prevStep: function() {
-            //No steps anymore
-        },
-
-        validateCurrentStep: function() {
-            return true; //No steps anymore
-        },
-
-        saveCurrentStepData: function() {
-             //No steps anymore
-        },
-
-        submitRegistration: function() {
-            //No steps anymore
-        },
-
-        processRegistration: function() {
-             //No steps anymore
-        },
-
-        sendToServer: function(userData) {
-             //No steps anymore
-        },
-
-        showSuccess: function() {
-             //No steps anymore
-        },
-
-        showError: function(message) {
-             //No steps anymore
-        },
-
-        cancelRegistration: function() {
-            if (confirm('Are you sure you want to cancel registration?')) {
-                this.closeForm();
+            // Skip button
+            if (e.target.classList.contains('skip-btn')) {
+                e.preventDefault();
+                this.skipForm();
             }
         },
 
-        // Set up language switching functionality
-        setupLanguageSwitching: function() {
-            const self = this;
-            // Use event delegation to handle dynamically created language tabs
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('lang-tab')) {
-                    console.log('🔍 Language tab clicked:', e.target.textContent, 'data-lang:', e.target.getAttribute('data-lang'));
-                    
-                    // Remove active class from all tabs within the same form
-                    const formContainer = e.target.closest('.registration-container');
-                    if (formContainer) {
-                        const allTabs = formContainer.querySelectorAll('.lang-tab');
-                        allTabs.forEach(tab => {
-                            tab.classList.remove('active');
-                            console.log('🔄 Removed active from:', tab.textContent);
-                        });
-
-                        // Add active class to clicked tab
-                        e.target.classList.add('active');
-                        console.log('✅ Added active to:', e.target.textContent);
-
-                        // Get selected language and handle both formats
-                        const selectedLang = e.target.getAttribute('data-lang');
-                        console.log('🌐 Tab clicked, language:', selectedLang);
-                        
-                        // Direct language switching without complex mapping
-                        if (selectedLang === 'svenska') {
-                            console.log('🇸🇪 Switching to Svenska');
-                            self.switchLanguage('svenska');
-                        } else {
-                            console.log('🇬🇧 Switching to English');
-                            self.switchLanguage('english');
-                        }
-                    }
-                }
-            });
+        handleSubmit: function(e) {
+            if (e.target.id === 'registrationForm') {
+                e.preventDefault();
+                this.submitForm();
+            }
         },
 
-        // Complete translation data structure
+        // Complete translation data
         translations: {
             english: {
                 title: "Let's Get Started!",
@@ -242,10 +168,10 @@
                 phoneLabel: "Phone Number",
                 phonePlaceholder: "+46 70 123 45 67",
                 systemLabel: "Current delivery system",
-                selectPlaceholder: "Please select",
-                usingFooodis: "Using Fooodis",
-                usingOther: "Using another system",
-                lookingForSolution: "Looking for solution",
+                selectOption: "Please select",
+                optionFooodis: "Using Fooodis",
+                optionOther: "Using another system",
+                optionLooking: "Looking for solution",
                 skipButton: "Skip",
                 submitButton: "Submit"
             },
@@ -259,154 +185,76 @@
                 phoneLabel: "Telefonnummer",
                 phonePlaceholder: "+46 70 123 45 67",
                 systemLabel: "Nuvarande leveranssystem",
-                selectPlaceholder: "Vänligen välj",
-                usingFooodis: "Använder Fooodis",
-                usingOther: "Använder annat system",
-                lookingForSolution: "Söker lösning",
+                selectOption: "Vänligen välj",
+                optionFooodis: "Använder Fooodis",
+                optionOther: "Använder annat system",
+                optionLooking: "Söker lösning",
                 skipButton: "Hoppa över",
                 submitButton: "Skicka"
             }
         },
 
-        // Switch form language with complete isolation
-        switchLanguage: function(language) {
-            console.log('🌐 Switching language to:', language);
+        // Update form language with proper element targeting
+        updateFormLanguage: function() {
+            const lang = this.currentLanguage;
+            const translations = this.translations[lang];
 
-            // Find elements within the registration form only
-            const registrationContainer = document.querySelector('.registration-container');
-            if (!registrationContainer) {
-                console.warn('Registration container not found');
-                return;
-            }
-
-            // Get the correct translations - now using the exact key names
-            const translations = this.translations[language];
-            
             if (!translations) {
-                console.error('❌ No translations found for language:', language);
+                console.error('❌ No translations found for language:', lang);
                 return;
             }
 
-            console.log('🔄 Applying translations for:', language, translations);
+            console.log('🌐 Updating form language to:', lang);
 
-            // Update tab active states
-            const allTabs = registrationContainer.querySelectorAll('.lang-tab');
-            allTabs.forEach(tab => {
-                const tabLang = tab.getAttribute('data-lang');
-                if (tabLang === language) {
-                    tab.classList.add('active');
-                    console.log('✅ Tab activated:', tab.textContent);
-                } else {
-                    tab.classList.remove('active');
-                }
-            });
+            // Find the registration container
+            const container = document.querySelector('.registration-container');
+            if (!container) return;
 
-            // Update form title and subtitle
-            const formTitle = registrationContainer.querySelector('.form-title');
-            const formSubtitle = registrationContainer.querySelector('.form-subtitle');
-            
-            if (formTitle) {
-                formTitle.textContent = translations.title;
-                console.log('📝 Updated form title to:', translations.title);
-            }
-            
-            if (formSubtitle) {
-                formSubtitle.textContent = translations.subtitle;
-                console.log('📝 Updated form subtitle to:', translations.subtitle);
-            }
+            // Update title and subtitle
+            const title = container.querySelector('.form-title');
+            const subtitle = container.querySelector('.form-subtitle');
 
-            // Update form labels by targeting the specific input's label
-            const nameLabel = registrationContainer.querySelector('label[for="userName"]');
-            const restaurantLabel = registrationContainer.querySelector('label[for="restaurantName"]');
-            const phoneLabel = registrationContainer.querySelector('label[for="userPhone"]');
-            const systemLabel = registrationContainer.querySelector('label[for="systemUsage"]');
-            
-            if (nameLabel) {
-                nameLabel.textContent = translations.nameLabel;
-                console.log('📝 Updated name label to:', translations.nameLabel);
-            }
-            
-            if (restaurantLabel) {
-                restaurantLabel.textContent = translations.restaurantLabel;
-                console.log('📝 Updated restaurant label to:', translations.restaurantLabel);
-            }
-            
-            if (phoneLabel) {
-                phoneLabel.textContent = translations.phoneLabel;
-                console.log('📝 Updated phone label to:', translations.phoneLabel);
-            }
-            
-            if (systemLabel) {
-                systemLabel.textContent = translations.systemLabel;
-                console.log('📝 Updated system label to:', translations.systemLabel);
+            if (title) title.textContent = translations.title;
+            if (subtitle) subtitle.textContent = translations.subtitle;
+
+            // Update labels
+            const nameLabel = container.querySelector('label[for="userName"]');
+            const restaurantLabel = container.querySelector('label[for="restaurantName"]');
+            const phoneLabel = container.querySelector('label[for="userPhone"]');
+            const systemLabel = container.querySelector('label[for="systemUsage"]');
+
+            if (nameLabel) nameLabel.textContent = translations.nameLabel;
+            if (restaurantLabel) restaurantLabel.textContent = translations.restaurantLabel;
+            if (phoneLabel) phoneLabel.textContent = translations.phoneLabel;
+            if (systemLabel) systemLabel.textContent = translations.systemLabel;
+
+            // Update input placeholders
+            const nameInput = container.querySelector('#userName');
+            const restaurantInput = container.querySelector('#restaurantName');
+            const phoneInput = container.querySelector('#userPhone');
+
+            if (nameInput) nameInput.placeholder = translations.namePlaceholder;
+            if (restaurantInput) restaurantInput.placeholder = translations.restaurantPlaceholder;
+            if (phoneInput) phoneInput.placeholder = translations.phonePlaceholder;
+
+            // Update select dropdown options
+            const systemSelect = container.querySelector('#systemUsage');
+            if (systemSelect) {
+                const options = systemSelect.querySelectorAll('option');
+                if (options[0]) options[0].textContent = translations.selectOption;
+                if (options[1]) options[1].textContent = translations.optionFooodis;
+                if (options[2]) options[2].textContent = translations.optionOther;
+                if (options[3]) options[3].textContent = translations.optionLooking;
             }
 
             // Update buttons
-            const skipBtn = registrationContainer.querySelector('.skip-btn');
-            const submitBtn = registrationContainer.querySelector('.submit-btn');
-            
-            if (skipBtn) {
-                skipBtn.textContent = translations.skipButton;
-                console.log('📝 Updated skip button to:', translations.skipButton);
-            }
-            
-            if (submitBtn) {
-                submitBtn.textContent = translations.submitButton;
-                console.log('📝 Updated submit button to:', translations.submitButton);
-            }
+            const skipBtn = container.querySelector('.skip-btn');
+            const submitBtn = container.querySelector('.submit-btn');
 
-            // Update input placeholders
-            const inputs = {
-                '#userName': translations.namePlaceholder,
-                '#restaurantName': translations.restaurantPlaceholder,
-                '#userPhone': translations.phonePlaceholder
-            };
+            if (skipBtn) skipBtn.textContent = translations.skipButton;
+            if (submitBtn) submitBtn.textContent = translations.submitButton;
 
-            Object.keys(inputs).forEach(selector => {
-                const input = registrationContainer.querySelector(selector);
-                if (input) {
-                    input.placeholder = inputs[selector];
-                    console.log(`📝 Updated ${selector} placeholder to:`, inputs[selector]);
-                }
-            });
-
-            // Update dropdown options
-            const systemSelect = registrationContainer.querySelector('#systemUsage');
-            if (systemSelect) {
-                const options = systemSelect.querySelectorAll('option');
-                const optionTexts = [
-                    translations.selectPlaceholder,
-                    translations.usingFooodis,
-                    translations.usingOther,
-                    translations.lookingForSolution
-                ];
-
-                options.forEach((option, index) => {
-                    if (optionTexts[index]) {
-                        option.textContent = optionTexts[index];
-                        console.log(`📝 Updated option ${index} to:`, optionTexts[index]);
-                    }
-                });
-            }
-
-            console.log('✅ Language switched successfully to:', language);
-        },
-
-        // Set up form submission
-        setupFormSubmission: function() {
-            // Use event delegation to handle dynamically created forms
-            document.addEventListener('submit', (e) => {
-                if (e.target.id === 'registrationForm') {
-                    e.preventDefault();
-                    this.submitForm();
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('skip-btn')) {
-                    this.skipForm();
-                }
-            });
+            console.log('✅ Form language updated successfully to:', lang);
         },
 
         // Submit form data with user identity tracking
@@ -417,6 +265,7 @@
                 phone: document.getElementById('userPhone')?.value || '',
                 systemUsage: document.getElementById('systemUsage')?.value || '',
                 timestamp: new Date().toISOString(),
+                language: this.currentLanguage,
                 conversationId: window.FoodisChatbot?.conversationId || null
             };
 
@@ -448,7 +297,7 @@
                 window.FoodisChatbot.addMessage(welcomeMessage, 'assistant');
             }
 
-            console.log('✅ Form submitted and user identity updated');
+            console.log('✅ Form submitted successfully for user:', formData.name);
         },
 
         // Save to User Leads system
@@ -549,17 +398,23 @@
         // Skip form
         skipForm: function() {
             // Mark user as registered (skipped) to avoid showing form again
-            localStorage.setItem('chatbot-current-user', JSON.stringify({ skipped: true, timestamp: new Date().toISOString() }));
+            localStorage.setItem('chatbot-current-user', JSON.stringify({ 
+                skipped: true, 
+                timestamp: new Date().toISOString() 
+            }));
 
             this.closeForm();
 
             // Send skip message to chat
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
-                window.FoodisChatbot.addMessage('No problem! Feel free to ask me anything about Fooodis.', 'assistant');
+                const skipMessage = this.currentLanguage === 'svenska' ? 
+                    'Inga problem! Fråga mig gärna om Fooodis.' : 
+                    'No problem! Feel free to ask me anything about Fooodis.';
+                window.FoodisChatbot.addMessage(skipMessage, 'assistant');
             }
         },
 
-         saveRegistrationData: function(formData) {
+        saveRegistrationData: function(formData) {
             // Save to localStorage
             try {
                 const existingRegistrations = JSON.parse(localStorage.getItem('chatbot-registrations') || '[]');
@@ -634,6 +489,11 @@
                     transition: all 0.3s ease;
                 }
 
+                .lang-tab:hover {
+                    background: rgba(232, 242, 76, 0.3);
+                    transform: translateY(-1px);
+                }
+
                 .lang-tab.active {
                     background: #e8f24c;
                     color: #000;
@@ -661,12 +521,14 @@
                     font-weight: bold;
                     color: #2c2c2c;
                     margin: 0 0 8px 0;
+                    transition: all 0.3s ease;
                 }
 
                 .form-subtitle {
                     font-size: 16px;
                     color: #6c757d;
                     margin: 0;
+                    transition: all 0.3s ease;
                 }
 
                 .form-group {
@@ -679,6 +541,7 @@
                     color: #2c2c2c;
                     margin-bottom: 6px;
                     font-weight: 500;
+                    transition: all 0.3s ease;
                 }
 
                 .registration-form input,
@@ -707,6 +570,7 @@
                     background-size: 16px;
                     padding-right: 40px;
                     appearance: none;
+                    cursor: pointer;
                 }
 
                 .form-actions {
@@ -751,10 +615,16 @@
                     transform: translateY(-1px);
                 }
 
-                .lang-tab:hover {
-                    background: rgba(232, 242, 76, 0.3);
-                    transform: translateY(-1px);
-                }`;
+                /* Animation for language switching */
+                .form-title, .form-subtitle, .field-label {
+                    transition: opacity 0.2s ease, transform 0.2s ease;
+                }
+
+                .registration-form input::placeholder,
+                .registration-form select option {
+                    transition: all 0.3s ease;
+                }
+            `;
 
             document.head.appendChild(styles);
         }
@@ -765,8 +635,8 @@
         setTimeout(() => {
             window.ChatbotRegistrationForm.init();
 
-             // Show the registration form if needed, after a delay
-             if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+            // Show the registration form if needed, after a delay
+            if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
                 setTimeout(() => {
                     window.ChatbotRegistrationForm.showRegistrationForm();
                 }, 1500); // Delay showing form
