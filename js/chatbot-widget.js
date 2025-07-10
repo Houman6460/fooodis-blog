@@ -1123,7 +1123,7 @@
             this.processMessage(message);
         },
 
-        addMessage: function(content, sender) {
+        addMessage: function(message, sender) {
             const messagesContainer = document.getElementById('chatbot-messages');
             if (!messagesContainer) return;
 
@@ -1715,6 +1715,39 @@
                 // Fallback: show simple registration message
                 this.addMessage('Welcome! To get started, I\'ll need some basic information. Would you like to register now?', 'assistant');
                 this.addMessage('Type "register" to begin registration', 'assistant');
+            }
+        },
+
+        init: function() {
+            if (this.initialized) return;
+
+            console.log('🤖 Initializing Fooodis Chatbot...');
+
+            this.loadSavedData();
+            this.createWidget();
+            this.setupEventListeners();
+            this.loadMessages();
+
+            // Check if registration form should be shown on init
+            setTimeout(() => {
+                this.checkAndShowRegistrationForm();
+            }, 1500);
+
+            this.initialized = true;
+            console.log('✅ Chatbot initialized successfully');
+        },
+
+        // Check if registration form should be shown automatically
+        checkAndShowRegistrationForm: function() {
+            const savedMessages = this.loadMessages();
+            const userMessages = savedMessages.filter(msg => msg.sender === 'user');
+
+            // If user has sent messages but isn't registered, show form
+            if (userMessages.length > 0 && window.ChatbotRegistrationForm) {
+                if (!window.ChatbotRegistrationForm.shouldSkipForm()) {
+                    console.log('🔐 User has messages but not registered, showing form');
+                    this.triggerRegistrationForm();
+                }
             }
         },
     };
