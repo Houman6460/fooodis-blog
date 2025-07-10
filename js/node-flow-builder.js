@@ -14,7 +14,8 @@ class NodeFlowBuilder {
         this.currentLanguage = 'en';
         this.zoom = 1;
         this.panOffset = { x: 0, y: 0 };
-        this.isDragging = false;
+        this.isPanning = false;
+        this.lastPanPoint = { x: 0, y: 0 };
         this.isConnecting = false;
         this.connectionStart = null;
         this.tempConnectionStart = null;
@@ -181,11 +182,14 @@ class NodeFlowBuilder {
             this.updateZoom(delta);
         });
 
-        // Setup node dragging functionality
-        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        // Setup canvas panning functionality
+        this.canvas.addEventListener('mousedown', (e) => this.handleCanvasMouseDown(e));
         document.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
         document.addEventListener('mouseup', (e) => this.handleCanvasMouseUp(e));
         document.addEventListener('click', (e) => this.handleCanvasClick(e));
+
+        // Setup node dragging functionality
+        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
     }
 
     setupToolbar() {
@@ -2023,17 +2027,28 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseMove(e) {
-        if (this.isDragging) {
-            this.panOffset.x = e.clientX;
-            this.panOffset.y = e.clientY;
-            this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
+        // Handle canvas panning
+        if (this.isPanning) {
+            e.preventDefault();
+            const deltaX = e.clientX - this.lastPanPoint.x;
+            const deltaY = e.clientY - this.lastPanPoint.y;
+            
+            this.panOffset.x += deltaX;
+            this.panOffset.y += deltaY;
+            
+            this.updateCanvasTransform();
+            
+            this.lastPanPoint = {
+                x: e.clientX,
+                y: e.clientY
+            };
         }
 
         // Handle node dragging
         if (this.draggedNode) {
             const rect = this.canvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / this.zoom;
-            const y = (e.clientY - rect.top) / this.zoom;
+            const x = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
+            const y = (e.clientY - rect.top - this.panOffset.y) / this.zoom;
 
             this.draggedNode.position.x = x - this.draggedNode.dragOffset.x;
             this.draggedNode.position.y = y - this.draggedNode.dragOffset.y;
@@ -2064,10 +2079,16 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseUp(e) {
-        this.isDragging = false;
+        // Stop panning
+        if (this.isPanning) {
+            this.isPanning = false;
+            this.canvas.style.cursor = 'default';
+        }
+        
+        // Stop node dragging
         if (this.draggedNode) {
             this.draggedNode = null;
-            this.autoSave(); // 🔧 FIX 3: Auto-save when node moved
+            this.autoSave(); // Auto-save when node moved
         }
     }
 
@@ -2164,15 +2185,34 @@ class NodeFlowBuilder {
     updateZoom(delta) {
         this.zoom += delta;
         this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
-        this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
+        this.updateCanvasTransform();
         document.querySelector('.canvas-zoom-level').textContent = `${Math.round(this.zoom * 100)}%`;
     }
 
+    updateCanvasTransform() {
+        const nodesContainer = document.getElementById('flow-nodes');
+        const connectionsContainer = document.getElementById('flow-connections');
+        
+        const transform = `translate(${this.panOffset.x}px, ${this.panOffset.y}px) scale(${this.zoom})`;
+        
+        if (nodesContainer) {
+            nodesContainer.style.transform = transform;
+        }
+        if (connectionsContainer) {
+            connectionsContainer.style.transform = transform;
+        }
+    }
+
     handleCanvasMouseDown(e) {
-        if (e.button === 1) {
-            this.isDragging = true;
-            this.panOffset.x = e.clientX;
-            this.panOffset.y = e.clientY;
+        // Enable panning with left mouse button on empty canvas or middle mouse button
+        if ((e.button === 0 && (e.target === this.canvas || e.target.classList.contains('flow-background') || e.target.classList.contains('flow-grid'))) || e.button === 1) {
+            e.preventDefault();
+            this.isPanning = true;
+            this.lastPanPoint = {
+                x: e.clientX,
+                y: e.clientY
+            };
+            this.canvas.style.cursor = 'grabbing';
         }
     }
 
@@ -2186,7 +2226,8 @@ class NodeFlowBuilder {
 
     resetZoom() {
         this.zoom = 1;
-        this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
+        this.panOffset = { x: 0, y: 0 };
+        this.updateCanvasTransform();
         document.querySelector('.canvas-zoom-level').textContent = `${Math.round(this.zoom * 100)}%`;
     }
 
