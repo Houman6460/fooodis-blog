@@ -413,17 +413,15 @@ class ChatbotManager {
                 console.log('🔄 Identity update details:', {
                     oldUserName,
                     newUserName,
-                    identityData: {
-                        name: identityData.name,
-                        userName: identityData.userName,
-                        email: identityData.email,
-                        userEmail: identityData.userEmail
-                    }
+                    language: identityData.language,
+                    languageCode: identityData.languageCode,
+                    providedFlag: identityData.languageFlag || identityData.displayFlag
                 });
                 
-                // Ensure language flag is properly set
+                // Enhanced language flag mapping with comprehensive detection
                 const flagMap = {
                     'svenska': '🇸🇪',
+                    'swedish': '🇸🇪',
                     'english': '🇺🇸',
                     'sv': '🇸🇪',
                     'en': '🇺🇸',
@@ -431,18 +429,34 @@ class ChatbotManager {
                     'en-US': '🇺🇸'
                 };
                 
-                conversation.languageFlag = identityData.languageFlag || 
-                    identityData.displayFlag || 
-                    flagMap[identityData.language] || 
-                    flagMap[identityData.languageCode] || '🇺🇸';
+                // Determine correct flag with priority order
+                let correctFlag = '🇺🇸'; // Default
                 
-                conversation.displayFlag = conversation.languageFlag;
+                if (identityData.languageFlag && identityData.languageFlag.trim()) {
+                    correctFlag = identityData.languageFlag.trim();
+                } else if (identityData.displayFlag && identityData.displayFlag.trim()) {
+                    correctFlag = identityData.displayFlag.trim();
+                } else if (identityData.language) {
+                    correctFlag = flagMap[identityData.language.toLowerCase()] || '🇺🇸';
+                } else if (identityData.languageCode) {
+                    correctFlag = flagMap[identityData.languageCode.toLowerCase()] || '🇺🇸';
+                }
+                
+                conversation.languageFlag = correctFlag;
+                conversation.displayFlag = correctFlag;
                 conversation.userRegistered = true;
                 conversation.identityLinked = true;
                 conversation.lastUpdated = identityData.timestamp || new Date().toISOString();
                 conversation.previousName = oldUserName;
 
                 console.log(`✅ Updated conversation: ${oldUserName} → ${conversation.userName} (${conversation.languageFlag})`);
+                console.log('🏳️ Flag assignment details:', {
+                    finalFlag: correctFlag,
+                    detectedFrom: identityData.languageFlag ? 'languageFlag' : 
+                                 identityData.displayFlag ? 'displayFlag' :
+                                 identityData.language ? 'language' :
+                                 identityData.languageCode ? 'languageCode' : 'default'
+                });
                 updated = true;
             }
         });
@@ -1207,7 +1221,9 @@ class ChatbotManager {
                 userName: conversation.userName,
                 userEmail: conversation.userEmail,
                 userRegistered: conversation.userRegistered,
-                identityLinked: conversation.identityLinked
+                identityLinked: conversation.identityLinked,
+                language: conversation.language,
+                languageCode: conversation.languageCode
             });
             
             // Priority order: registered name > email > fallback
@@ -1221,28 +1237,41 @@ class ChatbotManager {
                 console.log('⚠️ Using default Anonymous User');
             }
             
-            // Flag display with multiple fallback options
+            // Enhanced flag display with comprehensive language detection
             if (conversation.languageFlag && conversation.languageFlag.trim()) {
                 flagDisplay = conversation.languageFlag.trim();
             } else if (conversation.displayFlag && conversation.displayFlag.trim()) {
                 flagDisplay = conversation.displayFlag.trim();
-            } else if (conversation.language) {
-                // Generate flag from language if missing
+            } else {
+                // Comprehensive flag mapping with multiple language detection methods
                 const flagMap = {
                     'svenska': '🇸🇪',
+                    'swedish': '🇸🇪',
                     'english': '🇺🇸',
                     'sv': '🇸🇪',
                     'en': '🇺🇸',
                     'sv-SE': '🇸🇪',
                     'en-US': '🇺🇸'
                 };
-                flagDisplay = flagMap[conversation.language] || '🇺🇸';
+                
+                // Check multiple language fields
+                const detectedLanguage = conversation.language || 
+                                       conversation.languageCode || 
+                                       conversation.userLanguage ||
+                                       'english';
+                
+                flagDisplay = flagMap[detectedLanguage.toLowerCase()] || '🇺🇸';
                 
                 // Update the conversation object with the generated flag
                 conversation.languageFlag = flagDisplay;
                 conversation.displayFlag = flagDisplay;
-            } else {
-                flagDisplay = '🇺🇸'; // Default to US flag
+                
+                console.log('🏳️ Flag detection:', {
+                    detectedLanguage,
+                    flagDisplay,
+                    originalLanguage: conversation.language,
+                    languageCode: conversation.languageCode
+                });
             }
             
             console.log('🏷️ User display resolved:', { 

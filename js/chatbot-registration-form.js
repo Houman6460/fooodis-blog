@@ -361,6 +361,11 @@
 
                 // Trigger UI updates with comprehensive identity data
                 setTimeout(() => {
+                    // Determine correct language and flag
+                    const isSwedish = formData.language === 'svenska' || formData.language === 'sv' || formData.language === 'swedish';
+                    const languageCode = isSwedish ? 'sv-SE' : 'en-US';
+                    const languageFlag = isSwedish ? '🇸🇪' : '🇺🇸';
+                    
                     const identityUpdateData = {
                         name: formData.name,
                         userName: formData.name, // Ensure both fields have the same value
@@ -375,9 +380,9 @@
                         sessionId: formData.sessionId || window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id'),
                         deviceId: formData.deviceId || localStorage.getItem('chatbot-device-id'),
                         language: formData.language,
-                        languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
-                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
-                        displayFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                        languageCode: languageCode,
+                        languageFlag: languageFlag,
+                        displayFlag: languageFlag,
                         identityLinked: true,
                         userRegistered: true,
                         previousName: 'Anonymous User',
