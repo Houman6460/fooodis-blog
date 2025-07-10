@@ -369,17 +369,23 @@ input:checked + .chatbot-toggle-slider:before {
 
 /* Conversation Cards */
 .conversation-card {
-    background-color: var(--dark-input);
+    background: white;
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 12px;
-    border: 1px solid var(--dark-border);
-    transition: transform 0.2s ease;
+    border-left: 4px solid #e8f24c;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.conversation-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.conversation-card.identified-user {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fff9 100%);
+}
+
+.conversation-card.anonymous-user {
+    border-left-color: #6c757d;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
 
 .conversation-header {
@@ -1126,8 +1132,7 @@ input:checked + .chatbot-toggle-slider:before {
 }
 
 .scenario-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 16px;    font-weight: 600;
     color: var(--dark-text);
     margin: 0;
 }
@@ -1533,3 +1538,32 @@ input:checked + .scenario-slider:before {
                 .message-content * {
                     color: inherit !important;
                 }
+
+.status-badge.registered {
+    background: #28a745;
+    color: white;
+}
+
+.status-badge.anonymous {
+    background: #6c757d;
+    color: white;
+}
+
+.language-flag {
+    display: inline-block;
+    font-size: 14px;
+    margin-left: 8px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.conversation-card:hover .language-flag {
+    opacity: 1;
+}
+
+.restaurant-name {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+    font-style: italic;
+}

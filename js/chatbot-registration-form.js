@@ -361,21 +361,30 @@
 
                 // Trigger UI updates with a delay to ensure all updates are processed
                 setTimeout(() => {
+                    const identityUpdateData = {
+                        name: formData.name,
+                        email: formData.email,
+                        restaurantName: formData.restaurantName,
+                        conversationId: formData.conversationId,
+                        sessionId: formData.sessionId,
+                        deviceId: formData.deviceId,
+                        language: formData.language,
+                        languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                        identityLinked: true,
+                        userRegistered: true,
+                        previousName: 'Anonymous User'
+                    };
+
+                    console.log('🔄 Triggering identity update events with data:', identityUpdateData);
+
                     window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
-                        detail: {
-                            name: formData.name,
-                            email: formData.email,
-                            restaurantName: formData.restaurantName,
-                            conversationId: formData.conversationId,
-                            language: formData.language,
-                            languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
-                            identityLinked: true
-                        }
+                        detail: identityUpdateData
                     }));
 
                     // Trigger conversation list refresh
                     window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
-                        detail: { action: 'update', data: formData }
+                        detail: { action: 'identity_update', data: identityUpdateData }
                     }));
 
                     // Trigger leads list refresh
