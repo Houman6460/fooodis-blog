@@ -209,22 +209,19 @@
 
         // Set up form submission
         setupFormSubmission: function() {
-            const form = document.getElementById('registrationForm');
-            const skipBtn = document.querySelector('.skip-btn');
-            const self = this;
-
-            if (form) {
-                form.addEventListener('submit', function(e) {
+            // Use event delegation to handle dynamically created forms
+            document.addEventListener('submit', (e) => {
+                if (e.target.id === 'registrationForm') {
                     e.preventDefault();
-                    self.submitForm();
-                });
-            }
+                    this.submitForm();
+                }
+            });
 
-            if (skipBtn) {
-                skipBtn.addEventListener('click', function() {
-                    self.skipForm();
-                });
-            }
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('skip-btn')) {
+                    this.skipForm();
+                }
+            });
         },
 
         // Submit form data
@@ -239,22 +236,28 @@
             // Save registration data
             this.saveRegistrationData(formData);
 
+            // Mark user as registered
+            localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
+
             // Close form and continue chat
             this.closeForm();
 
             // Send success message to chat
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
-                window.FoodisChatbot.addMessage('Thank you for providing your information! How can I help you today?', 'bot');
+                window.FoodisChatbot.addMessage('Thank you for providing your information! How can I help you today?', 'assistant');
             }
         },
 
         // Skip form
         skipForm: function() {
+            // Mark user as registered (skipped) to avoid showing form again
+            localStorage.setItem('chatbot-current-user', JSON.stringify({ skipped: true, timestamp: new Date().toISOString() }));
+
             this.closeForm();
 
             // Send skip message to chat
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
-                window.FoodisChatbot.addMessage('No problem! Feel free to ask me anything about Fooodis.', 'bot');
+                window.FoodisChatbot.addMessage('No problem! Feel free to ask me anything about Fooodis.', 'assistant');
             }
         },
 

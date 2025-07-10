@@ -1273,12 +1273,7 @@
                 this.languageDetected = true;
             }
 
-            // Check if user is new and show registration form
-            if (this.shouldShowRegistrationForm()) {
-                this.showRegistrationForm();
-            }
-
-            // Add registration form trigger
+            // Add registration form trigger for manual activation
             this.addRegistrationFormTrigger();
 
             // Check if this is the first user message and we need agent handoff
@@ -1677,7 +1672,7 @@
         },
 
         shouldShowRegistrationForm: function() {
-            // Check if user is already registered
+            // Check if user is already registered or has skipped registration
             const currentUser = localStorage.getItem('chatbot-current-user');
             return !currentUser;
         },
