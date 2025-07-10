@@ -1,72 +1,12 @@
 [
   {
-    "id": "conv_1752154724037_9rq87vjs5",
-    "name": "Hoooman",
+    "id": "conv_1752159387682_dsunw6v3p",
+    "name": "Houman ghavamzadeh",
     "email": "info@logoland.se",
-    "phone": "09766790",
+    "phone": "09876098877",
     "systemUsage": "current_user",
-    "conversationId": "conv_1752154724037_9rq87vjs5",
-    "registeredAt": "2025-07-10T13:39:31.313Z",
-    "source": "chatbot-widget"
-  },
-  {
-    "id": "conv_1752156229335_fyzgosept",
-    "name": "houman",
-    "email": "info@looooglo.se",
-    "phone": "06796706790670",
-    "systemUsage": "current_user",
-    "conversationId": "conv_1752156229335_fyzgosept",
-    "registeredAt": "2025-07-10T14:05:29.295Z",
-    "source": "chatbot-widget"
-  },
-  {
-    "id": "conv_1752156474334_4e5r05no6",
-    "name": "hooooman",
-    "email": "hoooman@gmail.com",
-    "phone": "890798709",
-    "systemUsage": "current_user",
-    "conversationId": "conv_1752156474334_4e5r05no6",
-    "registeredAt": "2025-07-10T14:08:39.004Z",
-    "source": "chatbot-widget"
-  },
-  {
-    "id": "conv_1752156598157_icwqfmlxb",
-    "name": "sgsafgsg",
-    "email": "info@logoland.se",
-    "phone": "097690670",
-    "systemUsage": "current_user",
-    "conversationId": "conv_1752156598157_icwqfmlxb",
-    "registeredAt": "2025-07-10T14:11:08.933Z",
-    "source": "chatbot-widget"
-  },
-  {
-    "id": "conv_1752156936877_qf6kbzzj3",
-    "name": "hhhhhh",
-    "email": "info@logoland.se",
-    "phone": "0790670",
-    "systemUsage": "current_user",
-    "conversationId": "conv_1752156936877_qf6kbzzj3",
-    "registeredAt": "2025-07-10T14:16:33.340Z",
-    "source": "chatbot-widget"
-  },
-  {
-    "id": "conv_1752158254041_84f6h0oie",
-    "name": "sthrerth",
-    "email": "info@logoland.se",
-    "phone": "0706790709",
-    "systemUsage": "current_user",
-    "conversationId": "conv_1752158254041_84f6h0oie",
-    "registeredAt": "2025-07-10T14:38:43.662Z",
-    "source": "chatbot-widget"
-  },
-  {
-    "id": "conv_1752159029774_67fjfuti9",
-    "name": "ergwrgwrg",
-    "email": "info@logoland.se",
-    "phone": "906790670",
-    "systemUsage": "current_user",
-    "conversationId": "conv_1752159029774_67fjfuti9",
-    "registeredAt": "2025-07-10T14:51:08.072Z",
+    "conversationId": "conv_1752159387682_dsunw6v3p",
+    "registeredAt": "2025-07-10T14:57:29.977Z",
     "source": "chatbot-widget"
   }
 ]
