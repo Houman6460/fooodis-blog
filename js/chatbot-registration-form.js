@@ -290,20 +290,6 @@
         },
 
         submitForm: async function() {
-            // Get or generate session/device IDs for conversation matching
-            let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
-            let deviceId = localStorage.getItem('chatbot-device-id');
-            
-            if (!sessionId) {
-                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('chatbot-session-id', sessionId);
-            }
-            
-            if (!deviceId) {
-                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('chatbot-device-id', deviceId);
-            }
-
             const formData = {
                 name: document.getElementById('userName')?.value || '',
                 email: document.getElementById('userEmail')?.value || '',
@@ -311,10 +297,7 @@
                 phone: document.getElementById('userPhone')?.value || '',
                 systemUsage: document.getElementById('systemUsage')?.value || '',
                 timestamp: new Date().toISOString(),
-                language: this.currentLanguage,
-                conversationId: window.FoodisChatbot?.conversationId || null,
-                sessionId: sessionId,
-                deviceId: deviceId
+                language: this.currentLanguage
             };
 
             // Basic email validation
@@ -331,10 +314,6 @@
                 // Save data locally first
                 this.saveRegistrationData(formData);
                 this.saveToUserLeads(formData);
-                this.updateUserIdentity(formData);
-
-                // Send to server API to ensure persistence
-                await this.sendToServerAPI(formData);
 
                 // Update user status
                 localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
@@ -342,28 +321,17 @@
                 localStorage.setItem('fooodis-user-email', formData.email);
                 localStorage.setItem('fooodis-restaurant-name', formData.restaurantName);
 
-                // Update chatbot if available
-                if (window.FoodisChatbot) {
-                    window.FoodisChatbot.userName = formData.name;
-                    window.FoodisChatbot.userEmail = formData.email;
-                    window.FoodisChatbot.restaurantName = formData.restaurantName;
-                    window.FoodisChatbot.userRegistered = true;
-                    window.FoodisChatbot.userLanguage = formData.language;
+                // Set language flag
+                const languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
+                localStorage.setItem('fooodis-language-flag', languageFlag);
 
-                    // Set Swedish language context
-                    if (formData.language === 'svenska') {
-                        window.FoodisChatbot.currentLanguage = 'sv';
-                        window.FoodisChatbot.config = window.FoodisChatbot.config || {};
-                        window.FoodisChatbot.config.language = 'sv-SE';
-                        window.FoodisChatbot.config.preferredAgent = 'swedish-speaking';
-                        localStorage.setItem('fooodis-language', 'swedish');
-                        console.log('🇸🇪 Swedish language context set for user:', formData.name);
-                    }
-                }
+                // IMMEDIATE AND AGGRESSIVE DOM UPDATE
+                console.log('🚀 AGGRESSIVE UPDATE: Starting immediate conversation card update...');
+                this.aggressiveConversationUpdate(formData, languageFlag);
 
+                // Close form and send success message
                 this.closeForm();
 
-                // Send success message in appropriate language
                 if (window.FoodisChatbot?.addMessage) {
                     const message = formData.language === 'svenska' 
                         ? `Tack ${formData.name} från ${formData.restaurantName}! Hur kan jag hjälpa dig idag?`
@@ -371,28 +339,12 @@
                     window.FoodisChatbot.addMessage(message, 'assistant');
                 }
 
-                console.log('✅ Form submitted successfully:', formData.name);
+                // Send to server API (non-blocking)
+                this.sendToServerAPI(formData).catch(error => {
+                    console.warn('Server API warning:', error);
+                });
 
-                // Direct and immediate conversation card update
-                setTimeout(() => {
-                    const languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
-                    
-                    console.log('🌍 Updating conversation cards for:', formData.name, languageFlag);
-                    
-                    // Update stored conversation data first
-                    const updated = this.updateUserIdentity(formData);
-                    
-                    // Then update DOM immediately
-                    this.updateConversationCardsDirectly(formData, languageFlag);
-                    
-                    // Force refresh with delays to ensure persistence
-                    [500, 1000, 2000].forEach((delay, index) => {
-                        setTimeout(() => {
-                            console.log(`🔄 DOM refresh attempt ${index + 1} (${delay}ms)`);
-                            this.updateConversationCardsDirectly(formData, languageFlag);
-                        }, delay);
-                    });
-                }, 100);
+                console.log('✅ Form submitted successfully:', formData.name);
 
             } catch (error) {
                 console.error('❌ Error submitting form:', error);
@@ -561,143 +513,216 @@
             }
         },
 
-        updateUserIdentity: function(formData) {
-            try {
-                console.log('🔄 Updating user identity with data:', formData);
-                
-                // Update chatbot conversations - simplified approach
-                const conversations = JSON.parse(localStorage.getItem('chatbot-conversations') || '[]');
-                let updated = false;
-
-                // Find and update the most recent anonymous conversation
-                const anonymousConversations = conversations.filter(conv => 
-                    conv.userName === 'Anonymous User' || !conv.userName || conv.userName === ''
-                );
-
-                if (anonymousConversations.length > 0) {
-                    // Sort by most recent and update the first one
-                    const mostRecentAnonymous = anonymousConversations.sort((a, b) => {
-                        const timeA = new Date(a.lastMessageAt || a.createdAt || 0);
-                        const timeB = new Date(b.lastMessageAt || b.createdAt || 0);
-                        return timeB - timeA;
-                    })[0];
-
-                    console.log('📍 Updating most recent anonymous conversation:', mostRecentAnonymous.id);
-                    
-                    // Update with user identity
-                    Object.assign(mostRecentAnonymous, {
-                        userName: formData.name,
-                        userEmail: formData.email,
-                        restaurantName: formData.restaurantName,
-                        userPhone: formData.phone,
-                        userType: formData.systemUsage,
-                        systemUsage: formData.systemUsage,
-                        userRegistered: true,
-                        language: formData.language || 'english',
-                        languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
-                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
-                        displayFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
-                        lastUpdated: formData.timestamp,
-                        identityLinked: true,
-                        previousName: 'Anonymous User'
-                    });
-
-                    // Save updated conversations
-                    localStorage.setItem('chatbot-conversations', JSON.stringify(conversations));
-                    localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(conversations));
-                    
-                    updated = true;
-                    console.log(`✅ Updated conversation identity: Anonymous User → ${formData.name}`);
-                }
-
-                // Also update current chatbot instance if available
-                if (window.FoodisChatbot) {
-                    window.FoodisChatbot.userName = formData.name;
-                    window.FoodisChatbot.userEmail = formData.email;
-                    window.FoodisChatbot.restaurantName = formData.restaurantName;
-                    window.FoodisChatbot.userRegistered = true;
-                    window.FoodisChatbot.userLanguage = formData.language;
-                    window.FoodisChatbot.languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
-                    window.FoodisChatbot.displayFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
-
-                    if (formData.language === 'svenska') {
-                        window.FoodisChatbot.currentLanguage = 'sv';
-                        window.FoodisChatbot.config = window.FoodisChatbot.config || {};
-                        window.FoodisChatbot.config.language = 'sv-SE';
-                    }
-                    
-                    console.log('✅ Updated chatbot instance with user identity');
-                }
-
-                return updated;
-
-            } catch (error) {
-                console.error('❌ Error updating user identity:', error);
-                return false;
+        aggressiveConversationUpdate: function(formData, languageFlag) {
+            console.log('🔥 AGGRESSIVE UPDATE: Starting comprehensive conversation update...');
+            
+            // Step 1: Update ALL storage locations
+            this.updateAllStorageLocations(formData, languageFlag);
+            
+            // Step 2: Update DOM immediately and repeatedly
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    this.forceUpdateConversationCards(formData, languageFlag);
+                }, i * 200);
             }
+            
+            // Step 3: Set up persistent monitoring
+            this.setupConversationMonitoring(formData, languageFlag);
         },
 
-        updateConversationCardsDirectly: function(formData, languageFlag) {
-            console.log('🚀 DIRECT DOM UPDATE: Updating conversation cards...');
+        updateAllStorageLocations: function(formData, languageFlag) {
+            console.log('💾 Updating all storage locations...');
             
-            try {
-                // Find all conversation cards in the DOM
-                const conversationCards = document.querySelectorAll('.conversation-card');
-                console.log('🔍 Found conversation cards:', conversationCards.length);
-                
-                if (conversationCards.length === 0) {
-                    console.log('⚠️ No conversation cards found in DOM');
-                    return;
+            // Get user category
+            const userCategory = this.getUserCategoryFromSystemUsage(formData.systemUsage);
+            
+            // Create user identity object
+            const userIdentity = {
+                userName: formData.name,
+                userEmail: formData.email,
+                restaurantName: formData.restaurantName,
+                userPhone: formData.phone,
+                userType: formData.systemUsage,
+                systemUsage: formData.systemUsage,
+                userRegistered: true,
+                language: formData.language,
+                languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                languageFlag: languageFlag,
+                displayFlag: languageFlag,
+                lastUpdated: formData.timestamp,
+                identityLinked: true,
+                previousName: 'Anonymous User',
+                userCategory: userCategory
+            };
+
+            // Update all possible conversation storage locations
+            const storageKeys = [
+                'chatbot-conversations',
+                'fooodis-chatbot-conversations', 
+                'chatbot-conversation-history',
+                'conversations'
+            ];
+
+            storageKeys.forEach(key => {
+                try {
+                    const conversations = JSON.parse(localStorage.getItem(key) || '[]');
+                    let updated = false;
+
+                    conversations.forEach(conv => {
+                        if (conv.userName === 'Anonymous User' || !conv.userName || conv.userName === '' || conv.userName === 'Anonymous') {
+                            Object.assign(conv, userIdentity);
+                            updated = true;
+                            console.log(`✅ Updated ${key}: ${conv.id || 'unknown'} → ${formData.name}`);
+                        }
+                    });
+
+                    if (updated) {
+                        localStorage.setItem(key, JSON.stringify(conversations));
+                    }
+                } catch (error) {
+                    console.warn(`Warning updating ${key}:`, error);
                 }
-                
-                let updatedCount = 0;
-                
-                conversationCards.forEach((card, index) => {
-                    const userNameElement = card.querySelector('.conversation-user');
-                    if (userNameElement) {
-                        const currentText = userNameElement.textContent || '';
+            });
+
+            // Update current user context
+            window.currentUser = userIdentity;
+            window.registeredUser = userIdentity;
+            
+            console.log('✅ All storage locations updated');
+        },
+
+        forceUpdateConversationCards: function(formData, languageFlag) {
+            console.log('🎯 FORCE UPDATE: Searching and updating conversation cards...');
+            
+            // Find all possible conversation card selectors
+            const selectors = [
+                '.conversation-card',
+                '.conversation-item', 
+                '.chat-conversation',
+                '[data-conversation-id]',
+                '.recent-conversation',
+                '.conversation-list-item'
+            ];
+
+            let totalUpdated = 0;
+
+            selectors.forEach(selector => {
+                const cards = document.querySelectorAll(selector);
+                console.log(`🔍 Found ${cards.length} elements with selector: ${selector}`);
+
+                cards.forEach((card, index) => {
+                    const userElements = card.querySelectorAll('.conversation-user, .user-name, .chat-user, [class*="user"], [class*="name"]');
+                    
+                    userElements.forEach(element => {
+                        const currentText = element.textContent || element.innerText || '';
                         
-                        // Check if this is an anonymous user card
-                        if (currentText.includes('Anonymous User')) {
-                            console.log(`🎯 Converting anonymous card ${index + 1}`);
+                        if (currentText.includes('Anonymous') || currentText.includes('anonymous') || currentText.trim() === '') {
+                            console.log(`🎯 UPDATING: ${selector}[${index}] - "${currentText}" → "${formData.name}"`);
                             
-                            // Get the user category
+                            // Get user category
                             const userCategory = this.getUserCategoryFromSystemUsage(formData.systemUsage);
                             const categoryClass = userCategory.toLowerCase().replace(/\s+/g, '-');
                             
                             // Extract message count if it exists
                             const messageCountMatch = currentText.match(/\((\d+)\s+messages?\)/);
-                            const messageCount = messageCountMatch ? messageCountMatch[0] : '(0 messages)';
+                            const messageCount = messageCountMatch ? messageCountMatch[0] : '';
                             
-                            // Update the display with user data
-                            userNameElement.innerHTML = `
+                            // Create new content
+                            element.innerHTML = `
                                 <i class="fas fa-user"></i> 
                                 ${languageFlag} 
                                 ${formData.name}
-                                <span class="message-count">${messageCount}</span>
+                                ${messageCount ? `<span class="message-count">${messageCount}</span>` : ''}
                                 <span class="user-category-badge ${categoryClass}">${userCategory}</span>
                             `;
                             
-                            // Mark as updated with visual indicators
-                            card.classList.add('user-identified');
+                            // Style the updated card
+                            card.classList.add('user-identified', 'recently-updated');
                             card.style.borderLeft = '3px solid #e8f24c';
                             card.style.backgroundColor = 'rgba(232, 242, 76, 0.1)';
+                            card.setAttribute('data-user-registered', 'true');
+                            card.setAttribute('data-user-name', formData.name);
                             
-                            updatedCount++;
-                            console.log(`✅ Updated: Anonymous User → ${formData.name} (${languageFlag})`);
-                            
-                            // Only update the first anonymous card to avoid duplicates
-                            return;
+                            totalUpdated++;
                         }
+                    });
+                });
+            });
+
+            console.log(`✅ FORCE UPDATE COMPLETE: Updated ${totalUpdated} conversation elements`);
+            
+            // Trigger any refresh functions that might exist
+            this.triggerRefreshFunctions();
+        },
+
+        setupConversationMonitoring: function(formData, languageFlag) {
+            console.log('👀 Setting up conversation monitoring...');
+            
+            // Store user data for monitoring
+            window.registeredUserData = { formData, languageFlag };
+            
+            // Set up periodic checking
+            const monitoringInterval = setInterval(() => {
+                const anonymousElements = document.querySelectorAll('*');
+                let foundAnonymous = false;
+                
+                anonymousElements.forEach(element => {
+                    const text = element.textContent || '';
+                    if (text.includes('Anonymous User') && !element.classList.contains('user-identified')) {
+                        foundAnonymous = true;
+                        console.log('🔍 Monitoring: Found remaining anonymous element, updating...');
+                        this.forceUpdateConversationCards(formData, languageFlag);
                     }
                 });
                 
-                console.log(`🎯 DOM UPDATE COMPLETE: Updated ${updatedCount} conversation cards`);
-                
-            } catch (error) {
-                console.error('❌ Error in direct conversation card update:', error);
-            }
+                if (!foundAnonymous) {
+                    console.log('✅ Monitoring: No more anonymous users found, stopping monitor');
+                    clearInterval(monitoringInterval);
+                }
+            }, 1000);
+            
+            // Stop monitoring after 30 seconds
+            setTimeout(() => {
+                clearInterval(monitoringInterval);
+                console.log('⏰ Monitoring timeout reached, stopping...');
+            }, 30000);
         },
+
+        triggerRefreshFunctions: function() {
+            // Try to trigger any existing refresh functions
+            const refreshFunctions = [
+                'refreshConversations',
+                'loadConversations', 
+                'updateConversationList',
+                'renderConversations',
+                'reloadConversationData'
+            ];
+
+            refreshFunctions.forEach(funcName => {
+                if (window[funcName] && typeof window[funcName] === 'function') {
+                    try {
+                        console.log(`🔄 Triggering refresh function: ${funcName}`);
+                        window[funcName]();
+                    } catch (error) {
+                        console.warn(`Warning calling ${funcName}:`, error);
+                    }
+                }
+            });
+
+            // Trigger custom events
+            const events = ['userRegistered', 'conversationUpdated', 'userIdentityChanged'];
+            events.forEach(eventName => {
+                try {
+                    window.dispatchEvent(new CustomEvent(eventName, {
+                        detail: window.registeredUserData
+                    }));
+                } catch (error) {
+                    console.warn(`Warning dispatching ${eventName}:`, error);
+                }
+            });
+        },
+
+        
 
         getUserCategoryFromSystemUsage: function(systemUsage) {
             switch (systemUsage) {
