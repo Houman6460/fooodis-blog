@@ -678,10 +678,28 @@ class NodeFlowBuilder {
                     </div>
                 `;
 
-            default:
+            case 'message':
+                let messageContent = '';
+                if (node.data.aiMode && node.data.selectedAssistant) {
+                    // Show AI assistant info
+                    const assistants = this.getAvailableAIAssistants();
+                    const selectedAssistant = assistants.find(a => a.id === node.data.selectedAssistant);
+                    const assistantName = selectedAssistant ? selectedAssistant.name : 'AI Assistant';
+
+                    messageContent = `
+                        <div class="ai-indicator">AI</div>
+                        <div class="ai-assistant-info">${assistantName}</div>
+                        ${node.data.aiPrompt ? `<div class="ai-prompt-preview">${node.data.aiPrompt.substring(0, 50)}...</div>` : ''}
+                    `;
+                } else {
+                    // Show manual message preview
+                    const message = node.data.messages?.english || node.data.messages?.swedish || 'No message set';
+                    messageContent = `<div class="node-message">${message.substring(0, 100)}${message.length > 100 ? '...' : ''}</div>`;
+                }
+
                 return commonHTML + `
                     <div class="node-content">
-                        <div class="node-data">${JSON.stringify(node.data)}</div>
+                        ${messageContent}
                     </div>
                     <div class="node-connections">
                         <div class="connection-point input" data-type="input"></div>
@@ -1788,8 +1806,9 @@ class NodeFlowBuilder {
                         <div class="form-group">
                             <label for="edit-assistant">Select Assistant</label>
                             <select id="edit-assistant" class="form-control">
-                                <option value="default">Default Assistant</option>
-                                <option value="custom">Custom Assistant</option>
+                                ${this.getAvailableAIAssistants().map(assistant => `
+                                    <option value="${assistant.id}" ${node.data.selectedAssistant === assistant.id ? 'selected' : ''}>${assistant.name}</option>
+                                `).join('')}
                             </select>
                         </div>
                     </div>
@@ -2184,33 +2203,86 @@ class NodeFlowBuilder {
     }
 
     scheduleAutoSave() {
-        // Immediate auto-save for form changes
+        // Clear existing timeout
         if (this.autoSaveTimeout) {
             clearTimeout(this.autoSaveTimeout);
         }
 
+        // Set new timeout for 2 seconds
         this.autoSaveTimeout = setTimeout(() => {
             this.saveFlow();
-            console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
-        }, 500); // Save after 500ms of inactivity
+        }, 2000);
     }
 
-     previewAIResponse(node) {
-        // Retrieve data from the node for the AI preview
-        const assistant = node.data.selectedAssistant || 'default';
-        const prompt = node.data.aiPrompt || '';
+    previewAIResponse(node) {
+        const previewContent = document.getElementById('ai-preview-content');
+        const assistantSelect = document.getElementById('edit-assistant');
+        const promptTextarea = document.getElementById('edit-ai-prompt');
 
-        // You would replace this with your actual AI call
-        // Here's a simulation
-        const aiResponse = `AI Preview: Assistant ${assistant} says, "${prompt}"`;
+        if (!previewContent) return;
 
-        // Find the element to display the preview and set its content
-        const previewElement = document.querySelector('#ai-preview-content');
-        if (previewElement) {
-            previewElement.textContent = aiResponse;
-        } else {
-            console.error('Preview element not found!');
+        const selectedAssistantId = assistantSelect ? assistantSelect.value : node.data.selectedAssistant;
+        const customPrompt = promptTextarea ? promptTextarea.value : node.data.aiPrompt;
+
+        if (!selectedAssistantId) {
+            previewContent.innerHTML = '<div class="ai-preview-error">Please select an AI assistant first</div>';
+            return;
         }
+
+        // Show loading state
+        previewContent.innerHTML = '<div class="ai-preview-loading">Generating preview...</div>';
+
+        // Get the selected assistant details
+        const assistants = this.getAvailableAIAssistants();
+        const selectedAssistant = assistants.find(a => a.id === selectedAssistantId);
+
+        // Simulate AI response for preview (in real implementation, this would call the actual AI)
+        setTimeout(() => {
+            const sampleMessage = this.generateSampleAIResponse(selectedAssistant, customPrompt);
+            previewContent.innerHTML = `
+                <div class="ai-preview-success">
+                    <div class="preview-message">
+                        <strong>Sample Response:</strong>
+                        <p>${sampleMessage}</p>
+                    </div>
+                    <div class="preview-note" style="font-size: 11px; color: #666; margin-top: 8px;">
+                        This is a preview. Actual responses will be generated in real-time during conversations.
+                    </div>
+                </div>
+            `;
+        }, 1500);
+    }
+
+    generateSampleAIResponse(assistant, customPrompt) {
+        const assistantName = assistant ? assistant.name : 'AI Assistant';
+        const department = assistant ? assistant.department : 'General';
+
+        const samples = {
+            'Sales': `Hello! I'm ${assistantName} from our Sales team. I'd be happy to help you learn about our pricing plans and features. What specific information are you looking for?`,
+            'Billing': `Hi there! I'm ${assistantName} from Billing support. I can assist you with payment questions, subscription management, and invoicing. How can I help you today?`,
+            'Technical Support': `Hello! I'm ${assistantName} from Technical Support. I can help you with integration issues, API questions, and troubleshooting. What technical challenge can I assist you with?`,
+            'Delivery': `Hi! I'm ${assistantName} from our Delivery team. I can help you track orders, update delivery information, and resolve delivery-related questions. What do you need help with?`,
+            'General': `Hello! I'm ${assistantName}, your Fooodis assistant. I'm here to help you with any questions about our platform. How can I assist you today?`
+        };
+
+        let response = samples[department] || samples['General'];
+
+        if (customPrompt) {
+            response += `\n\nNote: This response will be customized based on your specific prompt: "${customPrompt.substring(0, 100)}${customPrompt.length > 100 ? '...' : ''}"`;
+        }
+
+        return response;
+    }
+
+    // Dummy function for now, replace with actual implementation
+    getAvailableAIAssistants() {
+        return [
+            { id: 'marcus-chen', name: 'Marcus Chen - Sales', department: 'Sales' },
+            { id: 'elena-rodriguez', name: 'Elena Rodriguez - Billing', department: 'Billing' },
+            { id: 'david-kim', name: 'David Kim - Technical Support', department: 'Technical Support' },
+            { id: 'anya-singh', name: 'Anya Singh - Delivery', department: 'Delivery' },
+            { id: 'general-ai', name: 'Fooodis AI Assistant', department: 'General' }
+        ];
     }
 }
 

@@ -906,6 +906,31 @@
     margin-bottom: 1rem;
 }
 
+.ai-indicator {
+    background: #e8f24c;
+    color: #2a2a2a;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: inline-block;
+}
+
+.ai-assistant-info {
+    color: #e8f24c;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.ai-prompt-preview {
+    color: #ccc;
+    font-size: 9px;
+    font-style: italic;
+    margin-top: 4px;
+}
+
 .ai-mode-label {
     color: #e8f24c;
     font-weight: 600;
