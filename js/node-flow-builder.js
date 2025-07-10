@@ -178,8 +178,27 @@ class NodeFlowBuilder {
         // Initialize zoom functionality with mouse wheel
         this.canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
+            
+            // Get mouse position relative to canvas
+            const rect = this.canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Calculate zoom point in world coordinates
+            const worldX = (mouseX - this.panOffset.x) / this.zoom;
+            const worldY = (mouseY - this.panOffset.y) / this.zoom;
+            
             const delta = e.deltaY > 0 ? -0.1 : 0.1;
-            this.updateZoom(delta);
+            const oldZoom = this.zoom;
+            this.zoom += delta;
+            this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
+            
+            // Adjust pan to zoom towards mouse position
+            const zoomChange = this.zoom / oldZoom;
+            this.panOffset.x = mouseX - worldX * this.zoom;
+            this.panOffset.y = mouseY - worldY * this.zoom;
+            
+            this.updateCanvasTransform();
         });
 
         // Setup canvas panning functionality
@@ -885,23 +904,27 @@ class NodeFlowBuilder {
             btn.style.fontSize = '14px';
             btn.style.fontWeight = 'bold';
             btn.style.zIndex = '1000';
-            btn.style.transform = 'translate(-50%, -50%)';
             btn.style.border = '2px solid white';
             btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
             btn.style.pointerEvents = 'auto';
             btn.style.transition = 'all 0.2s ease';
+            btn.style.transformOrigin = 'center';
+
+            // Set initial transform with counter-scaling
+            const counterScale = 1 / this.zoom;
+            btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
 
             // Add hover effect with proper zoom scaling
             btn.addEventListener('mouseenter', () => {
                 btn.style.backgroundColor = '#ff3742';
-                const counterScale = 1 / this.zoom;
-                btn.style.transform = `translate(-50%, -50%) scale(${counterScale * 1.2})`;
+                const currentCounterScale = 1 / this.zoom;
+                btn.style.transform = `translate(-50%, -50%) scale(${currentCounterScale * 1.2})`;
             });
 
             btn.addEventListener('mouseleave', () => {
                 btn.style.backgroundColor = '#ff4757';
-                const counterScale = 1 / this.zoom;
-                btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
+                const currentCounterScale = 1 / this.zoom;
+                btn.style.transform = `translate(-50%, -50%) scale(${currentCounterScale})`;
             });
 
             // Add click handler
@@ -2254,10 +2277,27 @@ class NodeFlowBuilder {
     }
 
     updateZoom(delta) {
+        const oldZoom = this.zoom;
         this.zoom += delta;
         this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
+        
+        // Center zoom around current view center if no specific point provided
+        const rect = this.canvas.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const worldX = (centerX - this.panOffset.x) / oldZoom;
+        const worldY = (centerY - this.panOffset.y) / oldZoom;
+        
+        this.panOffset.x = centerX - worldX * this.zoom;
+        this.panOffset.y = centerY - worldY * this.zoom;
+        
         this.updateCanvasTransform();
-        document.querySelector('.canvas-zoom-level').textContent = `${Math.round(this.zoom * 100)}%`;
+        
+        const zoomLevel = document.querySelector('.canvas-zoom-level');
+        if (zoomLevel) {
+            zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
+        }
     }
 
     updateCanvasTransform() {
@@ -2268,9 +2308,11 @@ class NodeFlowBuilder {
         
         if (nodesContainer) {
             nodesContainer.style.transform = transform;
+            nodesContainer.style.transformOrigin = '0 0';
         }
         if (connectionsContainer) {
             connectionsContainer.style.transform = transform;
+            connectionsContainer.style.transformOrigin = '0 0';
         }
         
         // Update disconnect button scaling to maintain visual size
@@ -2281,6 +2323,9 @@ class NodeFlowBuilder {
         if (zoomLevel) {
             zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
         }
+        
+        // Force re-render of connections to ensure proper positioning
+        this.renderConnections();
     }
 
     handleCanvasMouseDown(e) {
