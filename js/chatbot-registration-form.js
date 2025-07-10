@@ -197,35 +197,37 @@
 
         // Set up language switching functionality
         setupLanguageSwitching: function() {
+            const self = this;
             // Use event delegation to handle dynamically created language tabs
             document.addEventListener('click', (e) => {
                 if (e.target.classList.contains('lang-tab')) {
+                    console.log('🔍 Language tab clicked:', e.target.textContent, 'data-lang:', e.target.getAttribute('data-lang'));
+                    
                     // Remove active class from all tabs within the same form
                     const formContainer = e.target.closest('.registration-container');
                     if (formContainer) {
                         const allTabs = formContainer.querySelectorAll('.lang-tab');
-                        allTabs.forEach(tab => tab.classList.remove('active'));
+                        allTabs.forEach(tab => {
+                            tab.classList.remove('active');
+                            console.log('🔄 Removed active from:', tab.textContent);
+                        });
 
                         // Add active class to clicked tab
                         e.target.classList.add('active');
+                        console.log('✅ Added active to:', e.target.textContent);
 
                         // Get selected language and handle both formats
                         const selectedLang = e.target.getAttribute('data-lang');
                         console.log('🌐 Tab clicked, language:', selectedLang);
                         
-                        // Map language codes consistently
-                        const languageMap = {
-                            'english': 'english',
-                            'en': 'english',
-                            'svenska': 'svenska',
-                            'swedish': 'svenska', 
-                            'sv': 'svenska'
-                        };
-                        
-                        const mappedLang = languageMap[selectedLang] || 'english';
-                        console.log('🌐 Mapped language:', mappedLang);
-                        
-                        this.switchLanguage(mappedLang);
+                        // Direct language switching without complex mapping
+                        if (selectedLang === 'svenska') {
+                            console.log('🇸🇪 Switching to Svenska');
+                            self.switchLanguage('svenska');
+                        } else {
+                            console.log('🇬🇧 Switching to English');
+                            self.switchLanguage('english');
+                        }
                     }
                 }
             });
@@ -280,16 +282,26 @@
                 return;
             }
 
-            // Simplified language detection - svenska maps to swedish translations
-            const lang = (language === 'svenska') ? 'swedish' : 'english';
-            const translations = this.translations[lang];
+            // Direct language mapping
+            let lang, translations;
+            
+            if (language === 'svenska') {
+                lang = 'swedish';
+                translations = this.translations.swedish;
+                console.log('🇸🇪 Using Swedish translations');
+            } else {
+                lang = 'english';
+                translations = this.translations.english;
+                console.log('🇬🇧 Using English translations');
+            }
 
             if (!translations) {
                 console.error('❌ No translations found for language:', lang);
+                console.log('Available translations:', Object.keys(this.translations));
                 return;
             }
 
-            console.log('🔄 Using translations for language:', lang, translations);
+            console.log('🔄 Applying translations for:', lang);
 
             // Update all text content with complete language isolation
             const formTitle = registrationContainer.querySelector('.form-title');
