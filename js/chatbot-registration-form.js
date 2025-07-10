@@ -290,6 +290,20 @@
         },
 
         submitForm: async function() {
+            // Get or generate session/device IDs for conversation matching
+            let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
+            let deviceId = localStorage.getItem('chatbot-device-id');
+            
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatbot-session-id', sessionId);
+            }
+            
+            if (!deviceId) {
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatbot-device-id', deviceId);
+            }
+
             const formData = {
                 name: document.getElementById('userName')?.value || '',
                 email: document.getElementById('userEmail')?.value || '',
@@ -299,8 +313,8 @@
                 timestamp: new Date().toISOString(),
                 language: this.currentLanguage,
                 conversationId: window.FoodisChatbot?.conversationId || null,
-                sessionId: window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id'),
-                deviceId: localStorage.getItem('chatbot-device-id') || 'device_' + Date.now()
+                sessionId: sessionId,
+                deviceId: deviceId
             };
 
             // Basic email validation
@@ -361,10 +375,17 @@
 
                 // Trigger UI updates with comprehensive identity data
                 setTimeout(() => {
-                    // Determine correct language and flag
+                    // Determine correct language and flag based on form selection
                     const isSwedish = formData.language === 'svenska' || formData.language === 'sv' || formData.language === 'swedish';
                     const languageCode = isSwedish ? 'sv-SE' : 'en-US';
                     const languageFlag = isSwedish ? '🇸🇪' : '🇺🇸';
+                    
+                    console.log('🌍 Language detection from form:', {
+                        formLanguage: formData.language,
+                        isSwedish: isSwedish,
+                        languageCode: languageCode,
+                        languageFlag: languageFlag
+                    });
                     
                     const identityUpdateData = {
                         name: formData.name,
