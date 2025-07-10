@@ -1,4 +1,3 @@
-
 /**
  * 🔐 CHATBOT REGISTRATION FORM SYSTEM
  * Complete bilingual registration form with proper language switching
@@ -11,7 +10,7 @@
         formData: {},
         currentLanguage: 'english',
         formElement: null,
-        
+
         // Translation data
         translations: {
             english: {
@@ -56,12 +55,12 @@
 
         init: function() {
             if (this.initialized) return;
-            
+
             console.log('🔐 Initializing Chatbot Registration Form...');
             this.injectStyles();
             this.setupEventListeners();
             this.initialized = true;
-            
+
             // Auto-show form if needed
             setTimeout(() => {
                 if (this.shouldShowRegistrationForm()) {
@@ -90,10 +89,10 @@
 
         showRegistrationForm: function() {
             console.log('🔐 Showing registration form...');
-            
+
             // Find or create chatbot container
             let chatbotContainer = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container');
-            
+
             if (!chatbotContainer) {
                 // Create a temporary container if chatbot doesn't exist
                 chatbotContainer = document.createElement('div');
@@ -122,11 +121,11 @@
             // Create and show new form
             this.formElement = this.createFormOverlay();
             chatbotContainer.appendChild(this.formElement);
-            
+
             // Set initial language and update form
             this.currentLanguage = 'english';
             this.updateFormLanguage();
-            
+
             console.log('✅ Registration form displayed successfully');
         },
 
@@ -355,6 +354,29 @@
             }
 
             console.log('✅ Form submitted successfully:', formData.name);
+
+            // Trigger UI updates
+            window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
+                detail: {
+                    name: formData.name,
+                    email: formData.email,
+                    restaurantName: formData.restaurantName,
+                    conversationId: formData.conversationId || targetConversation?.id,
+                    language: formData.language,
+                    languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                    identityLinked: true
+                }
+            }));
+
+            // Trigger conversation list refresh
+            window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
+                detail: { action: 'update', data: formData }
+            }));
+
+            // Trigger leads list refresh
+            window.dispatchEvent(new CustomEvent('leadsDataUpdated', {
+                detail: { action: 'new', data: formData }
+            }));
         },
 
         skipForm: function() {
@@ -459,7 +481,7 @@
                 if (!targetConversation) {
                     const sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
                     const deviceId = localStorage.getItem('chatbot-device-id') || 'unknown';
-                    
+
                     targetConversation = conversations.find(conv => 
                         (conv.userName === 'Anonymous User' || !conv.userName || conv.userName === '') &&
                         (conv.sessionId === sessionId || conv.deviceId === deviceId)
@@ -501,7 +523,7 @@
                     window.FoodisChatbot.restaurantName = formData.restaurantName;
                     window.FoodisChatbot.userRegistered = true;
                     window.FoodisChatbot.userLanguage = formData.language;
-                    
+
                     // Set language for Swedish users
                     if (formData.language === 'svenska') {
                         window.FoodisChatbot.currentLanguage = 'sv';
