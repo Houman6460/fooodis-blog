@@ -72,16 +72,6 @@
             window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
 
             console.log('Fooodis Chatbot Widget initialized successfully');
-
-            // Auto-show registration form after 3 seconds if user isn't registered
-            setTimeout(() => {
-                this.checkAndShowRegistrationForm();
-            }, 3000);
-
-            // Also check when widget becomes visible
-            setTimeout(() => {
-                this.checkAndShowRegistrationForm();
-            }, 5000);
         },
 
         getInitialWelcomeMessage: function() {
@@ -900,7 +890,7 @@
 
                 .message.user .message-content {
                     background: #e8f24c !important;
-                    color: #26282f !important;```text
+                    color: #26282f !important;
                 }
 
                 .message.assistant .message-content {
@@ -1728,12 +1718,6 @@
         triggerRegistrationForm: function() {
             if (window.ChatbotRegistrationForm) {
                 window.ChatbotRegistrationForm.showRegistrationForm();
-            }
-        },
-
-        checkAndShowRegistrationForm: function() {
-            if (this.shouldShowRegistrationForm()) {
-                this.showRegistrationForm();
             }
         },
 

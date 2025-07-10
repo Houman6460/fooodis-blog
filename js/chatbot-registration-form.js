@@ -1,4 +1,3 @@
-javascript
 /**
  * 🔐 CHATBOT REGISTRATION FORM SYSTEM
  * Complete bilingual registration form with proper language switching
@@ -62,15 +61,12 @@ javascript
             this.setupEventListeners();
             this.initialized = true;
 
-            // Auto-show form if needed - check immediately and after delay
-            if (this.shouldShowRegistrationForm()) {
-                setTimeout(() => {
+            // Auto-show form if needed
+            setTimeout(() => {
+                if (this.shouldShowRegistrationForm()) {
                     this.showRegistrationForm();
-                }, 1000);
-            }
-
-            // Also check when chatbot widget is ready
-            this.waitForChatbotWidget();
+                }
+            }, 2000);
         },
 
         shouldShowRegistrationForm: function() {
@@ -91,55 +87,29 @@ javascript
             }
         },
 
-        waitForChatbotWidget: function() {
-            let attempts = 0;
-            const maxAttempts = 20;
-            
-            const checkWidget = () => {
-                attempts++;
-                const chatbotWidget = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container, .chatbot-widget');
-                
-                if (chatbotWidget) {
-                    console.log('✅ Chatbot widget found, ready to show form if needed');
-                    if (this.shouldShowRegistrationForm()) {
-                        setTimeout(() => this.showRegistrationForm(), 500);
-                    }
-                } else if (attempts < maxAttempts) {
-                    setTimeout(checkWidget, 500);
-                } else {
-                    console.log('⚠️ Chatbot widget not found after waiting, will use fallback display');
-                }
-            };
-            
-            checkWidget();
-        },
-
         showRegistrationForm: function() {
             console.log('🔐 Showing registration form...');
 
-            // Find chatbot container with expanded selectors
-            let chatbotContainer = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container, .chatbot-widget, [id*="chatbot"], [class*="chatbot"]');
+            // Find or create chatbot container
+            let chatbotContainer = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container');
 
             if (!chatbotContainer) {
-                // Create a full-screen overlay container
+                // Create a temporary container if chatbot doesn't exist
                 chatbotContainer = document.createElement('div');
                 chatbotContainer.id = 'temp-chatbot-container';
                 chatbotContainer.style.cssText = `
                     position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100vw;
-                    height: 100vh;
-                    background: rgba(0, 0, 0, 0.8);
-                    z-index: 99999;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: 10000;
+                    width: 400px;
+                    height: 500px;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
                 `;
                 document.body.appendChild(chatbotContainer);
-                console.log('📱 Created fallback overlay container');
-            } else {
-                console.log('✅ Found existing chatbot container:', chatbotContainer.id || chatbotContainer.className);
             }
 
             // Remove existing form if any
@@ -150,12 +120,6 @@ javascript
 
             // Create and show new form
             this.formElement = this.createFormOverlay();
-            
-            // Ensure form is visible
-            this.formElement.style.display = 'flex';
-            this.formElement.style.visibility = 'visible';
-            this.formElement.style.opacity = '1';
-            
             chatbotContainer.appendChild(this.formElement);
 
             // Set initial language and update form
@@ -401,7 +365,7 @@ javascript
                     const isSwedish = formData.language === 'svenska' || formData.language === 'sv' || formData.language === 'swedish';
                     const languageCode = isSwedish ? 'sv-SE' : 'en-US';
                     const languageFlag = isSwedish ? '🇸🇪' : '🇺🇸';
-
+                    
                     const identityUpdateData = {
                         name: formData.name,
                         userName: formData.name, // Ensure both fields have the same value
@@ -450,14 +414,14 @@ javascript
                         console.log('🔄 Immediate conversation update');
                         window.chatbotManager.updateConversationIdentity(identityUpdateData);
                     }
-
+                    
                     setTimeout(() => {
                         if (window.chatbotManager && window.chatbotManager.renderConversations) {
                             console.log('🔄 First dashboard refresh');
                             window.chatbotManager.renderConversations();
                         }
                     }, 50);
-
+                    
                     setTimeout(() => {
                         if (window.chatbotManager && window.chatbotManager.renderConversations) {
                             console.log('🔄 Second dashboard refresh (ensuring update)');
@@ -478,7 +442,7 @@ javascript
         sendToServerAPI: async function(formData) {
             try {
                 console.log('📤 Sending registration data to server API...');
-
+                
                 // Send user lead data to server
                 const userResponse = await fetch('/api/chatbot/users', {
                     method: 'POST',
@@ -634,156 +598,134 @@ javascript
         },
 
         updateUserIdentity: function(formData) {
-        try {
-            console.log('🔄 IDENTITY UPDATE - Starting with form data:', {
-                name: formData.name,
-                language: formData.language,
-                conversationId: formData.conversationId,
-                sessionId: formData.sessionId,
-                deviceId: formData.deviceId
-            });
+            try {
+                console.log('🔄 Updating user identity with data:', formData);
+                
+                // Update chatbot conversations - find by ID or anonymous session
+                const conversations = JSON.parse(localStorage.getItem('chatbot-conversations') || '[]');
+                const originalConversationsLength = conversations.length;
+                let targetConversation = null;
+                let foundConversations = [];
 
-            // Get current conversations from both storage locations
-            const conversations1 = JSON.parse(localStorage.getItem('chatbot-conversations') || '[]');
-            const conversations2 = JSON.parse(localStorage.getItem('fooodis-chatbot-conversations') || '[]');
+                // First, try to find by conversationId
+                if (formData.conversationId) {
+                    targetConversation = conversations.find(conv => 
+                        conv.id === formData.conversationId || conv.conversationId === formData.conversationId
+                    );
+                    if (targetConversation) {
+                        foundConversations.push('by conversationId');
+                    }
+                }
 
-            // Use the larger dataset (most complete)
-            const conversations = conversations1.length >= conversations2.length ? conversations1 : conversations2;
-            console.log('📊 IDENTITY UPDATE - Found conversations:', conversations.length);
+                // If not found, look for anonymous conversations from same session/device
+                if (!targetConversation) {
+                    const sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
+                    const deviceId = localStorage.getItem('chatbot-device-id') || 'unknown';
 
-            let targetConversation = null;
-            let matchMethod = 'none';
+                    // Search for recent anonymous conversations
+                    const recentAnonymous = conversations.filter(conv => {
+                        const isAnonymous = conv.userName === 'Anonymous User' || !conv.userName || conv.userName === '';
+                        const matchesSession = conv.sessionId === sessionId || conv.deviceId === deviceId;
+                        const isRecent = !conv.createdAt || 
+                            (new Date() - new Date(conv.createdAt)) < (24 * 60 * 60 * 1000); // Within 24 hours
+                        
+                        return isAnonymous && matchesSession && isRecent;
+                    });
 
-            // Strategy 1: Find by exact conversation ID
-            if (formData.conversationId) {
-                targetConversation = conversations.find(conv => 
-                    conv.id === formData.conversationId || 
-                    conv.conversationId === formData.conversationId
-                );
+                    // Use the most recent one
+                    if (recentAnonymous.length > 0) {
+                        targetConversation = recentAnonymous.sort((a, b) => 
+                            new Date(b.createdAt || b.lastMessageAt || 0) - new Date(a.createdAt || a.lastMessageAt || 0)
+                        )[0];
+                        foundConversations.push('by session/device (recent anonymous)');
+                    }
+                }
+
+                // Update the conversation with user identity
                 if (targetConversation) {
-                    matchMethod = 'conversationId';
-                    console.log('✅ IDENTITY UPDATE - Found by conversation ID');
-                }
-            }
+                    const oldName = targetConversation.userName || 'Anonymous User';
+                    
+                    // Store the original conversation ID for reference
+                    const originalId = targetConversation.id || targetConversation.conversationId;
+                    
+                    Object.assign(targetConversation, {
+                        userName: formData.name,
+                        userEmail: formData.email,
+                        restaurantName: formData.restaurantName,
+                        userPhone: formData.phone,
+                        userType: formData.systemUsage,
+                        systemUsage: formData.systemUsage,
+                        userRegistered: true,
+                        language: formData.language || 'english',
+                        languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                        displayFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                        lastUpdated: formData.timestamp,
+                        identityLinked: true,
+                        previousName: oldName,
+                        // Ensure conversation ID is preserved
+                        conversationId: originalId,
+                        id: originalId
+                    });
 
-            // Strategy 2: Find by session/device for anonymous users
-            if (!targetConversation) {
-                const sessionId = formData.sessionId || window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
-                const deviceId = formData.deviceId || localStorage.getItem('chatbot-device-id');
+                    // Set language context for Swedish conversations
+                    if (formData.language === 'svenska') {
+                        targetConversation.languageCode = 'sv-SE';
+                        targetConversation.preferredAgent = 'swedish-speaking';
+                        targetConversation.autoTranslate = true;
+                    }
 
-                console.log('🔍 IDENTITY UPDATE - Searching by session/device:', { sessionId, deviceId });
-
-                const anonymousConversations = conversations.filter(conv => {
-                    const isAnonymous = !conv.userName || conv.userName === 'Anonymous User' || conv.userName === '';
-                    const sessionMatch = sessionId && (conv.sessionId === sessionId || conv.conversationId?.includes(sessionId));
-                    const deviceMatch = deviceId && (conv.deviceId === deviceId || conv.conversationId?.includes(deviceId));
-
-                    return isAnonymous && (sessionMatch || deviceMatch);
-                });
-
-                if (anonymousConversations.length > 0) {
-                    // Get the most recent anonymous conversation
-                    targetConversation = anonymousConversations.sort((a, b) => 
-                        new Date(b.lastMessageAt || b.createdAt || 0) - new Date(a.lastMessageAt || a.createdAt || 0)
-                    )[0];
-                    matchMethod = 'session/device';
-                    console.log('✅ IDENTITY UPDATE - Found by session/device match');
-                }
-            }
-
-            // Strategy 3: Find the most recent anonymous conversation (fallback)
-            if (!targetConversation) {
-                const recentAnonymous = conversations
-                    .filter(conv => !conv.userName || conv.userName === 'Anonymous User' || conv.userName === '')
-                    .sort((a, b) => new Date(b.lastMessageAt || b.createdAt || 0) - new Date(a.lastMessageAt || a.createdAt || 0));
-
-                if (recentAnonymous.length > 0) {
-                    targetConversation = recentAnonymous[0];
-                    matchMethod = 'most recent anonymous';
-                    console.log('✅ IDENTITY UPDATE - Using most recent anonymous conversation');
-                }
-            }
-
-            if (targetConversation) {
-                const oldName = targetConversation.userName || 'Anonymous User';
-
-                // Determine correct language flag with comprehensive detection
-                const isSwedish = formData.language === 'svenska' || formData.language === 'sv' || formData.language === 'swedish';
-                const languageCode = isSwedish ? 'sv-SE' : 'en-US';
-                const languageFlag = isSwedish ? '🇸🇪' : '🇺🇸';
-
-                console.log('🏳️ IDENTITY UPDATE - Language detection:', {
-                    originalLanguage: formData.language,
-                    isSwedish,
-                    languageCode,
-                    languageFlag
-                });
-
-                // Update conversation with complete identity
-                Object.assign(targetConversation, {
-                    userName: formData.name,
-                    userEmail: formData.email,
-                    restaurantName: formData.restaurantName,
-                    userPhone: formData.phone,
-                    userType: formData.systemUsage,
-                    systemUsage: formData.systemUsage,
-                    userRegistered: true,
-                    identityLinked: true,
-                    language: formData.language,
-                    languageCode: languageCode,
-                    languageFlag: languageFlag,
-                    displayFlag: languageFlag,
-                    lastUpdated: formData.timestamp,
-                    previousName: oldName
-                });
-
-                // Save to both storage locations
-                localStorage.setItem('chatbot-conversations', JSON.stringify(conversations));
-                localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(conversations));
-
-                console.log(`✅ IDENTITY UPDATE - Successfully updated: ${oldName} → ${formData.name}`, {
-                    method: matchMethod,
-                    conversationId: targetConversation.id || targetConversation.conversationId,
-                    userName: targetConversation.userName,
-                    languageFlag: targetConversation.languageFlag,
-                    identityLinked: targetConversation.identityLinked
-                });
-            } else {
-                console.warn('⚠️ IDENTITY UPDATE - No conversation found to update');
-                console.log('🔍 Available conversations:', conversations.map(c => ({
-                    id: c.id || c.conversationId,
-                    userName: c.userName,
-                    sessionId: c.sessionId,
-                    deviceId: c.deviceId,
-                    isAnonymous: !c.userName || c.userName === 'Anonymous User'
-                })));
-            }
-
-            // Update current chatbot instance
-            if (window.FoodisChatbot) {
-                const isSwedish = formData.language === 'svenska' || formData.language === 'sv' || formData.language === 'swedish';
-
-                window.FoodisChatbot.userName = formData.name;
-                window.FoodisChatbot.userEmail = formData.email;
-                window.FoodisChatbot.restaurantName = formData.restaurantName;
-                window.FoodisChatbot.userRegistered = true;
-                window.FoodisChatbot.userLanguage = formData.language;
-                window.FoodisChatbot.languageFlag = isSwedish ? '🇸🇪' : '🇺🇸';
-                window.FoodisChatbot.displayFlag = isSwedish ? '🇸🇪' : '🇺🇸';
-
-                if (isSwedish) {
-                    window.FoodisChatbot.currentLanguage = 'sv';
-                    window.FoodisChatbot.config = window.FoodisChatbot.config || {};
-                    window.FoodisChatbot.config.language = 'sv-SE';
+                    // Save updated conversations
+                    localStorage.setItem('chatbot-conversations', JSON.stringify(conversations));
+                    
+                    // Also save to server-compatible format
+                    localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(conversations));
+                    
+                    console.log(`✅ Updated conversation identity: ${oldName} → ${formData.name} (${formData.restaurantName})`);
+                    console.log('🔍 Found conversation by:', foundConversations.join(', '));
+                    console.log('📊 Updated conversation data:', {
+                        id: targetConversation.id,
+                        userName: targetConversation.userName,
+                        languageFlag: targetConversation.languageFlag,
+                        identityLinked: targetConversation.identityLinked
+                    });
+                } else {
+                    console.warn('⚠️ No target conversation found for identity update');
+                    console.log('🔍 Search details:', {
+                        conversationId: formData.conversationId,
+                        sessionId: window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id'),
+                        deviceId: localStorage.getItem('chatbot-device-id'),
+                        totalConversations: conversations.length,
+                        anonymousConversations: conversations.filter(c => 
+                            c.userName === 'Anonymous User' || !c.userName || c.userName === ''
+                        ).length
+                    });
                 }
 
-                console.log('✅ IDENTITY UPDATE - Updated chatbot instance');
-            }
+                // Also update current chatbot instance if available
+                if (window.FoodisChatbot) {
+                    window.FoodisChatbot.userName = formData.name;
+                    window.FoodisChatbot.userEmail = formData.email;
+                    window.FoodisChatbot.restaurantName = formData.restaurantName;
+                    window.FoodisChatbot.userRegistered = true;
+                    window.FoodisChatbot.userLanguage = formData.language;
+                    window.FoodisChatbot.languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
+                    window.FoodisChatbot.displayFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
 
-        } catch (error) {
-            console.error('❌ IDENTITY UPDATE - Error:', error);
-        }
-    },
+                    // Set language for Swedish users
+                    if (formData.language === 'svenska') {
+                        window.FoodisChatbot.currentLanguage = 'sv';
+                        window.FoodisChatbot.config = window.FoodisChatbot.config || {};
+                        window.FoodisChatbot.config.language = 'sv-SE';
+                    }
+                    
+                    console.log('✅ Updated chatbot instance with user identity');
+                }
+
+            } catch (error) {
+                console.error('❌ Error updating user identity:', error);
+            }
+        },
 
         injectStyles: function() {
             if (document.getElementById('registration-form-styles')) return;
@@ -914,7 +856,6 @@ javascript
                 .registration-form select {
                     cursor: pointer;
                     appearance: none;
-                    ```tool_code
                     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
                     background-position: right 12px center;
                     background-repeat: no-repeat;
@@ -974,40 +915,19 @@ javascript
     };
 
     // Initialize when DOM is ready
-    function initializeForm() {
-        console.log('🚀 Starting ChatbotRegistrationForm initialization...');
-        if (window.ChatbotRegistrationForm) {
-            window.ChatbotRegistrationForm.init();
-        }
-    }
-
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeForm);
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => window.ChatbotRegistrationForm.init(), 100);
+        });
     } else {
-        // DOM is already ready
-        setTimeout(initializeForm, 100);
+        setTimeout(() => window.ChatbotRegistrationForm.init(), 100);
     }
 
-    // Also initialize after a longer delay to catch late-loading elements
-    setTimeout(initializeForm, 2000);
-
-    // Manual trigger functions
+    // Also provide manual trigger function
     window.showChatbotRegistrationForm = function() {
-        console.log('🔧 Manual registration form trigger called');
         if (window.ChatbotRegistrationForm) {
             window.ChatbotRegistrationForm.showRegistrationForm();
-        } else {
-            console.error('❌ ChatbotRegistrationForm not available');
         }
-    };
-
-    // Debug function
-    window.debugRegistrationForm = function() {
-        console.log('🔍 Registration Form Debug Info:');
-        console.log('- Form initialized:', window.ChatbotRegistrationForm?.initialized);
-        console.log('- Should show form:', window.ChatbotRegistrationForm?.shouldShowRegistrationForm());
-        console.log('- Current user:', localStorage.getItem('chatbot-current-user'));
-        console.log('- Chatbot containers:', document.querySelectorAll('#fooodis-chatbot, #chatbot-window, .chatbot-container, .chatbot-widget, [id*="chatbot"], [class*="chatbot"]'));
     };
 
 })();
