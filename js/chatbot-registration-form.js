@@ -37,8 +37,8 @@
 
             // Initialize language switching after DOM is ready
             setTimeout(() => {
-                // Set initial language state
-                this.switchLanguage('swedish');
+                // Set initial language state to English
+                this.switchLanguage('english');
                 console.log('🔐 Registration form shown and language switching initialized');
             }, 100);
         },
@@ -51,8 +51,8 @@
             overlay.innerHTML = `
                 <div class="registration-container">
                     <div class="language-tabs">
-                        <button type="button" class="lang-tab" data-lang="english">English</button>
-                        <button type="button" class="lang-tab active" data-lang="swedish">Svenska</button>
+                        <button type="button" class="lang-tab active" data-lang="english">English</button>
+                        <button type="button" class="lang-tab" data-lang="swedish">Svenska</button>
                     </div>
 
                     <div class="registration-header">
@@ -63,12 +63,12 @@
                     <form class="registration-form" id="registrationForm">
                         <div class="form-group">
                             <label for="userName" class="field-label" data-en="Your Name" data-sv="Ditt namn">Ditt namn</label>
-                            <input type="text" id="userName" name="userName" placeholder="Ange ditt namn" required>
+                            <input type="text" id="userName" name="userName" placeholder="Ange ditt namn" data-placeholder-en="Enter your name" data-placeholder-sv="Ange ditt namn" required>
                         </div>
 
                         <div class="form-group">
                             <label for="userPhone" class="field-label" data-en="Your Phone" data-sv="Din telefon">Din telefon</label>
-                            <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" required>
+                            <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" data-placeholder-en="+46 70 123 45 67" data-placeholder-sv="+46 70 123 45 67" required>
                         </div>
 
                         <div class="form-group">
@@ -222,29 +222,21 @@
                 }
             });
 
-            // Update placeholders
-            const nameInput = registrationContainer.querySelector('#userName');
-            const phoneInput = registrationContainer.querySelector('#userPhone');
-
-            if (language === 'english') {
-                if (nameInput) {
-                    nameInput.placeholder = 'Enter your name';
-                    nameInput.previousElementSibling.textContent = 'Your Name';
+            // Update placeholders using data attributes
+            const inputsWithPlaceholders = registrationContainer.querySelectorAll('input[data-placeholder-en][data-placeholder-sv]');
+            inputsWithPlaceholders.forEach(input => {
+                if (language === 'english') {
+                    const englishPlaceholder = input.getAttribute('data-placeholder-en');
+                    if (englishPlaceholder) {
+                        input.placeholder = englishPlaceholder;
+                    }
+                } else if (language === 'swedish') {
+                    const swedishPlaceholder = input.getAttribute('data-placeholder-sv');
+                    if (swedishPlaceholder) {
+                        input.placeholder = swedishPlaceholder;
+                    }
                 }
-                if (phoneInput) {
-                    phoneInput.placeholder = '+46 70 123 45 67';
-                    phoneInput.previousElementSibling.textContent = 'Your Phone';
-                }
-            } else if (language === 'swedish') {
-                if (nameInput) {
-                    nameInput.placeholder = 'Ange ditt namn';
-                    nameInput.previousElementSibling.textContent = 'Ditt namn';
-                }
-                if (phoneInput) {
-                    phoneInput.placeholder = '+46 70 123 45 67';
-                    phoneInput.previousElementSibling.textContent = 'Din telefon';
-                }
-            }
+            });
 
             console.log('✅ Language switched successfully to:', language);
         },
