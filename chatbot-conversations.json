@@ -301,5 +301,45 @@
     },
     "lastUserMessage": "I need to register",
     "messageCount": 2
+  },
+  {
+    "id": "conv_1752139492628_grikfdtvg",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need help",
+        "timestamp": "2025-07-10T09:25:05.936Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Of course! I'm here to help. What do you need assistance with? Whether it's about our menu, an order, your account, or something else, just let me know!",
+        "timestamp": "2025-07-10T09:25:07.243Z"
+      },
+      {
+        "role": "user",
+        "content": "I want to register",
+        "timestamp": "2025-07-10T09:25:18.514Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Great! To register for Fooodis, you can follow these simple steps:\n\n1. Visit our website at [Fooodis](https://fooodis.com).\n2. Click on the \"Sign Up\" button, usually located at the top right corner of the page.\n3. Fill in the required information, such as your name, email address, and password.\n4. After submitting the form, check your email for a verification link. Click on it to activate your account.\n\nIf you encounter any issues during registration or need further assistance, feel free to ask!",
+        "timestamp": "2025-07-10T09:25:20.467Z"
+      }
+    ],
+    "createdAt": "2025-07-10T09:25:05.936Z",
+    "lastMessageAt": "2025-07-10T09:25:18.514Z",
+    "language": "en",
+    "status": "active",
+    "threadId": null,
+    "agent": {
+      "id": "customer-support",
+      "name": "Sarah Johnson",
+      "avatar": "data:image/jpeg;base64,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",
+      "personality": "Friendly and helpful",
+      "assignedAssistantId": "support-assistant",
+      "department": "Customer Support"
+    },
+    "lastUserMessage": "I want to register",
+    "messageCount": 4
   }
 ]
