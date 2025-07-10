@@ -396,6 +396,13 @@ class ChatbotManager {
                 }
             }
 
+            // Fallback: If no matches found and we have anonymous conversations, update the most recent one
+            if (!shouldUpdate && 
+                (conversation.userName === 'Anonymous User' || !conversation.userName || conversation.userName === '')) {
+                // This will be set to true for the most recent anonymous conversation
+                // We'll handle this after the loop
+            }
+
             if (shouldUpdate) {
                 const oldUserName = conversation.userName || 'Anonymous User';
                 
@@ -460,6 +467,71 @@ class ChatbotManager {
                 updated = true;
             }
         });
+
+        // Fallback: If no conversation was updated, find and update the most recent anonymous conversation
+        if (!updated) {
+            console.log('🔍 No direct match found, looking for most recent anonymous conversation...');
+            
+            const anonymousConversations = this.conversations.filter(conv => 
+                conv.userName === 'Anonymous User' || !conv.userName || conv.userName === ''
+            );
+            
+            if (anonymousConversations.length > 0) {
+                // Sort by most recent and take the first one
+                const mostRecentAnonymous = anonymousConversations.sort((a, b) => {
+                    const timeA = new Date(a.lastMessageAt || a.createdAt || 0);
+                    const timeB = new Date(b.lastMessageAt || b.createdAt || 0);
+                    return timeB - timeA;
+                })[0];
+                
+                console.log('📍 Updating most recent anonymous conversation as fallback:', mostRecentAnonymous.id);
+                
+                const oldUserName = mostRecentAnonymous.userName || 'Anonymous User';
+                
+                // Update with complete user identity
+                const newUserName = identityData.name || identityData.userName || identityData.email || identityData.userEmail;
+                mostRecentAnonymous.userName = newUserName;
+                mostRecentAnonymous.userEmail = identityData.email || identityData.userEmail;
+                mostRecentAnonymous.restaurantName = identityData.restaurantName;
+                mostRecentAnonymous.userPhone = identityData.phone || identityData.userPhone;
+                mostRecentAnonymous.userType = identityData.userType || identityData.systemUsage;
+                mostRecentAnonymous.systemUsage = identityData.systemUsage;
+                mostRecentAnonymous.language = identityData.language;
+                mostRecentAnonymous.languageCode = identityData.languageCode;
+                
+                // Enhanced flag mapping
+                const flagMap = {
+                    'svenska': '🇸🇪',
+                    'swedish': '🇸🇪',
+                    'english': '🇺🇸',
+                    'sv': '🇸🇪',
+                    'en': '🇺🇸',
+                    'sv-SE': '🇸🇪',
+                    'en-US': '🇺🇸'
+                };
+                
+                let correctFlag = '🇺🇸';
+                if (identityData.languageFlag && identityData.languageFlag.trim()) {
+                    correctFlag = identityData.languageFlag.trim();
+                } else if (identityData.displayFlag && identityData.displayFlag.trim()) {
+                    correctFlag = identityData.displayFlag.trim();
+                } else if (identityData.language) {
+                    correctFlag = flagMap[identityData.language.toLowerCase()] || '🇺🇸';
+                } else if (identityData.languageCode) {
+                    correctFlag = flagMap[identityData.languageCode.toLowerCase()] || '🇺🇸';
+                }
+                
+                mostRecentAnonymous.languageFlag = correctFlag;
+                mostRecentAnonymous.displayFlag = correctFlag;
+                mostRecentAnonymous.userRegistered = true;
+                mostRecentAnonymous.identityLinked = true;
+                mostRecentAnonymous.lastUpdated = identityData.timestamp || new Date().toISOString();
+                mostRecentAnonymous.previousName = oldUserName;
+
+                console.log(`✅ Fallback update: ${oldUserName} → ${mostRecentAnonymous.userName} (${mostRecentAnonymous.languageFlag})`);
+                updated = true;
+            }
+        }
 
         if (updated) {
             // Save updated conversations to multiple storage locations

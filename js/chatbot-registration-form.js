@@ -662,6 +662,21 @@
                     }
                 }
 
+                // Final fallback: If still no match, use the most recent anonymous conversation
+                if (!targetConversation) {
+                    const allAnonymous = conversations.filter(conv => 
+                        conv.userName === 'Anonymous User' || !conv.userName || conv.userName === ''
+                    );
+                    
+                    if (allAnonymous.length > 0) {
+                        targetConversation = allAnonymous.sort((a, b) => 
+                            new Date(b.lastMessageAt || b.createdAt || 0) - new Date(a.lastMessageAt || a.createdAt || 0)
+                        )[0];
+                        foundConversations.push('by most recent anonymous (fallback)');
+                        console.log('🔄 Using fallback: most recent anonymous conversation');
+                    }
+                }
+
                 // Update the conversation with user identity
                 if (targetConversation) {
                     const oldName = targetConversation.userName || 'Anonymous User';
