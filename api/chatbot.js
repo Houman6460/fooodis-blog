@@ -759,7 +759,7 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
         const englishResponses = [
             "I'm here to help with any questions about Fooodis restaurant! Whether you need information about our menu, reservations, hours, or anything else, just let me know how I can assist you.",
             "Thanks for reaching out! I'd love to help you with information about our restaurant. What would you like to know about our menu, services, or dining options?",
-            "I'm your Fooodis assistant and I'm here to help! Feel free to ask me about our menu, reservations, hours, location, or anything else related to our restaurant."
+"I'm your Fooodis assistant and I'm here to help! Feel free to ask me about our menu, reservations, hours, location, or anything else related to our restaurant."
         ];
         return englishResponses[Math.floor(Math.random() * englishResponses.length)];
     }
@@ -1565,4 +1565,91 @@ if (!router) {
     router = require('express').Router();
 }
 
-module.exports = router;
+// Generate AI response for node
+router.post('/generate-node-response', async (req, res) => {
+    try {
+        const { assistantId, prompt, context } = req.body;
+
+        if (!assistantId || !prompt) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing required fields: assistantId, prompt'
+            });
+        }
+
+        // Get OpenAI configuration
+        const openaiConfig = getChatbotSettings();
+        if (!openaiConfig.openaiApiKey) {
+            return res.status(500).json({
+                success: false,
+                error: 'OpenAI API key not configured'
+            });
+        }
+
+        // Build the AI prompt with structured instructions
+        const systemPrompt = `You are a chatbot node response generator. Generate responses in this exact JSON format:
+{
+  "message": "Your response message here",
+  "quickReplies": ["Option 1", "Option 2", "Option 3"] // Optional, include 2-4 options when helpful
+}
+
+Instructions:
+- Keep messages concise and helpful
+- Language should match the context (${context.language || 'en'})
+- For food delivery service context
+- Include quick replies when they would be useful for navigation
+- Response must be valid JSON only`;
+
+        const userPrompt = `${prompt}
+
+Context: ${JSON.stringify(context)}`;
+
+        // Make OpenAI API call
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${openaiConfig.openaiApiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userPrompt }
+                ],
+                max_tokens: 500,
+                temperature: 0.7
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`OpenAI API error: ${response.status}`);
+        }
+
+        const aiResponse = await response.json();
+        const generatedContent = aiResponse.choices[0].message.content;
+
+        try {
+            // Parse the JSON response
+            const parsedResponse = JSON.parse(generatedContent);
+
+            // Validate the response structure
+            if (!parsedResponse.message) {
+                throw new Error('Invalid response format: missing message');
+            }
+
+            res.json({
+                success: true,
+                ...parsedResponse,
+                metadata: {
+                    assistantId,
+                    context,
+                    generatedAt: new Date().toISOString()
+                }
+            });
+
+        } catch (parseError) {
+            console.error('Error parsing AI response:', parseError);
+
+            // Fallback: try to extract message from malformed response
+            const fallbackMessage = generatedContent.replace(/```json|
