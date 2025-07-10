@@ -327,9 +327,28 @@
                 const languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
                 localStorage.setItem('fooodis-language-flag', languageFlag);
 
-                // CRITICAL: Start DOM replacement system
-                console.log('🚀 STARTING DOM REPLACEMENT SYSTEM...');
-                this.startDOMReplacementSystem(formData, languageFlag);
+                // CRITICAL: Trigger user identity update
+                console.log('🚀 TRIGGERING USER IDENTITY UPDATE...');
+                document.dispatchEvent(new CustomEvent('userRegistered', {
+                    detail: {
+                        name: formData.name,
+                        userName: formData.name,
+                        email: formData.email,
+                        userEmail: formData.email,
+                        phone: formData.phone,
+                        userPhone: formData.phone,
+                        restaurantName: formData.restaurantName,
+                        systemUsage: formData.systemUsage,
+                        userType: formData.systemUsage,
+                        language: formData.language,
+                        languageFlag: languageFlag,
+                        displayFlag: languageFlag,
+                        timestamp: formData.timestamp,
+                        conversationId: this.getCurrentConversationId(),
+                        sessionId: this.getSessionId(),
+                        deviceId: this.getDeviceId()
+                    }
+                }));
 
                 // Close form and send success message
                 this.closeForm();
@@ -656,6 +675,32 @@
                 default:
                     return 'Registered User';
             }
+        },
+
+        getCurrentConversationId: function() {
+            // Try to get current conversation ID from various sources
+            return window.currentConversationId || 
+                   localStorage.getItem('current-conversation-id') ||
+                   sessionStorage.getItem('conversation-id') ||
+                   null;
+        },
+
+        getSessionId: function() {
+            let sessionId = sessionStorage.getItem('chatbot-session-id');
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('chatbot-session-id', sessionId);
+            }
+            return sessionId;
+        },
+
+        getDeviceId: function() {
+            let deviceId = localStorage.getItem('chatbot-device-id');
+            if (!deviceId) {
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatbot-device-id', deviceId);
+            }
+            return deviceId;
         },
 
         injectStyles: function() {
