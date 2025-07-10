@@ -365,15 +365,20 @@
                         name: formData.name,
                         email: formData.email,
                         restaurantName: formData.restaurantName,
+                        phone: formData.phone,
+                        userType: formData.systemUsage,
+                        systemUsage: formData.systemUsage,
                         conversationId: formData.conversationId,
                         sessionId: formData.sessionId,
                         deviceId: formData.deviceId,
                         language: formData.language,
                         languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
                         languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                        displayFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
                         identityLinked: true,
                         userRegistered: true,
-                        previousName: 'Anonymous User'
+                        previousName: 'Anonymous User',
+                        timestamp: formData.timestamp
                     };
 
                     console.log('🔄 Triggering identity update events with data:', identityUpdateData);
@@ -391,6 +396,12 @@
                     window.dispatchEvent(new CustomEvent('leadsDataUpdated', {
                         detail: { action: 'new', data: formData }
                     }));
+                    
+                    // Force a dashboard refresh if it exists
+                    if (window.chatbotManager && window.chatbotManager.renderConversations) {
+                        console.log('🔄 Forcing dashboard conversation refresh');
+                        window.chatbotManager.renderConversations();
+                    }
                 }, 500);
 
             } catch (error) {
