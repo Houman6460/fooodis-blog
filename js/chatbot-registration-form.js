@@ -62,28 +62,33 @@
 
                     <form class="registration-form" id="registrationForm">
                         <div class="form-group">
-                            <label for="userName" class="field-label" data-en="Your Name" data-sv="Ditt namn">Ditt namn</label>
-                            <input type="text" id="userName" name="userName" placeholder="Ange ditt namn" data-placeholder-en="Enter your name" data-placeholder-sv="Ange ditt namn" required>
+                            <label for="userName" class="field-label" data-en="Your Name" data-sv="Ditt namn">Your Name</label>
+                            <input type="text" id="userName" name="userName" placeholder="Enter your name" data-placeholder-en="Enter your name" data-placeholder-sv="Ange ditt namn" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="userPhone" class="field-label" data-en="Your Phone" data-sv="Din telefon">Din telefon</label>
+                            <label for="restaurantName" class="field-label" data-en="Restaurant Name" data-sv="Restaurangnamn">Restaurant Name</label>
+                            <input type="text" id="restaurantName" name="restaurantName" placeholder="Enter restaurant name" data-placeholder-en="Enter restaurant name" data-placeholder-sv="Ange restaurangnamn" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userPhone" class="field-label" data-en="Phone Number" data-sv="Telefonnummer">Phone Number</label>
                             <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" data-placeholder-en="+46 70 123 45 67" data-placeholder-sv="+46 70 123 45 67" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="systemUsage" class="field-label" data-en="Are you currently using a delivery system for your restaurant?" data-sv="Använder du för närvarande ett leveranssystem för din restaurang?">Använder du för närvarande ett leveranssystem för din restaurang?</label>
+                            <label for="systemUsage" class="field-label" data-en="Do you use a delivery system?" data-sv="Använder du ett leveranssystem?">Do you use a delivery system?</label>
                             <select id="systemUsage" name="systemUsage" required>
-                                <option value="" data-en="Please select an option" data-sv="Vänligen välj ett alternativ">Vänligen välj ett alternativ</option>
-                                <option value="current_user" data-en="Yes, I'm currently using Fooodis" data-sv="Ja, jag använder för närvarande Fooodis">Ja, jag använder för närvarande Fooodis</option>
-                                <option value="competitor_user" data-en="Yes, I'm using another system" data-sv="Ja, jag använder ett annat leveranssystem">Ja, jag använder ett annat leveranssystem</option>
-                                <option value="potential_user" data-en="No, I'm looking for a solution" data-sv="Nej, jag söker efter en lösning">Nej, jag söker efter en lösning</option>
+                                <option value="" data-en="Select an option" data-sv="Välj ett alternativ">Select an option</option>
+                                <option value="current_user" data-en="Yes, I use Fooodis" data-sv="Ja, jag använder Fooodis">Yes, I use Fooodis</option>
+                                <option value="competitor_user" data-en="Yes, I use another system" data-sv="Ja, jag använder ett annat system">Yes, I use another system</option>
+                                <option value="potential_user" data-en="No, looking for a solution" data-sv="Nej, söker en lösning">No, looking for a solution</option>
                             </select>
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="skip-btn" data-en="Skip for now" data-sv="Hoppa över för tillfället">Hoppa över för tillfället</button>
-                            <button type="submit" class="submit-btn" data-en="Submit" data-sv="Skicka">Skicka</button>
+                            <button type="button" class="skip-btn" data-en="Skip" data-sv="Hoppa över">Skip</button>
+                            <button type="submit" class="submit-btn" data-en="Submit" data-sv="Skicka">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -262,6 +267,7 @@
         submitForm: function() {
             const formData = {
                 name: document.getElementById('userName')?.value || '',
+                restaurantName: document.getElementById('restaurantName')?.value || '',
                 phone: document.getElementById('userPhone')?.value || '',
                 systemUsage: document.getElementById('systemUsage')?.value || '',
                 timestamp: new Date().toISOString()
@@ -270,15 +276,26 @@
             // Save registration data
             this.saveRegistrationData(formData);
 
-            // Mark user as registered
+            // Mark user as registered and store user context for chatbot
             localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
+            localStorage.setItem('chatbot-user-context', JSON.stringify({
+                userName: formData.name,
+                restaurantName: formData.restaurantName,
+                phone: formData.phone,
+                systemUsage: formData.systemUsage,
+                registeredAt: formData.timestamp
+            }));
 
             // Close form and continue chat
             this.closeForm();
 
-            // Send success message to chat
+            // Send personalized success message to chat
+            const welcomeMessage = formData.name ? 
+                `Thank you ${formData.name}! I'll remember that you're from ${formData.restaurantName || 'your restaurant'}. How can I help you today?` : 
+                'Thank you for providing your information! How can I help you today?';
+
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
-                window.FoodisChatbot.addMessage('Thank you for providing your information! How can I help you today?', 'assistant');
+                window.FoodisChatbot.addMessage(welcomeMessage, 'assistant');
             }
         },
 
@@ -339,31 +356,31 @@
 
                 .registration-container {
                     background: white;
-                    border-radius: 20px;
-                    padding: 30px;
-                    max-width: 340px;
+                    border-radius: 16px;
+                    padding: 20px;
+                    max-width: 320px;
                     width: 95%;
-                    max-height: 500px;
+                    max-height: 480px;
                     overflow-y: auto;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
                     position: relative;
                 }
 
                 .language-tabs {
                     display: flex;
-                    margin-bottom: 30px;
+                    margin-bottom: 16px;
                     background: #f8f9fa;
-                    border-radius: 8px;
-                    padding: 4px;
+                    border-radius: 6px;
+                    padding: 3px;
                 }
 
                 .lang-tab {
                     flex: 1;
-                    padding: 12px 16px;
+                    padding: 8px 12px;
                     border: none;
                     background: transparent;
-                    border-radius: 6px;
-                    font-size: 16px;
+                    border-radius: 4px;
+                    font-size: 14px;
                     font-weight: 500;
                     color: #6c757d;
                     cursor: pointer;
@@ -373,57 +390,45 @@
                 .lang-tab.active {
                     background: #e8f24c;
                     color: #000;
-                    position: relative;
-                }
-
-                .lang-tab.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -4px;
-                    left: 0;
-                    right: 0;
-                    height: 3px;
-                    background: #e8f24c;
-                    border-radius: 2px;
                 }
 
                 .registration-header {
                     text-align: left;
-                    margin-bottom: 30px;
+                    margin-bottom: 16px;
                 }
 
                 .form-title {
-                    font-size: 28px;
+                    font-size: 22px;
                     font-weight: bold;
                     color: #2c2c2c;
-                    margin: 0 0 8px 0;
+                    margin: 0 0 4px 0;
                 }
 
                 .form-subtitle {
-                    font-size: 16px;
+                    font-size: 14px;
                     color: #6c757d;
                     margin: 0;
                 }
 
                 .form-group {
-                    margin-bottom: 20px;
+                    margin-bottom: 12px;
                 }
 
                 .field-label {
                     display: block;
-                    font-size: 16px;
+                    font-size: 14px;
                     color: #2c2c2c;
-                    margin-bottom: 8px;
+                    margin-bottom: 4px;
                     font-weight: 500;
                 }
 
                 .registration-form input,
                 .registration-form select {
                     width: 100%;
-                    padding: 16px;
+                    padding: 10px 12px;
                     border: 2px solid #e9ecef;
-                    border-radius: 12px;
-                    font-size: 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
                     background: #f8f9fa;
                     transition: all 0.3s ease;
                     box-sizing: border-box;
@@ -438,27 +443,27 @@
 
                 .registration-form select {
                     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-                    background-position: right 12px center;
+                    background-position: right 10px center;
                     background-repeat: no-repeat;
-                    background-size: 16px;
-                    padding-right: 40px;
+                    background-size: 14px;
+                    padding-right: 32px;
                     appearance: none;
                 }
 
                 .form-actions {
                     display: flex;
-                    gap: 12px;
-                    margin-top: 30px;
+                    gap: 8px;
+                    margin-top: 16px;
                 }
 
                 .skip-btn {
                     flex: 1;
-                    padding: 16px;
+                    padding: 10px 12px;
                     border: 2px solid #e9ecef;
                     background: white;
                     color: #6c757d;
-                    border-radius: 12px;
-                    font-size: 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
                     font-weight: 500;
                     cursor: pointer;
                     transition: all 0.3s ease;
@@ -471,12 +476,12 @@
 
                 .submit-btn {
                     flex: 2;
-                    padding: 16px;
+                    padding: 10px 12px;
                     border: none;
                     background: #e8f24c;
                     color: #000;
-                    border-radius: 12px;
-                    font-size: 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
                     font-weight: 600;
                     cursor: pointer;
                     transition: all 0.3s ease;

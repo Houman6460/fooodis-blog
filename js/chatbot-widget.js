@@ -900,7 +900,8 @@
                     padding: 15px !important;
                     align-items: center !important;
                     gap: 10px !important;
-                    background: #f8f9fa !importantborder-top: 1px solid #e9ecef !important;
+                    background: #f8f9fa !importantborder-top: 1px solid #```text
+e9ecef !important;
                 }
 
                 .typing-indicator {
@@ -1119,13 +1120,36 @@
             this.processMessage(message);
         },
 
-        addMessage: function(content, sender) {
+        // Get user context for personalized responses
+        getUserContext: function() {
+            try {
+                const userContext = localStorage.getItem('chatbot-user-context');
+                return userContext ? JSON.parse(userContext) : null;
+            } catch (error) {
+                console.warn('Error getting user context:', error);
+                return null;
+            }
+        },
+
+        // Add a message to the chat
+        addMessage: function(message, sender) {
             const messagesContainer = document.getElementById('chatbot-messages');
             if (!messagesContainer) return;
 
             // Play receive sound for assistant messages
             if (sender === 'assistant') {
                 this.playSound('receive');
+            }
+
+            // Personalize assistant messages if user context is available
+            if (sender === 'assistant') {
+                const userContext = this.getUserContext();
+                if (userContext && userContext.userName) {
+                    // Replace generic greetings with personalized ones
+                    message = message.replace(/\bHello\b/gi, `Hello ${userContext.userName}`)
+                                   .replace(/\bHi\b/gi, `Hi ${userContext.userName}`)
+                                   .replace(/\byour restaurant\b/gi, userContext.restaurantName || 'your restaurant');
+                }
             }
 
             const messageElement = document.createElement('div');
