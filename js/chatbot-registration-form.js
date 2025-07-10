@@ -23,35 +23,20 @@
 
         // Show registration form when needed
         showRegistrationForm: function() {
-            console.log('🔐 showRegistrationForm called');
-
             const chatbotWidget = document.querySelector('#fooodis-chatbot');
             const chatbotWindow = document.querySelector('#chatbot-window');
-
-            console.log('Found elements:', { 
-                chatbotWidget: !!chatbotWidget, 
-                chatbotWindow: !!chatbotWindow 
-            });
 
             if (!chatbotWidget || !chatbotWindow) {
                 console.warn('Chatbot widget or window not found');
                 return;
             }
 
-            // Remove any existing form
-            const existingForm = chatbotWindow.querySelector('.registration-overlay');
-            if (existingForm) {
-                existingForm.remove();
-            }
-
             // Create form overlay positioned within chatbot window
             const formOverlay = this.createFormOverlay();
             chatbotWindow.appendChild(formOverlay);
 
-            console.log('✅ Registration form added to chatbot window');
-
-            // Ensure form is visible
-            formOverlay.style.display = 'flex';
+            // Show first step
+            this.showStep(1);
         },
 
         // Create form HTML structure

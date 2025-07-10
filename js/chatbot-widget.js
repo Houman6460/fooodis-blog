@@ -1717,14 +1717,4 @@
             }
         },
     };
-
-            // Test registration form after a short delay
-            setTimeout(() => {
-                console.log('🔧 Testing registration form availability...');
-                if (window.ChatbotRegistrationForm) {
-                    console.log('✅ Registration form is available');
-                } else {
-                    console.log('❌ Registration form not found, attempting to load...');
-                }
-            }, 2000);
 })();
