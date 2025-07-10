@@ -331,6 +331,21 @@ class NodeFlowBuilder {
             return;
         }
 
+        // Handle node duplicate button
+        if (target.classList.contains('node-duplicate-btn') || target.closest('.node-duplicate-btn') || 
+            target.classList.contains('fa-copy') || target.closest('.fa-copy')) {
+            const nodeElement = target.closest('.flow-node');
+            if (nodeElement) {
+                const nodeId = nodeElement.dataset.nodeId;
+                const node = this.nodes.find(n => n.id === nodeId);
+                if (node) {
+                    this.duplicateNode(node);
+                }
+            }
+            e.stopPropagation();
+            return;
+        }
+
         // Handle node delete button
         if (target.classList.contains('node-delete-btn') || target.closest('.node-delete-btn') || 
             target.classList.contains('fa-trash') || target.closest('.fa-trash')) {
@@ -625,6 +640,9 @@ class NodeFlowBuilder {
                 <div class="node-controls">
                     <button class="node-btn node-edit-btn" title="Edit">
                         <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="node-btn node-duplicate-btn" title="Duplicate">
+                        <i class="fas fa-copy"></i>
                     </button>
                     <button class="node-btn node-delete-btn" title="Delete">
                         <i class="fas fa-trash"></i>
@@ -1957,6 +1975,31 @@ class NodeFlowBuilder {
 
         this.showToast('Node updated successfully', 'success');
         this.autoSave(); // Auto-save when updating node
+    }
+
+    duplicateNode(originalNode) {
+        // Create a deep copy of the node data
+        const duplicatedData = JSON.parse(JSON.stringify(originalNode.data));
+        
+        // Modify the title to indicate it's a copy
+        if (duplicatedData.title) {
+            duplicatedData.title = duplicatedData.title + ' (Copy)';
+        }
+
+        // Create the duplicated node with offset position
+        const duplicatedNode = this.createNode({
+            type: originalNode.type,
+            position: { 
+                x: originalNode.position.x + 50, 
+                y: originalNode.position.y + 50 
+            },
+            data: duplicatedData
+        });
+
+        this.renderNodes();
+        this.renderConnections();
+        this.showToast('Node duplicated successfully', 'success');
+        this.autoSave(); // Auto-save when duplicating node
     }
 
     deleteNode(nodeId) {

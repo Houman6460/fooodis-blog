@@ -251,6 +251,11 @@
     background: #555;
 }
 
+.node-duplicate-btn:hover {
+    background: #4CAF50;
+    color: white;
+}
+
 .node-content {
     padding: 12px;
     color: #ccc;
