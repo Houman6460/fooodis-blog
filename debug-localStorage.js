@@ -15,4 +15,16 @@ localStorage.removeItem('chatbot-user'); // Remove old format too
 localStorage.removeItem('chatbot-registrations'); // Alternative key
 
 console.log('✅ Chatbot data cleared - you are now a new user');
+
+// Add test function for registration form
+window.showRegistrationForm = function() {
+    console.log('🧪 Manually triggering registration form...');
+    if (window.ChatbotRegistrationForm) {
+        window.ChatbotRegistrationForm.showRegistrationForm();
+    } else {
+        console.error('❌ ChatbotRegistrationForm not available');
+    }
+};
+
+console.log('💡 Use showRegistrationForm() to manually test the form');
 console.log('=== END DEBUG INFO ===');

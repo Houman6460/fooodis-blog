@@ -1119,7 +1119,7 @@
             this.processMessage(message);
         },
 
-        addMessage: function(content, sender) {
+        addMessage: function(message, type) {
             const messagesContainer = document.getElementById('chatbot-messages');
             if (!messagesContainer) return;
 

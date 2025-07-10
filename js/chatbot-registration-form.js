@@ -461,4 +461,14 @@
         }, 100);
     });
 
+    // Add global test function for debugging
+    window.testRegistrationForm = function() {
+        console.log('🧪 Testing registration form display...');
+        if (window.ChatbotRegistrationForm) {
+            window.ChatbotRegistrationForm.showRegistrationForm();
+        } else {
+            console.error('ChatbotRegistrationForm not available');
+        }
+    };
+
 })();
