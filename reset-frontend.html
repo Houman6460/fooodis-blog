@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Frontend Data - Fooodis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .reset-container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .reset-btn {
+            background: #e8f24c;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .reset-btn:hover {
+            background: #dce63a;
+        }
+        .log {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+            font-family: monospace;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #4caf50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-container">
+        <h1>🔄 Reset Frontend Data</h1>
+        <p>This will clear all stored user data to test as a new user.</p>
+        
+        <button class="reset-btn" onclick="clearAllData()">Clear All Data</button>
+        <button class="reset-btn" onclick="window.location.reload()">Refresh Page</button>
+        
+        <div class="status" id="status"></div>
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logEl = document.getElementById('log');
+            logEl.style.display = 'block';
+            logEl.innerHTML += message + '\n';
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(message);
+        }
+
+        function showStatus(message, type = 'success') {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+            statusEl.style.display = 'block';
+        }
+
+        function clearAllData() {
+            log('🧹 Starting frontend data cleanup...');
+            
+            // Clear all chatbot-related localStorage keys
+            const keysToRemove = [
+                'chatbot-current-user',
+                'chatbot-registrations', 
+                'chatbot-conversations',
+                'chatbot-session-id',
+                'chatbot-device-id',
+                'fooodis-user-name',
+                'fooodis-user-email',
+                'fooodis-restaurant-name',
+                'fooodis-language',
+                'fooodis-chatbot-conversations',
+                'fooodis-chatbot-settings',
+                'fooodis-chatbot-assistants',
+                'fooodis-chatbot-scenarios',
+                'fooodis-chatbot-analytics',
+                'user-leads',
+                'openai-api-key',
+                'OPENAI_API_KEY',
+                'aiConfig',
+                'fooodis-aiConfig'
+            ];
+
+            let clearedCount = 0;
+            keysToRemove.forEach(key => {
+                if (localStorage.getItem(key)) {
+                    localStorage.removeItem(key);
+                    clearedCount++;
+                    log(`🗑️ Removed: ${key}`);
+                }
+            });
+
+            // Clear all keys that start with 'fooodis-' or 'chatbot-'
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const key = localStorage.key(i);
+                if (key && (key.startsWith('fooodis-') || key.startsWith('chatbot-'))) {
+                    localStorage.removeItem(key);
+                    clearedCount++;
+                    log(`🗑️ Removed pattern match: ${key}`);
+                }
+            }
+
+            // Clear sessionStorage
+            sessionStorage.clear();
+            log('✅ Cleared sessionStorage');
+
+            log(`✅ Cleared ${clearedCount} localStorage items`);
+            log('🎯 Frontend reset complete!');
+            
+            showStatus(`Successfully cleared ${clearedCount} stored items. Click "Refresh Page" to complete reset.`);
+        }
+
+        // Auto-run on page load if requested
+        if (window.location.search.includes('auto=true')) {
+            clearAllData();
+        }
+    </script>
+</body>
+</html>
