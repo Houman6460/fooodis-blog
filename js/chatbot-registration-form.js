@@ -364,20 +364,37 @@
                     deviceId: deviceId
                 };
 
-                // Fire the userIdentityUpdated event that ChatbotManager is listening for
+                // Fire multiple events to ensure update is caught
+                console.log('🚀 FIRING IDENTITY UPDATE EVENTS...');
+                
+                // Primary event
                 window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
-                    detail: identityData
+                    detail: identityData,
+                    bubbles: true
                 }));
-
-                // Also fire the conversationDataUpdated event as backup
+                
+                // Backup events
                 window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
                     detail: {
                         action: 'identity_update',
                         data: identityData
-                    }
+                    },
+                    bubbles: true
                 }));
-
-                console.log('✅ Identity update events fired:', identityData);
+                
+                // Additional event for legacy compatibility
+                document.dispatchEvent(new CustomEvent('userRegistered', {
+                    detail: identityData,
+                    bubbles: true
+                }));
+                
+                // Force direct call if chatbotManager exists
+                if (window.chatbotManager && window.chatbotManager.updateConversationIdentity) {
+                    console.log('🎯 DIRECT CALL - Calling updateConversationIdentity directly');
+                    window.chatbotManager.updateConversationIdentity(identityData);
+                }
+                
+                console.log('✅ ALL IDENTITY UPDATE EVENTS FIRED:', identityData);
 
                 // Close form and send success message
                 this.closeForm();

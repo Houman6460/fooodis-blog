@@ -354,59 +354,20 @@ class ChatbotManager {
 
         let updated = false;
         
-        // Enhanced matching logic - find conversations by multiple criteria
-        this.conversations.forEach(conversation => {
-            let shouldUpdate = false;
+        // AGGRESSIVE APPROACH: Update ALL anonymous conversations
+        this.conversations.forEach((conversation, index) => {
+            // Check if this is an anonymous conversation that needs updating
+            const isAnonymous = !conversation.userName || 
+                               conversation.userName === 'Anonymous User' || 
+                               conversation.userName === '' ||
+                               conversation.userName.trim() === '';
             
-            // Primary match: by conversation ID
-            if (identityData.conversationId && 
-                (conversation.id === identityData.conversationId || 
-                 conversation.conversationId === identityData.conversationId)) {
-                shouldUpdate = true;
-                console.log('📍 Found conversation by ID:', conversation.id);
-            }
-            
-            // Secondary match: by session/device for anonymous users
-            if (!shouldUpdate && 
-                (conversation.userName === 'Anonymous User' || !conversation.userName || conversation.userName === '')) {
+            if (isAnonymous) {
+                console.log(`🎯 UPDATING ANONYMOUS CONVERSATION ${index + 1}:`, conversation.id);
                 
-                const sessionMatch = identityData.sessionId && 
-                    (conversation.sessionId === identityData.sessionId || 
-                     conversation.conversationId?.includes(identityData.sessionId));
-                
-                const deviceMatch = identityData.deviceId && 
-                    (conversation.deviceId === identityData.deviceId ||
-                     conversation.conversationId?.includes(identityData.deviceId));
-                
-                if (sessionMatch || deviceMatch) {
-                    shouldUpdate = true;
-                    console.log('📍 Found anonymous conversation by session/device:', conversation.id);
-                }
-            }
-            
-            // Tertiary match: recent anonymous conversations (within last hour)
-            if (!shouldUpdate && 
-                (conversation.userName === 'Anonymous User' || !conversation.userName || conversation.userName === '')) {
-                const conversationTime = new Date(conversation.createdAt || conversation.lastMessageAt || 0);
-                const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-                
-                if (conversationTime > oneHourAgo) {
-                    shouldUpdate = true;
-                    console.log('📍 Found recent anonymous conversation:', conversation.id);
-                }
-            }
-
-            // Fallback: If no matches found and we have anonymous conversations, update the most recent one
-            if (!shouldUpdate && 
-                (conversation.userName === 'Anonymous User' || !conversation.userName || conversation.userName === '')) {
-                // This will be set to true for the most recent anonymous conversation
-                // We'll handle this after the loop
-            }
-
-            if (shouldUpdate) {
                 const oldUserName = conversation.userName || 'Anonymous User';
                 
-                // Update conversation with complete user identity - prioritize name fields
+                // Apply complete identity update
                 const newUserName = identityData.name || identityData.userName || identityData.email || identityData.userEmail;
                 conversation.userName = newUserName;
                 conversation.userEmail = identityData.email || identityData.userEmail;
@@ -417,15 +378,7 @@ class ChatbotManager {
                 conversation.language = identityData.language;
                 conversation.languageCode = identityData.languageCode;
                 
-                console.log('🔄 Identity update details:', {
-                    oldUserName,
-                    newUserName,
-                    language: identityData.language,
-                    languageCode: identityData.languageCode,
-                    providedFlag: identityData.languageFlag || identityData.displayFlag
-                });
-                
-                // Enhanced language flag mapping with comprehensive detection
+                // Enhanced language flag mapping
                 const flagMap = {
                     'svenska': '🇸🇪',
                     'swedish': '🇸🇪',
@@ -436,7 +389,7 @@ class ChatbotManager {
                     'en-US': '🇺🇸'
                 };
                 
-                // Determine correct flag with priority order
+                // Determine correct flag
                 let correctFlag = '🇺🇸'; // Default
                 
                 if (identityData.languageFlag && identityData.languageFlag.trim()) {
@@ -456,79 +409,37 @@ class ChatbotManager {
                 conversation.lastUpdated = identityData.timestamp || new Date().toISOString();
                 conversation.previousName = oldUserName;
 
-                console.log(`✅ Updated conversation: ${oldUserName} → ${conversation.userName} (${conversation.languageFlag})`);
-                console.log('🏳️ Flag assignment details:', {
-                    finalFlag: correctFlag,
-                    detectedFrom: identityData.languageFlag ? 'languageFlag' : 
-                                 identityData.displayFlag ? 'displayFlag' :
-                                 identityData.language ? 'language' :
-                                 identityData.languageCode ? 'languageCode' : 'default'
-                });
+                console.log(`✅ UPDATED: ${oldUserName} → ${conversation.userName} (${conversation.languageFlag})`);
                 updated = true;
             }
         });
-
-        // Fallback: If no conversation was updated, find and update the most recent anonymous conversation
-        if (!updated) {
-            console.log('🔍 No direct match found, looking for most recent anonymous conversation...');
-            
-            const anonymousConversations = this.conversations.filter(conv => 
-                conv.userName === 'Anonymous User' || !conv.userName || conv.userName === ''
-            );
-            
-            if (anonymousConversations.length > 0) {
-                // Sort by most recent and take the first one
-                const mostRecentAnonymous = anonymousConversations.sort((a, b) => {
-                    const timeA = new Date(a.lastMessageAt || a.createdAt || 0);
-                    const timeB = new Date(b.lastMessageAt || b.createdAt || 0);
-                    return timeB - timeA;
-                })[0];
-                
-                console.log('📍 Updating most recent anonymous conversation as fallback:', mostRecentAnonymous.id);
-                
-                this.applyIdentityUpdate(mostRecentAnonymous, identityData);
-                updated = true;
-            } else {
-                // If no anonymous conversations found, update ALL conversations (aggressive approach)
-                console.log('🔥 No anonymous conversations found, updating ALL conversations with identity data');
-                this.conversations.forEach(conv => {
-                    this.applyIdentityUpdate(conv, identityData);
-                });
-                updated = true;
-            }
-        }
 
         if (updated) {
             // Save updated conversations to multiple storage locations
             localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(this.conversations));
             localStorage.setItem('chatbot-conversations', JSON.stringify(this.conversations));
             
-            // Force immediate UI refresh with multiple attempts
-            this.renderConversations(); // Immediate refresh
+            console.log('💾 SAVED TO STORAGE - Updated conversations count:', this.conversations.length);
             
-            setTimeout(() => {
-                this.renderConversations();
-                console.log('✅ First delayed refresh: Conversation cards re-rendered');
-            }, 50);
+            // Force immediate UI refresh with aggressive scheduling
+            this.renderConversations();
+            console.log('🔄 IMMEDIATE REFRESH - Conversations re-rendered');
             
-            setTimeout(() => {
-                this.renderConversations();
-                console.log('✅ Second delayed refresh: Ensuring name update displayed');
-            }, 200);
+            // Multiple delayed refreshes to ensure update
+            [50, 100, 200, 500, 1000].forEach((delay, index) => {
+                setTimeout(() => {
+                    this.renderConversations();
+                    console.log(`✅ DELAYED REFRESH ${index + 1} (${delay}ms) - UI updated`);
+                }, delay);
+            });
             
-            setTimeout(() => {
-                this.renderConversations();
-                console.log('✅ Third delayed refresh: Final verification');
-            }, 500);
-            
-            console.log('✅ Conversation identity update completed and saved');
+            console.log('✅ COMPLETE - All anonymous conversations updated with identity');
         } else {
-            console.log('⚠️ No matching conversations found for identity update');
-            console.log('🔍 Available conversations:', this.conversations.map(c => ({
+            console.log('⚠️ NO UPDATES - No anonymous conversations found to update');
+            console.log('🔍 Current conversations:', this.conversations.map(c => ({
                 id: c.id || c.conversationId,
                 userName: c.userName,
-                sessionId: c.sessionId,
-                deviceId: c.deviceId
+                isAnonymous: !c.userName || c.userName === 'Anonymous User' || c.userName === ''
             })));
         }
     }
