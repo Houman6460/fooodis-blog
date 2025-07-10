@@ -128,6 +128,7 @@ if (typeof authAPI === 'function' || (authAPI && typeof authAPI.handle === 'func
     app.use('/api/auth', authAPI);
 }
 
+// API Routes
 // Note: Static serving is now handled by express.static('.') above
 
 // Start the server
