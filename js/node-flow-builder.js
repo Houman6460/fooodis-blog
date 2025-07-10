@@ -21,6 +21,9 @@ class NodeFlowBuilder {
         this.tempConnectionStart = null;
         this.masterTemplate = this.getMasterTemplate();
         this.autoSaveTimeout = null;
+        this.isInitialized = false;
+        this.eventListenersAdded = false;
+        this.lastNodeAddTime = 0;
 
         // Sync with ChatbotManager if available
         this.syncWithChatbotManager();
@@ -29,6 +32,9 @@ class NodeFlowBuilder {
         this.loadFlow();
 
         this.init();
+
+        // Start periodic health monitoring
+        this.startHealthMonitoring();
     }
 
     getMasterTemplate() {
@@ -136,10 +142,30 @@ class NodeFlowBuilder {
     }
 
     init() {
-        this.setupCanvas();
-        this.setupEventListeners();
-        this.setupToolbar();
-        this.createDefaultFlow();
+        // Ensure DOM is ready before initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.delayedInit());
+        } else {
+            this.delayedInit();
+        }
+    }
+
+    delayedInit() {
+        try {
+            this.setupCanvas();
+            this.setupEventListeners();
+            this.setupToolbar();
+            
+            // Small delay to ensure all DOM elements are properly rendered
+            setTimeout(() => {
+                this.createDefaultFlow();
+                this.isInitialized = true;
+                console.log('✅ Node Flow Builder initialized successfully');
+            }, 100);
+        } catch (error) {
+            console.error('❌ Node Flow Builder initialization failed:', error);
+            this.showToast('Failed to initialize flow builder', 'error');
+        }
     }
 
     setupCanvas() {
@@ -258,14 +284,24 @@ class NodeFlowBuilder {
     }
 
     setupEventListeners() {
-        // Canvas zoom controls
+        // Prevent duplicate event listeners
+        if (this.eventListenersAdded) {
+            return;
+        }
+        this.eventListenersAdded = true;
+
+        // Canvas zoom controls with error handling
         document.addEventListener('click', (e) => {
-            if (e.target.id === 'canvas-zoom-in') {
-                this.zoomIn();
-            } else if (e.target.id === 'canvas-zoom-out') {
-                this.zoomOut();
-            } else if (e.target.id === 'canvas-zoom-reset') {
-                this.resetZoom();
+            try {
+                if (e.target.id === 'canvas-zoom-in') {
+                    this.zoomIn();
+                } else if (e.target.id === 'canvas-zoom-out') {
+                    this.zoomOut();
+                } else if (e.target.id === 'canvas-zoom-reset') {
+                    this.resetZoom();
+                }
+            } catch (error) {
+                console.error('❌ Zoom control error:', error);
             }
         });
 
@@ -771,11 +807,24 @@ class NodeFlowBuilder {
 
     renderConnections() {
         const connectionsContainer = document.getElementById('flow-connections');
-        if (!connectionsContainer) return;
+        if (!connectionsContainer) {
+            console.warn('⚠️ Connections container not found');
+            return;
+        }
 
-        // Clear existing connections and buttons
-        connectionsContainer.innerHTML = '';
-        document.querySelectorAll('.disconnect-btn').forEach(btn => btn.remove());
+        try {
+            // Clear existing connections and buttons safely
+            connectionsContainer.innerHTML = '';
+            
+            // Remove disconnect buttons more reliably
+            const existingButtons = document.querySelectorAll('.disconnect-btn');
+            existingButtons.forEach(btn => {
+                try {
+                    btn.remove();
+                } catch (e) {
+                    console.warn('Failed to remove disconnect button:', e);
+                }
+            });
 
         // Create main SVG container that follows canvas transformations
         const mainSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -2255,11 +2304,19 @@ class NodeFlowBuilder {
     }
 
     addNode(type) {
-        // Prevent ghost duplicates by checking if we're already adding a node
-        if (this.isAddingNode) {
-            console.log('Node addition already in progress, preventing duplicate');
+        // Enhanced prevention of ghost duplicates
+        if (this.isAddingNode || !this.isInitialized) {
+            console.log('Node addition blocked: isAddingNode=', this.isAddingNode, 'isInitialized=', this.isInitialized);
             return;
         }
+
+        // Debounce rapid clicks
+        const now = Date.now();
+        if (this.lastNodeAddTime && (now - this.lastNodeAddTime) < 500) {
+            console.log('Node addition blocked: too rapid');
+            return;
+        }
+        this.lastNodeAddTime = now;
 
         this.isAddingNode = true;
 
@@ -2369,12 +2426,25 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseDown(e) {
-        // Ignore if clicking on UI elements like buttons or connection points
-        if (e.target.closest('.node-controls') || 
-            e.target.closest('.connection-point') || 
-            e.target.closest('.disconnect-btn') ||
-            e.target.closest('.toolbar-btn') ||
-            e.target.closest('.canvas-zoom-controls')) {
+        // Enhanced interaction filtering with better error handling
+        try {
+            // Ignore if clicking on UI elements like buttons or connection points
+            if (e.target.closest('.node-controls') || 
+                e.target.closest('.connection-point') || 
+                e.target.closest('.disconnect-btn') ||
+                e.target.closest('.toolbar-btn') ||
+                e.target.closest('.canvas-zoom-controls') ||
+                e.target.closest('.modal') ||
+                e.target.closest('.toast')) {
+                return;
+            }
+
+            // Additional safety check for disabled state
+            if (!this.isInitialized || this.isAddingNode) {
+                return;
+            }
+        } catch (error) {
+            console.error('❌ Canvas interaction error:', error);
             return;
         }
 
@@ -2447,15 +2517,68 @@ class NodeFlowBuilder {
     }
 
     autoSave() {
-        // Debounce auto-save to prevent excessive saves
-        if (this.autoSaveTimeout) {
-            clearTimeout(this.autoSaveTimeout);
-        }
+        try {
+            // Debounce auto-save to prevent excessive saves
+            if (this.autoSaveTimeout) {
+                clearTimeout(this.autoSaveTimeout);
+            }
 
-        this.autoSaveTimeout = setTimeout(() => {
-            this.saveFlow();
-            console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
-        }, 500); // Save after 500ms of inactivity
+            this.autoSaveTimeout = setTimeout(() => {
+                try {
+                    this.saveFlow();
+                    console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
+                } catch (error) {
+                    console.error('❌ Auto-save failed:', error);
+                    this.showToast('Auto-save failed', 'error');
+                }
+            }, 500); // Save after 500ms of inactivity
+        } catch (error) {
+            console.error('❌ Auto-save setup failed:', error);
+        }
+    }
+
+    // Health check and recovery mechanism
+    performHealthCheck() {
+        try {
+            const issues = [];
+            
+            // Check for missing DOM elements
+            if (!document.getElementById('flow-nodes')) {
+                issues.push('Missing flow-nodes container');
+            }
+            if (!document.getElementById('flow-connections')) {
+                issues.push('Missing flow-connections container');
+            }
+            
+            // Check for orphaned nodes
+            const nodeElements = document.querySelectorAll('.flow-node');
+            if (nodeElements.length !== this.nodes.length) {
+                issues.push(`DOM/data mismatch: ${nodeElements.length} elements vs ${this.nodes.length} nodes`);
+            }
+            
+            if (issues.length > 0) {
+                console.warn('⚠️ Health check issues found:', issues);
+                this.attemptRecovery();
+            }
+            
+            return issues.length === 0;
+        } catch (error) {
+            console.error('❌ Health check failed:', error);
+            return false;
+        }
+    }
+
+    attemptRecovery() {
+        console.log('🔄 Attempting system recovery...');
+        try {
+            // Re-render everything
+            this.renderNodes();
+            this.renderConnections();
+            this.showToast('System recovered', 'info');
+        } catch (error) {
+            console.error('❌ Recovery failed:', error);
+            this.showToast('Recovery failed - please refresh page', 'error');
+        }
     }
 
     scheduleAutoSave() {
@@ -2468,6 +2591,22 @@ class NodeFlowBuilder {
         this.autoSaveTimeout = setTimeout(() => {
             this.saveFlow();
         }, 2000);
+    }
+
+    startHealthMonitoring() {
+        // Perform periodic health checks every 30 seconds
+        setInterval(() => {
+            if (this.isInitialized) {
+                this.performHealthCheck();
+            }
+        }, 30000);
+
+        // Also check when window regains focus
+        window.addEventListener('focus', () => {
+            if (this.isInitialized) {
+                setTimeout(() => this.performHealthCheck(), 1000);
+            }
+        });
     }
 
     previewAIResponse(node) {
