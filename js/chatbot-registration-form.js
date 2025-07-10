@@ -56,39 +56,39 @@
                     </div>
 
                     <div class="registration-header">
-                        <h2 class="form-title" data-en="Let's Get Started!" data-sv="Låt oss komma igång!">Låt oss komma igång!</h2>
-                        <p class="form-subtitle" data-en="Please provide your information to continue" data-sv="Vänligen ange din information för att fortsätta">Vänligen ange din information för att fortsätta</p>
+                        <h2 class="form-title">Let's Get Started!</h2>
+                        <p class="form-subtitle">Please provide your information to continue</p>
                     </div>
 
                     <form class="registration-form" id="registrationForm">
                         <div class="form-group">
-                            <label for="userName" class="field-label" data-en="Your Name" data-sv="Ditt namn">Your Name</label>
-                            <input type="text" id="userName" name="userName" placeholder="Enter your name" data-placeholder-en="Enter your name" data-placeholder-sv="Ange ditt namn" required>
+                            <label for="userName" class="field-label">Your Name</label>
+                            <input type="text" id="userName" name="userName" placeholder="Enter your name" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="restaurantName" class="field-label" data-en="Restaurant Name" data-sv="Restaurangnamn">Restaurant Name</label>
-                            <input type="text" id="restaurantName" name="restaurantName" placeholder="Enter restaurant name" data-placeholder-en="Enter restaurant name" data-placeholder-sv="Ange restaurangnamn" required>
+                            <label for="restaurantName" class="field-label">Restaurant Name</label>
+                            <input type="text" id="restaurantName" name="restaurantName" placeholder="Enter restaurant name" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="userPhone" class="field-label" data-en="Phone Number" data-sv="Telefonnummer">Phone Number</label>
-                            <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" data-placeholder-en="+46 70 123 45 67" data-placeholder-sv="+46 70 123 45 67" required>
+                            <label for="userPhone" class="field-label">Phone Number</label>
+                            <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="systemUsage" class="field-label" data-en="Current delivery system" data-sv="Nuvarande leveranssystem">Current delivery system</label>
+                            <label for="systemUsage" class="field-label">Current delivery system</label>
                             <select id="systemUsage" name="systemUsage" required>
-                                <option value="" data-en="Please select" data-sv="Vänligen välj">Please select</option>
-                                <option value="current_user" data-en="Using Fooodis" data-sv="Använder Fooodis">Using Fooodis</option>
-                                <option value="competitor_user" data-en="Using another system" data-sv="Använder annat system">Using another system</option>
-                                <option value="potential_user" data-en="Looking for solution" data-sv="Söker lösning">Looking for solution</option>
+                                <option value="">Please select</option>
+                                <option value="current_user">Using Fooodis</option>
+                                <option value="competitor_user">Using another system</option>
+                                <option value="potential_user">Looking for solution</option>
                             </select>
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="skip-btn" data-en="Skip" data-sv="Hoppa över">Skip</button>
-                            <button type="submit" class="submit-btn" data-en="Submit" data-sv="Skicka">Submit</button>
+                            <button type="button" class="skip-btn">Skip</button>
+                            <button type="submit" class="submit-btn">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -184,7 +184,45 @@
             });
         },
 
-        // Switch form language
+        // Complete translation data structure
+        translations: {
+            english: {
+                title: "Let's Get Started!",
+                subtitle: "Please provide your information to continue",
+                nameLabel: "Your Name",
+                namePlaceholder: "Enter your name",
+                restaurantLabel: "Restaurant Name",
+                restaurantPlaceholder: "Enter restaurant name",
+                phoneLabel: "Phone Number",
+                phonePlaceholder: "+46 70 123 45 67",
+                systemLabel: "Current delivery system",
+                selectPlaceholder: "Please select",
+                usingFooodis: "Using Fooodis",
+                usingOther: "Using another system",
+                lookingForSolution: "Looking for solution",
+                skipButton: "Skip",
+                submitButton: "Submit"
+            },
+            swedish: {
+                title: "Låt oss komma igång!",
+                subtitle: "Vänligen ange din information för att fortsätta",
+                nameLabel: "Ditt namn",
+                namePlaceholder: "Ange ditt namn",
+                restaurantLabel: "Restaurangnamn",
+                restaurantPlaceholder: "Ange restaurangnamn",
+                phoneLabel: "Telefonnummer",
+                phonePlaceholder: "+46 70 123 45 67",
+                systemLabel: "Nuvarande leveranssystem",
+                selectPlaceholder: "Vänligen välj",
+                usingFooodis: "Använder Fooodis",
+                usingOther: "Använder annat system",
+                lookingForSolution: "Söker lösning",
+                skipButton: "Hoppa över",
+                submitButton: "Skicka"
+            }
+        },
+
+        // Switch form language with complete isolation
         switchLanguage: function(language) {
             console.log('🌐 Switching language to:', language);
             
@@ -195,53 +233,46 @@
                 return;
             }
 
-            const elements = registrationContainer.querySelectorAll('[data-en][data-sv]');
+            // Get translation data for selected language
+            const lang = language === 'swedish' ? 'swedish' : 'english';
+            const translations = this.translations[lang];
 
-            elements.forEach(element => {
-                if (language === 'english') {
-                    const englishText = element.getAttribute('data-en');
-                    if (englishText) {
-                        element.textContent = englishText;
-                    }
-                } else if (language === 'swedish') {
-                    const swedishText = element.getAttribute('data-sv');
-                    if (swedishText) {
-                        element.textContent = swedishText;
-                    }
-                }
-            });
+            // Update all text content with complete language isolation
+            const formTitle = registrationContainer.querySelector('.form-title');
+            const formSubtitle = registrationContainer.querySelector('.form-subtitle');
+            
+            if (formTitle) formTitle.textContent = translations.title;
+            if (formSubtitle) formSubtitle.textContent = translations.subtitle;
 
-            // Update select options within the form
-            const selectOptions = registrationContainer.querySelectorAll('#systemUsage option[data-en][data-sv]');
-            selectOptions.forEach(option => {
-                if (language === 'english') {
-                    const englishText = option.getAttribute('data-en');
-                    if (englishText) {
-                        option.textContent = englishText;
-                    }
-                } else if (language === 'swedish') {
-                    const swedishText = option.getAttribute('data-sv');
-                    if (swedishText) {
-                        option.textContent = swedishText;
-                    }
-                }
-            });
+            // Update labels
+            const labels = registrationContainer.querySelectorAll('.field-label');
+            if (labels[0]) labels[0].textContent = translations.nameLabel; // Name label
+            if (labels[1]) labels[1].textContent = translations.restaurantLabel; // Restaurant label
+            if (labels[2]) labels[2].textContent = translations.phoneLabel; // Phone label
+            if (labels[3]) labels[3].textContent = translations.systemLabel; // System label
 
-            // Update placeholders using data attributes
-            const inputsWithPlaceholders = registrationContainer.querySelectorAll('input[data-placeholder-en][data-placeholder-sv]');
-            inputsWithPlaceholders.forEach(input => {
-                if (language === 'english') {
-                    const englishPlaceholder = input.getAttribute('data-placeholder-en');
-                    if (englishPlaceholder) {
-                        input.placeholder = englishPlaceholder;
-                    }
-                } else if (language === 'swedish') {
-                    const swedishPlaceholder = input.getAttribute('data-placeholder-sv');
-                    if (swedishPlaceholder) {
-                        input.placeholder = swedishPlaceholder;
-                    }
-                }
-            });
+            // Update input placeholders
+            const nameInput = registrationContainer.querySelector('#userName');
+            const restaurantInput = registrationContainer.querySelector('#restaurantName');
+            const phoneInput = registrationContainer.querySelector('#userPhone');
+            
+            if (nameInput) nameInput.placeholder = translations.namePlaceholder;
+            if (restaurantInput) restaurantInput.placeholder = translations.restaurantPlaceholder;
+            if (phoneInput) phoneInput.placeholder = translations.phonePlaceholder;
+
+            // Update dropdown options
+            const selectOptions = registrationContainer.querySelectorAll('#systemUsage option');
+            if (selectOptions[0]) selectOptions[0].textContent = translations.selectPlaceholder;
+            if (selectOptions[1]) selectOptions[1].textContent = translations.usingFooodis;
+            if (selectOptions[2]) selectOptions[2].textContent = translations.usingOther;
+            if (selectOptions[3]) selectOptions[3].textContent = translations.lookingForSolution;
+
+            // Update buttons
+            const skipBtn = registrationContainer.querySelector('.skip-btn');
+            const submitBtn = registrationContainer.querySelector('.submit-btn');
+            
+            if (skipBtn) skipBtn.textContent = translations.skipButton;
+            if (submitBtn) submitBtn.textContent = translations.submitButton;
 
             console.log('✅ Language switched successfully to:', language);
         },
@@ -263,18 +294,23 @@
             });
         },
 
-        // Submit form data
+        // Submit form data with user identity tracking
         submitForm: function() {
             const formData = {
                 name: document.getElementById('userName')?.value || '',
                 restaurantName: document.getElementById('restaurantName')?.value || '',
                 phone: document.getElementById('userPhone')?.value || '',
                 systemUsage: document.getElementById('systemUsage')?.value || '',
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                conversationId: window.FoodisChatbot?.conversationId || null
             };
 
-            // Save registration data
+            // Save registration data to User Leads
             this.saveRegistrationData(formData);
+            this.saveToUserLeads(formData);
+
+            // Update user identity in Recent Conversations
+            this.updateUserIdentity(formData);
 
             // Mark user as registered and save name for future conversations
             localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
@@ -295,6 +331,103 @@
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
                 const welcomeMessage = `Thank you ${formData.name} from ${formData.restaurantName}! How can I help you today?`;
                 window.FoodisChatbot.addMessage(welcomeMessage, 'assistant');
+            }
+
+            console.log('✅ Form submitted and user identity updated');
+        },
+
+        // Save to User Leads system
+        saveToUserLeads: function(formData) {
+            try {
+                const existingLeads = JSON.parse(localStorage.getItem('user-leads') || '[]');
+                
+                // Check if lead already exists (by phone or name+restaurant)
+                const existingLead = existingLeads.find(lead => 
+                    lead.phone === formData.phone || 
+                    (lead.name === formData.name && lead.restaurantName === formData.restaurantName)
+                );
+
+                if (!existingLead) {
+                    // Add new lead
+                    const leadData = {
+                        id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        ...formData,
+                        source: 'chatbot_registration',
+                        status: 'new'
+                    };
+                    
+                    existingLeads.push(leadData);
+                    localStorage.setItem('user-leads', JSON.stringify(existingLeads));
+                    
+                    console.log('💼 New lead saved:', leadData.name);
+                } else {
+                    // Update existing lead with conversation ID
+                    existingLead.conversationId = formData.conversationId;
+                    existingLead.lastContact = formData.timestamp;
+                    localStorage.setItem('user-leads', JSON.stringify(existingLeads));
+                    
+                    console.log('💼 Existing lead updated:', existingLead.name);
+                }
+            } catch (error) {
+                console.error('Error saving to user leads:', error);
+            }
+        },
+
+        // Update user identity in Recent Conversations
+        updateUserIdentity: function(formData) {
+            try {
+                // Update chatbot conversations if exists
+                const conversations = JSON.parse(localStorage.getItem('chatbot-conversations') || '[]');
+                const currentConversationId = formData.conversationId;
+
+                if (currentConversationId) {
+                    const conversation = conversations.find(conv => conv.id === currentConversationId);
+                    if (conversation) {
+                        // Update Anonymous User to actual name
+                        conversation.userName = formData.name;
+                        conversation.restaurantName = formData.restaurantName;
+                        conversation.userPhone = formData.phone;
+                        conversation.userRegistered = true;
+                        conversation.lastUpdated = formData.timestamp;
+
+                        localStorage.setItem('chatbot-conversations', JSON.stringify(conversations));
+                        console.log('💬 Conversation updated for:', formData.name);
+                    }
+                }
+
+                // Also update any "Recent Conversations" or similar tracking systems
+                const recentConversations = JSON.parse(localStorage.getItem('recent-conversations') || '[]');
+                if (recentConversations.length > 0) {
+                    // Update the most recent anonymous conversation
+                    const latestAnonymous = recentConversations.find(conv => 
+                        !conv.userName || conv.userName === 'Anonymous User'
+                    );
+                    
+                    if (latestAnonymous) {
+                        latestAnonymous.userName = formData.name;
+                        latestAnonymous.restaurantName = formData.restaurantName;
+                        latestAnonymous.userPhone = formData.phone;
+                        latestAnonymous.userRegistered = true;
+                        latestAnonymous.lastUpdated = formData.timestamp;
+
+                        localStorage.setItem('recent-conversations', JSON.stringify(recentConversations));
+                        console.log('📋 Recent conversations updated for:', formData.name);
+                    }
+                }
+
+                // Trigger UI updates if dashboard is open
+                if (window.dispatchEvent) {
+                    window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
+                        detail: {
+                            name: formData.name,
+                            restaurantName: formData.restaurantName,
+                            conversationId: currentConversationId
+                        }
+                    }));
+                }
+
+            } catch (error) {
+                console.error('Error updating user identity:', error);
             }
         },
 
@@ -422,7 +555,7 @@
                 }
 
                 .form-group {
-                    margin-bottom: 16px;
+                    margin-bottom: 12px;
                 }
 
                 .field-label {
@@ -464,7 +597,7 @@
                 .form-actions {
                     display: flex;
                     gap: 12px;
-                    margin-top: 30px;
+                    margin-top: 20px;
                 }
 
                 .skip-btn {
