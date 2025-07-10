@@ -19,6 +19,8 @@
                 subtitle: "Please provide your information to continue",
                 nameLabel: "Your Name",
                 namePlaceholder: "Enter your name",
+                emailLabel: "Email Address",
+                emailPlaceholder: "Enter your email",
                 restaurantLabel: "Restaurant Name", 
                 restaurantPlaceholder: "Enter restaurant name",
                 phoneLabel: "Phone Number",
@@ -36,6 +38,8 @@
                 subtitle: "Vänligen ange din information för att fortsätta",
                 nameLabel: "Ditt namn",
                 namePlaceholder: "Ange ditt namn",
+                emailLabel: "E-postadress",
+                emailPlaceholder: "Ange din e-post",
                 restaurantLabel: "Restaurangnamn",
                 restaurantPlaceholder: "Ange restaurangnamn", 
                 phoneLabel: "Telefonnummer",
@@ -148,6 +152,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="userEmail" class="field-label">Email Address</label>
+                            <input type="email" id="userEmail" name="userEmail" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="form-group">
                             <label for="restaurantName" class="field-label">Restaurant Name</label>
                             <input type="text" id="restaurantName" name="restaurantName" placeholder="Enter restaurant name" required>
                         </div>
@@ -238,6 +247,7 @@
             // Update labels
             const labels = {
                 'label[for="userName"]': translations.nameLabel,
+                'label[for="userEmail"]': translations.emailLabel,
                 'label[for="restaurantName"]': translations.restaurantLabel,
                 'label[for="userPhone"]': translations.phoneLabel,
                 'label[for="systemUsage"]': translations.systemLabel
@@ -251,6 +261,7 @@
             // Update placeholders
             const placeholders = {
                 '#userName': translations.namePlaceholder,
+                '#userEmail': translations.emailPlaceholder,
                 '#restaurantName': translations.restaurantPlaceholder,
                 '#userPhone': translations.phonePlaceholder
             };
@@ -282,6 +293,7 @@
         submitForm: function() {
             const formData = {
                 name: document.getElementById('userName')?.value || '',
+                email: document.getElementById('userEmail')?.value || '',
                 restaurantName: document.getElementById('restaurantName')?.value || '',
                 phone: document.getElementById('userPhone')?.value || '',
                 systemUsage: document.getElementById('systemUsage')?.value || '',
@@ -292,6 +304,16 @@
                 deviceId: localStorage.getItem('chatbot-device-id') || 'device_' + Date.now()
             };
 
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                const errorMessage = this.currentLanguage === 'svenska' ? 
+                    'Vänligen ange en giltig e-postadress' : 
+                    'Please enter a valid email address';
+                alert(errorMessage);
+                return;
+            }
+
             // Save data
             this.saveRegistrationData(formData);
             this.saveToUserLeads(formData);
@@ -300,11 +322,13 @@
             // Update user status
             localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
             localStorage.setItem('fooodis-user-name', formData.name);
+            localStorage.setItem('fooodis-user-email', formData.email);
             localStorage.setItem('fooodis-restaurant-name', formData.restaurantName);
 
             // Update chatbot if available
             if (window.FoodisChatbot) {
                 window.FoodisChatbot.userName = formData.name;
+                window.FoodisChatbot.userEmail = formData.email;
                 window.FoodisChatbot.restaurantName = formData.restaurantName;
                 window.FoodisChatbot.userRegistered = true;
                 window.FoodisChatbot.userLanguage = formData.language;
@@ -385,10 +409,12 @@
                 const leadData = {
                     id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                     ...formData,
+                    registeredAt: formData.timestamp,
                     source: 'chatbot_registration',
                     status: 'new',
                     language: formData.language,
                     languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                    languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
                     preferredAgent: formData.language === 'svenska' ? 'swedish-speaking' : 'english-speaking',
                     identityLinked: true
                 };
@@ -399,10 +425,12 @@
                 } else {
                     // Update existing lead with new information
                     Object.assign(existingLead, {
+                        email: formData.email,
                         conversationId: formData.conversationId,
                         lastContact: formData.timestamp,
                         language: formData.language,
                         languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
                         preferredAgent: formData.language === 'svenska' ? 'swedish-speaking' : 'english-speaking',
                         identityLinked: true,
                         status: 'updated'
@@ -443,10 +471,13 @@
                     const oldName = targetConversation.userName || 'Anonymous User';
                     Object.assign(targetConversation, {
                         userName: formData.name,
+                        userEmail: formData.email,
                         restaurantName: formData.restaurantName,
                         userPhone: formData.phone,
                         userRegistered: true,
                         language: formData.language || 'english',
+                        languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
                         lastUpdated: formData.timestamp,
                         identityLinked: true,
                         previousName: oldName
@@ -466,6 +497,7 @@
                 // Also update current chatbot instance if available
                 if (window.FoodisChatbot) {
                     window.FoodisChatbot.userName = formData.name;
+                    window.FoodisChatbot.userEmail = formData.email;
                     window.FoodisChatbot.restaurantName = formData.restaurantName;
                     window.FoodisChatbot.userRegistered = true;
                     window.FoodisChatbot.userLanguage = formData.language;
@@ -481,9 +513,11 @@
                 window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
                     detail: {
                         name: formData.name,
+                        email: formData.email,
                         restaurantName: formData.restaurantName,
                         conversationId: formData.conversationId || targetConversation?.id,
                         language: formData.language,
+                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
                         identityLinked: true
                     }
                 }));
@@ -585,7 +619,7 @@
                 }
 
                 .form-group {
-                    margin-bottom: 16px;
+                    margin-bottom: 14px;
                 }
 
                 .field-label {
