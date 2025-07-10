@@ -132,10 +132,31 @@
     background-position: -1px -1px;
     cursor: grab;
     overflow: hidden;
+    user-select: none;
 }
 
 .node-flow-canvas:active {
     cursor: grabbing;
+}
+
+.node-flow-canvas.panning {
+    cursor: grabbing !important;
+}
+
+.flow-node {
+    cursor: move;
+}
+
+.flow-node:hover {
+    cursor: move;
+}
+
+.flow-node .node-controls {
+    cursor: default;
+}
+
+.flow-node .connection-point {
+    cursor: crosshair;
 }
 
 .flow-background {

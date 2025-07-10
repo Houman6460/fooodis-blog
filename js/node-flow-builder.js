@@ -207,6 +207,9 @@ class NodeFlowBuilder {
         document.addEventListener('mouseup', (e) => this.handleCanvasMouseUp(e));
         document.addEventListener('click', (e) => this.handleCanvasClick(e));
 
+        // Prevent context menu on right-click for panning
+        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
         // Setup node dragging functionality
         this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
     }
@@ -307,21 +310,34 @@ class NodeFlowBuilder {
     }
 
     handleMouseDown(e) {
+        // Ignore if we're panning or using special keys
+        if (this.isPanning || e.shiftKey || e.button !== 0) {
+            return;
+        }
+
         const nodeElement = e.target.closest('.flow-node');
-        if (nodeElement && !e.target.closest('.node-controls')) {
+        if (nodeElement && !e.target.closest('.node-controls') && !e.target.closest('.connection-point')) {
             const nodeId = nodeElement.dataset.nodeId;
             const node = this.nodes.find(n => n.id === nodeId);
             if (node) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 this.draggedNode = node;
                 const rect = nodeElement.getBoundingClientRect();
                 const canvasRect = this.canvas.getBoundingClientRect();
 
+                // Calculate drag offset in world coordinates
+                const worldX = (e.clientX - canvasRect.left - this.panOffset.x) / this.zoom;
+                const worldY = (e.clientY - canvasRect.top - this.panOffset.y) / this.zoom;
+
                 this.draggedNode.dragOffset = {
-                    x: (e.clientX - canvasRect.left) / this.zoom - node.position.x,
-                    y: (e.clientY - canvasRect.top) / this.zoom - node.position.y
+                    x: worldX - node.position.x,
+                    y: worldY - node.position.y
                 };
 
-                e.preventDefault();
+                // Change cursor to indicate dragging
+                this.canvas.style.cursor = 'move';
             }
         }
     }
@@ -2120,8 +2136,9 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseMove(e) {
-        // Handle canvas panning with middle mouse button or when explicitly panning
+        // Handle canvas panning - highest priority when panning is active
         if (this.isPanning) {
+            e.preventDefault();
             const deltaX = e.clientX - this.lastPanPoint.x;
             const deltaY = e.clientY - this.lastPanPoint.y;
 
@@ -2132,25 +2149,32 @@ class NodeFlowBuilder {
             this.lastPanPoint.y = e.clientY;
 
             this.updateCanvasTransform();
+            return; // Exit early when panning
         }
 
-        // Handle individual node dragging
-        if (this.draggedNode) {
+        // Handle individual node dragging - only when not panning
+        if (this.draggedNode && !this.isPanning) {
+            e.preventDefault();
             const rect = this.canvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
-            const y = (e.clientY - rect.top - this.panOffset.y) / this.zoom;
+            
+            // Calculate world coordinates accounting for zoom and pan
+            const worldX = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
+            const worldY = (e.clientY - rect.top - this.panOffset.y) / this.zoom;
 
-            this.draggedNode.position.x = x - this.draggedNode.dragOffset.x;
-            this.draggedNode.position.y = y - this.draggedNode.dragOffset.y;
+            // Update node position
+            this.draggedNode.position.x = worldX - this.draggedNode.dragOffset.x;
+            this.draggedNode.position.y = worldY - this.draggedNode.dragOffset.y;
 
-            // Update only the dragged node's position without affecting others
+            // Update visual position immediately
             const nodeElement = document.querySelector(`[data-node-id="${this.draggedNode.id}"]`);
             if (nodeElement) {
                 nodeElement.style.left = this.draggedNode.position.x + 'px';
                 nodeElement.style.top = this.draggedNode.position.y + 'px';
             }
 
-            this.renderConnections(); // Update connections when nodes move
+            // Update connections when nodes move
+            this.renderConnections();
+            return; // Exit early when dragging
         }
 
         // Update temp connection line
@@ -2160,11 +2184,16 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseUp(e) {
-        this.isPanning = false;
-        this.canvas.style.cursor = 'default';
+        // Reset panning state
+        if (this.isPanning) {
+            this.isPanning = false;
+            this.canvas.style.cursor = 'default';
+        }
 
+        // Reset node dragging state
         if (this.draggedNode) {
             this.draggedNode = null;
+            this.canvas.style.cursor = 'default';
             this.autoSave(); // Auto-save when node moved
         }
     }
@@ -2313,10 +2342,20 @@ class NodeFlowBuilder {
             this.isPanning = true;
             this.lastPanPoint = { x: e.clientX, y: e.clientY };
             this.canvas.style.cursor = 'grabbing';
+            return;
         }
-        // Prevent node dragging when panning
-        else if (!e.target.closest('.flow-node') && e.button === 0) {
-            // Click on empty canvas
+        
+        // Handle panning with right mouse button
+        if (e.button === 2) {
+            e.preventDefault();
+            this.isPanning = true;
+            this.lastPanPoint = { x: e.clientX, y: e.clientY };
+            this.canvas.style.cursor = 'grabbing';
+            return;
+        }
+        
+        // Click on empty canvas - clear selection
+        if (!e.target.closest('.flow-node') && e.button === 0) {
             this.selectedNode = null;
             document.querySelectorAll('.flow-node.selected').forEach(node => {
                 node.classList.remove('selected');
