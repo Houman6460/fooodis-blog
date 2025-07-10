@@ -1,0 +1,94 @@
+🧾 Fix: Chat Form Language, Layout, and User Identity Handling
+🧩 1. Language Isolation in Form Tabs
+🛠 Issue:
+Both the English and Svenska tabs show a mix of English and Swedish text—including placeholders, dropdown options, and button labels.
+
+✅ Task:
+Ensure each tab displays only content in its corresponding language:
+
+Labels, placeholders, dropdowns, and buttons.
+
+Validate that switching tabs completely refreshes the language without caching mixed content.
+
+🛡️ Safeguard:
+Keep dropdown logic intact—do not refactor dropdown structure unless required.
+
+Avoid affecting the submission behavior or validation already in place.
+
+🧱 2. Fix Layout Gaps Between Form Fields
+🛠 Issue:
+There are excessive vertical gaps between form fields, causing visual imbalance.
+
+✅ Task:
+Adjust spacing (likely margins/paddings) between:
+
+Input fields
+
+Dropdown
+
+Submit button
+
+Follow consistent spacing values from the design system (e.g., Tailwind: mb-4 or gap-3)
+
+🛡️ Safeguard:
+Apply layout fixes within form component scope only.
+
+Do not alter global form/input styling shared with other modules.
+
+👤 3. User Identity & Record Update Logic
+🛠 Issue:
+All users currently appear as Anonymous User in Recent Conversations—even after filling out the form.
+
+✅ Task:
+On successful form submission, update the Recent Conversations record:
+
+Replace Anonymous User with:
+
+Full name (from form)
+
+Restaurant name (if available)
+
+This update should reflect in:
+
+Recent Conversations Panel
+
+Conversation Preview
+
+Chat thread view header (if present)
+
+🛡️ Safeguard:
+Only perform identity update if form was submitted completely and validly.
+
+Ensure fallback to Anonymous User still works if form is skipped.
+
+📈 4. Lead Tracking Integration
+✅ Task:
+After form submission:
+
+Log the user’s info into User Leads
+
+Link the lead to the corresponding Recent Conversation record
+
+🛡️ Safeguard:
+Do not overwrite existing lead data if user has submitted before (match on email or phone).
+
+Ensure the form submission does not break current chat flow or real-time messaging.
+
+🎯 Summary of Required Outcomes
+ Each tab displays only its own language (complete translation scope)
+
+ Dropdown and buttons match tab language
+
+ Spacing between inputs is visually balanced and clean
+
+ “Anonymous User” is updated with name + restaurant after form submission
+
+ Submitted user info is stored in:
+
+User Leads
+
+Recent Conversations
+
+ No regression in dropdown behavior or chat handling
+
+ All updates are isolated to form component and chat UI logic only
