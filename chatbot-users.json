@@ -8,5 +8,15 @@
     "conversationId": "conv_1752152243411_6w0we6e1k",
     "registeredAt": "2025-07-10T12:58:12.401Z",
     "source": "chatbot-widget"
+  },
+  {
+    "id": "conv_1752152951696_wju95mthg",
+    "name": "fsbasfbasfb",
+    "email": "info@logoland.se",
+    "phone": "9067905790",
+    "systemUsage": "current_user",
+    "conversationId": "conv_1752152951696_wju95mthg",
+    "registeredAt": "2025-07-10T13:10:28.736Z",
+    "source": "chatbot-widget"
   }
 ]
