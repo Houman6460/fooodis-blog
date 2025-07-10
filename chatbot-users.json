@@ -1,22 +1,12 @@
 [
   {
-    "id": "conv_1752154012700_qd774irf4",
-    "name": "Houman",
+    "id": "conv_1752154724037_9rq87vjs5",
+    "name": "Hoooman",
     "email": "info@logoland.se",
-    "phone": "09708979087",
+    "phone": "09766790",
     "systemUsage": "current_user",
-    "conversationId": "conv_1752154012700_qd774irf4",
-    "registeredAt": "2025-07-10T13:27:39.234Z",
-    "source": "chatbot-widget"
-  },
-  {
-    "id": "conv_1752154317844_trdfl6kbp",
-    "name": "houman",
-    "email": "info@logoland.se",
-    "phone": "87909798",
-    "systemUsage": "current_user",
-    "conversationId": "conv_1752154317844_trdfl6kbp",
-    "registeredAt": "2025-07-10T13:32:50.522Z",
+    "conversationId": "conv_1752154724037_9rq87vjs5",
+    "registeredAt": "2025-07-10T13:39:31.313Z",
     "source": "chatbot-widget"
   }
 ]
