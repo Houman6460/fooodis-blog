@@ -25,14 +25,16 @@
         // Show registration form when needed
         showRegistrationForm: function() {
             const chatbotWidget = document.querySelector('#fooodis-chatbot');
-            if (!chatbotWidget) {
-                console.warn('Chatbot widget not found');
+            const chatbotWindow = document.querySelector('#chatbot-window');
+            
+            if (!chatbotWidget || !chatbotWindow) {
+                console.warn('Chatbot widget or window not found');
                 return;
             }
 
-            // Create form overlay
+            // Create form overlay positioned within chatbot window
             const formOverlay = this.createFormOverlay();
-            chatbotWidget.appendChild(formOverlay);
+            chatbotWindow.appendChild(formOverlay);
             
             // Show first step
             this.showStep(1);
@@ -396,7 +398,7 @@
             styles.id = 'registration-form-styles';
             styles.textContent = `
                 .registration-overlay {
-                    position: fixed;
+                    position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
@@ -405,16 +407,17 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    z-index: 10000;
+                    z-index: 100;
+                    border-radius: 12px;
                 }
                 
                 .registration-container {
                     background: white;
                     border-radius: 12px;
-                    padding: 30px;
-                    max-width: 500px;
-                    width: 90%;
-                    max-height: 80vh;
+                    padding: 20px;
+                    max-width: 320px;
+                    width: 95%;
+                    max-height: 450px;
                     overflow-y: auto;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
                 }
