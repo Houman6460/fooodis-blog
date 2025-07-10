@@ -253,12 +253,7 @@ class NodeFlowBuilder {
                     <i class="fas fa-trash"></i> Clear
                 </button>
             </div>
-            <div class="toolbar-section">
-                <select id="nodeLanguageSelector" class="form-select">
-                    <option value="en">English Flow</option>
-                    <option value="sv">Swedish Flow</option>
-                </select>
-            </div>
+            
         `;
     }
 
@@ -301,15 +296,7 @@ class NodeFlowBuilder {
         // Node interaction events
         document.addEventListener('click', (e) => this.handleClick(e));
 
-        // Language selector
-        const languageSelector = document.getElementById('nodeLanguageSelector');
-        if (languageSelector) {
-            languageSelector.addEventListener('change', (e) => {
-                this.currentLanguage = e.target.value;
-                this.renderNodes();
-                this.showToast(`Language switched to ${e.target.value === 'en' ? 'English' : 'Swedish'}`, 'info');
-            });
-        }
+        // Remove language selector - workflow is now multilingual
     }
 
     handleMouseDown(e) {
@@ -694,9 +681,12 @@ class NodeFlowBuilder {
 
         switch (node.type) {
             case 'welcome':
+                // Show bilingual content or auto-detect
+                const welcomeMessage = node.data.messages.bilingual || 
+                    `🇬🇧 ${node.data.messages.english || 'Hello! How can I help you?'}\n🇸🇪 ${node.data.messages.swedish || 'Hej! Hur kan jag hjälpa dig?'}`;
                 return commonHTML + `
                     <div class="node-content">
-                        <div class="node-message">${node.data.messages.english}</div>
+                        <div class="node-message multilingual">${welcomeMessage.replace(/\n/g, '<br>')}</div>
                     </div>
                     <div class="node-connections">
                         <div class="connection-point output" data-type="output"></div>
@@ -755,9 +745,16 @@ class NodeFlowBuilder {
                         ${node.data.aiPrompt ? `<div class="ai-prompt-preview">${node.data.aiPrompt.substring(0, 50)}...</div>` : ''}
                     `;
                 } else {
-                    // Show manual message preview
-                    const message = node.data.messages?.english || node.data.messages?.swedish || 'No message set';
-                    messageContent = `<div class="node-message">${message.substring(0, 100)}${message.length > 100 ? '...' : ''}</div>`;
+                    // Show multilingual message preview
+                    const englishMsg = node.data.messages?.english || '';
+                    const swedishMsg = node.data.messages?.swedish || '';
+                    
+                    if (englishMsg && swedishMsg) {
+                        messageContent = `<div class="node-message multilingual">🇬🇧 ${englishMsg.substring(0, 50)}${englishMsg.length > 50 ? '...' : ''}<br>🇸🇪 ${swedishMsg.substring(0, 50)}${swedishMsg.length > 50 ? '...' : ''}</div>`;
+                    } else {
+                        const message = englishMsg || swedishMsg || 'No message set';
+                        messageContent = `<div class="node-message">${message.substring(0, 100)}${message.length > 100 ? '...' : ''}</div>`;
+                    }
                 }
 
                 return commonHTML + `
@@ -1210,7 +1207,7 @@ class NodeFlowBuilder {
             metadata: {
                 version: '1.0',
                 created: new Date().toISOString(),
-                language: document.getElementById('nodeLanguageSelector')?.value || 'en'
+                multilingual: true
             }
         };
 
@@ -1241,11 +1238,7 @@ class NodeFlowBuilder {
                 this.nodes = flowData.nodes || [];
                 this.connections = flowData.connections || [];
 
-                // Set language if language selector exists
-                const languageSelector = document.getElementById('nodeLanguageSelector');
-                if (languageSelector && flowData.metadata && flowData.metadata.language) {
-                    languageSelector.value = flowData.metadata.language;
-                }
+                // Flow is now multilingual by default
 
                 this.renderNodes();
                 this.renderConnections();
@@ -1402,10 +1395,10 @@ class NodeFlowBuilder {
         const welcomeNode = this.nodes.find(node => node.type === 'welcome');
 
         if (welcomeNode) {
-            const language = document.getElementById('nodeLanguageSelector')?.value || 'en';
-            const message = welcomeNode.data.messages[language === 'sv' ? 'swedish' : 'english'] || 
+            // Use bilingual message or detect language dynamically
+            const message = welcomeNode.data.messages.bilingual || 
                            welcomeNode.data.messages.english || 
-                           "Hello! I'm your Fooodis assistant. How can I help you today?";
+                           "🇬🇧 Hello! I'm your Fooodis assistant. How can I help you today?\n\n🇸🇪 Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?";
 
             messagesContainer.innerHTML = `
                 <div class="test-message bot" style="
@@ -1421,6 +1414,7 @@ class NodeFlowBuilder {
                         max-width: 70%;
                         word-wrap: break-word;
                         line-height: 1.4;
+                        white-space: pre-line;
                     ">${message}</div>
                 </div>
             `;
@@ -1439,7 +1433,7 @@ class NodeFlowBuilder {
                         max-width: 70%;
                         word-wrap: break-word;
                         line-height: 1.4;
-                    ">Hello! I'm your Fooodis assistant. How can I help you today?</div>
+                    ">🇬🇧 Hello! I'm your Fooodis assistant. How can I help you today?<br><br>🇸🇪 Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?</div>
                 </div>
             `;
         }

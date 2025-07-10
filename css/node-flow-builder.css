@@ -960,6 +960,17 @@
     min-width: 80px;
 }
 
+/* Multilingual Content Styling */
+.node-message.multilingual {
+    font-size: 10px;
+    line-height: 1.3;
+    white-space: pre-line;
+}
+
+.node-message.multilingual br {
+    margin: 2px 0;
+}
+
 /* Intent Detection Node Specific Styles */
 .flow-node-intent {
     min-height: 120px;
