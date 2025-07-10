@@ -66,6 +66,12 @@
                     englishTab.classList.add('active');
                 }
                 
+                // Remove active class from svenska tab initially
+                const svenskaTab = formOverlay.querySelector('.lang-tab[data-lang="svenska"]');
+                if (svenskaTab) {
+                    svenskaTab.classList.remove('active');
+                }
+                
                 console.log('🔐 Registration form shown and language switching initialized');
             }, 100);
         },
@@ -211,9 +217,9 @@
                         const languageMap = {
                             'english': 'english',
                             'en': 'english',
-                            'svenska': 'swedish',
-                            'swedish': 'swedish',
-                            'sv': 'swedish'
+                            'svenska': 'svenska',
+                            'swedish': 'svenska', 
+                            'sv': 'svenska'
                         };
                         
                         const mappedLang = languageMap[selectedLang] || 'english';
@@ -275,7 +281,7 @@
             }
 
             // Get translation data for selected language - fix the language detection
-            const lang = (language === 'swedish' || language === 'sv') ? 'swedish' : 'english';
+            const lang = (language === 'svenska' || language === 'swedish' || language === 'sv') ? 'swedish' : 'english';
             const translations = this.translations[lang];
 
             console.log('🔄 Using translations for language:', lang, translations);
