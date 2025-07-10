@@ -363,7 +363,7 @@
                 setTimeout(() => {
                     const identityUpdateData = {
                         name: formData.name,
-                        userName: formData.name,
+                        userName: formData.name, // Ensure both fields have the same value
                         email: formData.email,
                         userEmail: formData.email,
                         restaurantName: formData.restaurantName,
@@ -383,6 +383,12 @@
                         previousName: 'Anonymous User',
                         timestamp: formData.timestamp
                     };
+
+                    console.log('🚀 Registration: Sending identity update with name data:', {
+                        name: identityUpdateData.name,
+                        userName: identityUpdateData.userName,
+                        formDataName: formData.name
+                    });
 
                     console.log('🔄 Triggering comprehensive identity update with data:', identityUpdateData);
 

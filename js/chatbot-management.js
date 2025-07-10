@@ -399,8 +399,9 @@ class ChatbotManager {
             if (shouldUpdate) {
                 const oldUserName = conversation.userName || 'Anonymous User';
                 
-                // Update conversation with complete user identity
-                conversation.userName = identityData.name || identityData.userName;
+                // Update conversation with complete user identity - prioritize name fields
+                const newUserName = identityData.name || identityData.userName || identityData.email || identityData.userEmail;
+                conversation.userName = newUserName;
                 conversation.userEmail = identityData.email || identityData.userEmail;
                 conversation.restaurantName = identityData.restaurantName;
                 conversation.userPhone = identityData.phone || identityData.userPhone;
@@ -408,6 +409,17 @@ class ChatbotManager {
                 conversation.systemUsage = identityData.systemUsage;
                 conversation.language = identityData.language;
                 conversation.languageCode = identityData.languageCode;
+                
+                console.log('🔄 Identity update details:', {
+                    oldUserName,
+                    newUserName,
+                    identityData: {
+                        name: identityData.name,
+                        userName: identityData.userName,
+                        email: identityData.email,
+                        userEmail: identityData.userEmail
+                    }
+                });
                 
                 // Ensure language flag is properly set
                 const flagMap = {
@@ -440,11 +452,18 @@ class ChatbotManager {
             localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(this.conversations));
             localStorage.setItem('chatbot-conversations', JSON.stringify(this.conversations));
             
-            // Force immediate UI refresh
+            // Force immediate UI refresh with multiple attempts
+            this.renderConversations(); // Immediate refresh
+            
             setTimeout(() => {
                 this.renderConversations();
-                console.log('✅ Conversation cards re-rendered with updated identity');
-            }, 100);
+                console.log('✅ First delayed refresh: Conversation cards re-rendered');
+            }, 50);
+            
+            setTimeout(() => {
+                this.renderConversations();
+                console.log('✅ Second delayed refresh: Ensuring name update displayed');
+            }, 200);
             
             console.log('✅ Conversation identity update completed and saved');
         } else {
@@ -1182,11 +1201,24 @@ class ChatbotManager {
             let userDisplay = 'Anonymous User';
             let flagDisplay = '';
             
+            // Debug log the conversation data
+            console.log('🔍 Rendering conversation user data:', {
+                id: conversation.id,
+                userName: conversation.userName,
+                userEmail: conversation.userEmail,
+                userRegistered: conversation.userRegistered,
+                identityLinked: conversation.identityLinked
+            });
+            
             // Priority order: registered name > email > fallback
             if (conversation.userName && conversation.userName.trim() && conversation.userName !== 'Anonymous User') {
                 userDisplay = conversation.userName.trim();
+                console.log('✅ Using userName:', userDisplay);
             } else if (conversation.userEmail && conversation.userEmail.trim()) {
                 userDisplay = conversation.userEmail.trim();
+                console.log('✅ Using userEmail:', userDisplay);
+            } else {
+                console.log('⚠️ Using default Anonymous User');
             }
             
             // Flag display with multiple fallback options
