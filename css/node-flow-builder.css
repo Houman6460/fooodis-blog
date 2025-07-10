@@ -145,18 +145,32 @@
 
 .flow-node {
     cursor: move;
+    pointer-events: auto;
+    position: absolute;
 }
 
 .flow-node:hover {
     cursor: move;
 }
 
+.flow-node.dragging {
+    z-index: 1000;
+    cursor: move !important;
+}
+
 .flow-node .node-controls {
     cursor: default;
+    pointer-events: auto;
+}
+
+.flow-node .node-controls button {
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .flow-node .connection-point {
     cursor: crosshair;
+    pointer-events: auto;
 }
 
 .flow-background {
