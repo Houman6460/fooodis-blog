@@ -287,7 +287,9 @@
                 systemUsage: document.getElementById('systemUsage')?.value || '',
                 timestamp: new Date().toISOString(),
                 language: this.currentLanguage,
-                conversationId: window.FoodisChatbot?.conversationId || null
+                conversationId: window.FoodisChatbot?.conversationId || null,
+                sessionId: window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id'),
+                deviceId: localStorage.getItem('chatbot-device-id') || 'device_' + Date.now()
             };
 
             // Save data
@@ -305,13 +307,26 @@
                 window.FoodisChatbot.userName = formData.name;
                 window.FoodisChatbot.restaurantName = formData.restaurantName;
                 window.FoodisChatbot.userRegistered = true;
+                window.FoodisChatbot.userLanguage = formData.language;
+
+                // Set Swedish language context
+                if (formData.language === 'svenska') {
+                    window.FoodisChatbot.currentLanguage = 'sv';
+                    window.FoodisChatbot.config = window.FoodisChatbot.config || {};
+                    window.FoodisChatbot.config.language = 'sv-SE';
+                    window.FoodisChatbot.config.preferredAgent = 'swedish-speaking';
+                    localStorage.setItem('fooodis-language', 'swedish');
+                    console.log('🇸🇪 Swedish language context set for user:', formData.name);
+                }
             }
 
             this.closeForm();
 
-            // Send success message
+            // Send success message in appropriate language
             if (window.FoodisChatbot?.addMessage) {
-                const message = `Thank you ${formData.name} from ${formData.restaurantName}! How can I help you today?`;
+                const message = formData.language === 'svenska' 
+                    ? `Tack ${formData.name} från ${formData.restaurantName}! Hur kan jag hjälpa dig idag?`
+                    : `Thank you ${formData.name} from ${formData.restaurantName}! How can I help you today?`;
                 window.FoodisChatbot.addMessage(message, 'assistant');
             }
 
@@ -367,16 +382,32 @@
                     (lead.name === formData.name && lead.restaurantName === formData.restaurantName)
                 );
 
+                const leadData = {
+                    id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    ...formData,
+                    source: 'chatbot_registration',
+                    status: 'new',
+                    language: formData.language,
+                    languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                    preferredAgent: formData.language === 'svenska' ? 'swedish-speaking' : 'english-speaking',
+                    identityLinked: true
+                };
+
                 if (!existingLead) {
-                    leads.push({
-                        id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                        ...formData,
-                        source: 'chatbot_registration',
-                        status: 'new'
-                    });
+                    leads.push(leadData);
+                    console.log('✅ New lead saved:', formData.name, `(Language: ${formData.language})`);
                 } else {
-                    existingLead.conversationId = formData.conversationId;
-                    existingLead.lastContact = formData.timestamp;
+                    // Update existing lead with new information
+                    Object.assign(existingLead, {
+                        conversationId: formData.conversationId,
+                        lastContact: formData.timestamp,
+                        language: formData.language,
+                        languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                        preferredAgent: formData.language === 'svenska' ? 'swedish-speaking' : 'english-speaking',
+                        identityLinked: true,
+                        status: 'updated'
+                    });
+                    console.log('✅ Existing lead updated:', formData.name, `(Language: ${formData.language})`);
                 }
 
                 localStorage.setItem('user-leads', JSON.stringify(leads));
@@ -387,19 +418,62 @@
 
         updateUserIdentity: function(formData) {
             try {
-                // Update chatbot conversations
+                // Update chatbot conversations - find by ID or anonymous session
                 const conversations = JSON.parse(localStorage.getItem('chatbot-conversations') || '[]');
+                let targetConversation = null;
+
+                // First, try to find by conversationId
                 if (formData.conversationId) {
-                    const conversation = conversations.find(conv => conv.id === formData.conversationId);
-                    if (conversation) {
-                        Object.assign(conversation, {
-                            userName: formData.name,
-                            restaurantName: formData.restaurantName,
-                            userPhone: formData.phone,
-                            userRegistered: true,
-                            lastUpdated: formData.timestamp
-                        });
-                        localStorage.setItem('chatbot-conversations', JSON.stringify(conversations));
+                    targetConversation = conversations.find(conv => conv.id === formData.conversationId);
+                }
+
+                // If not found, look for anonymous conversations from same session/device
+                if (!targetConversation) {
+                    const sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
+                    const deviceId = localStorage.getItem('chatbot-device-id') || 'unknown';
+                    
+                    targetConversation = conversations.find(conv => 
+                        (conv.userName === 'Anonymous User' || !conv.userName || conv.userName === '') &&
+                        (conv.sessionId === sessionId || conv.deviceId === deviceId)
+                    );
+                }
+
+                // Update the conversation with user identity
+                if (targetConversation) {
+                    const oldName = targetConversation.userName || 'Anonymous User';
+                    Object.assign(targetConversation, {
+                        userName: formData.name,
+                        restaurantName: formData.restaurantName,
+                        userPhone: formData.phone,
+                        userRegistered: true,
+                        language: formData.language || 'english',
+                        lastUpdated: formData.timestamp,
+                        identityLinked: true,
+                        previousName: oldName
+                    });
+
+                    // Set language context for Swedish conversations
+                    if (formData.language === 'svenska') {
+                        targetConversation.languageCode = 'sv-SE';
+                        targetConversation.preferredAgent = 'swedish-speaking';
+                        targetConversation.autoTranslate = true;
+                    }
+
+                    localStorage.setItem('chatbot-conversations', JSON.stringify(conversations));
+                    console.log(`✅ Updated conversation identity: ${oldName} → ${formData.name} (${formData.restaurantName})`);
+                }
+
+                // Also update current chatbot instance if available
+                if (window.FoodisChatbot) {
+                    window.FoodisChatbot.userName = formData.name;
+                    window.FoodisChatbot.restaurantName = formData.restaurantName;
+                    window.FoodisChatbot.userRegistered = true;
+                    window.FoodisChatbot.userLanguage = formData.language;
+                    
+                    // Set language for Swedish users
+                    if (formData.language === 'svenska') {
+                        window.FoodisChatbot.currentLanguage = 'sv';
+                        window.FoodisChatbot.config.language = 'sv-SE';
                     }
                 }
 
@@ -408,7 +482,9 @@
                     detail: {
                         name: formData.name,
                         restaurantName: formData.restaurantName,
-                        conversationId: formData.conversationId
+                        conversationId: formData.conversationId || targetConversation?.id,
+                        language: formData.language,
+                        identityLinked: true
                     }
                 }));
             } catch (error) {
@@ -528,6 +604,7 @@
                     border-radius: 8px;
                     font-size: 14px;
                     background: #f8f9fa;
+                    color: #333 !important;
                     transition: all 0.2s ease;
                     box-sizing: border-box;
                 }
@@ -537,6 +614,7 @@
                     outline: none;
                     border-color: #e8f24c;
                     background: white;
+                    color: #333 !important;
                     box-shadow: 0 0 0 3px rgba(232, 242, 76, 0.1);
                 }
 
