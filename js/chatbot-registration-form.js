@@ -289,7 +289,7 @@
             console.log('✅ Form language updated successfully');
         },
 
-        submitForm: function() {
+        submitForm: async function() {
             const formData = {
                 name: document.getElementById('userName')?.value || '',
                 email: document.getElementById('userEmail')?.value || '',
@@ -313,70 +313,155 @@
                 return;
             }
 
-            // Save data
-            this.saveRegistrationData(formData);
-            this.saveToUserLeads(formData);
-            this.updateUserIdentity(formData);
+            try {
+                // Save data locally first
+                this.saveRegistrationData(formData);
+                this.saveToUserLeads(formData);
+                this.updateUserIdentity(formData);
 
-            // Update user status
-            localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
-            localStorage.setItem('fooodis-user-name', formData.name);
-            localStorage.setItem('fooodis-user-email', formData.email);
-            localStorage.setItem('fooodis-restaurant-name', formData.restaurantName);
+                // Send to server API to ensure persistence
+                await this.sendToServerAPI(formData);
 
-            // Update chatbot if available
-            if (window.FoodisChatbot) {
-                window.FoodisChatbot.userName = formData.name;
-                window.FoodisChatbot.userEmail = formData.email;
-                window.FoodisChatbot.restaurantName = formData.restaurantName;
-                window.FoodisChatbot.userRegistered = true;
-                window.FoodisChatbot.userLanguage = formData.language;
+                // Update user status
+                localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
+                localStorage.setItem('fooodis-user-name', formData.name);
+                localStorage.setItem('fooodis-user-email', formData.email);
+                localStorage.setItem('fooodis-restaurant-name', formData.restaurantName);
 
-                // Set Swedish language context
-                if (formData.language === 'svenska') {
-                    window.FoodisChatbot.currentLanguage = 'sv';
-                    window.FoodisChatbot.config = window.FoodisChatbot.config || {};
-                    window.FoodisChatbot.config.language = 'sv-SE';
-                    window.FoodisChatbot.config.preferredAgent = 'swedish-speaking';
-                    localStorage.setItem('fooodis-language', 'swedish');
-                    console.log('🇸🇪 Swedish language context set for user:', formData.name);
+                // Update chatbot if available
+                if (window.FoodisChatbot) {
+                    window.FoodisChatbot.userName = formData.name;
+                    window.FoodisChatbot.userEmail = formData.email;
+                    window.FoodisChatbot.restaurantName = formData.restaurantName;
+                    window.FoodisChatbot.userRegistered = true;
+                    window.FoodisChatbot.userLanguage = formData.language;
+
+                    // Set Swedish language context
+                    if (formData.language === 'svenska') {
+                        window.FoodisChatbot.currentLanguage = 'sv';
+                        window.FoodisChatbot.config = window.FoodisChatbot.config || {};
+                        window.FoodisChatbot.config.language = 'sv-SE';
+                        window.FoodisChatbot.config.preferredAgent = 'swedish-speaking';
+                        localStorage.setItem('fooodis-language', 'swedish');
+                        console.log('🇸🇪 Swedish language context set for user:', formData.name);
+                    }
                 }
-            }
 
-            this.closeForm();
+                this.closeForm();
 
-            // Send success message in appropriate language
-            if (window.FoodisChatbot?.addMessage) {
-                const message = formData.language === 'svenska' 
-                    ? `Tack ${formData.name} från ${formData.restaurantName}! Hur kan jag hjälpa dig idag?`
-                    : `Thank you ${formData.name} from ${formData.restaurantName}! How can I help you today?`;
-                window.FoodisChatbot.addMessage(message, 'assistant');
-            }
-
-            console.log('✅ Form submitted successfully:', formData.name);
-
-            // Trigger UI updates
-            window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
-                detail: {
-                    name: formData.name,
-                    email: formData.email,
-                    restaurantName: formData.restaurantName,
-                    conversationId: formData.conversationId || targetConversation?.id,
-                    language: formData.language,
-                    languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
-                    identityLinked: true
+                // Send success message in appropriate language
+                if (window.FoodisChatbot?.addMessage) {
+                    const message = formData.language === 'svenska' 
+                        ? `Tack ${formData.name} från ${formData.restaurantName}! Hur kan jag hjälpa dig idag?`
+                        : `Thank you ${formData.name} from ${formData.restaurantName}! How can I help you today?`;
+                    window.FoodisChatbot.addMessage(message, 'assistant');
                 }
-            }));
 
-            // Trigger conversation list refresh
-            window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
-                detail: { action: 'update', data: formData }
-            }));
+                console.log('✅ Form submitted successfully:', formData.name);
 
-            // Trigger leads list refresh
-            window.dispatchEvent(new CustomEvent('leadsDataUpdated', {
-                detail: { action: 'new', data: formData }
-            }));
+                // Trigger UI updates with a delay to ensure all updates are processed
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
+                        detail: {
+                            name: formData.name,
+                            email: formData.email,
+                            restaurantName: formData.restaurantName,
+                            conversationId: formData.conversationId,
+                            language: formData.language,
+                            languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                            identityLinked: true
+                        }
+                    }));
+
+                    // Trigger conversation list refresh
+                    window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
+                        detail: { action: 'update', data: formData }
+                    }));
+
+                    // Trigger leads list refresh
+                    window.dispatchEvent(new CustomEvent('leadsDataUpdated', {
+                        detail: { action: 'new', data: formData }
+                    }));
+                }, 500);
+
+            } catch (error) {
+                console.error('❌ Error submitting form:', error);
+                const errorMessage = this.currentLanguage === 'svenska' ? 
+                    'Ett fel uppstod. Vänligen försök igen.' : 
+                    'An error occurred. Please try again.';
+                alert(errorMessage);
+            }
+        },
+
+        sendToServerAPI: async function(formData) {
+            try {
+                console.log('📤 Sending registration data to server API...');
+                
+                // Send user lead data to server
+                const userResponse = await fetch('/api/chatbot/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: formData.name,
+                        email: formData.email,
+                        phone: formData.phone,
+                        restaurantName: formData.restaurantName,
+                        userType: formData.systemUsage,
+                        systemUsage: formData.systemUsage,
+                        language: formData.language,
+                        languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                        conversationId: formData.conversationId,
+                        sessionId: formData.sessionId,
+                        deviceId: formData.deviceId,
+                        registeredAt: formData.timestamp,
+                        source: 'registration_form'
+                    })
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error(`User API error: ${userResponse.status}`);
+                }
+
+                const userResult = await userResponse.json();
+                console.log('✅ User data sent to server:', userResult);
+
+                // Update conversation identity on server
+                if (formData.conversationId) {
+                    const conversationResponse = await fetch(`/api/chatbot/conversations/${formData.conversationId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userName: formData.name,
+                            userEmail: formData.email,
+                            userPhone: formData.phone,
+                            restaurantName: formData.restaurantName,
+                            userType: formData.systemUsage,
+                            language: formData.language,
+                            languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                            languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                            userRegistered: true,
+                            identityLinked: true,
+                            lastUpdated: formData.timestamp
+                        })
+                    });
+
+                    if (!conversationResponse.ok) {
+                        console.warn('⚠️ Conversation update failed:', conversationResponse.status);
+                    } else {
+                        const conversationResult = await conversationResponse.json();
+                        console.log('✅ Conversation identity updated on server:', conversationResult);
+                    }
+                }
+
+            } catch (error) {
+                console.error('❌ Server API error:', error);
+                // Don't throw error - allow local storage to work as fallback
+            }
         },
 
         skipForm: function() {
@@ -468,13 +553,22 @@
 
         updateUserIdentity: function(formData) {
             try {
+                console.log('🔄 Updating user identity with data:', formData);
+                
                 // Update chatbot conversations - find by ID or anonymous session
                 const conversations = JSON.parse(localStorage.getItem('chatbot-conversations') || '[]');
+                const originalConversationsLength = conversations.length;
                 let targetConversation = null;
+                let foundConversations = [];
 
                 // First, try to find by conversationId
                 if (formData.conversationId) {
-                    targetConversation = conversations.find(conv => conv.id === formData.conversationId);
+                    targetConversation = conversations.find(conv => 
+                        conv.id === formData.conversationId || conv.conversationId === formData.conversationId
+                    );
+                    if (targetConversation) {
+                        foundConversations.push('by conversationId');
+                    }
                 }
 
                 // If not found, look for anonymous conversations from same session/device
@@ -482,27 +576,50 @@
                     const sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
                     const deviceId = localStorage.getItem('chatbot-device-id') || 'unknown';
 
-                    targetConversation = conversations.find(conv => 
-                        (conv.userName === 'Anonymous User' || !conv.userName || conv.userName === '') &&
-                        (conv.sessionId === sessionId || conv.deviceId === deviceId)
-                    );
+                    // Search for recent anonymous conversations
+                    const recentAnonymous = conversations.filter(conv => {
+                        const isAnonymous = conv.userName === 'Anonymous User' || !conv.userName || conv.userName === '';
+                        const matchesSession = conv.sessionId === sessionId || conv.deviceId === deviceId;
+                        const isRecent = !conv.createdAt || 
+                            (new Date() - new Date(conv.createdAt)) < (24 * 60 * 60 * 1000); // Within 24 hours
+                        
+                        return isAnonymous && matchesSession && isRecent;
+                    });
+
+                    // Use the most recent one
+                    if (recentAnonymous.length > 0) {
+                        targetConversation = recentAnonymous.sort((a, b) => 
+                            new Date(b.createdAt || b.lastMessageAt || 0) - new Date(a.createdAt || a.lastMessageAt || 0)
+                        )[0];
+                        foundConversations.push('by session/device (recent anonymous)');
+                    }
                 }
 
                 // Update the conversation with user identity
                 if (targetConversation) {
                     const oldName = targetConversation.userName || 'Anonymous User';
+                    
+                    // Store the original conversation ID for reference
+                    const originalId = targetConversation.id || targetConversation.conversationId;
+                    
                     Object.assign(targetConversation, {
                         userName: formData.name,
                         userEmail: formData.email,
                         restaurantName: formData.restaurantName,
                         userPhone: formData.phone,
+                        userType: formData.systemUsage,
+                        systemUsage: formData.systemUsage,
                         userRegistered: true,
                         language: formData.language || 'english',
                         languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
                         languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
+                        displayFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
                         lastUpdated: formData.timestamp,
                         identityLinked: true,
-                        previousName: oldName
+                        previousName: oldName,
+                        // Ensure conversation ID is preserved
+                        conversationId: originalId,
+                        id: originalId
                     });
 
                     // Set language context for Swedish conversations
@@ -512,8 +629,31 @@
                         targetConversation.autoTranslate = true;
                     }
 
+                    // Save updated conversations
                     localStorage.setItem('chatbot-conversations', JSON.stringify(conversations));
+                    
+                    // Also save to server-compatible format
+                    localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(conversations));
+                    
                     console.log(`✅ Updated conversation identity: ${oldName} → ${formData.name} (${formData.restaurantName})`);
+                    console.log('🔍 Found conversation by:', foundConversations.join(', '));
+                    console.log('📊 Updated conversation data:', {
+                        id: targetConversation.id,
+                        userName: targetConversation.userName,
+                        languageFlag: targetConversation.languageFlag,
+                        identityLinked: targetConversation.identityLinked
+                    });
+                } else {
+                    console.warn('⚠️ No target conversation found for identity update');
+                    console.log('🔍 Search details:', {
+                        conversationId: formData.conversationId,
+                        sessionId: window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id'),
+                        deviceId: localStorage.getItem('chatbot-device-id'),
+                        totalConversations: conversations.length,
+                        anonymousConversations: conversations.filter(c => 
+                            c.userName === 'Anonymous User' || !c.userName || c.userName === ''
+                        ).length
+                    });
                 }
 
                 // Also update current chatbot instance if available
@@ -523,28 +663,21 @@
                     window.FoodisChatbot.restaurantName = formData.restaurantName;
                     window.FoodisChatbot.userRegistered = true;
                     window.FoodisChatbot.userLanguage = formData.language;
+                    window.FoodisChatbot.languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
+                    window.FoodisChatbot.displayFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
 
                     // Set language for Swedish users
                     if (formData.language === 'svenska') {
                         window.FoodisChatbot.currentLanguage = 'sv';
+                        window.FoodisChatbot.config = window.FoodisChatbot.config || {};
                         window.FoodisChatbot.config.language = 'sv-SE';
                     }
+                    
+                    console.log('✅ Updated chatbot instance with user identity');
                 }
 
-                // Trigger UI updates
-                window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
-                    detail: {
-                        name: formData.name,
-                        email: formData.email,
-                        restaurantName: formData.restaurantName,
-                        conversationId: formData.conversationId || targetConversation?.id,
-                        language: formData.language,
-                        languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
-                        identityLinked: true
-                    }
-                }));
             } catch (error) {
-                console.error('Error updating user identity:', error);
+                console.error('❌ Error updating user identity:', error);
             }
         },
 
