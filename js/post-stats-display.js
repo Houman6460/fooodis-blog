@@ -10,82 +10,78 @@ const shareIconsInfo = {
 };
 
 (function() {
+    // Prevent multiple initializations
+    if (window.postStatsInitialized) {
+        console.log('Post Stats: Already initialized, skipping');
+        return;
+    }
+    window.postStatsInitialized = true;
+
     console.log('Post Stats: Script loading...');
 
     // First priority: preserve share icons
     preserveShareIcons();
 
-    // Run on page load and DOM events to ensure consistent display
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Post Stats: DOMContentLoaded fired');
+    // Single initialization to prevent loops
+    let initialized = false;
+
+    function safeInitialize() {
+        if (initialized) return;
+        initialized = true;
+        
+        console.log('Post Stats: Initializing (safe mode)');
         initPostStats();
         restoreShareIcons();
-    });
-
-    window.addEventListener('load', function() {
-        console.log('Post Stats: Window load fired');
-        initPostStats();
-        restoreShareIcons();
-
-        // Apply multiple times to catch late-loading content
-        setTimeout(function() {
-            initPostStats();
-            restoreShareIcons();
-        }, 500);
-
-        setTimeout(function() {
-            initPostStats();
-            restoreShareIcons();
-        }, 1500);
-
-        // Final attempt for very late loading content
-        setTimeout(function() {
-            initPostStats();
-            restoreShareIcons();
-        }, 3000);
-    });
-
-    // Also run immediately if possible
-    if (document.readyState !== 'loading') {
-        console.log('Post Stats: Document already loaded, initializing now');
-        setTimeout(function() {
-            initPostStats();
-            restoreShareIcons();
-        }, 10);
     }
 
-    // Set up mutation observer to catch dynamically added content
-    const observer = new MutationObserver(function(mutations) {
-        let contentChanged = false;
-
-        mutations.forEach(mutation => {
-            if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                contentChanged = true;
-            }
-        });
-
-        if (contentChanged) {
-            setTimeout(function() {
-                initPostStats();
-                restoreShareIcons();
-            }, 100);
-        }
-    });
-
-    // Safety check to ensure document.body exists before observing
-    if (document && document.body && document.body.nodeType === 1) {
-        observer.observe(document.body, { childList: true, subtree: true });
-        console.log('Post Stats Display: Observer initialized');
+    // Run on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', safeInitialize);
     } else {
-        console.warn('Post Stats Display: Document body not available, will retry');
-        // Try again after a short delay
-        setTimeout(function() {
-            if (document && document.body) {
-                observer.observe(document.body, { childList: true, subtree: true });
-                console.log('Post Stats Display: Observer initialized (retry)');
-            }
-        }, 500);
+        setTimeout(safeInitialize, 100);
     }
+
+    // Light monitoring without infinite loops
+    let observerInitialized = false;
+    
+    function setupLightMonitoring() {
+        if (observerInitialized) return;
+        observerInitialized = true;
+        
+        // Only monitor for major content changes, not every mutation
+        if (document && document.body) {
+            const lightObserver = new MutationObserver(function(mutations) {
+                // Only react to significant changes
+                const significantChange = mutations.some(mutation => 
+                    mutation.type === 'childList' && 
+                    mutation.addedNodes.length > 0 &&
+                    Array.from(mutation.addedNodes).some(node => 
+                        node.nodeType === 1 && 
+                        (node.classList && node.classList.contains('blog-post'))
+                    )
+                );
+                
+                if (significantChange) {
+                    console.log('Post Stats: Significant content change detected');
+                    setTimeout(() => {
+                        if (!initialized) {
+                            initPostStats();
+                            restoreShareIcons();
+                        }
+                    }, 500);
+                }
+            });
+            
+            lightObserver.observe(document.body, { 
+                childList: true, 
+                subtree: false // Only watch direct children
+            });
+            console.log('Post Stats Display: Light observer initialized');
+        }
+    }
+    
+    // Set up monitoring after initial load
+    setTimeout(setupLightMonitoring, 2000);
 })();
 
 /**
@@ -235,31 +231,41 @@ function restoreShareIcons() {
  * Initialize post stats (view counts and ratings)
  */
 function initPostStats() {
+    if (window.postStatsProcessing) {
+        console.log('Post Stats: Already processing, skipping');
+        return;
+    }
+    window.postStatsProcessing = true;
+
     console.log('Post Stats: Initializing...');
 
-    // Clean up any previous stats displays
-    cleanup();
+    try {
+        // Clean up any previous stats displays
+        cleanup();
 
-    // Add required CSS
-    addStatsStyles();
+        // Add required CSS
+        addStatsStyles();
 
-    // Ensure all share icons are preserved first
-    preserveShareIcons();
+        // Ensure all share icons are preserved first
+        preserveShareIcons();
 
-    // Add stats to blog post cards
-    addStatsToCards();
+        // Add stats to blog post cards
+        addStatsToCards();
 
-    // Set up modal stats when posts are opened
-    setupModalStats();
+        // Set up modal stats when posts are opened
+        setupModalStats();
 
-    // Make sure share icons are still visible after stats are added
-    setTimeout(() => {
-        restoreShareIcons();
-        // Double-check again after a delay
-        setTimeout(restoreShareIcons, 500);
-    }, 100);
+        // Restore share icons once
+        setTimeout(() => {
+            restoreShareIcons();
+        }, 200);
 
-    console.log('Post Stats: Initialization complete');
+        console.log('Post Stats: Initialization complete');
+    } catch (error) {
+        console.error('Post Stats: Error during initialization:', error);
+    } finally {
+        window.postStatsProcessing = false;
+    }
 }
 
 /**
