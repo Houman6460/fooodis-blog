@@ -27,6 +27,7 @@
         chatbotSettings: null,
         conversationPhase: 'welcome', // welcome -> handoff -> agent -> personalized
         userName: null,
+        restaurantName: null,
         handoffComplete: false,
         currentLanguage: null, // Will be detected from user input
         languageDetected: false,
@@ -45,6 +46,7 @@
             // Initialize chat state
             this.conversationPhase = 'welcome';
             this.userName = localStorage.getItem('fooodis-user-name') || null;
+            this.restaurantName = localStorage.getItem('fooodis-restaurant-name') || null;
             this.handoffComplete = false;
 
             // Load saved settings and prepare agents
@@ -670,6 +672,8 @@
             // Set initial visibility based on enabled state
             if (!this.config.enabled) {
                 widget.style.display = 'none';
+            } else {
+                widget.style.display = 'block';
             }
 
             // Append to body
@@ -1483,11 +1487,13 @@
 
         getAgentIntroduction: function() {
             const agentName = this.currentAgent?.name || 'Support Agent';
+            const userGreeting = this.userName ? ` ${this.userName}` : '';
+            const restaurantGreeting = this.restaurantName ? ` from ${this.restaurantName}` : '';
 
             if (this.currentLanguage === 'sv') {
-                return `Hej! Jag heter ${agentName} och jag kommer att hjälpa dig idag. Vad kan jag assistera dig med?`;
+                return `Hej${userGreeting}! Jag heter ${agentName} och jag kommer att hjälpa dig idag. Vad kan jag assistera dig med?`;
             } else {
-                return `Hello! I'm ${agentName} and I'll be helping you today. What can I assist you with?`;
+                return `Hello${userGreeting}${restaurantGreeting}! I'm ${agentName} and I'll be helping you today. What can I assist you with?`;
             }
         },
 

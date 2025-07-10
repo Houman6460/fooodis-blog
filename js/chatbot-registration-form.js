@@ -62,28 +62,33 @@
 
                     <form class="registration-form" id="registrationForm">
                         <div class="form-group">
-                            <label for="userName" class="field-label" data-en="Your Name" data-sv="Ditt namn">Ditt namn</label>
-                            <input type="text" id="userName" name="userName" placeholder="Ange ditt namn" data-placeholder-en="Enter your name" data-placeholder-sv="Ange ditt namn" required>
+                            <label for="userName" class="field-label" data-en="Your Name" data-sv="Ditt namn">Your Name</label>
+                            <input type="text" id="userName" name="userName" placeholder="Enter your name" data-placeholder-en="Enter your name" data-placeholder-sv="Ange ditt namn" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="userPhone" class="field-label" data-en="Your Phone" data-sv="Din telefon">Din telefon</label>
+                            <label for="restaurantName" class="field-label" data-en="Restaurant Name" data-sv="Restaurangnamn">Restaurant Name</label>
+                            <input type="text" id="restaurantName" name="restaurantName" placeholder="Enter restaurant name" data-placeholder-en="Enter restaurant name" data-placeholder-sv="Ange restaurangnamn" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userPhone" class="field-label" data-en="Phone Number" data-sv="Telefonnummer">Phone Number</label>
                             <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" data-placeholder-en="+46 70 123 45 67" data-placeholder-sv="+46 70 123 45 67" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="systemUsage" class="field-label" data-en="Are you currently using a delivery system for your restaurant?" data-sv="Använder du för närvarande ett leveranssystem för din restaurang?">Använder du för närvarande ett leveranssystem för din restaurang?</label>
+                            <label for="systemUsage" class="field-label" data-en="Current delivery system" data-sv="Nuvarande leveranssystem">Current delivery system</label>
                             <select id="systemUsage" name="systemUsage" required>
-                                <option value="" data-en="Please select an option" data-sv="Vänligen välj ett alternativ">Vänligen välj ett alternativ</option>
-                                <option value="current_user" data-en="Yes, I'm currently using Fooodis" data-sv="Ja, jag använder för närvarande Fooodis">Ja, jag använder för närvarande Fooodis</option>
-                                <option value="competitor_user" data-en="Yes, I'm using another system" data-sv="Ja, jag använder ett annat leveranssystem">Ja, jag använder ett annat leveranssystem</option>
-                                <option value="potential_user" data-en="No, I'm looking for a solution" data-sv="Nej, jag söker efter en lösning">Nej, jag söker efter en lösning</option>
+                                <option value="" data-en="Please select" data-sv="Vänligen välj">Please select</option>
+                                <option value="current_user" data-en="Using Fooodis" data-sv="Använder Fooodis">Using Fooodis</option>
+                                <option value="competitor_user" data-en="Using another system" data-sv="Använder annat system">Using another system</option>
+                                <option value="potential_user" data-en="Looking for solution" data-sv="Söker lösning">Looking for solution</option>
                             </select>
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="skip-btn" data-en="Skip for now" data-sv="Hoppa över för tillfället">Hoppa över för tillfället</button>
-                            <button type="submit" class="submit-btn" data-en="Submit" data-sv="Skicka">Skicka</button>
+                            <button type="button" class="skip-btn" data-en="Skip" data-sv="Hoppa över">Skip</button>
+                            <button type="submit" class="submit-btn" data-en="Submit" data-sv="Skicka">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -262,6 +267,7 @@
         submitForm: function() {
             const formData = {
                 name: document.getElementById('userName')?.value || '',
+                restaurantName: document.getElementById('restaurantName')?.value || '',
                 phone: document.getElementById('userPhone')?.value || '',
                 systemUsage: document.getElementById('systemUsage')?.value || '',
                 timestamp: new Date().toISOString()
@@ -270,15 +276,25 @@
             // Save registration data
             this.saveRegistrationData(formData);
 
-            // Mark user as registered
+            // Mark user as registered and save name for future conversations
             localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
+            localStorage.setItem('fooodis-user-name', formData.name);
+            localStorage.setItem('fooodis-restaurant-name', formData.restaurantName);
+
+            // Update chatbot widget with user info
+            if (window.FoodisChatbot) {
+                window.FoodisChatbot.userName = formData.name;
+                window.FoodisChatbot.restaurantName = formData.restaurantName;
+                window.FoodisChatbot.userRegistered = true;
+            }
 
             // Close form and continue chat
             this.closeForm();
 
-            // Send success message to chat
+            // Send personalized success message to chat
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
-                window.FoodisChatbot.addMessage('Thank you for providing your information! How can I help you today?', 'assistant');
+                const welcomeMessage = `Thank you ${formData.name} from ${formData.restaurantName}! How can I help you today?`;
+                window.FoodisChatbot.addMessage(welcomeMessage, 'assistant');
             }
         },
 
@@ -406,24 +422,24 @@
                 }
 
                 .form-group {
-                    margin-bottom: 20px;
+                    margin-bottom: 16px;
                 }
 
                 .field-label {
                     display: block;
-                    font-size: 16px;
+                    font-size: 14px;
                     color: #2c2c2c;
-                    margin-bottom: 8px;
+                    margin-bottom: 6px;
                     font-weight: 500;
                 }
 
                 .registration-form input,
                 .registration-form select {
                     width: 100%;
-                    padding: 16px;
+                    padding: 12px 14px;
                     border: 2px solid #e9ecef;
-                    border-radius: 12px;
-                    font-size: 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
                     background: #f8f9fa;
                     transition: all 0.3s ease;
                     box-sizing: border-box;
