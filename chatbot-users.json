@@ -38,5 +38,15 @@
     "conversationId": "conv_1752156598157_icwqfmlxb",
     "registeredAt": "2025-07-10T14:11:08.933Z",
     "source": "chatbot-widget"
+  },
+  {
+    "id": "conv_1752156936877_qf6kbzzj3",
+    "name": "hhhhhh",
+    "email": "info@logoland.se",
+    "phone": "0790670",
+    "systemUsage": "current_user",
+    "conversationId": "conv_1752156936877_qf6kbzzj3",
+    "registeredAt": "2025-07-10T14:16:33.340Z",
+    "source": "chatbot-widget"
   }
 ]
