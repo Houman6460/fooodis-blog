@@ -327,28 +327,57 @@
                 const languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
                 localStorage.setItem('fooodis-language-flag', languageFlag);
 
-                // CRITICAL: Trigger user identity update
-                console.log('🚀 TRIGGERING USER IDENTITY UPDATE...');
-                document.dispatchEvent(new CustomEvent('userRegistered', {
+                // Get session/device IDs for conversation matching
+                let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
+                let deviceId = localStorage.getItem('chatbot-device-id');
+                
+                if (!sessionId) {
+                    sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('chatbot-session-id', sessionId);
+                }
+                
+                if (!deviceId) {
+                    deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('chatbot-device-id', deviceId);
+                }
+
+                // CRITICAL: Use the SAME event that conversation management listens for
+                console.log('🚀 TRIGGERING USER IDENTITY UPDATE WITH CORRECT EVENT...');
+                
+                const identityData = {
+                    name: formData.name,
+                    userName: formData.name,
+                    email: formData.email,
+                    userEmail: formData.email,
+                    phone: formData.phone,
+                    userPhone: formData.phone,
+                    restaurantName: formData.restaurantName,
+                    systemUsage: formData.systemUsage,
+                    userType: formData.systemUsage,
+                    language: formData.language,
+                    languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
+                    languageFlag: languageFlag,
+                    displayFlag: languageFlag,
+                    timestamp: formData.timestamp,
+                    conversationId: this.getCurrentConversationId(),
+                    sessionId: sessionId,
+                    deviceId: deviceId
+                };
+
+                // Fire the userIdentityUpdated event that ChatbotManager is listening for
+                window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
+                    detail: identityData
+                }));
+
+                // Also fire the conversationDataUpdated event as backup
+                window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
                     detail: {
-                        name: formData.name,
-                        userName: formData.name,
-                        email: formData.email,
-                        userEmail: formData.email,
-                        phone: formData.phone,
-                        userPhone: formData.phone,
-                        restaurantName: formData.restaurantName,
-                        systemUsage: formData.systemUsage,
-                        userType: formData.systemUsage,
-                        language: formData.language,
-                        languageFlag: languageFlag,
-                        displayFlag: languageFlag,
-                        timestamp: formData.timestamp,
-                        conversationId: this.getCurrentConversationId(),
-                        sessionId: this.getSessionId(),
-                        deviceId: this.getDeviceId()
+                        action: 'identity_update',
+                        data: identityData
                     }
                 }));
+
+                console.log('✅ Identity update events fired:', identityData);
 
                 // Close form and send success message
                 this.closeForm();

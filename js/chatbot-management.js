@@ -486,49 +486,14 @@ class ChatbotManager {
                 
                 console.log('📍 Updating most recent anonymous conversation as fallback:', mostRecentAnonymous.id);
                 
-                const oldUserName = mostRecentAnonymous.userName || 'Anonymous User';
-                
-                // Update with complete user identity
-                const newUserName = identityData.name || identityData.userName || identityData.email || identityData.userEmail;
-                mostRecentAnonymous.userName = newUserName;
-                mostRecentAnonymous.userEmail = identityData.email || identityData.userEmail;
-                mostRecentAnonymous.restaurantName = identityData.restaurantName;
-                mostRecentAnonymous.userPhone = identityData.phone || identityData.userPhone;
-                mostRecentAnonymous.userType = identityData.userType || identityData.systemUsage;
-                mostRecentAnonymous.systemUsage = identityData.systemUsage;
-                mostRecentAnonymous.language = identityData.language;
-                mostRecentAnonymous.languageCode = identityData.languageCode;
-                
-                // Enhanced flag mapping
-                const flagMap = {
-                    'svenska': '🇸🇪',
-                    'swedish': '🇸🇪',
-                    'english': '🇺🇸',
-                    'sv': '🇸🇪',
-                    'en': '🇺🇸',
-                    'sv-SE': '🇸🇪',
-                    'en-US': '🇺🇸'
-                };
-                
-                let correctFlag = '🇺🇸';
-                if (identityData.languageFlag && identityData.languageFlag.trim()) {
-                    correctFlag = identityData.languageFlag.trim();
-                } else if (identityData.displayFlag && identityData.displayFlag.trim()) {
-                    correctFlag = identityData.displayFlag.trim();
-                } else if (identityData.language) {
-                    correctFlag = flagMap[identityData.language.toLowerCase()] || '🇺🇸';
-                } else if (identityData.languageCode) {
-                    correctFlag = flagMap[identityData.languageCode.toLowerCase()] || '🇺🇸';
-                }
-                
-                mostRecentAnonymous.languageFlag = correctFlag;
-                mostRecentAnonymous.displayFlag = correctFlag;
-                mostRecentAnonymous.userRegistered = true;
-                mostRecentAnonymous.identityLinked = true;
-                mostRecentAnonymous.lastUpdated = identityData.timestamp || new Date().toISOString();
-                mostRecentAnonymous.previousName = oldUserName;
-
-                console.log(`✅ Fallback update: ${oldUserName} → ${mostRecentAnonymous.userName} (${mostRecentAnonymous.languageFlag})`);
+                this.applyIdentityUpdate(mostRecentAnonymous, identityData);
+                updated = true;
+            } else {
+                // If no anonymous conversations found, update ALL conversations (aggressive approach)
+                console.log('🔥 No anonymous conversations found, updating ALL conversations with identity data');
+                this.conversations.forEach(conv => {
+                    this.applyIdentityUpdate(conv, identityData);
+                });
                 updated = true;
             }
         }
@@ -551,6 +516,11 @@ class ChatbotManager {
                 console.log('✅ Second delayed refresh: Ensuring name update displayed');
             }, 200);
             
+            setTimeout(() => {
+                this.renderConversations();
+                console.log('✅ Third delayed refresh: Final verification');
+            }, 500);
+            
             console.log('✅ Conversation identity update completed and saved');
         } else {
             console.log('⚠️ No matching conversations found for identity update');
@@ -561,6 +531,53 @@ class ChatbotManager {
                 deviceId: c.deviceId
             })));
         }
+    }
+
+    applyIdentityUpdate(conversation, identityData) {
+        const oldUserName = conversation.userName || 'Anonymous User';
+        
+        // Update conversation with complete user identity
+        const newUserName = identityData.name || identityData.userName || identityData.email || identityData.userEmail;
+        conversation.userName = newUserName;
+        conversation.userEmail = identityData.email || identityData.userEmail;
+        conversation.restaurantName = identityData.restaurantName;
+        conversation.userPhone = identityData.phone || identityData.userPhone;
+        conversation.userType = identityData.userType || identityData.systemUsage;
+        conversation.systemUsage = identityData.systemUsage;
+        conversation.language = identityData.language;
+        conversation.languageCode = identityData.languageCode;
+        
+        // Enhanced flag mapping
+        const flagMap = {
+            'svenska': '🇸🇪',
+            'swedish': '🇸🇪',
+            'english': '🇺🇸',
+            'sv': '🇸🇪',
+            'en': '🇺🇸',
+            'sv-SE': '🇸🇪',
+            'en-US': '🇺🇸'
+        };
+        
+        let correctFlag = '🇺🇸';
+        if (identityData.languageFlag && identityData.languageFlag.trim()) {
+            correctFlag = identityData.languageFlag.trim();
+        } else if (identityData.displayFlag && identityData.displayFlag.trim()) {
+            correctFlag = identityData.displayFlag.trim();
+        } else if (identityData.language) {
+            correctFlag = flagMap[identityData.language.toLowerCase()] || '🇺🇸';
+        } else if (identityData.languageCode) {
+            correctFlag = flagMap[identityData.languageCode.toLowerCase()] || '🇺🇸';
+        }
+        
+        conversation.languageFlag = correctFlag;
+        conversation.displayFlag = correctFlag;
+        conversation.userRegistered = true;
+        conversation.identityLinked = true;
+        conversation.lastUpdated = identityData.timestamp || new Date().toISOString();
+        conversation.previousName = oldUserName;
+
+        console.log(`✅ Applied identity update: ${oldUserName} → ${conversation.userName} (${conversation.languageFlag})`);
+        return conversation;
     }
 
     async loadLeads() {
@@ -784,13 +801,34 @@ class ChatbotManager {
         window.addEventListener('userIdentityUpdated', (event) => {
             console.log('🔄 ChatbotManager: Received user identity update:', event.detail);
             this.updateConversationIdentity(event.detail);
+            // Force immediate UI refresh
+            setTimeout(() => {
+                this.renderConversations();
+                console.log('🔄 Forced conversation refresh after identity update');
+            }, 100);
         });
 
         window.addEventListener('conversationDataUpdated', (event) => {
             console.log('🔄 ChatbotManager: Received conversation data update:', event.detail);
             if (event.detail.action === 'identity_update') {
                 this.updateConversationIdentity(event.detail.data);
+                // Force immediate UI refresh
+                setTimeout(() => {
+                    this.renderConversations();
+                    console.log('🔄 Forced conversation refresh after data update');
+                }, 100);
             }
+        });
+
+        // Also listen for the userRegistered event as fallback
+        document.addEventListener('userRegistered', (event) => {
+            console.log('🔄 ChatbotManager: Received userRegistered event:', event.detail);
+            this.updateConversationIdentity(event.detail);
+            // Force immediate UI refresh
+            setTimeout(() => {
+                this.renderConversations();
+                console.log('🔄 Forced conversation refresh after user registration');
+            }, 100);
         });
 
         // Status toggle
