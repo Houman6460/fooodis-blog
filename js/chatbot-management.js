@@ -2732,13 +2732,34 @@ class ChatbotManager {
         filteredLeads.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt));
 
         leadsTableBody.innerHTML = filteredLeads.map(lead => {
-            // Check both userType and systemUsage fields for compatibility
-            const userType = lead.userType || lead.systemUsage || 'Anonymous';
+            // Use the new userType field, with fallback to systemUsage mapping for compatibility
+            let userTypeDisplay = 'Potential User';
+            let userTypeClass = 'potential-user';
+            
+            if (lead.userType) {
+                // New system: use userType directly
+                if (lead.userType === 'user') {
+                    userTypeDisplay = 'Current User';
+                    userTypeClass = 'current-user';
+                } else {
+                    userTypeDisplay = 'Potential User';
+                    userTypeClass = 'potential-user';
+                }
+            } else if (lead.systemUsage) {
+                // Legacy system: map systemUsage to display labels
+                if (lead.systemUsage === 'current_user') {
+                    userTypeDisplay = 'Current User';
+                    userTypeClass = 'current-user';
+                } else if (lead.systemUsage === 'competitor_user') {
+                    userTypeDisplay = 'Competitor User';
+                    userTypeClass = 'competitor-user';
+                } else {
+                    userTypeDisplay = 'Potential User';
+                    userTypeClass = 'potential-user';
+                }
+            }
+            
             const leadScore = lead.leadScore || 0;
-            const userTypeLabel = userType === 'current_user' ? 'Current User' : 
-                                 userType === 'competitor_user' ? 'Competitor User' : 'Potential User';
-            const userTypeClass = userType === 'current_user' ? 'current-user' : 
-                                 userType === 'competitor_user' ? 'competitor-user' : 'potential-user';
 
             return `
             <tr>
@@ -2755,7 +2776,7 @@ class ChatbotManager {
                 </td>
                 <td>
                     <span class="user-type-badge ${userTypeClass}" title="Lead Score: ${leadScore}">
-                        ${userTypeLabel}
+                        ${userTypeDisplay}
                     </span>
                 </td>
                 <td>${lead.restaurantName ? this.escapeHtml(lead.restaurantName) : '-'}</td>

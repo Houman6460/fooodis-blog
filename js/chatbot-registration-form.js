@@ -292,12 +292,26 @@
         },
 
         submitForm: async function() {
+            const systemUsageValue = document.getElementById('systemUsage')?.value || '';
+            
+            // Determine user type based on dropdown selection
+            let userType = 'potential user'; // Default
+            
+            // Check if user selected "Using Fooodis" option
+            if (systemUsageValue === 'current_user') {
+                userType = 'user';
+            } else {
+                // All other options (competitor_user, potential_user, or empty) → potential user
+                userType = 'potential user';
+            }
+            
             const formData = {
                 name: document.getElementById('userName')?.value || '',
                 email: document.getElementById('userEmail')?.value || '',
                 restaurantName: document.getElementById('restaurantName')?.value || '',
                 phone: document.getElementById('userPhone')?.value || '',
-                systemUsage: document.getElementById('systemUsage')?.value || '',
+                systemUsage: systemUsageValue,
+                userType: userType, // Add the determined user type
                 timestamp: new Date().toISOString(),
                 language: this.currentLanguage
             };
@@ -635,7 +649,7 @@
                         email: formData.email,
                         phone: formData.phone,
                         restaurantName: formData.restaurantName,
-                        userType: formData.systemUsage,
+                        userType: formData.userType, // Use the determined userType
                         systemUsage: formData.systemUsage,
                         language: formData.language,
                         languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
@@ -720,7 +734,8 @@
                     languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
                     languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
                     preferredAgent: formData.language === 'svenska' ? 'swedish-speaking' : 'english-speaking',
-                    identityLinked: true
+                    identityLinked: true,
+                    userType: formData.userType // Ensure userType is included in lead data
                 };
 
                 if (!existingLead) {
