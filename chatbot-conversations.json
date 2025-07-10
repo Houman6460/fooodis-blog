@@ -974,10 +974,20 @@
         "role": "assistant",
         "content": "Great! To register with Fooodis, simply follow these steps:\n\n1. Visit our [registration page](https://fooodis.com/register).\n2. Fill out the required information, including your name, email address, and password.\n3. Once you've completed the form, click on the \"Sign Up\" button.\n4. You may receive a confirmation email; just follow the instructions in that email to activate your account.\n\nIf you have any questions or need further assistance during the registration process, feel free to ask!",
         "timestamp": "2025-07-10T12:11:40.432Z"
+      },
+      {
+        "role": "user",
+        "content": "Do you have discount code?",
+        "timestamp": "2025-07-10T12:22:32.085Z"
+      },
+      {
+        "role": "assistant",
+        "content": "We currently do not have any active discount codes available. However, we often have promotions and special offers, so I recommend keeping an eye on our website or subscribing to our newsletter for the latest updates. If you have any other questions or need assistance, feel free to ask!",
+        "timestamp": "2025-07-10T12:22:33.132Z"
       }
     ],
     "createdAt": "2025-07-10T12:11:18.373Z",
-    "lastMessageAt": "2025-07-10T12:11:35.934Z",
+    "lastMessageAt": "2025-07-10T12:22:32.085Z",
     "language": "en",
     "status": "active",
     "threadId": null,
@@ -989,7 +999,7 @@
       "assignedAssistantId": "billing-assistant",
       "department": "Billing"
     },
-    "lastUserMessage": "I want to register",
-    "messageCount": 4
+    "lastUserMessage": "Do you have discount code?",
+    "messageCount": 6
   }
 ]
