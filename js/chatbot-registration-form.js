@@ -303,6 +303,17 @@
 
             console.log('🔄 Applying translations for:', lang);
 
+            // First, update tab active states to ensure visual feedback
+            const allTabs = registrationContainer.querySelectorAll('.lang-tab');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+                if ((language === 'svenska' && tab.getAttribute('data-lang') === 'svenska') ||
+                    (language === 'english' && tab.getAttribute('data-lang') === 'english')) {
+                    tab.classList.add('active');
+                    console.log('✅ Tab activated:', tab.textContent);
+                }
+            });
+
             // Update all text content with complete language isolation
             const formTitle = registrationContainer.querySelector('.form-title');
             const formSubtitle = registrationContainer.querySelector('.form-subtitle');
@@ -387,6 +398,12 @@
                 submitBtn.textContent = translations.submitButton;
                 console.log('📝 Updated submit button to:', translations.submitButton);
             }
+
+            // Force a visual refresh by adding/removing a class
+            registrationContainer.classList.add('language-switching');
+            setTimeout(() => {
+                registrationContainer.classList.remove('language-switching');
+            }, 100);
 
             console.log('✅ Language switched successfully to:', language, 'using', lang, 'translations');
         },
@@ -747,6 +764,16 @@
 
                 .submit-btn:hover {
                     background: #d9e53f;
+                    transform: translateY(-1px);
+                }
+
+                .registration-container.language-switching {
+                    opacity: 0.8;
+                    transition: opacity 0.1s ease;
+                }
+
+                .lang-tab:hover {
+                    background: rgba(232, 242, 76, 0.3);
                     transform: translateY(-1px);
                 }`;
 
