@@ -921,7 +921,7 @@ class NodeFlowBuilder {
             btn.style.cursor = 'pointer';
             btn.style.fontSize = '14px';
             btn.style.fontWeight = 'bold';
-            btn.style.zIndex = '1000';
+            btn.style.zIndex = '5'; // Lower z-index so nodes stay above
             btn.style.border = '2px solid white';
             btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
             btn.style.pointerEvents = 'auto';
@@ -937,21 +937,39 @@ class NodeFlowBuilder {
                 btn.style.backgroundColor = '#ff3742';
                 const currentCounterScale = 1 / this.zoom;
                 btn.style.transform = `translate(-50%, -50%) scale(${currentCounterScale * 1.2})`;
+                btn.style.zIndex = '15'; // Temporarily raise z-index on hover
             });
 
             btn.addEventListener('mouseleave', () => {
                 btn.style.backgroundColor = '#ff4757';
                 const currentCounterScale = 1 / this.zoom;
                 btn.style.transform = `translate(-50%, -50%) scale(${currentCounterScale})`;
+                btn.style.zIndex = '5'; // Reset z-index
             });
 
-            // Add click handler
-            btn.onclick = (e) => {
+            // Enhanced click handler with better event handling
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                e.stopImmediatePropagation();
                 console.log('Disconnect button clicked for:', connection.id);
-                this.removeConnection(connection.id);
-            };
+                
+                // Show confirmation dialog
+                if (confirm('Are you sure you want to remove this connection?')) {
+                    this.removeConnection(connection.id);
+                }
+            });
+
+            // Prevent other events from interfering
+            btn.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            btn.addEventListener('mouseup', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
 
             // Add to the flow-nodes container so it follows canvas transformations
             const nodesContainer = document.getElementById('flow-nodes');
@@ -2314,10 +2332,12 @@ class NodeFlowBuilder {
         if (flowNodes) {
             flowNodes.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
             flowNodes.style.pointerEvents = 'auto';
+            flowNodes.style.zIndex = '10'; // Ensure nodes are above connections
         }
         if (flowConnections) {
             flowConnections.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
             flowConnections.style.pointerEvents = 'none';
+            flowConnections.style.zIndex = '1'; // Keep connections below nodes
         }
 
         // Update zoom level display
@@ -2331,12 +2351,21 @@ class NodeFlowBuilder {
             const counterScale = 1 / this.zoom;
             btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
             btn.style.pointerEvents = 'auto';
+            btn.style.zIndex = '5'; // Keep disconnect buttons below nodes but above connections
         });
 
-        // Ensure all nodes have proper pointer events
+        // Ensure all nodes have proper pointer events and z-index
         document.querySelectorAll('.flow-node').forEach(node => {
             node.style.pointerEvents = 'auto';
+            node.style.zIndex = '20'; // Nodes should be on top
+            node.style.position = 'absolute';
         });
+
+        // Update zoom controls z-index to stay on top
+        const zoomControls = document.querySelector('.canvas-zoom-controls');
+        if (zoomControls) {
+            zoomControls.style.zIndex = '1000';
+        }
     }
 
     handleCanvasMouseDown(e) {
