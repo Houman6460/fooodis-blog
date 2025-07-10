@@ -354,31 +354,50 @@ class ChatbotManager {
 
         let updated = false;
         
-        // AGGRESSIVE APPROACH: Update ALL anonymous conversations
+        // SUPER AGGRESSIVE APPROACH: Update ALL conversations that don't have proper user names
         this.conversations.forEach((conversation, index) => {
-            // Check if this is an anonymous conversation that needs updating
-            const isAnonymous = !conversation.userName || 
+            // Check if this conversation needs updating (very broad criteria)
+            const needsUpdate = !conversation.userName || 
                                conversation.userName === 'Anonymous User' || 
                                conversation.userName === '' ||
-                               conversation.userName.trim() === '';
+                               conversation.userName.trim() === '' ||
+                               !conversation.userRegistered ||
+                               !conversation.identityLinked;
             
-            if (isAnonymous) {
-                console.log(`🎯 UPDATING ANONYMOUS CONVERSATION ${index + 1}:`, conversation.id);
+            // ALSO update conversations from the last 24 hours regardless
+            const conversationTime = new Date(conversation.lastMessageAt || conversation.createdAt || 0);
+            const now = new Date();
+            const hoursSinceConversation = (now - conversationTime) / (1000 * 60 * 60);
+            const isRecent = hoursSinceConversation < 24;
+            
+            if (needsUpdate || isRecent) {
+                console.log(`🎯 UPDATING CONVERSATION ${index + 1}:`, {
+                    id: conversation.id || conversation.conversationId,
+                    currentName: conversation.userName,
+                    needsUpdate,
+                    isRecent,
+                    hoursSince: Math.round(hoursSinceConversation * 10) / 10
+                });
                 
                 const oldUserName = conversation.userName || 'Anonymous User';
                 
-                // Apply complete identity update
-                const newUserName = identityData.name || identityData.userName || identityData.email || identityData.userEmail;
-                conversation.userName = newUserName;
-                conversation.userEmail = identityData.email || identityData.userEmail;
-                conversation.restaurantName = identityData.restaurantName;
-                conversation.userPhone = identityData.phone || identityData.userPhone;
-                conversation.userType = identityData.userType || identityData.systemUsage;
-                conversation.systemUsage = identityData.systemUsage;
-                conversation.language = identityData.language;
-                conversation.languageCode = identityData.languageCode;
+                // Apply complete identity update with all possible field mappings
+                const newUserName = identityData.name || 
+                                  identityData.userName || 
+                                  identityData.email || 
+                                  identityData.userEmail || 
+                                  'Registered User';
                 
-                // Enhanced language flag mapping
+                conversation.userName = newUserName;
+                conversation.userEmail = identityData.email || identityData.userEmail || conversation.userEmail;
+                conversation.restaurantName = identityData.restaurantName || conversation.restaurantName;
+                conversation.userPhone = identityData.phone || identityData.userPhone || conversation.userPhone;
+                conversation.userType = identityData.userType || identityData.systemUsage || conversation.userType;
+                conversation.systemUsage = identityData.systemUsage || conversation.systemUsage;
+                conversation.language = identityData.language || conversation.language;
+                conversation.languageCode = identityData.languageCode || conversation.languageCode;
+                
+                // Enhanced language flag mapping with more options
                 const flagMap = {
                     'svenska': '🇸🇪',
                     'swedish': '🇸🇪',
@@ -386,20 +405,24 @@ class ChatbotManager {
                     'sv': '🇸🇪',
                     'en': '🇺🇸',
                     'sv-SE': '🇸🇪',
-                    'en-US': '🇺🇸'
+                    'en-US': '🇺🇸',
+                    'sv-se': '🇸🇪',
+                    'en-us': '🇺🇸'
                 };
                 
-                // Determine correct flag
-                let correctFlag = '🇺🇸'; // Default
+                // Determine correct flag with multiple fallbacks
+                let correctFlag = conversation.languageFlag || conversation.displayFlag || '🇺🇸';
                 
                 if (identityData.languageFlag && identityData.languageFlag.trim()) {
                     correctFlag = identityData.languageFlag.trim();
                 } else if (identityData.displayFlag && identityData.displayFlag.trim()) {
                     correctFlag = identityData.displayFlag.trim();
                 } else if (identityData.language) {
-                    correctFlag = flagMap[identityData.language.toLowerCase()] || '🇺🇸';
+                    correctFlag = flagMap[identityData.language.toLowerCase()] || correctFlag;
                 } else if (identityData.languageCode) {
-                    correctFlag = flagMap[identityData.languageCode.toLowerCase()] || '🇺🇸';
+                    correctFlag = flagMap[identityData.languageCode.toLowerCase()] || correctFlag;
+                } else if (conversation.language) {
+                    correctFlag = flagMap[conversation.language.toLowerCase()] || correctFlag;
                 }
                 
                 conversation.languageFlag = correctFlag;
@@ -408,6 +431,7 @@ class ChatbotManager {
                 conversation.identityLinked = true;
                 conversation.lastUpdated = identityData.timestamp || new Date().toISOString();
                 conversation.previousName = oldUserName;
+                conversation.identityUpdateSource = 'registration_form';
 
                 console.log(`✅ UPDATED: ${oldUserName} → ${conversation.userName} (${conversation.languageFlag})`);
                 updated = true;
@@ -415,32 +439,53 @@ class ChatbotManager {
         });
 
         if (updated) {
-            // Save updated conversations to multiple storage locations
+            // Save updated conversations to multiple storage locations for persistence
             localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(this.conversations));
             localStorage.setItem('chatbot-conversations', JSON.stringify(this.conversations));
+            sessionStorage.setItem('chatbot-conversations-updated', JSON.stringify(this.conversations));
             
             console.log('💾 SAVED TO STORAGE - Updated conversations count:', this.conversations.length);
             
-            // Force immediate UI refresh with aggressive scheduling
-            this.renderConversations();
-            console.log('🔄 IMMEDIATE REFRESH - Conversations re-rendered');
+            // Immediate DOM update without waiting
+            this.forceConversationUIUpdate();
             
-            // Multiple delayed refreshes to ensure update
-            [50, 100, 200, 500, 1000].forEach((delay, index) => {
-                setTimeout(() => {
-                    this.renderConversations();
-                    console.log(`✅ DELAYED REFRESH ${index + 1} (${delay}ms) - UI updated`);
-                }, delay);
-            });
+            // Also save to manager memory
+            this.saveData();
             
-            console.log('✅ COMPLETE - All anonymous conversations updated with identity');
+            console.log('✅ COMPLETE - Conversations updated with identity data');
         } else {
-            console.log('⚠️ NO UPDATES - No anonymous conversations found to update');
+            console.log('⚠️ NO UPDATES - All conversations already have proper identity data');
             console.log('🔍 Current conversations:', this.conversations.map(c => ({
                 id: c.id || c.conversationId,
                 userName: c.userName,
-                isAnonymous: !c.userName || c.userName === 'Anonymous User' || c.userName === ''
+                userRegistered: c.userRegistered,
+                identityLinked: c.identityLinked
             })));
+        }
+    }
+
+    // New method for immediate UI updates
+    forceConversationUIUpdate() {
+        console.log('🔄 FORCE UI UPDATE - Starting immediate conversation refresh');
+        
+        // Render conversations immediately
+        this.renderConversations();
+        
+        // Force multiple refreshes to ensure update sticks
+        const refreshDelays = [25, 50, 100, 200, 500];
+        refreshDelays.forEach((delay, index) => {
+            setTimeout(() => {
+                this.renderConversations();
+                console.log(`✅ FORCED REFRESH ${index + 1} (${delay}ms) - UI updated`);
+            }, delay);
+        });
+        
+        // Also trigger any external conversation updates
+        if (window.updateConversationDisplays) {
+            setTimeout(() => {
+                window.updateConversationDisplays();
+                console.log('🔄 External conversation displays updated');
+            }, 100);
         }
     }
 

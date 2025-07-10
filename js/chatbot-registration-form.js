@@ -341,8 +341,8 @@
                     localStorage.setItem('chatbot-device-id', deviceId);
                 }
 
-                // CRITICAL: Use the SAME event that conversation management listens for
-                console.log('🚀 TRIGGERING USER IDENTITY UPDATE WITH CORRECT EVENT...');
+                // ULTRA-RELIABLE: Multiple update mechanisms
+                console.log('🚀 TRIGGERING USER IDENTITY UPDATE WITH MULTIPLE MECHANISMS...');
                 
                 const identityData = {
                     name: formData.name,
@@ -364,37 +364,75 @@
                     deviceId: deviceId
                 };
 
-                // Fire multiple events to ensure update is caught
-                console.log('🚀 FIRING IDENTITY UPDATE EVENTS...');
+                // Store in multiple locations for persistence
+                localStorage.setItem('last-user-identity', JSON.stringify(identityData));
+                sessionStorage.setItem('current-user-identity', JSON.stringify(identityData));
+                window.currentUserIdentity = identityData;
+
+                // Fire all possible events
+                console.log('🚀 FIRING ALL IDENTITY UPDATE EVENTS...');
                 
-                // Primary event
-                window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
-                    detail: identityData,
-                    bubbles: true
-                }));
+                const events = [
+                    'userIdentityUpdated',
+                    'conversationDataUpdated', 
+                    'userRegistered',
+                    'chatbotUserUpdate',
+                    'conversationUserUpdate'
+                ];
                 
-                // Backup events
-                window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
-                    detail: {
-                        action: 'identity_update',
-                        data: identityData
-                    },
-                    bubbles: true
-                }));
+                events.forEach(eventName => {
+                    try {
+                        window.dispatchEvent(new CustomEvent(eventName, {
+                            detail: identityData,
+                            bubbles: true
+                        }));
+                        document.dispatchEvent(new CustomEvent(eventName, {
+                            detail: identityData,
+                            bubbles: true
+                        }));
+                        console.log(`✅ Fired event: ${eventName}`);
+                    } catch (error) {
+                        console.warn(`⚠️ Failed to fire event ${eventName}:`, error);
+                    }
+                });
                 
-                // Additional event for legacy compatibility
-                document.dispatchEvent(new CustomEvent('userRegistered', {
-                    detail: identityData,
-                    bubbles: true
-                }));
+                // Direct method calls with error handling
+                const managers = [
+                    'chatbotManager',
+                    'window.chatbotManager',
+                    'ChatbotManager',
+                    'conversationManager'
+                ];
                 
-                // Force direct call if chatbotManager exists
-                if (window.chatbotManager && window.chatbotManager.updateConversationIdentity) {
-                    console.log('🎯 DIRECT CALL - Calling updateConversationIdentity directly');
-                    window.chatbotManager.updateConversationIdentity(identityData);
-                }
+                managers.forEach(managerName => {
+                    try {
+                        const manager = managerName.includes('window.') ? 
+                            eval(managerName) : 
+                            window[managerName];
+                            
+                        if (manager && manager.updateConversationIdentity) {
+                            console.log(`🎯 DIRECT CALL - Calling ${managerName}.updateConversationIdentity`);
+                            manager.updateConversationIdentity(identityData);
+                        }
+                    } catch (error) {
+                        console.warn(`⚠️ Failed to call ${managerName}:`, error);
+                    }
+                });
                 
-                console.log('✅ ALL IDENTITY UPDATE EVENTS FIRED:', identityData);
+                // Delayed retry mechanism
+                [100, 500, 1000, 2000].forEach((delay, index) => {
+                    setTimeout(() => {
+                        console.log(`🔄 RETRY ${index + 1} - Triggering identity update after ${delay}ms`);
+                        if (window.chatbotManager && window.chatbotManager.updateConversationIdentity) {
+                            window.chatbotManager.updateConversationIdentity(identityData);
+                        }
+                        if (window.chatbotManager && window.chatbotManager.forceConversationUIUpdate) {
+                            window.chatbotManager.forceConversationUIUpdate();
+                        }
+                    }, delay);
+                });
+                
+                console.log('✅ ALL IDENTITY UPDATE MECHANISMS TRIGGERED:', identityData);
 
                 // Close form and send success message
                 this.closeForm();
