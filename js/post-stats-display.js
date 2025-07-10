@@ -11,40 +11,40 @@ const shareIconsInfo = {
 
 (function() {
     console.log('Post Stats: Script loading...');
-    
+
     // First priority: preserve share icons
     preserveShareIcons();
-    
+
     // Run on page load and DOM events to ensure consistent display
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Post Stats: DOMContentLoaded fired');
         initPostStats();
         restoreShareIcons();
     });
-    
+
     window.addEventListener('load', function() {
         console.log('Post Stats: Window load fired');
         initPostStats();
         restoreShareIcons();
-        
+
         // Apply multiple times to catch late-loading content
         setTimeout(function() {
             initPostStats();
             restoreShareIcons();
         }, 500);
-        
+
         setTimeout(function() {
             initPostStats();
             restoreShareIcons();
         }, 1500);
-        
+
         // Final attempt for very late loading content
         setTimeout(function() {
             initPostStats();
             restoreShareIcons();
         }, 3000);
     });
-    
+
     // Also run immediately if possible
     if (document.readyState !== 'loading') {
         console.log('Post Stats: Document already loaded, initializing now');
@@ -53,17 +53,17 @@ const shareIconsInfo = {
             restoreShareIcons();
         }, 10);
     }
-    
+
     // Set up mutation observer to catch dynamically added content
     const observer = new MutationObserver(function(mutations) {
         let contentChanged = false;
-        
+
         mutations.forEach(mutation => {
             if (mutation.type === 'childList' && mutation.addedNodes.length) {
                 contentChanged = true;
             }
         });
-        
+
         if (contentChanged) {
             setTimeout(function() {
                 initPostStats();
@@ -71,7 +71,7 @@ const shareIconsInfo = {
             }, 100);
         }
     });
-    
+
     // Safety check to ensure document.body exists before observing
     if (document && document.body && document.body.nodeType === 1) {
         observer.observe(document.body, { childList: true, subtree: true });
@@ -96,14 +96,14 @@ function preserveShareIcons() {
         // Still check for new share icons even if already initialized
         const existingIds = shareIconsInfo.icons.map(icon => icon.id);
         const allShareButtons = document.querySelectorAll('.social-share, .share-button, .share-icon, [class*="share"], .blog-share, a[href*="facebook"], a[href*="twitter"], a[href*="linkedin"], a[href*="mailto"]');
-        
+
         allShareButtons.forEach((button, index) => {
             // If this button doesn't have a preservation ID yet, add it
             if (!button.hasAttribute('data-preserved-share-id')) {
                 const newId = 'preserved-share-' + (shareIconsInfo.icons.length + index);
                 const parent = button.parentNode;
                 const nextSibling = button.nextSibling;
-                
+
                 if (parent) {
                     shareIconsInfo.icons.push({
                         element: button.cloneNode(true),
@@ -112,7 +112,7 @@ function preserveShareIcons() {
                         id: newId,
                         originalPosition: getElementPosition(button)
                     });
-                    
+
                     // Mark the original with a data attribute
                     button.setAttribute('data-preserved-share-id', newId);
                     // Make extra sure it's visible
@@ -123,20 +123,20 @@ function preserveShareIcons() {
                 }
             }
         });
-        
+
         return;
     }
-    
+
     console.log('Post Stats: Preserving share icons');
-    
+
     // Find all share icons and store their info - use a more comprehensive selector
     const shareButtons = document.querySelectorAll('.social-share, .share-button, .share-icon, [class*="share"], .blog-share, a[href*="facebook"], a[href*="twitter"], a[href*="linkedin"], a[href*="mailto"]');
-    
+
     shareButtons.forEach((button, index) => {
         // Save the button's parent, position, and HTML
         const parent = button.parentNode;
         const nextSibling = button.nextSibling;
-        
+
         if (parent) {
             shareIconsInfo.icons.push({
                 element: button.cloneNode(true),
@@ -145,7 +145,7 @@ function preserveShareIcons() {
                 id: 'preserved-share-' + index,
                 originalPosition: getElementPosition(button)
             });
-            
+
             // Mark the original with a data attribute
             button.setAttribute('data-preserved-share-id', 'preserved-share-' + index);
             // Make extra sure it's visible
@@ -155,7 +155,7 @@ function preserveShareIcons() {
             button.style.zIndex = '100';
         }
     });
-    
+
     shareIconsInfo.initialized = true;
     console.log(`Post Stats: Preserved ${shareIconsInfo.icons.length} share icons`);
 }
@@ -166,7 +166,7 @@ function preserveShareIcons() {
 function getElementPosition(element) {
     const rect = element.getBoundingClientRect();
     const parentRect = element.parentNode ? element.parentNode.getBoundingClientRect() : null;
-    
+
     return {
         top: parentRect ? rect.top - parentRect.top : rect.top,
         left: parentRect ? rect.left - parentRect.left : rect.left,
@@ -180,29 +180,29 @@ function getElementPosition(element) {
  */
 function restoreShareIcons() {
     if (!shareIconsInfo.initialized || shareIconsInfo.icons.length === 0) return;
-    
+
     console.log('Post Stats: Checking if share icons need to be restored');
-    
+
     // Check each preserved icon
     shareIconsInfo.icons.forEach(iconInfo => {
         // Look for the original
         const original = document.querySelector(`[data-preserved-share-id="${iconInfo.id}"]`);
-        
+
         // If original is missing or detached, restore it
         if (!original || !original.isConnected || original.style.display === 'none' || original.style.visibility === 'hidden' || original.style.opacity === '0') {
             console.log(`Post Stats: Restoring share icon ${iconInfo.id}`);
-            
+
             // Create a fresh clone
             const newElement = iconInfo.element.cloneNode(true);
             newElement.setAttribute('data-preserved-share-id', iconInfo.id);
-            
+
             // Apply visibility styles
             newElement.style.display = '';
             newElement.style.visibility = 'visible';
             newElement.style.opacity = '1';
             newElement.style.zIndex = '100';
             newElement.style.position = 'relative';
-            
+
             // Insert back in the original position
             if (iconInfo.parent && iconInfo.parent.isConnected) {
                 if (iconInfo.nextSibling && iconInfo.nextSibling.isConnected) {
@@ -210,14 +210,14 @@ function restoreShareIcons() {
                 } else {
                     iconInfo.parent.appendChild(newElement);
                 }
-                
+
                 // If we have position information, use it
                 if (iconInfo.originalPosition) {
                     newElement.style.position = 'relative';
                     if (iconInfo.originalPosition.top) newElement.style.top = iconInfo.originalPosition.top + 'px';
                     if (iconInfo.originalPosition.left) newElement.style.left = iconInfo.originalPosition.left + 'px';
                 }
-                
+
                 console.log(`Post Stats: Successfully restored share icon ${iconInfo.id}`);
             }
         } else {
@@ -236,29 +236,29 @@ function restoreShareIcons() {
  */
 function initPostStats() {
     console.log('Post Stats: Initializing...');
-    
+
     // Clean up any previous stats displays
     cleanup();
-    
+
     // Add required CSS
     addStatsStyles();
-    
+
     // Ensure all share icons are preserved first
     preserveShareIcons();
-    
+
     // Add stats to blog post cards
     addStatsToCards();
-    
+
     // Set up modal stats when posts are opened
     setupModalStats();
-    
+
     // Make sure share icons are still visible after stats are added
     setTimeout(() => {
         restoreShareIcons();
         // Double-check again after a delay
         setTimeout(restoreShareIcons, 500);
     }, 100);
-    
+
     console.log('Post Stats: Initialization complete');
 }
 
@@ -268,7 +268,7 @@ function initPostStats() {
 function cleanup() {
     // Remove existing stats elements
     document.querySelectorAll('.blog-post-stats').forEach(el => el.remove());
-    
+
     // Remove any orphaned style elements
     const oldStyle = document.getElementById('blog-post-stats-css');
     if (oldStyle) oldStyle.remove();
@@ -287,7 +287,7 @@ function addStatsStyles() {
         document.head.appendChild(materialIcons);
         console.log('Post Stats: Added Material Icons stylesheet');
     }
-    
+
     // Add our custom styles
     const style = document.createElement('style');
     style.id = 'blog-post-stats-css';
@@ -299,7 +299,7 @@ function addStatsStyles() {
             /* Ensure content flows normally */
             overflow: visible !important;
         }
-        
+
         /* Stats container at bottom of cards */
         .blog-post-stats {
             position: absolute !important;
@@ -319,7 +319,7 @@ function addStatsStyles() {
             z-index: 5 !important; /* Lower z-index to avoid covering other elements */
             pointer-events: none !important; /* Allow clicks to pass through to elements below */
         }
-        
+
         /* Ensure share icons remain visible and clickable */
         .social-share, .share-button, .share-icon, [class*="share"],
         a[href*="facebook"], a[href*="twitter"], a[href*="linkedin"], a[href*="mailto"] {
@@ -330,7 +330,7 @@ function addStatsStyles() {
             pointer-events: auto !important;
             margin-right: 2px;
         }
-        
+
         /* Fix for Read More button */
         .blog-post .btn,
         .blog-post .button,
@@ -341,7 +341,7 @@ function addStatsStyles() {
             position: relative !important;
             z-index: 10 !important;
         }
-        
+
         /* Views section */
         .blog-post-stats-views {
             display: flex !important;
@@ -349,17 +349,17 @@ function addStatsStyles() {
             gap: 6px !important;
             pointer-events: auto !important; /* Re-enable clicks just for this element */
         }
-        
+
         .material-icons.blog-post-stats-views-icon {
             color: #e8f24c !important;
             font-size: 18px !important;
         }
-        
+
         .blog-post-stats-views-count {
             color: #e8f24c !important;
             font-weight: bold !important;
         }
-        
+
         /* Ratings section */
         .blog-post-stats-ratings {
             display: flex !important;
@@ -367,27 +367,27 @@ function addStatsStyles() {
             gap: 6px !important;
             pointer-events: auto !important; /* Re-enable clicks just for this element */
         }
-        
+
         .blog-post-stats-stars {
             display: flex !important;
             gap: 2px !important;
         }
-        
+
         .material-icons.blog-post-stats-star {
             color: rgba(232, 242, 76, 0.3) !important;
             font-size: 16px !important;
         }
-        
+
         .material-icons.blog-post-stats-star.filled {
             color: #e8f24c !important;
         }
-        
+
         .blog-post-stats-count {
             color: #e8f24c !important;
             font-weight: bold !important;
         }
     `;
-    
+
     document.head.appendChild(style);
 }
 
@@ -396,7 +396,7 @@ function addStatsStyles() {
  */
 function addStatsToCards() {
     console.log('Post Stats: Adding stats to cards');
-    
+
     // Find all blog post cards using multiple selectors to ensure we get them
     const postCardSelectors = [
         '.blog-post',
@@ -406,7 +406,7 @@ function addStatsToCards() {
         'article.post',
         '[data-post-id]'
     ];
-    
+
     // Collect unique cards
     let postCards = [];
     postCardSelectors.forEach(selector => {
@@ -416,11 +416,11 @@ function addStatsToCards() {
             postCards = [...postCards, ...Array.from(cards)];
         }
     });
-    
+
     // Remove duplicates
     postCards = [...new Set(postCards)];
     console.log(`Post Stats: Found ${postCards.length} unique blog post cards`);
-    
+
     // If no cards found yet, force a direct search by ID pattern
     if (postCards.length === 0) {
         console.log('Post Stats: No cards found with standard selectors, trying ID-based search');
@@ -431,11 +431,11 @@ function addStatsToCards() {
         });
         console.log(`Post Stats: Found ${postCards.length} potential blog posts by ID pattern`);
     }
-    
+
     // Get stats data from localStorage
     const viewCounts = loadFromStorage('fooodis-blog-post-views', {});
     const ratings = loadFromStorage('fooodis-blog-post-ratings', {});
-    
+
     // Add stats to each card
     postCards.forEach((card, index) => {
         // Try to get post ID, or create one if missing
@@ -443,7 +443,7 @@ function addStatsToCards() {
         if (!postId) {
             // Try to find an ID from other attributes
             postId = card.id || card.getAttribute('id') || card.getAttribute('data-id');
-            
+
             // If still no ID, generate one based on index and some content
             if (!postId) {
                 const title = card.querySelector('h2, h3, .title');
@@ -452,20 +452,20 @@ function addStatsToCards() {
                 card.setAttribute('data-post-id', postId);
             }
         }
-        
+
         // Get stats for this post
         const viewCount = viewCounts[postId] || 0;
         const ratingData = ratings[postId] || { average: 0, count: 0 };
-        
+
         // Remove any existing stats containers from this card
         const existingStats = card.querySelectorAll('.blog-post-stats');
         existingStats.forEach(el => el.remove());
-        
+
         // Create stats container with inline styles for maximum reliability
         const statsContainer = document.createElement('div');
         statsContainer.className = 'blog-post-stats';
         statsContainer.setAttribute('data-post-id', postId);
-        
+
         // Add views section with inline styles
         const viewsSection = document.createElement('div');
         viewsSection.className = 'blog-post-stats-views';
@@ -473,28 +473,28 @@ function addStatsToCards() {
             <i class="material-icons blog-post-stats-views-icon">visibility</i>
             <span class="blog-post-stats-views-count">${viewCount}</span>
         `;
-        
+
         // Add ratings section with inline styles
         const ratingsSection = document.createElement('div');
         ratingsSection.className = 'blog-post-stats-ratings';
-        
+
         // Create stars HTML
         let starsHtml = '<div class="blog-post-stats-stars">';
-        
+
         for (let i = 1; i <= 5; i++) {
             const filled = i <= Math.round(ratingData.average);
             starsHtml += `<i class="material-icons blog-post-stats-star${filled ? ' filled' : ''}">star</i>`;
         }
-        
+
         starsHtml += '</div>';
-        
+
         // Add stars and count
         ratingsSection.innerHTML = starsHtml + `<span class="blog-post-stats-count">(${ratingData.count})</span>`;
-        
+
         // Assemble stats container
         statsContainer.appendChild(viewsSection);
         statsContainer.appendChild(ratingsSection);
-        
+
         // Apply minimal changes to card itself
         // Use relative positioning if not already set
         if (getComputedStyle(card).position === 'static') {
@@ -504,10 +504,10 @@ function addStatsToCards() {
         if (parseInt(getComputedStyle(card).paddingBottom) < 40) {
             card.style.paddingBottom = '40px';
         }
-        
+
         // Append to the card
         card.appendChild(statsContainer);
-        
+
         console.log(`Post Stats: Added stats to card ${postId}`);
     });
 }
@@ -519,20 +519,20 @@ function setupModalStats() {
     // Override the openBlogPostModal function if it exists
     if (typeof window.openBlogPostModal === 'function' && !window.postStatsModalOverride) {
         const originalOpenModal = window.openBlogPostModal;
-        
+
         window.openBlogPostModal = function(postId) {
             // Call the original function
             originalOpenModal(postId);
-            
+
             // Add stats to the modal
             setTimeout(function() {
                 addStatsToModal(postId);
-                
+
                 // Track view
                 incrementViewCount(postId);
             }, 100);
         };
-        
+
         window.postStatsModalOverride = true;
         console.log('Post Stats: Successfully overrode openBlogPostModal function');
     }
@@ -543,25 +543,25 @@ function setupModalStats() {
  */
 function addStatsToModal(postId) {
     if (!postId) return;
-    
+
     // Get data for this post
     const viewCounts = loadFromStorage('fooodis-blog-post-views', {});
-    
+
     const viewCount = viewCounts[postId] || 0;
-    
+
     // Find or create stats container in modal
     let statsContainer = document.querySelector('.modal-post-stats');
     if (!statsContainer) {
         statsContainer = document.createElement('div');
         statsContainer.className = 'modal-post-stats';
-        
+
         // Find a good place to insert it
         const modalTitle = document.querySelector('.modal-title');
         if (modalTitle && modalTitle.parentNode) {
             modalTitle.parentNode.insertBefore(statsContainer, modalTitle.nextSibling);
         }
     }
-    
+
     // Create HTML for stats - only showing views, not ratings (to avoid duplication)
     let statsHtml = `
         <div class="modal-views">
@@ -569,7 +569,7 @@ function addStatsToModal(postId) {
             <span style="color: #e8f24c; font-weight: bold;">${viewCount}</span> views
         </div>
     `;
-    
+
     // Update the container
     statsContainer.innerHTML = statsHtml;
 }
@@ -579,19 +579,19 @@ function addStatsToModal(postId) {
  */
 function incrementViewCount(postId) {
     if (!postId) return;
-    
+
     // Get current view counts
     const viewCounts = loadFromStorage('fooodis-blog-post-views', {});
-    
+
     // Increment the count
     viewCounts[postId] = (viewCounts[postId] || 0) + 1;
-    
+
     // Save back to localStorage
     saveToStorage('fooodis-blog-post-views', viewCounts);
-    
+
     // Update stats display
     updateStats();
-    
+
     console.log(`Post Stats: Incremented view count for post ${postId} to ${viewCounts[postId]}`);
 }
 
@@ -600,21 +600,21 @@ function incrementViewCount(postId) {
  */
 function submitRating(postId, rating) {
     if (!postId || rating < 1 || rating > 5) return;
-    
+
     // Get current ratings
     const ratings = loadFromStorage('fooodis-blog-post-ratings', {});
-    
+
     // Get or create rating data for this post
     const postRating = ratings[postId] || { average: 0, count: 0, userRating: 0 };
-    
+
     // Check if this is an update to an existing rating
     if (postRating.userRating > 0) {
         // Recalculate average by removing the previous rating
         const totalPoints = postRating.average * postRating.count - postRating.userRating;
-        
+
         // Add the new rating
         const newTotalPoints = totalPoints + rating;
-        
+
         // Update rating data
         postRating.average = newTotalPoints / postRating.count;
         postRating.userRating = rating;
@@ -622,22 +622,22 @@ function submitRating(postId, rating) {
         // This is a new rating
         const newCount = postRating.count + 1;
         const newTotal = postRating.average * postRating.count + rating;
-        
+
         // Update rating data
         postRating.average = newTotal / newCount;
         postRating.count = newCount;
         postRating.userRating = rating;
     }
-    
+
     // Round average to one decimal place
     postRating.average = Math.round(postRating.average * 10) / 10;
-    
+
     // Save the updated rating
     ratings[postId] = postRating;
     saveToStorage('fooodis-blog-post-ratings', ratings);
-    
+
     console.log(`Post Stats: Submitted rating ${rating} for post ${postId}, new average: ${postRating.average}`);
-    
+
     // Update the UI
     updateModalRatingUI(postId, rating);
     updateStats();
@@ -661,7 +661,7 @@ function updateModalRatingUI(postId, rating) {
     const message = document.querySelector('.modal-rating-message');
     if (message) {
         message.classList.add('show');
-        
+
         // Hide after 3 seconds
         setTimeout(() => {
             message.classList.remove('show');
@@ -677,7 +677,7 @@ function updateStats() {
     setTimeout(function() {
         // Full refresh of stats display
         addStatsToCards();
-        
+
         // Update modal stats if a modal is open
         const modal = document.querySelector('.modal');
         if (modal && window.getComputedStyle(modal).display !== 'none') {
