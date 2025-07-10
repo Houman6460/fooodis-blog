@@ -373,7 +373,7 @@
 
                 console.log('✅ Form submitted successfully:', formData.name);
 
-                // Trigger UI updates with comprehensive identity data
+                // Direct conversation card update using leads data
                 setTimeout(() => {
                     // Determine correct language and flag based on form selection
                     const isSwedish = formData.language === 'svenska' || formData.language === 'sv' || formData.language === 'swedish';
@@ -387,9 +387,12 @@
                         languageFlag: languageFlag
                     });
                     
+                    // Update conversations directly using leads data approach
+                    this.updateConversationCardsFromLeads(formData, languageFlag);
+                    
                     const identityUpdateData = {
                         name: formData.name,
-                        userName: formData.name, // Ensure both fields have the same value
+                        userName: formData.name,
                         email: formData.email,
                         userEmail: formData.email,
                         restaurantName: formData.restaurantName,
@@ -416,12 +419,10 @@
                         formDataName: formData.name
                     });
 
-                    console.log('🔄 Triggering comprehensive identity update with data:', identityUpdateData);
-
                     // First update local conversations data
                     this.updateUserIdentity(formData);
 
-                    // Trigger multiple update events for redundancy
+                    // Trigger events for dashboard refresh
                     window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
                         detail: identityUpdateData
                     }));
@@ -430,25 +431,21 @@
                         detail: { action: 'identity_update', data: identityUpdateData }
                     }));
 
-                    // Force multiple dashboard refreshes to ensure update
+                    // Force dashboard refresh with delay to ensure DOM updates
                     if (window.chatbotManager) {
                         console.log('🔄 Immediate conversation update');
                         window.chatbotManager.updateConversationIdentity(identityUpdateData);
                     }
                     
-                    setTimeout(() => {
-                        if (window.chatbotManager && window.chatbotManager.renderConversations) {
-                            console.log('🔄 First dashboard refresh');
-                            window.chatbotManager.renderConversations();
-                        }
-                    }, 50);
-                    
-                    setTimeout(() => {
-                        if (window.chatbotManager && window.chatbotManager.renderConversations) {
-                            console.log('🔄 Second dashboard refresh (ensuring update)');
-                            window.chatbotManager.renderConversations();
-                        }
-                    }, 500);
+                    // Multiple refresh attempts with increasing delays
+                    [100, 300, 800, 1500].forEach((delay, index) => {
+                        setTimeout(() => {
+                            if (window.chatbotManager && window.chatbotManager.renderConversations) {
+                                console.log(`🔄 Dashboard refresh attempt ${index + 1} (${delay}ms)`);
+                                window.chatbotManager.renderConversations();
+                            }
+                        }, delay);
+                    });
                 }, 100);
 
             } catch (error) {
@@ -763,6 +760,126 @@
             }
         },
 
+        updateConversationCardsFromLeads: function(formData, languageFlag) {
+            console.log('🔄 Updating conversation cards directly from leads data...');
+            
+            try {
+                // Get leads data that was just saved
+                const leads = JSON.parse(localStorage.getItem('user-leads') || '[]');
+                const currentLead = leads.find(lead => 
+                    lead.email === formData.email || 
+                    (lead.name === formData.name && lead.restaurantName === formData.restaurantName)
+                );
+                
+                if (!currentLead) {
+                    console.log('⚠️ No matching lead found for conversation update');
+                    return;
+                }
+                
+                console.log('✅ Found matching lead:', currentLead);
+                
+                // Find conversation cards in the DOM
+                const conversationCards = document.querySelectorAll('.conversation-card');
+                console.log('🔍 Found conversation cards:', conversationCards.length);
+                
+                conversationCards.forEach((card, index) => {
+                    const userNameElement = card.querySelector('.conversation-user');
+                    if (userNameElement && userNameElement.textContent.includes('Anonymous User')) {
+                        console.log(`🎯 Updating anonymous conversation card ${index + 1}`);
+                        
+                        // Update the display with user data
+                        const userCategory = this.getUserCategoryFromSystemUsage(formData.systemUsage);
+                        const categoryClass = userCategory.toLowerCase().replace(/\s+/g, '-');
+                        
+                        // Update user display
+                        userNameElement.innerHTML = `
+                            <i class="fas fa-user"></i> 
+                            ${languageFlag} 
+                            ${formData.name}
+                            <span class="message-count">${userNameElement.querySelector('.message-count')?.textContent || '(0 messages)'}</span>
+                            <span class="user-category-badge ${categoryClass}">${userCategory}</span>
+                        `;
+                        
+                        // Mark as updated
+                        card.classList.add('user-identified');
+                        card.style.borderLeft = '3px solid #e8f24c';
+                        
+                        console.log(`✅ Updated conversation card: Anonymous User → ${formData.name} (${languageFlag})`);
+                        
+                        // Only update the first anonymous card found
+                        return;
+                    }
+                });
+                
+                // Also trigger a more comprehensive update after a short delay
+                setTimeout(() => {
+                    this.forceConversationCardRefresh(formData, languageFlag);
+                }, 200);
+                
+            } catch (error) {
+                console.error('❌ Error updating conversation cards from leads:', error);
+            }
+        },
+
+        getUserCategoryFromSystemUsage: function(systemUsage) {
+            switch (systemUsage) {
+                case 'current_user':
+                    return 'Current User';
+                case 'competitor_user':
+                    return 'Competitor User';
+                case 'potential_user':
+                    return 'Potential User';
+                default:
+                    return 'Registered User';
+            }
+        },
+
+        forceConversationCardRefresh: function(formData, languageFlag) {
+            console.log('🔄 Force refreshing conversation cards...');
+            
+            // Wait for any ongoing renders to complete
+            setTimeout(() => {
+                // Find and update any remaining anonymous cards
+                const anonymousCards = document.querySelectorAll('.conversation-card .conversation-user');
+                anonymousCards.forEach(userElement => {
+                    if (userElement.textContent.includes('Anonymous User')) {
+                        const card = userElement.closest('.conversation-card');
+                        const conversationId = card?.getAttribute('data-conversation-id');
+                        
+                        console.log('🎯 Force updating remaining anonymous card:', conversationId);
+                        
+                        // Check if this could be the user's conversation
+                        const sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
+                        const deviceId = localStorage.getItem('chatbot-device-id');
+                        
+                        // Update if it matches session or if it's a recent conversation
+                        if (conversationId && (
+                            conversationId.includes(sessionId) || 
+                            conversationId.includes(deviceId) ||
+                            conversationId === formData.conversationId
+                        )) {
+                            
+                            const userCategory = this.getUserCategoryFromSystemUsage(formData.systemUsage);
+                            const categoryClass = userCategory.toLowerCase().replace(/\s+/g, '-');
+                            
+                            userElement.innerHTML = `
+                                <i class="fas fa-user"></i> 
+                                ${languageFlag} 
+                                ${formData.name}
+                                <span class="message-count">${userElement.querySelector('.message-count')?.textContent || '(0 messages)'}</span>
+                                <span class="user-category-badge ${categoryClass}">${userCategory}</span>
+                            `;
+                            
+                            card.classList.add('user-identified');
+                            card.style.borderLeft = '3px solid #e8f24c';
+                            
+                            console.log(`✅ Force updated card: Anonymous User → ${formData.name}`);
+                        }
+                    }
+                });
+            }, 100);
+        },
+
         injectStyles: function() {
             if (document.getElementById('registration-form-styles')) return;
 
@@ -944,6 +1061,46 @@
 
                 .submit-btn:active {
                     transform: translateY(0);
+                }
+                
+                /* Identified User Cards Styling */
+                .conversation-card.user-identified {
+                    background: linear-gradient(135deg, rgba(232, 242, 76, 0.1), rgba(232, 242, 76, 0.05));
+                    border-left: 3px solid #e8f24c !important;
+                    transition: all 0.3s ease;
+                }
+                
+                .conversation-card.user-identified .conversation-user {
+                    font-weight: 600;
+                    color: #e8f24c;
+                }
+                
+                .user-category-badge {
+                    padding: 2px 6px;
+                    border-radius: 10px;
+                    font-size: 10px;
+                    font-weight: 600;
+                    margin-left: 5px;
+                }
+                
+                .user-category-badge.current-user {
+                    background-color: rgba(76, 175, 80, 0.2);
+                    color: #4caf50;
+                }
+                
+                .user-category-badge.competitor-user {
+                    background-color: rgba(255, 152, 0, 0.2);
+                    color: #ff9800;
+                }
+                
+                .user-category-badge.potential-user {
+                    background-color: rgba(33, 150, 243, 0.2);
+                    color: #2196f3;
+                }
+                
+                .user-category-badge.registered-user {
+                    background-color: rgba(156, 39, 176, 0.2);
+                    color: #9c27b0;
                 }
             `;
             document.head.appendChild(styles);
