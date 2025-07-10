@@ -294,14 +294,14 @@
         submitForm: async function() {
             const systemUsageValue = document.getElementById('systemUsage')?.value || '';
             
-            // Enhanced user type determination with logging
+            // CORRECTED user type determination - match option values exactly
             let userType = 'potential user'; // Default
             
             console.log('🎯 FORM SUBMISSION - System usage value:', systemUsageValue);
             
-            // Check if user selected "Using Fooodis" option
+            // Check if user selected "Using Fooodis" option (value="current_user")
             if (systemUsageValue === 'current_user') {
-                userType = 'user';
+                userType = 'user'; // This should be "user" not "current user" 
                 console.log('✅ FORM SUBMISSION - Assigned userType: user (Current Fooodis User)');
             } else if (systemUsageValue === 'competitor_user') {
                 userType = 'competitor user';
@@ -311,6 +311,20 @@
                 console.log('✅ FORM SUBMISSION - Assigned userType: potential user (default)');
             }
             
+            // Get or generate session/device IDs for conversation matching
+            let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
+            let deviceId = localStorage.getItem('chatbot-device-id');
+            
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatbot-session-id', sessionId);
+            }
+            
+            if (!deviceId) {
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatbot-device-id', deviceId);
+            }
+
             const formData = {
                 name: document.getElementById('userName')?.value || '',
                 email: document.getElementById('userEmail')?.value || '',
@@ -319,7 +333,10 @@
                 systemUsage: systemUsageValue,
                 userType: userType, // Add the determined user type
                 timestamp: new Date().toISOString(),
-                language: this.currentLanguage
+                language: this.currentLanguage,
+                conversationId: window.FoodisChatbot?.conversationId || null,
+                sessionId: sessionId,
+                deviceId: deviceId
             };
 
             // Basic email validation
@@ -361,7 +378,7 @@
                     localStorage.setItem('chatbot-device-id', deviceId);
                 }
 
-                // ULTRA-RELIABLE: Multiple update mechanisms
+                // ULTRA-RELIABLE: Multiple update mechanisms with enhanced identity data
                 console.log('🚀 TRIGGERING USER IDENTITY UPDATE WITH MULTIPLE MECHANISMS...');
                 
                 const identityData = {
@@ -373,16 +390,69 @@
                     userPhone: formData.phone,
                     restaurantName: formData.restaurantName,
                     systemUsage: formData.systemUsage,
-                    userType: formData.systemUsage,
+                    userType: formData.userType, // Use the corrected userType
                     language: formData.language,
                     languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
                     languageFlag: languageFlag,
                     displayFlag: languageFlag,
                     timestamp: formData.timestamp,
-                    conversationId: this.getCurrentConversationId(),
-                    sessionId: sessionId,
-                    deviceId: deviceId
+                    conversationId: formData.conversationId,
+                    sessionId: formData.sessionId,
+                    deviceId: formData.deviceId,
+                    userRegistered: true,
+                    identityLinked: true
                 };
+
+                // AGGRESSIVE CONVERSATION UPDATE: Direct localStorage manipulation
+                console.log('🔥 DIRECT CONVERSATION UPDATE - Starting aggressive update...');
+                
+                try {
+                    const conversations = JSON.parse(localStorage.getItem('fooodis-chatbot-conversations') || '[]');
+                    console.log('📋 Found conversations in localStorage:', conversations.length);
+                    
+                    let updatedCount = 0;
+                    
+                    // Update ALL recent conversations (last 24 hours)
+                    const now = new Date();
+                    conversations.forEach((conversation, index) => {
+                        const conversationTime = new Date(conversation.lastMessageAt || conversation.createdAt || 0);
+                        const hoursSince = (now - conversationTime) / (1000 * 60 * 60);
+                        
+                        // Update recent conversations OR anonymous ones
+                        const isRecent = hoursSince < 24;
+                        const isAnonymous = !conversation.userName || conversation.userName === 'Anonymous User';
+                        
+                        if (isRecent || isAnonymous) {
+                            console.log(`🎯 UPDATING CONVERSATION ${index}: ${conversation.id || conversation.conversationId}`);
+                            
+                            conversation.userName = formData.name;
+                            conversation.userEmail = formData.email;
+                            conversation.userPhone = formData.phone;
+                            conversation.restaurantName = formData.restaurantName;
+                            conversation.userType = formData.userType;
+                            conversation.systemUsage = formData.systemUsage;
+                            conversation.language = formData.language;
+                            conversation.languageCode = formData.language === 'svenska' ? 'sv-SE' : 'en-US';
+                            conversation.languageFlag = languageFlag;
+                            conversation.displayFlag = languageFlag;
+                            conversation.userRegistered = true;
+                            conversation.identityLinked = true;
+                            conversation.lastUpdated = formData.timestamp;
+                            conversation.identityUpdateSource = 'registration_form';
+                            
+                            updatedCount++;
+                        }
+                    });
+                    
+                    if (updatedCount > 0) {
+                        localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(conversations));
+                        localStorage.setItem('chatbot-conversations', JSON.stringify(conversations)); // Backup
+                        console.log(`✅ DIRECT UPDATE: ${updatedCount} conversations updated in localStorage`);
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Direct conversation update error:', error);
+                }
 
                 // Store in multiple locations for persistence
                 localStorage.setItem('last-user-identity', JSON.stringify(identityData));
@@ -456,6 +526,12 @@
 
                 // Close form and send success message
                 this.closeForm();
+
+                // Trigger registration completion event for force refresh
+                window.dispatchEvent(new CustomEvent('registrationFormCompleted', {
+                    detail: identityData,
+                    bubbles: true
+                }));
 
                 if (window.FoodisChatbot?.addMessage) {
                     const message = formData.language === 'svenska' 

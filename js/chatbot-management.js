@@ -2742,7 +2742,7 @@ class ChatbotManager {
         filteredLeads.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt));
 
         leadsTableBody.innerHTML = filteredLeads.map(lead => {
-            // Enhanced user type display logic with comprehensive mapping
+            // CORRECTED user type display logic with comprehensive mapping
             let userTypeDisplay = 'Potential User';
             let userTypeClass = 'potential-user';
             
@@ -2757,16 +2757,22 @@ class ChatbotManager {
             });
             
             if (userTypeValue) {
-                // Map all possible values to correct display
-                if (userTypeValue === 'user' || 
-                    userTypeValue === 'current_user' || 
-                    userTypeValue === 'fooodis_user') {
+                // CORRECTED mapping - "user" should show as "Current User"
+                if (userTypeValue === 'user') {
                     userTypeDisplay = 'Current User';
                     userTypeClass = 'current-user';
+                    console.log('✅ MAPPED: user -> Current User');
+                } else if (userTypeValue === 'current_user' || 
+                          userTypeValue === 'fooodis_user') {
+                    userTypeDisplay = 'Current User';
+                    userTypeClass = 'current-user';
+                    console.log('✅ MAPPED: current_user/fooodis_user -> Current User');
                 } else if (userTypeValue === 'competitor_user' || 
+                          userTypeValue === 'competitor user' ||
                           userTypeValue === 'competitor') {
                     userTypeDisplay = 'Competitor User';
                     userTypeClass = 'competitor-user';
+                    console.log('✅ MAPPED: competitor -> Competitor User');
                 } else if (userTypeValue === 'potential_user' || 
                           userTypeValue === 'potential' ||
                           userTypeValue === 'looking') {

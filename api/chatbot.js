@@ -1069,16 +1069,20 @@ router.post('/users', (req, res) => {
             });
         }
 
-        // Create user record
+        // Create user record with proper userType handling
         const userRecord = {
             id: userData.conversationId || generateConversationId(),
             name: userData.name,
             email: userData.email,
             phone: userData.phone || '',
             systemUsage: userData.systemUsage || '',
+            userType: userData.userType || 'potential user', // Preserve userType from form
             conversationId: userData.conversationId || null,
             registeredAt: new Date().toISOString(),
-            source: 'chatbot-widget'
+            source: 'chatbot-widget',
+            language: userData.language || 'en',
+            languageCode: userData.languageCode || 'en-US',
+            languageFlag: userData.languageFlag || '🇺🇸'
         };
 
         // Store in memory and save to file
