@@ -301,26 +301,59 @@
                 }
             });
 
-            // Update all text content immediately
-            const elements = {
-                '.form-title': translations.title,
-                '.form-subtitle': translations.subtitle,
-                '.field-label:nth-of-type(1)': translations.nameLabel,
-                '.field-label:nth-of-type(2)': translations.restaurantLabel,
-                '.field-label:nth-of-type(3)': translations.phoneLabel,
-                '.field-label:nth-of-type(4)': translations.systemLabel,
-                '.skip-btn': translations.skipButton,
-                '.submit-btn': translations.submitButton
-            };
+            // Update form title and subtitle
+            const formTitle = registrationContainer.querySelector('.form-title');
+            const formSubtitle = registrationContainer.querySelector('.form-subtitle');
+            
+            if (formTitle) {
+                formTitle.textContent = translations.title;
+                console.log('📝 Updated form title to:', translations.title);
+            }
+            
+            if (formSubtitle) {
+                formSubtitle.textContent = translations.subtitle;
+                console.log('📝 Updated form subtitle to:', translations.subtitle);
+            }
 
-            // Apply text updates
-            Object.keys(elements).forEach(selector => {
-                const element = registrationContainer.querySelector(selector);
-                if (element) {
-                    element.textContent = elements[selector];
-                    console.log(`📝 Updated ${selector} to:`, elements[selector]);
-                }
-            });
+            // Update form labels by targeting the specific input's label
+            const nameLabel = registrationContainer.querySelector('label[for="userName"]');
+            const restaurantLabel = registrationContainer.querySelector('label[for="restaurantName"]');
+            const phoneLabel = registrationContainer.querySelector('label[for="userPhone"]');
+            const systemLabel = registrationContainer.querySelector('label[for="systemUsage"]');
+            
+            if (nameLabel) {
+                nameLabel.textContent = translations.nameLabel;
+                console.log('📝 Updated name label to:', translations.nameLabel);
+            }
+            
+            if (restaurantLabel) {
+                restaurantLabel.textContent = translations.restaurantLabel;
+                console.log('📝 Updated restaurant label to:', translations.restaurantLabel);
+            }
+            
+            if (phoneLabel) {
+                phoneLabel.textContent = translations.phoneLabel;
+                console.log('📝 Updated phone label to:', translations.phoneLabel);
+            }
+            
+            if (systemLabel) {
+                systemLabel.textContent = translations.systemLabel;
+                console.log('📝 Updated system label to:', translations.systemLabel);
+            }
+
+            // Update buttons
+            const skipBtn = registrationContainer.querySelector('.skip-btn');
+            const submitBtn = registrationContainer.querySelector('.submit-btn');
+            
+            if (skipBtn) {
+                skipBtn.textContent = translations.skipButton;
+                console.log('📝 Updated skip button to:', translations.skipButton);
+            }
+            
+            if (submitBtn) {
+                submitBtn.textContent = translations.submitButton;
+                console.log('📝 Updated submit button to:', translations.submitButton);
+            }
 
             // Update input placeholders
             const inputs = {
