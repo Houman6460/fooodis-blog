@@ -62,12 +62,15 @@ javascript
             this.setupEventListeners();
             this.initialized = true;
 
-            // Auto-show form if needed
-            setTimeout(() => {
-                if (this.shouldShowRegistrationForm()) {
+            // Auto-show form if needed - check immediately and after delay
+            if (this.shouldShowRegistrationForm()) {
+                setTimeout(() => {
                     this.showRegistrationForm();
-                }
-            }, 2000);
+                }, 1000);
+            }
+
+            // Also check when chatbot widget is ready
+            this.waitForChatbotWidget();
         },
 
         shouldShowRegistrationForm: function() {
@@ -88,29 +91,55 @@ javascript
             }
         },
 
+        waitForChatbotWidget: function() {
+            let attempts = 0;
+            const maxAttempts = 20;
+            
+            const checkWidget = () => {
+                attempts++;
+                const chatbotWidget = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container, .chatbot-widget');
+                
+                if (chatbotWidget) {
+                    console.log('✅ Chatbot widget found, ready to show form if needed');
+                    if (this.shouldShowRegistrationForm()) {
+                        setTimeout(() => this.showRegistrationForm(), 500);
+                    }
+                } else if (attempts < maxAttempts) {
+                    setTimeout(checkWidget, 500);
+                } else {
+                    console.log('⚠️ Chatbot widget not found after waiting, will use fallback display');
+                }
+            };
+            
+            checkWidget();
+        },
+
         showRegistrationForm: function() {
             console.log('🔐 Showing registration form...');
 
-            // Find or create chatbot container
-            let chatbotContainer = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container');
+            // Find chatbot container with expanded selectors
+            let chatbotContainer = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container, .chatbot-widget, [id*="chatbot"], [class*="chatbot"]');
 
             if (!chatbotContainer) {
-                // Create a temporary container if chatbot doesn't exist
+                // Create a full-screen overlay container
                 chatbotContainer = document.createElement('div');
                 chatbotContainer.id = 'temp-chatbot-container';
                 chatbotContainer.style.cssText = `
                     position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    z-index: 10000;
-                    width: 400px;
-                    height: 500px;
-                    background: white;
-                    border-radius: 12px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 99999;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 `;
                 document.body.appendChild(chatbotContainer);
+                console.log('📱 Created fallback overlay container');
+            } else {
+                console.log('✅ Found existing chatbot container:', chatbotContainer.id || chatbotContainer.className);
             }
 
             // Remove existing form if any
@@ -121,6 +150,12 @@ javascript
 
             // Create and show new form
             this.formElement = this.createFormOverlay();
+            
+            // Ensure form is visible
+            this.formElement.style.display = 'flex';
+            this.formElement.style.visibility = 'visible';
+            this.formElement.style.opacity = '1';
+            
             chatbotContainer.appendChild(this.formElement);
 
             // Set initial language and update form
@@ -939,19 +974,40 @@ javascript
     };
 
     // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => window.ChatbotRegistrationForm.init(), 100);
-        });
-    } else {
-        setTimeout(() => window.ChatbotRegistrationForm.init(), 100);
+    function initializeForm() {
+        console.log('🚀 Starting ChatbotRegistrationForm initialization...');
+        if (window.ChatbotRegistrationForm) {
+            window.ChatbotRegistrationForm.init();
+        }
     }
 
-    // Also provide manual trigger function
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    } else {
+        // DOM is already ready
+        setTimeout(initializeForm, 100);
+    }
+
+    // Also initialize after a longer delay to catch late-loading elements
+    setTimeout(initializeForm, 2000);
+
+    // Manual trigger functions
     window.showChatbotRegistrationForm = function() {
+        console.log('🔧 Manual registration form trigger called');
         if (window.ChatbotRegistrationForm) {
             window.ChatbotRegistrationForm.showRegistrationForm();
+        } else {
+            console.error('❌ ChatbotRegistrationForm not available');
         }
+    };
+
+    // Debug function
+    window.debugRegistrationForm = function() {
+        console.log('🔍 Registration Form Debug Info:');
+        console.log('- Form initialized:', window.ChatbotRegistrationForm?.initialized);
+        console.log('- Should show form:', window.ChatbotRegistrationForm?.shouldShowRegistrationForm());
+        console.log('- Current user:', localStorage.getItem('chatbot-current-user'));
+        console.log('- Chatbot containers:', document.querySelectorAll('#fooodis-chatbot, #chatbot-window, .chatbot-container, .chatbot-widget, [id*="chatbot"], [class*="chatbot"]'));
     };
 
 })();
