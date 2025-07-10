@@ -55,25 +55,22 @@
             const formOverlay = this.createFormOverlay();
             chatbotWindow.appendChild(formOverlay);
 
-            // Initialize language switching after DOM is ready
-            setTimeout(() => {
-                // Set initial language state to English
-                this.switchLanguage('english');
-                
-                // Ensure English tab is active initially
-                const englishTab = formOverlay.querySelector('.lang-tab[data-lang="english"]');
-                if (englishTab) {
-                    englishTab.classList.add('active');
-                }
-                
-                // Remove active class from svenska tab initially
-                const svenskaTab = formOverlay.querySelector('.lang-tab[data-lang="svenska"]');
-                if (svenskaTab) {
-                    svenskaTab.classList.remove('active');
-                }
-                
-                console.log('🔐 Registration form shown and language switching initialized');
-            }, 100);
+            // Initialize language switching immediately
+            this.switchLanguage('english');
+            
+            // Ensure English tab is active initially
+            const englishTab = formOverlay.querySelector('.lang-tab[data-lang="english"]');
+            if (englishTab) {
+                englishTab.classList.add('active');
+            }
+            
+            // Remove active class from svenska tab initially
+            const svenskaTab = formOverlay.querySelector('.lang-tab[data-lang="svenska"]');
+            if (svenskaTab) {
+                svenskaTab.classList.remove('active');
+            }
+            
+            console.log('🔐 Registration form shown and language switching initialized');
         },
 
         // Create form HTML structure
@@ -282,130 +279,84 @@
                 return;
             }
 
-            // Direct language mapping
-            let lang, translations;
+            // Get the correct translations
+            const translations = language === 'svenska' ? this.translations.swedish : this.translations.english;
             
-            if (language === 'svenska') {
-                lang = 'swedish';
-                translations = this.translations.swedish;
-                console.log('🇸🇪 Using Swedish translations');
-            } else {
-                lang = 'english';
-                translations = this.translations.english;
-                console.log('🇬🇧 Using English translations');
-            }
-
             if (!translations) {
-                console.error('❌ No translations found for language:', lang);
-                console.log('Available translations:', Object.keys(this.translations));
+                console.error('❌ No translations found for language:', language);
                 return;
             }
 
-            console.log('🔄 Applying translations for:', lang);
+            console.log('🔄 Applying translations for:', language, translations);
 
-            // First, update tab active states to ensure visual feedback
+            // Update tab active states
             const allTabs = registrationContainer.querySelectorAll('.lang-tab');
             allTabs.forEach(tab => {
-                tab.classList.remove('active');
-                if ((language === 'svenska' && tab.getAttribute('data-lang') === 'svenska') ||
-                    (language === 'english' && tab.getAttribute('data-lang') === 'english')) {
+                const tabLang = tab.getAttribute('data-lang');
+                if (tabLang === language) {
                     tab.classList.add('active');
                     console.log('✅ Tab activated:', tab.textContent);
+                } else {
+                    tab.classList.remove('active');
                 }
             });
 
-            // Update all text content with complete language isolation
-            const formTitle = registrationContainer.querySelector('.form-title');
-            const formSubtitle = registrationContainer.querySelector('.form-subtitle');
+            // Update all text content immediately
+            const elements = {
+                '.form-title': translations.title,
+                '.form-subtitle': translations.subtitle,
+                '.field-label:nth-of-type(1)': translations.nameLabel,
+                '.field-label:nth-of-type(2)': translations.restaurantLabel,
+                '.field-label:nth-of-type(3)': translations.phoneLabel,
+                '.field-label:nth-of-type(4)': translations.systemLabel,
+                '.skip-btn': translations.skipButton,
+                '.submit-btn': translations.submitButton
+            };
 
-            if (formTitle) {
-                formTitle.textContent = translations.title;
-                console.log('📝 Updated title to:', translations.title);
-            }
-            if (formSubtitle) {
-                formSubtitle.textContent = translations.subtitle;
-                console.log('📝 Updated subtitle to:', translations.subtitle);
-            }
-
-            // Update labels with more specific targeting
-            const labels = registrationContainer.querySelectorAll('.field-label');
-            if (labels[0]) {
-                labels[0].textContent = translations.nameLabel;
-                console.log('📝 Updated name label to:', translations.nameLabel);
-            }
-            if (labels[1]) {
-                labels[1].textContent = translations.restaurantLabel;
-                console.log('📝 Updated restaurant label to:', translations.restaurantLabel);
-            }
-            if (labels[2]) {
-                labels[2].textContent = translations.phoneLabel;
-                console.log('📝 Updated phone label to:', translations.phoneLabel);
-            }
-            if (labels[3]) {
-                labels[3].textContent = translations.systemLabel;
-                console.log('📝 Updated system label to:', translations.systemLabel);
-            }
+            // Apply text updates
+            Object.keys(elements).forEach(selector => {
+                const element = registrationContainer.querySelector(selector);
+                if (element) {
+                    element.textContent = elements[selector];
+                    console.log(`📝 Updated ${selector} to:`, elements[selector]);
+                }
+            });
 
             // Update input placeholders
-            const nameInput = registrationContainer.querySelector('#userName');
-            const restaurantInput = registrationContainer.querySelector('#restaurantName');
-            const phoneInput = registrationContainer.querySelector('#userPhone');
+            const inputs = {
+                '#userName': translations.namePlaceholder,
+                '#restaurantName': translations.restaurantPlaceholder,
+                '#userPhone': translations.phonePlaceholder
+            };
 
-            if (nameInput) {
-                nameInput.placeholder = translations.namePlaceholder;
-                console.log('📝 Updated name placeholder to:', translations.namePlaceholder);
-            }
-            if (restaurantInput) {
-                restaurantInput.placeholder = translations.restaurantPlaceholder;
-                console.log('📝 Updated restaurant placeholder to:', translations.restaurantPlaceholder);
-            }
-            if (phoneInput) {
-                phoneInput.placeholder = translations.phonePlaceholder;
-                console.log('📝 Updated phone placeholder to:', translations.phonePlaceholder);
-            }
+            Object.keys(inputs).forEach(selector => {
+                const input = registrationContainer.querySelector(selector);
+                if (input) {
+                    input.placeholder = inputs[selector];
+                    console.log(`📝 Updated ${selector} placeholder to:`, inputs[selector]);
+                }
+            });
 
-            // Update dropdown options with more specific targeting
+            // Update dropdown options
             const systemSelect = registrationContainer.querySelector('#systemUsage');
             if (systemSelect) {
-                const selectOptions = systemSelect.querySelectorAll('option');
-                if (selectOptions[0]) {
-                    selectOptions[0].textContent = translations.selectPlaceholder;
-                    console.log('📝 Updated select placeholder to:', translations.selectPlaceholder);
-                }
-                if (selectOptions[1]) {
-                    selectOptions[1].textContent = translations.usingFooodis;
-                    console.log('📝 Updated option 1 to:', translations.usingFooodis);
-                }
-                if (selectOptions[2]) {
-                    selectOptions[2].textContent = translations.usingOther;
-                    console.log('📝 Updated option 2 to:', translations.usingOther);
-                }
-                if (selectOptions[3]) {
-                    selectOptions[3].textContent = translations.lookingForSolution;
-                    console.log('📝 Updated option 3 to:', translations.lookingForSolution);
-                }
+                const options = systemSelect.querySelectorAll('option');
+                const optionTexts = [
+                    translations.selectPlaceholder,
+                    translations.usingFooodis,
+                    translations.usingOther,
+                    translations.lookingForSolution
+                ];
+
+                options.forEach((option, index) => {
+                    if (optionTexts[index]) {
+                        option.textContent = optionTexts[index];
+                        console.log(`📝 Updated option ${index} to:`, optionTexts[index]);
+                    }
+                });
             }
 
-            // Update buttons
-            const skipBtn = registrationContainer.querySelector('.skip-btn');
-            const submitBtn = registrationContainer.querySelector('.submit-btn');
-
-            if (skipBtn) {
-                skipBtn.textContent = translations.skipButton;
-                console.log('📝 Updated skip button to:', translations.skipButton);
-            }
-            if (submitBtn) {
-                submitBtn.textContent = translations.submitButton;
-                console.log('📝 Updated submit button to:', translations.submitButton);
-            }
-
-            // Force a visual refresh by adding/removing a class
-            registrationContainer.classList.add('language-switching');
-            setTimeout(() => {
-                registrationContainer.classList.remove('language-switching');
-            }, 100);
-
-            console.log('✅ Language switched successfully to:', language, 'using', lang, 'translations');
+            console.log('✅ Language switched successfully to:', language);
         },
 
         // Set up form submission
@@ -765,11 +716,6 @@
                 .submit-btn:hover {
                     background: #d9e53f;
                     transform: translateY(-1px);
-                }
-
-                .registration-container.language-switching {
-                    opacity: 0.8;
-                    transition: opacity 0.1s ease;
                 }
 
                 .lang-tab:hover {
