@@ -85,7 +85,7 @@
                 <div class="registration-container">
                     <div class="language-tabs">
                         <button type="button" class="lang-tab active" data-lang="english">English</button>
-                        <button type="button" class="lang-tab" data-lang="swedish">Svenska</button>
+                        <button type="button" class="lang-tab" data-lang="svenska">Svenska</button>
                     </div>
 
                     <div class="registration-header">
@@ -280,9 +280,14 @@
                 return;
             }
 
-            // Get translation data for selected language - fix the language detection
-            const lang = (language === 'svenska' || language === 'swedish' || language === 'sv') ? 'swedish' : 'english';
+            // Simplified language detection - svenska maps to swedish translations
+            const lang = (language === 'svenska') ? 'swedish' : 'english';
             const translations = this.translations[lang];
+
+            if (!translations) {
+                console.error('❌ No translations found for language:', lang);
+                return;
+            }
 
             console.log('🔄 Using translations for language:', lang, translations);
 
