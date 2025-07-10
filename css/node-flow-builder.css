@@ -10,6 +10,29 @@
     overflow: hidden;
 }
 
+/* Disconnect Button Alignment */
+.disconnect-btn {
+    position: absolute !important;
+    width: 20px !important;
+    height: 20px !important;
+    background-color: #ff4757 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    z-index: 10000 !important;
+    transform: translate(-50%, -50%) !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+    pointer-events: auto !important;
+    transition: all 0.2s ease !important;
+    user-select: none !important;
+}
+
 /* Test Flow Modal Styles */
 .test-flow-modal {
     position: fixed !important;

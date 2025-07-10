@@ -874,12 +874,12 @@ class NodeFlowBuilder {
             btn.innerHTML = '×';
             btn.dataset.connectionId = connection.id;
 
-            // Calculate button size that scales with zoom (inverse scaling for consistent visual size)
-            const buttonSize = 20 / this.zoom;
-            const fontSize = 14 / this.zoom;
-            const borderWidth = 2 / this.zoom;
+            // Fixed button size that doesn't scale with zoom for consistent appearance
+            const buttonSize = 20;
+            const fontSize = 14;
+            const borderWidth = 2;
 
-            // Apply styles with proper positioning and scaling
+            // Apply styles with proper positioning
             btn.style.position = 'absolute';
             btn.style.left = midX + 'px';
             btn.style.top = midY + 'px';
@@ -2012,13 +2012,13 @@ class NodeFlowBuilder {
         const randomId = Math.random().toString(36).substr(2, 9);
         const uniqueId = `node-${timestamp}-${randomId}`;
 
-        // Create the duplicated node with proper structure
+        // Create the duplicated node with better positioning offset
         const duplicatedNode = {
             id: uniqueId,
             type: originalNode.type,
             position: { 
-                x: originalNode.position.x + 50, 
-                y: originalNode.position.y + 50 
+                x: originalNode.position.x + 30, 
+                y: originalNode.position.y + 30 
             },
             data: duplicatedData,
             connections: {
@@ -2027,12 +2027,15 @@ class NodeFlowBuilder {
             }
         };
 
-        // Add to nodes array and re-register in the graph state
+        // Add to nodes array
         this.nodes.push(duplicatedNode);
 
-        // Force complete re-render to ensure proper registration
-        this.renderNodes();
-        this.renderConnections();
+        // Ensure clean re-render without DOM conflicts
+        setTimeout(() => {
+            this.renderNodes();
+            this.renderConnections();
+        }, 50);
+        
         this.showToast('Node duplicated successfully', 'success');
         
         // Auto-save with validation
@@ -2312,16 +2315,15 @@ class NodeFlowBuilder {
     }
 
     updateDisconnectButtonScaling() {
+        // Remove this function's scaling behavior as buttons now maintain fixed size
+        // The buttons will maintain their original size regardless of zoom for better visibility
         const disconnectButtons = document.querySelectorAll('.disconnect-btn');
         disconnectButtons.forEach(btn => {
-            const buttonSize = 20 / this.zoom;
-            const fontSize = 14 / this.zoom;
-            const borderWidth = 2 / this.zoom;
-            
-            btn.style.width = buttonSize + 'px';
-            btn.style.height = buttonSize + 'px';
-            btn.style.fontSize = fontSize + 'px';
-            btn.style.borderWidth = borderWidth + 'px';
+            // Keep buttons at consistent size for better usability
+            btn.style.width = '20px';
+            btn.style.height = '20px';
+            btn.style.fontSize = '14px';
+            btn.style.borderWidth = '2px';
         });
     }
 
