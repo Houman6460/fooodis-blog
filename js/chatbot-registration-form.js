@@ -383,6 +383,10 @@
 
                     console.log('🔄 Triggering identity update events with data:', identityUpdateData);
 
+                    // First update the local conversations data
+                    this.updateUserIdentity(formData);
+
+                    // Then trigger dashboard events
                     window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
                         detail: identityUpdateData
                     }));
@@ -397,12 +401,14 @@
                         detail: { action: 'new', data: formData }
                     }));
                     
-                    // Force a dashboard refresh if it exists
-                    if (window.chatbotManager && window.chatbotManager.renderConversations) {
-                        console.log('🔄 Forcing dashboard conversation refresh');
-                        window.chatbotManager.renderConversations();
-                    }
-                }, 500);
+                    // Force immediate dashboard refresh
+                    setTimeout(() => {
+                        if (window.chatbotManager && window.chatbotManager.renderConversations) {
+                            console.log('🔄 Forcing dashboard conversation refresh');
+                            window.chatbotManager.renderConversations();
+                        }
+                    }, 100);
+                }, 300);
 
             } catch (error) {
                 console.error('❌ Error submitting form:', error);

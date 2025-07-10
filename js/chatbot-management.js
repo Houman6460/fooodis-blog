@@ -343,6 +343,76 @@ class ChatbotManager {
         return Array.from(conversationMap.values());
     }
 
+    updateConversationIdentity(identityData) {
+        console.log('🔄 UpdateConversationIdentity called with:', identityData);
+        
+        if (!this.conversations) {
+            console.log('⚠️ No conversations array found');
+            this.conversations = [];
+            return;
+        }
+
+        let updated = false;
+        
+        // Find and update conversations by conversationId, sessionId, or deviceId
+        this.conversations.forEach(conversation => {
+            let shouldUpdate = false;
+            
+            // Match by conversation ID
+            if (identityData.conversationId && 
+                (conversation.id === identityData.conversationId || 
+                 conversation.conversationId === identityData.conversationId)) {
+                shouldUpdate = true;
+                console.log('📍 Found conversation by ID:', conversation.id);
+            }
+            
+            // Match by session/device for anonymous users
+            if (!shouldUpdate && 
+                (conversation.userName === 'Anonymous User' || !conversation.userName)) {
+                if ((identityData.sessionId && conversation.sessionId === identityData.sessionId) ||
+                    (identityData.deviceId && conversation.deviceId === identityData.deviceId)) {
+                    shouldUpdate = true;
+                    console.log('📍 Found anonymous conversation by session/device:', conversation.id);
+                }
+            }
+
+            if (shouldUpdate) {
+                const oldUserName = conversation.userName || 'Anonymous User';
+                
+                // Update conversation with user identity
+                conversation.userName = identityData.name;
+                conversation.userEmail = identityData.email;
+                conversation.restaurantName = identityData.restaurantName;
+                conversation.userPhone = identityData.phone;
+                conversation.userType = identityData.userType || identityData.systemUsage;
+                conversation.systemUsage = identityData.systemUsage;
+                conversation.language = identityData.language;
+                conversation.languageCode = identityData.languageCode;
+                conversation.languageFlag = identityData.languageFlag;
+                conversation.displayFlag = identityData.displayFlag || identityData.languageFlag;
+                conversation.userRegistered = true;
+                conversation.identityLinked = true;
+                conversation.lastUpdated = identityData.timestamp || new Date().toISOString();
+                conversation.previousName = oldUserName;
+
+                console.log(`✅ Updated conversation: ${oldUserName} → ${identityData.name} (${identityData.languageFlag})`);
+                updated = true;
+            }
+        });
+
+        if (updated) {
+            // Save updated conversations to localStorage
+            localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(this.conversations));
+            
+            // Re-render conversations immediately
+            this.renderConversations();
+            
+            console.log('✅ Conversation identity update completed and UI refreshed');
+        } else {
+            console.log('⚠️ No matching conversations found for identity update');
+        }
+    }
+
     async loadLeads() {
         try {
             console.log('🔍 Dashboard: Starting loadLeads()');
@@ -560,6 +630,19 @@ class ChatbotManager {
     }
 
     setupEventListeners() {
+        // Listen for user identity updates from registration form
+        window.addEventListener('userIdentityUpdated', (event) => {
+            console.log('🔄 ChatbotManager: Received user identity update:', event.detail);
+            this.updateConversationIdentity(event.detail);
+        });
+
+        window.addEventListener('conversationDataUpdated', (event) => {
+            console.log('🔄 ChatbotManager: Received conversation data update:', event.detail);
+            if (event.detail.action === 'identity_update') {
+                this.updateConversationIdentity(event.detail.data);
+            }
+        });
+
         // Status toggle
         const chatbotToggle = document.getElementById('chatbotToggle');
         if (chatbotToggle) {
