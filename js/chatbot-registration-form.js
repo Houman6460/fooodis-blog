@@ -59,6 +59,13 @@
             setTimeout(() => {
                 // Set initial language state to English
                 this.switchLanguage('english');
+                
+                // Ensure English tab is active initially
+                const englishTab = formOverlay.querySelector('.lang-tab[data-lang="english"]');
+                if (englishTab) {
+                    englishTab.classList.add('active');
+                }
+                
                 console.log('🔐 Registration form shown and language switching initialized');
             }, 100);
         },
@@ -196,9 +203,23 @@
                         // Add active class to clicked tab
                         e.target.classList.add('active');
 
-                        // Get selected language
+                        // Get selected language and handle both formats
                         const selectedLang = e.target.getAttribute('data-lang');
-                        this.switchLanguage(selectedLang);
+                        console.log('🌐 Tab clicked, language:', selectedLang);
+                        
+                        // Map language codes consistently
+                        const languageMap = {
+                            'english': 'english',
+                            'en': 'english',
+                            'svenska': 'swedish',
+                            'swedish': 'swedish',
+                            'sv': 'swedish'
+                        };
+                        
+                        const mappedLang = languageMap[selectedLang] || 'english';
+                        console.log('🌐 Mapped language:', mappedLang);
+                        
+                        this.switchLanguage(mappedLang);
                     }
                 }
             });
@@ -253,48 +274,98 @@
                 return;
             }
 
-            // Get translation data for selected language
-            const lang = language === 'swedish' ? 'swedish' : 'english';
+            // Get translation data for selected language - fix the language detection
+            const lang = (language === 'swedish' || language === 'sv') ? 'swedish' : 'english';
             const translations = this.translations[lang];
+
+            console.log('🔄 Using translations for language:', lang, translations);
 
             // Update all text content with complete language isolation
             const formTitle = registrationContainer.querySelector('.form-title');
             const formSubtitle = registrationContainer.querySelector('.form-subtitle');
 
-            if (formTitle) formTitle.textContent = translations.title;
-            if (formSubtitle) formSubtitle.textContent = translations.subtitle;
+            if (formTitle) {
+                formTitle.textContent = translations.title;
+                console.log('📝 Updated title to:', translations.title);
+            }
+            if (formSubtitle) {
+                formSubtitle.textContent = translations.subtitle;
+                console.log('📝 Updated subtitle to:', translations.subtitle);
+            }
 
-            // Update labels
+            // Update labels with more specific targeting
             const labels = registrationContainer.querySelectorAll('.field-label');
-            if (labels[0]) labels[0].textContent = translations.nameLabel; // Name label
-            if (labels[1]) labels[1].textContent = translations.restaurantLabel; // Restaurant label
-            if (labels[2]) labels[2].textContent = translations.phoneLabel; // Phone label
-            if (labels[3]) labels[3].textContent = translations.systemLabel; // System label
+            if (labels[0]) {
+                labels[0].textContent = translations.nameLabel;
+                console.log('📝 Updated name label to:', translations.nameLabel);
+            }
+            if (labels[1]) {
+                labels[1].textContent = translations.restaurantLabel;
+                console.log('📝 Updated restaurant label to:', translations.restaurantLabel);
+            }
+            if (labels[2]) {
+                labels[2].textContent = translations.phoneLabel;
+                console.log('📝 Updated phone label to:', translations.phoneLabel);
+            }
+            if (labels[3]) {
+                labels[3].textContent = translations.systemLabel;
+                console.log('📝 Updated system label to:', translations.systemLabel);
+            }
 
             // Update input placeholders
             const nameInput = registrationContainer.querySelector('#userName');
             const restaurantInput = registrationContainer.querySelector('#restaurantName');
             const phoneInput = registrationContainer.querySelector('#userPhone');
 
-            if (nameInput) nameInput.placeholder = translations.namePlaceholder;
-            if (restaurantInput) restaurantInput.placeholder = translations.restaurantPlaceholder;
-            if (phoneInput) phoneInput.placeholder = translations.phonePlaceholder;
+            if (nameInput) {
+                nameInput.placeholder = translations.namePlaceholder;
+                console.log('📝 Updated name placeholder to:', translations.namePlaceholder);
+            }
+            if (restaurantInput) {
+                restaurantInput.placeholder = translations.restaurantPlaceholder;
+                console.log('📝 Updated restaurant placeholder to:', translations.restaurantPlaceholder);
+            }
+            if (phoneInput) {
+                phoneInput.placeholder = translations.phonePlaceholder;
+                console.log('📝 Updated phone placeholder to:', translations.phonePlaceholder);
+            }
 
-            // Update dropdown options
-            const selectOptions = registrationContainer.querySelectorAll('#systemUsage option');
-            if (selectOptions[0]) selectOptions[0].textContent = translations.selectPlaceholder;
-            if (selectOptions[1]) selectOptions[1].textContent = translations.usingFooodis;
-            if (selectOptions[2]) selectOptions[2].textContent = translations.usingOther;
-            if (selectOptions[3]) selectOptions[3].textContent = translations.lookingForSolution;
+            // Update dropdown options with more specific targeting
+            const systemSelect = registrationContainer.querySelector('#systemUsage');
+            if (systemSelect) {
+                const selectOptions = systemSelect.querySelectorAll('option');
+                if (selectOptions[0]) {
+                    selectOptions[0].textContent = translations.selectPlaceholder;
+                    console.log('📝 Updated select placeholder to:', translations.selectPlaceholder);
+                }
+                if (selectOptions[1]) {
+                    selectOptions[1].textContent = translations.usingFooodis;
+                    console.log('📝 Updated option 1 to:', translations.usingFooodis);
+                }
+                if (selectOptions[2]) {
+                    selectOptions[2].textContent = translations.usingOther;
+                    console.log('📝 Updated option 2 to:', translations.usingOther);
+                }
+                if (selectOptions[3]) {
+                    selectOptions[3].textContent = translations.lookingForSolution;
+                    console.log('📝 Updated option 3 to:', translations.lookingForSolution);
+                }
+            }
 
             // Update buttons
             const skipBtn = registrationContainer.querySelector('.skip-btn');
             const submitBtn = registrationContainer.querySelector('.submit-btn');
 
-            if (skipBtn) skipBtn.textContent = translations.skipButton;
-            if (submitBtn) submitBtn.textContent = translations.submitButton;
+            if (skipBtn) {
+                skipBtn.textContent = translations.skipButton;
+                console.log('📝 Updated skip button to:', translations.skipButton);
+            }
+            if (submitBtn) {
+                submitBtn.textContent = translations.submitButton;
+                console.log('📝 Updated submit button to:', translations.submitButton);
+            }
 
-            console.log('✅ Language switched successfully to:', language);
+            console.log('✅ Language switched successfully to:', language, 'using', lang, 'translations');
         },
 
         // Set up form submission
