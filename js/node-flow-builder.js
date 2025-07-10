@@ -732,86 +732,85 @@ class NodeFlowBuilder {
     }
 
     renderConnections() {
-        const svg = document.getElementById('flow-connections');
-        if (!svg) return;
+        const connectionsContainer = document.getElementById('flow-connections');
+        if (!connectionsContainer) return;
 
-        svg.innerHTML = ''; // Clear existing connections
-
-        // Remove ALL existing disconnect buttons from everywhere
+        // Clear existing connections and buttons
+        connectionsContainer.innerHTML = '';
         document.querySelectorAll('.disconnect-btn').forEach(btn => btn.remove());
 
+        // Create main SVG container with proper scaling
+        const mainSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        mainSvg.setAttribute('id', 'main-connections-svg');
+        mainSvg.style.position = 'absolute';
+        mainSvg.style.top = '0';
+        mainSvg.style.left = '0';
+        mainSvg.style.width = '100%';
+        mainSvg.style.height = '100%';
+        mainSvg.style.pointerEvents = 'none';
+        mainSvg.style.zIndex = '1';
+        
+        // Set viewBox for proper scaling
+        const canvasWidth = 4000;
+        const canvasHeight = 4000;
+        mainSvg.setAttribute('viewBox', `0 0 ${canvasWidth} ${canvasHeight}`);
+        mainSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+        connectionsContainer.appendChild(mainSvg);
+
+        // Render each connection
         this.connections.forEach(connection => {
-            const connectionElement = this.createConnectionElement(connection);
-            svg.appendChild(connectionElement);
+            const pathElement = this.createConnectionPath(connection);
+            if (pathElement) {
+                mainSvg.appendChild(pathElement);
+            }
         });
 
         // Create disconnect buttons after all connections are rendered
         this.createDisconnectButtons();
     }
 
-    createConnectionElement(connection) {
+    createConnectionPath(connection) {
         const fromNode = this.nodes.find(node => node.id === connection.from);
         const toNode = this.nodes.find(node => node.id === connection.to);
 
-        if (!fromNode || !toNode) return document.createElement('div');
+        if (!fromNode || !toNode) return null;
 
-        // Create SVG connection line
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('class', 'connection-line');
-        svg.style.position = 'absolute';
-        svg.style.pointerEvents = 'auto'; // 🔧 FIX 1: Enable pointer events on connection lines
-        svg.style.zIndex = '1';
+        // Calculate connection points (adjusted for zoom-independent coordinates)
+        const fromX = fromNode.position.x + 150; // Node width (output point)
+        const fromY = fromNode.position.y + 50;  // Node height center
+        const toX = toNode.position.x;           // Input point (left side)
+        const toY = toNode.position.y + 50;      // Node height center
 
-        // Calculate connection points
-        const fromX = fromNode.position.x + 150; // Node width/2
-        const fromY = fromNode.position.y + 50;  // Node height/2
-        const toX = toNode.position.x;
-        const toY = toNode.position.y + 50;
+        // Create curved path with proper control points
+        const controlPoint1X = fromX + (toX - fromX) * 0.5;
+        const controlPoint1Y = fromY;
+        const controlPoint2X = toX - (toX - fromX) * 0.5;
+        const controlPoint2Y = toY;
 
-        // Set SVG dimensions and position
-        const minX = Math.min(fromX, toX);
-        const minY = Math.min(fromY, toY);
-        const width = Math.abs(toX - fromX) + 20;
-        const height = Math.abs(toY - fromY) + 20;
+        const pathData = `M ${fromX} ${fromY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${toX} ${toY}`;
 
-        svg.style.left = (minX - 10) + 'px';
-        svg.style.top = (minY - 10) + 'px';
-        svg.setAttribute('width', width);
-        svg.setAttribute('height', height);
-
-        // Create curved path
+        // Create main visible path
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        const startX = fromX - minX + 10;
-        const startY = fromY - minY + 10;
-        const endX = toX - minX + 10;
-        const endY = toY - minY + 10;
-
-        const controlPoint1X = startX + (endX - startX) * 0.5;
-        const controlPoint1Y = startY;
-        const controlPoint2X = endX - (endX - startX) * 0.5;
-        const controlPoint2Y = endY;
-
-        const pathData = `M ${startX} ${startY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${endX} ${endY}`;
-
         path.setAttribute('d', pathData);
         path.setAttribute('stroke', '#6272a4');
         path.setAttribute('stroke-width', '2');
         path.setAttribute('fill', 'none');
-        path.classList.add('connection-line');
-        path.style.cursor = 'pointer';
         path.setAttribute('data-connection-id', connection.id);
+        path.style.cursor = 'pointer';
+        path.style.pointerEvents = 'stroke';
 
-        // Add invisible wider path for easier clicking
+        // Create invisible wider path for easier clicking
         const invisiblePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         invisiblePath.setAttribute('d', pathData);
         invisiblePath.setAttribute('stroke', 'transparent');
         invisiblePath.setAttribute('stroke-width', '12');
         invisiblePath.setAttribute('fill', 'none');
-        invisiblePath.classList.add('connection-line');
-        invisiblePath.style.cursor = 'pointer';
         invisiblePath.setAttribute('data-connection-id', connection.id);
+        invisiblePath.style.cursor = 'pointer';
+        invisiblePath.style.pointerEvents = 'stroke';
 
-        // Add hover effect and click handler to both paths
+        // Add hover effects
         const handleMouseEnter = () => {
             path.setAttribute('stroke', '#ff6b6b');
             path.setAttribute('stroke-width', '3');
@@ -825,33 +824,23 @@ class NodeFlowBuilder {
         const handleConnectionClick = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Connection clicked! Event target:', e.target);
-            console.log('Connection ID from path:', path.getAttribute('data-connection-id'));
-            console.log('Connection ID from invisible:', invisiblePath.getAttribute('data-connection-id'));
-
-            const connectionId = connection.id;
-            console.log('Using connection ID:', connectionId, 'from:', fromNode.id, 'to:', toNode.id);
-
-            if (connectionId) {
-                this.showConnectionRemovalDialog(connectionId, fromNode, toNode);
-            } else {
-                console.error('No connection ID found');
-            }
+            this.showConnectionRemovalDialog(connection.id, fromNode, toNode);
         };
 
-        // Add event listeners to both paths
+        // Add event listeners
         path.addEventListener('mouseenter', handleMouseEnter);
         path.addEventListener('mouseleave', handleMouseLeave);
         path.addEventListener('click', handleConnectionClick);
-
         invisiblePath.addEventListener('mouseenter', handleMouseEnter);
         invisiblePath.addEventListener('mouseleave', handleMouseLeave);
         invisiblePath.addEventListener('click', handleConnectionClick);
 
-        svg.appendChild(invisiblePath); // Add invisible clickable area first
-        svg.appendChild(path); // Add visible path on top
+        // Create group to contain both paths
+        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        group.appendChild(invisiblePath);
+        group.appendChild(path);
 
-        return svg;
+        return group;
     }
 
     // Create all disconnect buttons after connections are rendered
@@ -867,30 +856,35 @@ class NodeFlowBuilder {
                 return;
             }
 
-            // Calculate midpoint of connection relative to canvas
-            const startX = fromNode.position.x + 150; // Node center
-            const startY = fromNode.position.y + 40;
-            const endX = toNode.position.x + 150;
-            const endY = toNode.position.y + 40;
+            // Calculate precise connection points (same as in createConnectionPath)
+            const startX = fromNode.position.x + 150; // Output connection point
+            const startY = fromNode.position.y + 50;  // Node center height
+            const endX = toNode.position.x;           // Input connection point
+            const endY = toNode.position.y + 50;      // Node center height
 
-            // Position relative to canvas container (not viewport)
+            // Calculate the exact midpoint of the connection line
             const midX = (startX + endX) / 2;
             const midY = (startY + endY) / 2;
 
             console.log(`Connection ${connection.id}: from (${startX}, ${startY}) to (${endX}, ${endY}), mid (${midX}, ${midY})`);
 
-            // Create simple red button
+            // Create disconnect button
             const btn = document.createElement('div');
             btn.className = 'disconnect-btn';
             btn.innerHTML = '×';
             btn.dataset.connectionId = connection.id;
 
-            // Apply styles directly forreliable positioning
+            // Calculate button size that scales with zoom (inverse scaling for consistent visual size)
+            const buttonSize = 20 / this.zoom;
+            const fontSize = 14 / this.zoom;
+            const borderWidth = 2 / this.zoom;
+
+            // Apply styles with proper positioning and scaling
             btn.style.position = 'absolute';
             btn.style.left = midX + 'px';
             btn.style.top = midY + 'px';
-            btn.style.width = '20px';
-            btn.style.height = '20px';
+            btn.style.width = buttonSize + 'px';
+            btn.style.height = buttonSize + 'px';
             btn.style.backgroundColor = '#ff4757';
             btn.style.color = 'white';
             btn.style.borderRadius = '50%';
@@ -898,13 +892,25 @@ class NodeFlowBuilder {
             btn.style.alignItems = 'center';
             btn.style.justifyContent = 'center';
             btn.style.cursor = 'pointer';
-            btn.style.fontSize = '14px';
+            btn.style.fontSize = fontSize + 'px';
             btn.style.fontWeight = 'bold';
             btn.style.zIndex = '10000';
             btn.style.transform = 'translate(-50%, -50%)';
-            btn.style.border = '2px solid white';
+            btn.style.border = borderWidth + 'px solid white';
             btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-            btn.style.pointerEvents = 'auto'; // Ensure clickable
+            btn.style.pointerEvents = 'auto';
+            btn.style.transition = 'all 0.2s ease';
+
+            // Add hover effect
+            btn.addEventListener('mouseenter', () => {
+                btn.style.backgroundColor = '#ff3742';
+                btn.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                btn.style.backgroundColor = '#ff4757';
+                btn.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
 
             // Add click handler
             btn.onclick = (e) => {
@@ -914,17 +920,16 @@ class NodeFlowBuilder {
                 this.removeConnection(connection.id);
             };
 
-            // Add to the actual canvas element (this.canvas with class node-flow-canvas)
-            if (this.canvas) {
-                this.canvas.appendChild(btn);
-                console.log('Added disconnect button to canvas for connection:', connection.id);
+            // Add to the flow-nodes container so it scales with the transform
+            const nodesContainer = document.getElementById('flow-nodes');
+            if (nodesContainer) {
+                nodesContainer.appendChild(btn);
+                console.log('Added disconnect button to nodes container for connection:', connection.id);
             } else {
-                console.log('Canvas not found! Using fallback container');
-                // Fallback to flow container
-                const container = document.getElementById('node-flow-container');
-                if (container) {
-                    container.appendChild(btn);
-                    console.log('Added disconnect button to container for connection:', connection.id);
+                // Fallback to canvas
+                if (this.canvas) {
+                    this.canvas.appendChild(btn);
+                    console.log('Added disconnect button to canvas for connection:', connection.id);
                 }
             }
         });
@@ -1978,7 +1983,7 @@ class NodeFlowBuilder {
     }
 
     duplicateNode(originalNode) {
-        // Create a deep copy of the node data
+        // Create a proper deep copy of the node data
         const duplicatedData = JSON.parse(JSON.stringify(originalNode.data));
         
         // Modify the title to indicate it's a copy
@@ -1986,20 +1991,54 @@ class NodeFlowBuilder {
             duplicatedData.title = duplicatedData.title + ' (Copy)';
         }
 
-        // Create the duplicated node with offset position
-        const duplicatedNode = this.createNode({
+        // Validate and ensure all node properties are properly copied
+        if (originalNode.type === 'intent' && !Array.isArray(duplicatedData.intents)) {
+            duplicatedData.intents = originalNode.data.intents || [];
+        }
+        if (originalNode.type === 'handoff') {
+            duplicatedData.department = originalNode.data.department || '';
+            duplicatedData.agents = originalNode.data.agents || [];
+            duplicatedData.color = originalNode.data.color || '#34495e';
+        }
+        if (originalNode.type === 'message') {
+            duplicatedData.messages = duplicatedData.messages || { english: '', swedish: '' };
+            duplicatedData.aiMode = originalNode.data.aiMode || false;
+            duplicatedData.selectedAssistant = originalNode.data.selectedAssistant || '';
+            duplicatedData.aiPrompt = originalNode.data.aiPrompt || '';
+        }
+
+        // Generate a truly unique ID for the duplicated node
+        const timestamp = Date.now();
+        const randomId = Math.random().toString(36).substr(2, 9);
+        const uniqueId = `node-${timestamp}-${randomId}`;
+
+        // Create the duplicated node with proper structure
+        const duplicatedNode = {
+            id: uniqueId,
             type: originalNode.type,
             position: { 
                 x: originalNode.position.x + 50, 
                 y: originalNode.position.y + 50 
             },
-            data: duplicatedData
-        });
+            data: duplicatedData,
+            connections: {
+                inputs: [],
+                outputs: []
+            }
+        };
 
+        // Add to nodes array and re-register in the graph state
+        this.nodes.push(duplicatedNode);
+
+        // Force complete re-render to ensure proper registration
         this.renderNodes();
         this.renderConnections();
         this.showToast('Node duplicated successfully', 'success');
-        this.autoSave(); // Auto-save when duplicating node
+        
+        // Auto-save with validation
+        this.autoSave();
+        
+        console.log('Duplicated node created:', duplicatedNode.id, 'from:', originalNode.id);
     }
 
     deleteNode(nodeId) {
@@ -2235,6 +2274,7 @@ class NodeFlowBuilder {
     updateCanvasTransform() {
         const nodesContainer = document.getElementById('flow-nodes');
         const connectionsContainer = document.getElementById('flow-connections');
+        const mainSvg = document.getElementById('main-connections-svg');
         
         const transform = `translate(${this.panOffset.x}px, ${this.panOffset.y}px) scale(${this.zoom})`;
         
@@ -2244,6 +2284,18 @@ class NodeFlowBuilder {
         if (connectionsContainer) {
             connectionsContainer.style.transform = transform;
         }
+        
+        // Update SVG viewBox for proper scaling of connections
+        if (mainSvg) {
+            const canvasWidth = 4000 / this.zoom;
+            const canvasHeight = 4000 / this.zoom;
+            const offsetX = -this.panOffset.x / this.zoom;
+            const offsetY = -this.panOffset.y / this.zoom;
+            mainSvg.setAttribute('viewBox', `${offsetX} ${offsetY} ${canvasWidth} ${canvasHeight}`);
+        }
+        
+        // Update disconnect button positions and sizes when zoom changes
+        this.updateDisconnectButtonScaling();
     }
 
     handleCanvasMouseDown(e) {
@@ -2257,6 +2309,20 @@ class NodeFlowBuilder {
             };
             this.canvas.style.cursor = 'grabbing';
         }
+    }
+
+    updateDisconnectButtonScaling() {
+        const disconnectButtons = document.querySelectorAll('.disconnect-btn');
+        disconnectButtons.forEach(btn => {
+            const buttonSize = 20 / this.zoom;
+            const fontSize = 14 / this.zoom;
+            const borderWidth = 2 / this.zoom;
+            
+            btn.style.width = buttonSize + 'px';
+            btn.style.height = buttonSize + 'px';
+            btn.style.fontSize = fontSize + 'px';
+            btn.style.borderWidth = borderWidth + 'px';
+        });
     }
 
     zoomIn() {
