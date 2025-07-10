@@ -359,18 +359,21 @@
 
                 console.log('✅ Form submitted successfully:', formData.name);
 
-                // Trigger UI updates with a delay to ensure all updates are processed
+                // Trigger UI updates with comprehensive identity data
                 setTimeout(() => {
                     const identityUpdateData = {
                         name: formData.name,
+                        userName: formData.name,
                         email: formData.email,
+                        userEmail: formData.email,
                         restaurantName: formData.restaurantName,
                         phone: formData.phone,
+                        userPhone: formData.phone,
                         userType: formData.systemUsage,
                         systemUsage: formData.systemUsage,
                         conversationId: formData.conversationId,
-                        sessionId: formData.sessionId,
-                        deviceId: formData.deviceId,
+                        sessionId: formData.sessionId || window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id'),
+                        deviceId: formData.deviceId || localStorage.getItem('chatbot-device-id'),
                         language: formData.language,
                         languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
                         languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
@@ -381,34 +384,40 @@
                         timestamp: formData.timestamp
                     };
 
-                    console.log('🔄 Triggering identity update events with data:', identityUpdateData);
+                    console.log('🔄 Triggering comprehensive identity update with data:', identityUpdateData);
 
-                    // First update the local conversations data
+                    // First update local conversations data
                     this.updateUserIdentity(formData);
 
-                    // Then trigger dashboard events
+                    // Trigger multiple update events for redundancy
                     window.dispatchEvent(new CustomEvent('userIdentityUpdated', {
                         detail: identityUpdateData
                     }));
 
-                    // Trigger conversation list refresh
                     window.dispatchEvent(new CustomEvent('conversationDataUpdated', {
                         detail: { action: 'identity_update', data: identityUpdateData }
                     }));
 
-                    // Trigger leads list refresh
-                    window.dispatchEvent(new CustomEvent('leadsDataUpdated', {
-                        detail: { action: 'new', data: formData }
-                    }));
+                    // Force multiple dashboard refreshes to ensure update
+                    if (window.chatbotManager) {
+                        console.log('🔄 Immediate conversation update');
+                        window.chatbotManager.updateConversationIdentity(identityUpdateData);
+                    }
                     
-                    // Force immediate dashboard refresh
                     setTimeout(() => {
                         if (window.chatbotManager && window.chatbotManager.renderConversations) {
-                            console.log('🔄 Forcing dashboard conversation refresh');
+                            console.log('🔄 First dashboard refresh');
                             window.chatbotManager.renderConversations();
                         }
-                    }, 100);
-                }, 300);
+                    }, 50);
+                    
+                    setTimeout(() => {
+                        if (window.chatbotManager && window.chatbotManager.renderConversations) {
+                            console.log('🔄 Second dashboard refresh (ensuring update)');
+                            window.chatbotManager.renderConversations();
+                        }
+                    }, 500);
+                }, 100);
 
             } catch (error) {
                 console.error('❌ Error submitting form:', error);

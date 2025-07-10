@@ -354,11 +354,11 @@ class ChatbotManager {
 
         let updated = false;
         
-        // Find and update conversations by conversationId, sessionId, or deviceId
+        // Enhanced matching logic - find conversations by multiple criteria
         this.conversations.forEach(conversation => {
             let shouldUpdate = false;
             
-            // Match by conversation ID
+            // Primary match: by conversation ID
             if (identityData.conversationId && 
                 (conversation.id === identityData.conversationId || 
                  conversation.conversationId === identityData.conversationId)) {
@@ -366,50 +366,95 @@ class ChatbotManager {
                 console.log('📍 Found conversation by ID:', conversation.id);
             }
             
-            // Match by session/device for anonymous users
+            // Secondary match: by session/device for anonymous users
             if (!shouldUpdate && 
-                (conversation.userName === 'Anonymous User' || !conversation.userName)) {
-                if ((identityData.sessionId && conversation.sessionId === identityData.sessionId) ||
-                    (identityData.deviceId && conversation.deviceId === identityData.deviceId)) {
+                (conversation.userName === 'Anonymous User' || !conversation.userName || conversation.userName === '')) {
+                
+                const sessionMatch = identityData.sessionId && 
+                    (conversation.sessionId === identityData.sessionId || 
+                     conversation.conversationId?.includes(identityData.sessionId));
+                
+                const deviceMatch = identityData.deviceId && 
+                    (conversation.deviceId === identityData.deviceId ||
+                     conversation.conversationId?.includes(identityData.deviceId));
+                
+                if (sessionMatch || deviceMatch) {
                     shouldUpdate = true;
                     console.log('📍 Found anonymous conversation by session/device:', conversation.id);
+                }
+            }
+            
+            // Tertiary match: recent anonymous conversations (within last hour)
+            if (!shouldUpdate && 
+                (conversation.userName === 'Anonymous User' || !conversation.userName || conversation.userName === '')) {
+                const conversationTime = new Date(conversation.createdAt || conversation.lastMessageAt || 0);
+                const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+                
+                if (conversationTime > oneHourAgo) {
+                    shouldUpdate = true;
+                    console.log('📍 Found recent anonymous conversation:', conversation.id);
                 }
             }
 
             if (shouldUpdate) {
                 const oldUserName = conversation.userName || 'Anonymous User';
                 
-                // Update conversation with user identity
-                conversation.userName = identityData.name;
-                conversation.userEmail = identityData.email;
+                // Update conversation with complete user identity
+                conversation.userName = identityData.name || identityData.userName;
+                conversation.userEmail = identityData.email || identityData.userEmail;
                 conversation.restaurantName = identityData.restaurantName;
-                conversation.userPhone = identityData.phone;
+                conversation.userPhone = identityData.phone || identityData.userPhone;
                 conversation.userType = identityData.userType || identityData.systemUsage;
                 conversation.systemUsage = identityData.systemUsage;
                 conversation.language = identityData.language;
                 conversation.languageCode = identityData.languageCode;
-                conversation.languageFlag = identityData.languageFlag;
-                conversation.displayFlag = identityData.displayFlag || identityData.languageFlag;
+                
+                // Ensure language flag is properly set
+                const flagMap = {
+                    'svenska': '🇸🇪',
+                    'english': '🇺🇸',
+                    'sv': '🇸🇪',
+                    'en': '🇺🇸',
+                    'sv-SE': '🇸🇪',
+                    'en-US': '🇺🇸'
+                };
+                
+                conversation.languageFlag = identityData.languageFlag || 
+                    identityData.displayFlag || 
+                    flagMap[identityData.language] || 
+                    flagMap[identityData.languageCode] || '🇺🇸';
+                
+                conversation.displayFlag = conversation.languageFlag;
                 conversation.userRegistered = true;
                 conversation.identityLinked = true;
                 conversation.lastUpdated = identityData.timestamp || new Date().toISOString();
                 conversation.previousName = oldUserName;
 
-                console.log(`✅ Updated conversation: ${oldUserName} → ${identityData.name} (${identityData.languageFlag})`);
+                console.log(`✅ Updated conversation: ${oldUserName} → ${conversation.userName} (${conversation.languageFlag})`);
                 updated = true;
             }
         });
 
         if (updated) {
-            // Save updated conversations to localStorage
+            // Save updated conversations to multiple storage locations
             localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(this.conversations));
+            localStorage.setItem('chatbot-conversations', JSON.stringify(this.conversations));
             
-            // Re-render conversations immediately
-            this.renderConversations();
+            // Force immediate UI refresh
+            setTimeout(() => {
+                this.renderConversations();
+                console.log('✅ Conversation cards re-rendered with updated identity');
+            }, 100);
             
-            console.log('✅ Conversation identity update completed and UI refreshed');
+            console.log('✅ Conversation identity update completed and saved');
         } else {
             console.log('⚠️ No matching conversations found for identity update');
+            console.log('🔍 Available conversations:', this.conversations.map(c => ({
+                id: c.id || c.conversationId,
+                userName: c.userName,
+                sessionId: c.sessionId,
+                deviceId: c.deviceId
+            })));
         }
     }
 
@@ -1094,7 +1139,8 @@ class ChatbotManager {
                 userEmail: conversation.userEmail,
                 languageFlag: conversation.languageFlag,
                 displayFlag: conversation.displayFlag,
-                fullData: conversation
+                userRegistered: conversation.userRegistered,
+                identityLinked: conversation.identityLinked
             });
             
             const messageCount = conversation.messageCount || (conversation.messages ? conversation.messages.length : 0);
@@ -1113,26 +1159,66 @@ class ChatbotManager {
 
             const status = conversation.status || 'active';
 
-            const userCategory = conversation.userCategory || 'Anonymous';
+            // Determine user category based on system usage
+            let userCategory = 'Anonymous';
+            if (conversation.userRegistered && conversation.systemUsage) {
+                switch (conversation.systemUsage) {
+                    case 'current_user':
+                        userCategory = 'Current User';
+                        break;
+                    case 'competitor_user':
+                        userCategory = 'Competitor User';
+                        break;
+                    case 'potential_user':
+                        userCategory = 'Potential User';
+                        break;
+                    default:
+                        userCategory = conversation.userCategory || 'Registered User';
+                }
+            }
             const categoryClass = userCategory.toLowerCase().replace(/\s+/g, '-');
             
-            // Determine user display with better logic
+            // Enhanced user display logic with fallback chain
             let userDisplay = 'Anonymous User';
             let flagDisplay = '';
             
-            if (conversation.userName && conversation.userName.trim()) {
-                userDisplay = conversation.userName;
+            // Priority order: registered name > email > fallback
+            if (conversation.userName && conversation.userName.trim() && conversation.userName !== 'Anonymous User') {
+                userDisplay = conversation.userName.trim();
             } else if (conversation.userEmail && conversation.userEmail.trim()) {
-                userDisplay = conversation.userEmail;
+                userDisplay = conversation.userEmail.trim();
             }
             
-            if (conversation.languageFlag) {
-                flagDisplay = conversation.languageFlag;
-            } else if (conversation.displayFlag) {
-                flagDisplay = conversation.displayFlag;
+            // Flag display with multiple fallback options
+            if (conversation.languageFlag && conversation.languageFlag.trim()) {
+                flagDisplay = conversation.languageFlag.trim();
+            } else if (conversation.displayFlag && conversation.displayFlag.trim()) {
+                flagDisplay = conversation.displayFlag.trim();
+            } else if (conversation.language) {
+                // Generate flag from language if missing
+                const flagMap = {
+                    'svenska': '🇸🇪',
+                    'english': '🇺🇸',
+                    'sv': '🇸🇪',
+                    'en': '🇺🇸',
+                    'sv-SE': '🇸🇪',
+                    'en-US': '🇺🇸'
+                };
+                flagDisplay = flagMap[conversation.language] || '🇺🇸';
+                
+                // Update the conversation object with the generated flag
+                conversation.languageFlag = flagDisplay;
+                conversation.displayFlag = flagDisplay;
+            } else {
+                flagDisplay = '🇺🇸'; // Default to US flag
             }
             
-            console.log('🏷️ User display resolved:', { userDisplay, flagDisplay });
+            console.log('🏷️ User display resolved:', { 
+                userDisplay, 
+                flagDisplay, 
+                userRegistered: conversation.userRegistered,
+                category: userCategory 
+            });
 
             return `
                 <div class="conversation-card" data-conversation-id="${conversation.id || conversation.conversationId}">
