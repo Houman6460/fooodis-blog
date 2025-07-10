@@ -353,6 +353,44 @@
     animation: pulse 0.5s infinite;
 }
 
+/* Canvas interaction styles */
+.node-flow-canvas {
+    cursor: default;
+    user-select: none;
+}
+
+.node-flow-canvas.panning {
+    cursor: grabbing;
+}
+
+.flow-node:hover {
+    box-shadow: 0 4px 12px rgba(232, 242, 76, 0.3);
+}
+
+.flow-node.selected {
+    border-color: #e8f24c;
+    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.5);
+}
+
+.flow-node.dragging {
+    z-index: 1000;
+    opacity: 0.8;
+}
+
+/* Prevent text selection during node operations */
+.node-flow-canvas * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.3); }

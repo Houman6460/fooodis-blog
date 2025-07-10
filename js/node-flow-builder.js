@@ -178,26 +178,26 @@ class NodeFlowBuilder {
         // Initialize zoom functionality with mouse wheel
         this.canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
-            
+
             // Get mouse position relative to canvas
             const rect = this.canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-            
+
             // Calculate zoom point in world coordinates
             const worldX = (mouseX - this.panOffset.x) / this.zoom;
             const worldY = (mouseY - this.panOffset.y) / this.zoom;
-            
+
             const delta = e.deltaY > 0 ? -0.1 : 0.1;
             const oldZoom = this.zoom;
             this.zoom += delta;
             this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
-            
+
             // Adjust pan to zoom towards mouse position
             const zoomChange = this.zoom / oldZoom;
             this.panOffset.x = mouseX - worldX * this.zoom;
             this.panOffset.y = mouseY - worldY * this.zoom;
-            
+
             this.updateCanvasTransform();
         });
 
@@ -841,8 +841,7 @@ class NodeFlowBuilder {
             this.showConnectionRemovalDialog(connection.id, fromNode, toNode);
         };
 
-        // Add event listeners
-        path.addEventListener('mouseenter', handleMouseEnter);
+        // Add event listeners        path.addEventListener('mouseenter', handleMouseEnter);
         path.addEventListener('mouseleave', handleMouseLeave);
         path.addEventListener('click', handleConnectionClick);
         invisiblePath.addEventListener('mouseenter', handleMouseEnter);
@@ -1671,7 +1670,7 @@ class NodeFlowBuilder {
         const departmentSelect = modal.querySelector('#edit-department');
         if (departmentSelect) {
             departmentSelect.addEventListener('change', () => this.updateAgentsList(departmentSelect.value));
-        }
+                }
 
         // Add auto-save functionality for form changes
         const form = modal.querySelector('#edit-node-form');
@@ -1994,7 +1993,7 @@ class NodeFlowBuilder {
     duplicateNode(originalNode) {
         // Create a proper deep copy of the node data
         const duplicatedData = JSON.parse(JSON.stringify(originalNode.data));
-        
+
         // Modify the title to indicate it's a copy
         if (duplicatedData.title) {
             duplicatedData.title = duplicatedData.title + ' (Copy)';
@@ -2044,12 +2043,12 @@ class NodeFlowBuilder {
             this.renderNodes();
             this.renderConnections();
         }, 50);
-        
+
         this.showToast('Node duplicated successfully', 'success');
-        
+
         // Auto-save with validation
         this.autoSave();
-        
+
         console.log('Duplicated node created:', duplicatedNode.id, 'from:', originalNode.id);
     }
 
@@ -2121,24 +2120,21 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseMove(e) {
-        // Handle canvas panning
+        // Handle canvas panning with middle mouse button or when explicitly panning
         if (this.isPanning) {
-            e.preventDefault();
             const deltaX = e.clientX - this.lastPanPoint.x;
             const deltaY = e.clientY - this.lastPanPoint.y;
-            
+
             this.panOffset.x += deltaX;
             this.panOffset.y += deltaY;
-            
+
+            this.lastPanPoint.x = e.clientX;
+            this.lastPanPoint.y = e.clientY;
+
             this.updateCanvasTransform();
-            
-            this.lastPanPoint = {
-                x: e.clientX,
-                y: e.clientY
-            };
         }
 
-        // Handle node dragging
+        // Handle individual node dragging
         if (this.draggedNode) {
             const rect = this.canvas.getBoundingClientRect();
             const x = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
@@ -2147,16 +2143,7 @@ class NodeFlowBuilder {
             this.draggedNode.position.x = x - this.draggedNode.dragOffset.x;
             this.draggedNode.position.y = y - this.draggedNode.dragOffset.y;
 
-            // Clear any duplicate node elements before updating position
-            const allNodeElements = document.querySelectorAll(`[data-node-id="${this.draggedNode.id}"]`);
-            if (allNodeElements.length > 1) {
-                // Remove all but the first element
-                for (let i = 1; i < allNodeElements.length; i++) {
-                    allNodeElements[i].remove();
-                }
-            }
-
-            // Update only the dragged node's position
+            // Update only the dragged node's position without affecting others
             const nodeElement = document.querySelector(`[data-node-id="${this.draggedNode.id}"]`);
             if (nodeElement) {
                 nodeElement.style.left = this.draggedNode.position.x + 'px';
@@ -2173,13 +2160,9 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseUp(e) {
-        // Stop panning
-        if (this.isPanning) {
-            this.isPanning = false;
-            this.canvas.style.cursor = 'default';
-        }
-        
-        // Stop node dragging
+        this.isPanning = false;
+        this.canvas.style.cursor = 'default';
+
         if (this.draggedNode) {
             this.draggedNode = null;
             this.autoSave(); // Auto-save when node moved
@@ -2225,20 +2208,43 @@ class NodeFlowBuilder {
     }
 
     addNode(type) {
+        // Prevent ghost duplicates by checking if we're already adding a node
+        if (this.isAddingNode) {
+            console.log('Node addition already in progress, preventing duplicate');
+            return;
+        }
+
+        this.isAddingNode = true;
+
+        // Calculate a good position for the new node (offset from center)
+        const randomOffset = Math.random() * 100 - 50; // -50 to +50
         const newNode = this.createNode({
             type,
-            position: { x: 200, y: 200 },
+            position: { 
+                x: 300 + randomOffset, 
+                y: 200 + randomOffset 
+            },
             data: this.getDefaultNodeData(type)
         });
 
-        this.nodes.push(newNode);
+        // Clear any existing nodes with duplicate IDs first
+        const existingElements = document.querySelectorAll(`[data-node-id="${newNode.id}"]`);
+        existingElements.forEach(el => el.remove());
 
-        // Force a complete re-render to avoid DOM inconsistencies
-        // This ensures header-added nodes behave the same as template nodes
-        this.renderNodes();
+        // Render only the new node instead of all nodes
+        const nodesContainer = document.getElementById('flow-nodes');
+        if (nodesContainer) {
+            const nodeElement = this.createNodeElement(newNode);
+            nodesContainer.appendChild(nodeElement);
+        }
 
         this.autoSave(); // Auto-save when adding node
         this.showToast(`${type} node added`, 'success');
+
+        // Reset the flag after a short delay
+        setTimeout(() => {
+            this.isAddingNode = false;
+        }, 100);
     }
 
     getDefaultNodeData(type) {
@@ -2276,69 +2282,52 @@ class NodeFlowBuilder {
         }
     }
 
-    updateZoom(delta) {
-        const oldZoom = this.zoom;
-        this.zoom += delta;
-        this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
-        
-        // Center zoom around current view center if no specific point provided
-        const rect = this.canvas.getBoundingClientRect();
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const worldX = (centerX - this.panOffset.x) / oldZoom;
-        const worldY = (centerY - this.panOffset.y) / oldZoom;
-        
-        this.panOffset.x = centerX - worldX * this.zoom;
-        this.panOffset.y = centerY - worldY * this.zoom;
-        
-        this.updateCanvasTransform();
-        
-        const zoomLevel = document.querySelector('.canvas-zoom-level');
-        if (zoomLevel) {
-            zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
-        }
-    }
-
     updateCanvasTransform() {
-        const nodesContainer = document.getElementById('flow-nodes');
-        const connectionsContainer = document.getElementById('flow-connections');
-        
-        const transform = `translate(${this.panOffset.x}px, ${this.panOffset.y}px) scale(${this.zoom})`;
-        
-        if (nodesContainer) {
-            nodesContainer.style.transform = transform;
-            nodesContainer.style.transformOrigin = '0 0';
+        const flowNodes = document.getElementById('flow-nodes');
+        const flowConnections = document.getElementById('flow-connections');
+
+        if (flowNodes) {
+            flowNodes.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
         }
-        if (connectionsContainer) {
-            connectionsContainer.style.transform = transform;
-            connectionsContainer.style.transformOrigin = '0 0';
+        if (flowConnections) {
+            flowConnections.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
         }
-        
-        // Update disconnect button scaling to maintain visual size
-        this.updateDisconnectButtonScaling();
-        
+
         // Update zoom level display
         const zoomLevel = document.querySelector('.canvas-zoom-level');
         if (zoomLevel) {
             zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
         }
-        
-        // Force re-render of connections to ensure proper positioning
-        this.renderConnections();
+
+        // Update disconnect button scaling to counter the canvas transform
+        document.querySelectorAll('.disconnect-btn').forEach(btn => {
+            const counterScale = 1 / this.zoom;
+            btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
+        });
     }
 
     handleCanvasMouseDown(e) {
-        // Enable panning with left mouse button on empty canvas or middle mouse button
-        if ((e.button === 0 && (e.target === this.canvas || e.target.classList.contains('flow-background') || e.target.classList.contains('flow-grid'))) || e.button === 1) {
+        // Handle canvas panning with middle mouse button or Shift+click
+        if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
             e.preventDefault();
             this.isPanning = true;
-            this.lastPanPoint = {
-                x: e.clientX,
-                y: e.clientY
-            };
+            this.lastPanPoint = { x: e.clientX, y: e.clientY };
             this.canvas.style.cursor = 'grabbing';
         }
+        // Prevent node dragging when panning
+        else if (!e.target.closest('.flow-node') && e.button === 0) {
+            // Click on empty canvas
+            this.selectedNode = null;
+            document.querySelectorAll('.flow-node.selected').forEach(node => {
+                node.classList.remove('selected');
+            });
+        }
+    }
+
+    updateZoom(delta) {
+        this.zoom += delta;
+        this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
+        this.updateCanvasTransform();
     }
 
     updateDisconnectButtonScaling() {
@@ -2347,7 +2336,7 @@ class NodeFlowBuilder {
             // Counter-scale the buttons to maintain visual size at all zoom levels
             const counterScale = 1 / this.zoom;
             btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
-            
+
             // Maintain consistent visual size
             btn.style.width = '20px';
             btn.style.height = '20px';
