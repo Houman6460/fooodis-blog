@@ -469,6 +469,159 @@
         }
     };
 
+    function createRegistrationForm() {
+        console.log('Chatbot Registration: Creating form');
+    
+        const overlay = document.createElement('div');
+        overlay.className = 'chatbot-registration-overlay';
+        overlay.style.cssText = `
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 999999 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        `;
+    
+        const form = document.createElement('div');
+        form.className = 'chatbot-registration-form';
+        form.style.cssText = `
+            background: #1a1a1a !important;
+            border: 2px solid #e8f24c !important;
+            border-radius: 15px !important;
+            padding: 30px !important;
+            max-width: 500px !important;
+            width: 90% !important;
+            color: #ffffff !important;
+            font-family: Arial, sans-serif !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            position: relative !important;
+            z-index: 1000000 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            display: block !important;
+        `;
+    
+        form.innerHTML = `
+            <h2 style="color: #e8f24c !important; text-align: center !important; margin-bottom: 20px !important;">Welcome to Fooodis Chatbot</h2>
+            <p style="text-align: center !important; margin-bottom: 25px !important; line-height: 1.6 !important;">
+                Please provide your information to get personalized food recommendations and support.
+            </p>
+    
+            <form id="chatbot-registration" style="display: flex !important; flex-direction: column !important; gap: 15px !important;">
+                <input type="text" id="user-name" placeholder="Your Name" required style="
+                    padding: 12px !important;
+                    border: 1px solid #555 !important;
+                    border-radius: 8px !important;
+                    background: #2a2a2a !important;
+                    color: #ffffff !important;
+                    font-size: 16px !important;
+                ">
+    
+                <input type="email" id="user-email" placeholder="Your Email" required style="
+                    padding: 12px !important;
+                    border: 1px solid #555 !important;
+                    border-radius: 8px !important;
+                    background: #2a2a2a !important;
+                    color: #ffffff !important;
+                    font-size: 16px !important;
+                ">
+    
+                <select id="dietary-preferences" style="
+                    padding: 12px !important;
+                    border: 1px solid #555 !important;
+                    border-radius: 8px !important;
+                    background: #2a2a2a !important;
+                    color: #ffffff !important;
+                    font-size: 16px !important;
+                ">
+                    <option value="">Select Dietary Preference</option>
+                    <option value="omnivore">Omnivore</option>
+                    <option value="vegetarian">Vegetarian</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="keto">Keto</option>
+                    <option value="paleo">Paleo</option>
+                    <option value="gluten-free">Gluten-Free</option>
+                </select>
+    
+                <textarea id="allergies" placeholder="Any food allergies or restrictions? (Optional)" style="
+                    padding: 12px !important;
+                    border: 1px solid #555 !important;
+                    border-radius: 8px !important;
+                    background: #2a2a2a !important;
+                    color: #ffffff !important;
+                    font-size: 16px !important;
+                    min-height: 80px !important;
+                    resize: vertical !important;
+                "></textarea>
+    
+                <div style="display: flex !important; gap: 15px !important; margin-top: 20px !important;">
+                    <button type="submit" style="
+                        flex: 1 !important;
+                        padding: 15px !important;
+                        background: #e8f24c !important;
+                        color: #000000 !important;
+                        border: none !important;
+                        border-radius: 8px !important;
+                        font-size: 16px !important;
+                        font-weight: bold !important;
+                        cursor: pointer !important;
+                        transition: background 0.3s !important;
+                    ">Start Chatting</button>
+    
+                    <button type="button" id="skip-registration" style="
+                        flex: 1 !important;
+                        padding: 15px !important;
+                        background: transparent !important;
+                        color: #e8f24c !important;
+                        border: 2px solid #e8f24c !important;
+                        border-radius: 8px !important;
+                        font-size: 16px !important;
+                        cursor: pointer !important;
+                        transition: all 0.3s !important;
+                    ">Skip for Now</button>
+                </div>
+            </form>
+        `;
+    
+        overlay.appendChild(form);
+        document.body.appendChild(overlay);
+    
+        // Force visibility
+        setTimeout(() => {
+            overlay.style.display = 'flex';
+            overlay.style.visibility = 'visible';
+            overlay.style.opacity = '1';
+            form.style.display = 'block';
+            form.style.visibility = 'visible';
+            form.style.opacity = '1';
+        }, 10);
+    
+        // Add event listeners
+        setupFormEventListeners(overlay);
+    
+        console.log('Chatbot Registration: Form created and added to DOM');
+    }
+    
+    function initializeRegistrationForm() {
+        console.log('Chatbot Registration: Starting initialization');
+    
+        // Remove any existing forms first
+        const existingForms = document.querySelectorAll('.chatbot-registration-form, .chatbot-registration-overlay');
+        existingForms.forEach(form => form.remove());
+    
+        // Create new form
+        createRegistrationForm();
+    
+        console.log('Chatbot Registration: Form initialization complete');
+    }
+
     // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
@@ -477,3 +630,22 @@
     });
 
 })();
+
+// Prevent multiple initializations
+if (window.chatbotRegistrationInitialized) {
+    console.log('Chatbot Registration: Already initialized, skipping');
+} else {
+    window.chatbotRegistrationInitialized = true;
+
+    // Initialize the registration form when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Chatbot Registration: DOM ready, initializing');
+        initializeRegistrationForm();
+    });
+
+    // Also initialize if DOM is already loaded
+    if (document.readyState !== 'loading') {
+        console.log('Chatbot Registration: DOM already loaded, initializing');
+        setTimeout(initializeRegistrationForm, 100);
+    }
+}
