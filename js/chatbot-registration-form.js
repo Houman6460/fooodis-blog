@@ -23,33 +23,12 @@
 
         // Show registration form when needed
         showRegistrationForm: function() {
-            // Don't show if user is already registered or recently skipped (within 1 hour)
-            if (this.shouldSkipForm()) {
-                console.log('🔐 Skipping form - user registered or recently skipped');
-                return;
-            }
-
             const chatbotWidget = document.querySelector('#fooodis-chatbot');
             const chatbotWindow = document.querySelector('#chatbot-window');
 
-            if (!chatbotWidget) {
-                console.warn('Chatbot widget not found');
+            if (!chatbotWidget || !chatbotWindow) {
+                console.warn('Chatbot widget or window not found');
                 return;
-            }
-
-            // If chatbot window doesn't exist, wait and try again
-            if (!chatbotWindow) {
-                console.log('🔐 Waiting for chatbot window...');
-                setTimeout(() => {
-                    this.showRegistrationForm();
-                }, 500);
-                return;
-            }
-
-            // Remove any existing form first
-            const existingForm = chatbotWindow.querySelector('.registration-overlay');
-            if (existingForm) {
-                existingForm.remove();
             }
 
             // Create form overlay positioned within chatbot window
@@ -62,42 +41,6 @@
                 this.switchLanguage('english');
                 console.log('🔐 Registration form shown and language switching initialized');
             }, 100);
-        },
-
-        // Check if form should be skipped
-        shouldSkipForm: function() {
-            try {
-                // Check if user is already registered
-                const userData = localStorage.getItem('chatbot-current-user');
-                if (userData) {
-                    const user = JSON.parse(userData);
-                    
-                    // If user has name and restaurant, they're registered
-                    if (user.name && user.restaurantName && !user.skipped) {
-                        return true;
-                    }
-                    
-                    // If user skipped, check if it was recent (within 1 hour)
-                    if (user.skipped && user.timestamp) {
-                        const skipTime = new Date(user.timestamp);
-                        const now = new Date();
-                        const hoursDiff = (now - skipTime) / (1000 * 60 * 60);
-                        
-                        if (hoursDiff < 1) {
-                            return true; // Skip if less than 1 hour ago
-                        } else {
-                            // Reset skip status after 1 hour
-                            localStorage.removeItem('chatbot-current-user');
-                            console.log('🔐 Skip period expired, form will show again');
-                        }
-                    }
-                }
-                
-                return false;
-            } catch (error) {
-                console.error('Error checking form skip status:', error);
-                return false;
-            }
         },
 
         // Create form HTML structure
@@ -490,13 +433,8 @@
 
         // Skip form
         skipForm: function() {
-            // Mark user as skipped with timestamp (will expire in 1 hour)
-            const skipData = { 
-                skipped: true, 
-                timestamp: new Date().toISOString(),
-                nextShowTime: new Date(Date.now() + 60 * 60 * 1000).toISOString() // 1 hour from now
-            };
-            localStorage.setItem('chatbot-current-user', JSON.stringify(skipData));
+            // Mark user as registered (skipped) to avoid showing form again
+            localStorage.setItem('chatbot-current-user', JSON.stringify({ skipped: true, timestamp: new Date().toISOString() }));
 
             this.closeForm();
 
@@ -504,8 +442,6 @@
             if (window.FoodisChatbot && window.FoodisChatbot.addMessage) {
                 window.FoodisChatbot.addMessage('No problem! Feel free to ask me anything about Fooodis.', 'assistant');
             }
-            
-            console.log('🔐 Form skipped, will show again in 1 hour');
         },
 
          saveRegistrationData: function(formData) {
