@@ -220,7 +220,7 @@ router.post('/', async (req, res) => {
             const randomIndex = Math.floor(Math.random() * settings.agents.length);
             selectedAgent = settings.agents[randomIndex];
             console.log('Selected random agent:', selectedAgent.name, 'with personality:', selectedAgent.personality);
-            
+
             // Store selected agent info in conversation for consistency
             conversation.currentAgent = selectedAgent;
         }
@@ -228,11 +228,11 @@ router.post('/', async (req, res) => {
         // PERFORMANCE FIX: Use fast OpenAI Chat API instead of slow Assistant API
         if (settings.openaiApiKey) {
             console.log('🚀 Using FAST OpenAI Chat API for instant responses');
-            
+
             // Detect language for bilingual support
             const detectedLanguage = detectLanguage(message);
             console.log('🌐 Detected language:', detectedLanguage);
-            
+
             try {
                 aiResponse = await getFastOpenAIResponse(message, conversation, settings, selectedAgent, detectedLanguage);
                 console.log('✅ Fast OpenAI response received');
@@ -275,7 +275,7 @@ router.post('/', async (req, res) => {
     } catch (error) {
         console.error('Chatbot API error:', error);
         console.error('Error stack:', error.stack);
-        
+
         res.status(500).json({
             success: false,
             error: 'Internal server error',
@@ -463,25 +463,25 @@ async function getOpenAIResponse(message, conversation, settings, assistant, sel
 async function getFastOpenAIResponse(message, conversation, settings, selectedAgent, detectedLanguage) {
     console.log('🚀 Starting FAST OpenAI Chat API call...');
     const startTime = Date.now();
-    
+
     // COMPREHENSIVE NULL SAFETY - ensure selectedAgent is never null
     const safeAgent = selectedAgent || {
         name: 'Sarah Johnson',
         personality: 'friendly and knowledgeable customer support representative for Fooodis'
     };
-    
+
     console.log('🔍 Agent check - selectedAgent:', selectedAgent ? 'exists' : 'null', 'safeAgent:', safeAgent.name);
-    
+
     // Build bilingual system prompt based on detected language
     const languageInstruction = detectedLanguage === 'swedish' 
         ? 'Respond in Swedish (svenska). Use natural Swedish language throughout your response.'
         : 'Respond in English unless the user specifically writes in Swedish.';
-    
+
     // Use safe agent with guaranteed non-null values
     const agentName = safeAgent.name;
     const agentPersonality = safeAgent.personality;
     const agentPrompt = safeAgent.prompt || '';
-    
+
     const systemPrompt = `You are ${agentName}, a ${agentPersonality} for Fooodis.
 ${languageInstruction}
 
@@ -502,7 +502,7 @@ Provide helpful, accurate, and friendly responses. If you include URLs, make the
     const messages = [
         { role: 'system', content: systemPrompt }
     ];
-    
+
     // Add recent conversation history (last 6 messages for context)
     if (conversation.messages && conversation.messages.length > 0) {
         const recentMessages = conversation.messages.slice(-6);
@@ -514,12 +514,12 @@ Provide helpful, accurate, and friendly responses. If you include URLs, make the
             }
         }
     }
-    
+
     // Add current user message
     messages.push({ role: 'user', content: message });
-    
+
     console.log('📝 Chat API request - Language:', detectedLanguage, 'Messages:', messages.length);
-    
+
     try {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -535,23 +535,23 @@ Provide helpful, accurate, and friendly responses. If you include URLs, make the
                 stream: false
             })
         });
-        
+
         if (!response.ok) {
             const errorText = await response.text();
             console.error('OpenAI Chat API error:', errorText);
             throw new Error(`OpenAI API error: ${response.status}`);
         }
-        
+
         const data = await response.json();
         const responseTime = Date.now() - startTime;
-        
+
         console.log(`⚡ FAST OpenAI response completed in ${responseTime}ms`);
-        
+
         const aiResponse = data.choices[0].message.content.trim();
         console.log('✅ Fast OpenAI response length:', aiResponse.length, 'chars');
-        
+
         return aiResponse;
-        
+
     } catch (error) {
         const responseTime = Date.now() - startTime;
         console.error(`❌ Fast OpenAI API failed after ${responseTime}ms:`, error);
@@ -587,16 +587,16 @@ function detectLanguage(message) {
 function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     const keywords = message.toLowerCase().trim();
     const detectedLanguage = detectLanguage(message);
-    
+
     // Add agent personality to responses if agent is selected
     let agentIntro = '';
     let agentStyle = '';
-    
+
     if (selectedAgent) {
         // Use agent's introduction based on language
         const intro = selectedAgent.introduction[detectedLanguage] || selectedAgent.introduction['en'];
         agentIntro = intro + '\n\n';
-        
+
         // Adjust response style based on agent personality
         if (selectedAgent.personality.toLowerCase().includes('friendly')) {
             agentStyle = 'friendly';
@@ -631,14 +631,14 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
         keywords.includes('tell me about') || keywords.includes('know about') ||
         keywords.includes('more about fooodis') || keywords.includes('more about foodis') ||
         keywords.includes('om fooodis') || keywords.includes('om foodis') || keywords.includes('berätta om')) {
-        
+
         let response;
         if (detectedLanguage === 'sv') {
             response = "Fooodis är en modern plattform som hjälper restauranger att skapa professionella webbplatser med kraftfulla verktyg. Vi erbjuder allt från kassasystem och lagerstyrning till marknadsföring och kundhantering. Vår plattform inkluderar avancerade funktioner som AI-assistenter, automatiserad innehållsskapande, e-postmarknadsföring och mycket mer. Fooodis hjälper restauranger att digitalisera sin verksamhet och nå fler kunder online. Vilken specifik funktion eller tjänst skulle du vilja veta mer om?";
         } else {
             response = "Fooodis is a modern platform that helps restaurants create professional websites with powerful tools. We offer everything from POS systems and inventory management to marketing and customer management. Our platform includes advanced features like AI assistants, automated content creation, email marketing, and much more. Fooodis helps restaurants digitize their operations and reach more customers online. What specific feature or service would you like to know more about?";
         }
-        
+
         if (selectedAgent) {
             return agentIntro + getStyledResponse(response, agentStyle, detectedLanguage);
         }
@@ -648,14 +648,14 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     // Menu inquiries
     if (keywords.includes('menu') || keywords.includes('food') || keywords.includes('eat') || keywords.includes('dish') ||
         keywords.includes('meny') || keywords.includes('mat') || keywords.includes('äta') || keywords.includes('rätt')) {
-        
+
         let response;
         if (detectedLanguage === 'sv') {
             response = "Jag hjälper gärna till med vår meny! Vi erbjuder ett varierat utbud av läckra rätter tillagade med färska ingredienser. Skulle du vilja veta om våra specialiteter, dagens rätter eller diettillägg?";
         } else {
             response = "I'd love to help you with our menu! We offer a variety of delicious dishes prepared with fresh ingredients. Would you like to know about our specialties, daily specials, or dietary options?";
         }
-        
+
         if (selectedAgent) {
             return agentIntro + getStyledResponse(response, agentStyle, detectedLanguage);
         }
@@ -665,14 +665,14 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     // Reservation inquiries
     if (keywords.includes('reservation') || keywords.includes('book') || keywords.includes('table') ||
         keywords.includes('bokning') || keywords.includes('boka') || keywords.includes('bord')) {
-        
+
         let response;
         if (detectedLanguage === 'sv') {
             response = "Jag hjälper gärna till med bokningar! Du kan boka ett bord genom att ringa oss direkt eller använda vårt online-bokningssystem. Vilken tid och datum tänkte du på?";
         } else {
             response = "I'd be happy to help with reservations! You can book a table by calling us directly or using our online booking system. What time and date were you thinking?";
         }
-        
+
         if (selectedAgent) {
             return agentIntro + getStyledResponse(response, agentStyle, detectedLanguage);
         }
@@ -853,7 +853,7 @@ router.get('/conversations/:id', (req, res) => {
             success: true,
             conversation: conversation
         });
-        
+
     } catch (error) {
         console.error('Error fetching conversation:', error);
         res.status(500).json({
@@ -869,7 +869,7 @@ router.post('/conversations', (req, res) => {
     try {
         const conversationData = req.body;
         console.log('Received conversation data via /conversations:', conversationData);
-        
+
         // Validate required fields
         if (!conversationData.conversationId) {
             return res.status(400).json({
@@ -896,16 +896,16 @@ router.post('/conversations', (req, res) => {
         // Store in memory and save to file
         conversations.set(conversationRecord.id, conversationRecord);
         saveConversationsToStorage();
-        
+
         console.log(' Conversation stored successfully via /conversations:', conversationRecord.id);
-        
+
         res.json({
             success: true,
             message: 'Conversation stored successfully',
             conversationId: conversationRecord.id,
             data: conversationRecord
         });
-        
+
     } catch (error) {
         console.error('Error storing conversation via /conversations:', error);
         res.status(500).json({
@@ -1060,7 +1060,7 @@ router.post('/users', (req, res) => {
     try {
         const userData = req.body;
         console.log('🔥 Received user registration via /users:', userData);
-        
+
         // Validate required fields
         if (!userData.name || !userData.email) {
             return res.status(400).json({
@@ -1084,16 +1084,16 @@ router.post('/users', (req, res) => {
         // Store in memory and save to file
         registeredUsers.set(userRecord.id, userRecord);
         saveUsersToStorage();
-        
+
         console.log('✅ User registered successfully via /users:', userRecord.id);
-        
+
         res.json({
             success: true,
             message: 'User registered successfully',
             userId: userRecord.id,
             data: userRecord
         });
-        
+
     } catch (error) {
         console.error('❌ Error registering user via /users:', error);
         res.status(500).json({
@@ -1109,7 +1109,7 @@ router.post('/conversations', (req, res) => {
     try {
         const conversationData = req.body;
         console.log('🔥 Received conversation data via /conversations:', conversationData);
-        
+
         // Validate required fields
         if (!conversationData.conversationId) {
             return res.status(400).json({
@@ -1136,16 +1136,16 @@ router.post('/conversations', (req, res) => {
         // Store in memory and save to file
         conversations.set(conversationRecord.id, conversationRecord);
         saveConversationsToStorage();
-        
+
         console.log('✅ Conversation stored successfully via /conversations:', conversationRecord.id);
-        
+
         res.json({
             success: true,
             message: 'Conversation stored successfully',
             conversationId: conversationRecord.id,
             data: conversationRecord
         });
-        
+
     } catch (error) {
         console.error('❌ Error storing conversation via /conversations:', error);
         res.status(500).json({
@@ -1198,13 +1198,13 @@ router.post('/config', (req, res) => {
 router.delete('/users/clear-all', (req, res) => {
     try {
         console.log('🗑️ Clearing all users/leads');
-        
+
         // Clear all registered users
         registeredUsers.clear();
-        
+
         // Save empty users to storage
         saveUsersToStorage();
-        
+
         res.json({
             success: true,
             message: 'All users cleared successfully'
@@ -1223,13 +1223,13 @@ router.delete('/users/:userId', (req, res) => {
     try {
         const userId = req.params.userId;
         console.log('🗑️ Deleting user/lead:', userId);
-        
+
         // Delete from registeredUsers map
         if (registeredUsers.has(userId)) {
             registeredUsers.delete(userId);
             console.log(`✅ Deleted user ${userId} from registeredUsers`);
         }
-        
+
         // Also check by email in case userId is actually an email
         let deleted = false;
         for (const [id, user] of registeredUsers.entries()) {
@@ -1240,10 +1240,10 @@ router.delete('/users/:userId', (req, res) => {
                 break;
             }
         }
-        
+
         // Save updated users to storage
         saveUsersToStorage();
-        
+
         res.json({
             success: true,
             message: 'User deleted successfully'
@@ -1261,13 +1261,13 @@ router.delete('/users/:userId', (req, res) => {
 router.delete('/conversations/clear-all', (req, res) => {
     try {
         console.log('🗑️ Clearing all conversations');
-        
+
         // Clear all conversations
         conversations.clear();
-        
+
         // Save empty conversations to storage
         saveConversationsToStorage();
-        
+
         res.json({
             success: true,
             message: 'All conversations cleared successfully'
@@ -1286,15 +1286,15 @@ router.delete('/conversations/:conversationId', (req, res) => {
     try {
         const conversationId = req.params.conversationId;
         console.log('🗑️ Deleting conversation:', conversationId);
-        
+
         if (conversations.has(conversationId)) {
             conversations.delete(conversationId);
             console.log(`✅ Deleted conversation ${conversationId}`);
         }
-        
+
         // Save updated conversations to storage
         saveConversationsToStorage();
-        
+
         res.json({
             success: true,
             message: 'Conversation deleted successfully'
@@ -1357,7 +1357,7 @@ router.post('/ratings', (req, res) => {
     try {
         const ratingData = req.body;
         console.log('⭐ Received rating submission:', ratingData);
-        
+
         // Validate rating data
         if (!ratingData.conversationId) {
             return res.status(400).json({
@@ -1365,10 +1365,10 @@ router.post('/ratings', (req, res) => {
                 error: 'conversationId is required'
             });
         }
-        
+
         // Generate unique rating ID
         const ratingId = `rating_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
+
         // Prepare enhanced rating record
         const rating = {
             id: ratingId,
@@ -1376,33 +1376,33 @@ router.post('/ratings', (req, res) => {
             userId: ratingData.userId,
             userName: ratingData.userName,
             language: ratingData.language || 'en',
-            
+
             // Enhanced rating fields
             overallRating: ratingData.rating || null,
             resolved: ratingData.resolved || null,
             department: ratingData.department || null,
             agentName: ratingData.agentName || 'Unknown',
             agentRole: ratingData.agentRole || 'Unknown',
-            
+
             // Legacy support
             ratings: ratingData.ratings || {
                 overall: ratingData.rating || null,
                 resolved: ratingData.resolved || null
             },
-            
+
             timestamp: ratingData.timestamp || new Date().toISOString(),
             sessionDuration: ratingData.sessionDuration || 0,
             createdAt: new Date().toISOString()
         };
-        
+
         // Ensure overallRating is properly set
         if (!rating.overallRating && ratingData.rating) {
             rating.overallRating = parseFloat(ratingData.rating).toFixed(1);
         }
-        
+
         // Store rating
         ratings.set(ratingId, rating);
-        
+
         // Update conversation with rating reference
         if (conversations.has(ratingData.conversationId)) {
             const conversation = conversations.get(ratingData.conversationId);
@@ -1411,16 +1411,16 @@ router.post('/ratings', (req, res) => {
             conversation.overallRating = rating.overallRating;
             conversations.set(ratingData.conversationId, conversation);
         }
-        
+
         // Update user lead with rating information
         if (ratingData.userId && registeredUsers.has(ratingData.userId)) {
             const userLead = registeredUsers.get(ratingData.userId);
-            
+
             // Initialize ratings array if not exists
             if (!userLead.ratings) {
                 userLead.ratings = [];
             }
-            
+
             // Add enhanced rating to user lead
             userLead.ratings.push({
                 ratingId: ratingId,
@@ -1434,34 +1434,34 @@ router.post('/ratings', (req, res) => {
                 timestamp: rating.timestamp,
                 language: rating.language
             });
-            
+
             // Update user lead statistics
             const userRatings = userLead.ratings.map(r => parseFloat(r.overallRating)).filter(r => !isNaN(r));
             if (userRatings.length > 0) {
                 userLead.averageRating = (userRatings.reduce((sum, r) => sum + r, 0) / userRatings.length).toFixed(1);
                 userLead.totalRatings = userRatings.length;
             }
-            
+
             userLead.lastRatedAt = rating.timestamp;
             registeredUsers.set(ratingData.userId, userLead);
-            
+
             console.log('📊 Updated user lead with rating:', { userId: ratingData.userId, averageRating: userLead.averageRating });
         }
-        
+
         // Save to storage
         saveRatingsToStorage();
         saveConversationsToStorage();
         saveUsersToStorage();
-        
+
         console.log('✅ Rating saved successfully:', { ratingId, overallRating: rating.overallRating });
-        
+
         res.json({
             success: true,
             ratingId: ratingId,
             message: 'Rating submitted successfully',
             overallRating: rating.overallRating
         });
-        
+
     } catch (error) {
         console.error('❌ Error submitting rating:', error);
         res.status(500).json({
@@ -1476,7 +1476,7 @@ router.get('/ratings', (req, res) => {
     try {
         const ratingsArray = Array.from(ratings.values())
             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        
+
         // Calculate analytics
         const analytics = {
             totalRatings: ratingsArray.length,
@@ -1485,42 +1485,42 @@ router.get('/ratings', (req, res) => {
             languageBreakdown: {},
             ratingsOverTime: []
         };
-        
+
         if (ratingsArray.length > 0) {
             // Calculate average overall rating
             const overallRatings = ratingsArray
                 .map(r => parseFloat(r.overallRating))
                 .filter(r => !isNaN(r));
-            
+
             if (overallRatings.length > 0) {
                 analytics.averageOverallRating = (overallRatings.reduce((sum, r) => sum + r, 0) / overallRatings.length).toFixed(1);
             }
-            
+
             // Calculate category averages
             const categories = ['helpful', 'accurate', 'speed', 'satisfaction'];
             categories.forEach(category => {
                 const categoryRatings = ratingsArray
                     .map(r => r.ratings[category])
                     .filter(r => typeof r === 'number');
-                
+
                 if (categoryRatings.length > 0) {
                     analytics.categoryAverages[category] = (categoryRatings.reduce((sum, r) => sum + r, 0) / categoryRatings.length).toFixed(1);
                 }
             });
-            
+
             // Language breakdown
             ratingsArray.forEach(rating => {
                 const lang = rating.language || 'en';
                 analytics.languageBreakdown[lang] = (analytics.languageBreakdown[lang] || 0) + 1;
             });
         }
-        
+
         res.json({
             success: true,
             ratings: ratingsArray,
             analytics: analytics
         });
-        
+
     } catch (error) {
         console.error('❌ Error fetching ratings:', error);
         res.status(500).json({
@@ -1534,7 +1534,7 @@ router.get('/ratings', (req, res) => {
 router.get('/ratings/:ratingId', (req, res) => {
     try {
         const { ratingId } = req.params;
-        
+
         if (ratings.has(ratingId)) {
             res.json({
                 success: true,

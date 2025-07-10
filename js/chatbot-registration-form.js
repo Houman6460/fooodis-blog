@@ -294,15 +294,21 @@
         submitForm: async function() {
             const systemUsageValue = document.getElementById('systemUsage')?.value || '';
             
-            // Determine user type based on dropdown selection
+            // Enhanced user type determination with logging
             let userType = 'potential user'; // Default
+            
+            console.log('🎯 FORM SUBMISSION - System usage value:', systemUsageValue);
             
             // Check if user selected "Using Fooodis" option
             if (systemUsageValue === 'current_user') {
                 userType = 'user';
+                console.log('✅ FORM SUBMISSION - Assigned userType: user (Current Fooodis User)');
+            } else if (systemUsageValue === 'competitor_user') {
+                userType = 'competitor user';
+                console.log('✅ FORM SUBMISSION - Assigned userType: competitor user');
             } else {
-                // All other options (competitor_user, potential_user, or empty) → potential user
                 userType = 'potential user';
+                console.log('✅ FORM SUBMISSION - Assigned userType: potential user (default)');
             }
             
             const formData = {

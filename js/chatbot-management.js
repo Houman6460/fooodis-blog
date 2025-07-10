@@ -2211,28 +2211,38 @@ class ChatbotManager {
 
     async viewConversation(conversationId) {
         try {
-            // Get conversation details from server
+            console.log('🔍 Viewing conversation:', conversationId);
+            
+            // First check local storage for immediate access
+            const localConversation = this.conversations.find(c => 
+                (c.id === conversationId || c.conversationId === conversationId)
+            );
+            
+            if (localConversation) {
+                console.log('✅ Found conversation in local storage');
+                this.showConversationModal(localConversation);
+                return;
+            }
+            
+            // Try server as fallback
+            console.log('🔄 Attempting to fetch from server...');
             const response = await fetch(`/api/chatbot/conversations/${conversationId}`);
+            
             if (response.ok) {
                 const result = await response.json();
-                if (result.success) {
+                if (result.success && result.conversation) {
+                    console.log('✅ Found conversation on server');
                     this.showConversationModal(result.conversation);
-                } else {
-                    throw new Error(result.error || 'Failed to load conversation');
+                    return;
                 }
-            } else {
-                throw new Error('Failed to fetch conversation details');
             }
+            
+            // If all else fails, show a generic message
+            this.showNotification('Conversation details not available', 'info');
+            
         } catch (error) {
             console.error('Error viewing conversation:', error);
-
-            // Fallback to local storage
-            const conversation = this.conversations.find(c => c.id === conversationId);
-            if (conversation) {
-                this.showConversationModal(conversation);
-            } else {
-                this.showNotification('Conversation not found', 'info');
-            }
+            this.showNotification('Unable to load conversation details', 'error');
         }
     }
 
@@ -2732,32 +2742,44 @@ class ChatbotManager {
         filteredLeads.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt));
 
         leadsTableBody.innerHTML = filteredLeads.map(lead => {
-            // Use the new userType field, with fallback to systemUsage mapping for compatibility
+            // Enhanced user type display logic with comprehensive mapping
             let userTypeDisplay = 'Potential User';
             let userTypeClass = 'potential-user';
             
-            if (lead.userType) {
-                // New system: use userType directly
-                if (lead.userType === 'user') {
+            // Check multiple possible fields for user type determination
+            const userTypeValue = lead.userType || lead.systemUsage;
+            
+            console.log('🏷️ User type mapping for lead:', {
+                leadId: lead.id,
+                userType: lead.userType,
+                systemUsage: lead.systemUsage,
+                finalValue: userTypeValue
+            });
+            
+            if (userTypeValue) {
+                // Map all possible values to correct display
+                if (userTypeValue === 'user' || 
+                    userTypeValue === 'current_user' || 
+                    userTypeValue === 'fooodis_user') {
                     userTypeDisplay = 'Current User';
                     userTypeClass = 'current-user';
-                } else {
-                    userTypeDisplay = 'Potential User';
-                    userTypeClass = 'potential-user';
-                }
-            } else if (lead.systemUsage) {
-                // Legacy system: map systemUsage to display labels
-                if (lead.systemUsage === 'current_user') {
-                    userTypeDisplay = 'Current User';
-                    userTypeClass = 'current-user';
-                } else if (lead.systemUsage === 'competitor_user') {
+                } else if (userTypeValue === 'competitor_user' || 
+                          userTypeValue === 'competitor') {
                     userTypeDisplay = 'Competitor User';
                     userTypeClass = 'competitor-user';
+                } else if (userTypeValue === 'potential_user' || 
+                          userTypeValue === 'potential' ||
+                          userTypeValue === 'looking') {
+                    userTypeDisplay = 'Potential User';
+                    userTypeClass = 'potential-user';
                 } else {
+                    // Default for any other value
                     userTypeDisplay = 'Potential User';
                     userTypeClass = 'potential-user';
                 }
             }
+            
+            console.log('✅ Final user type mapping:', { userTypeDisplay, userTypeClass });
             
             const leadScore = lead.leadScore || 0;
 
