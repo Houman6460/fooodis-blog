@@ -1,6 +1,7 @@
+
 /**
  * 🔐 CHATBOT REGISTRATION FORM SYSTEM
- * Complete bilingual registration form with proper language switching
+ * Complete bilingual registration form with direct DOM replacement
  */
 (function() {
     'use strict';
@@ -10,6 +11,7 @@
         formData: {},
         currentLanguage: 'english',
         formElement: null,
+        domReplacementActive: false,
 
         // Translation data
         translations: {
@@ -325,9 +327,9 @@
                 const languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
                 localStorage.setItem('fooodis-language-flag', languageFlag);
 
-                // IMMEDIATE AND AGGRESSIVE DOM UPDATE
-                console.log('🚀 AGGRESSIVE UPDATE: Starting immediate conversation card update...');
-                this.aggressiveConversationUpdate(formData, languageFlag);
+                // CRITICAL: Start DOM replacement system
+                console.log('🚀 STARTING DOM REPLACEMENT SYSTEM...');
+                this.startDOMReplacementSystem(formData, languageFlag);
 
                 // Close form and send success message
                 this.closeForm();
@@ -353,6 +355,166 @@
                     'An error occurred. Please try again.';
                 alert(errorMessage);
             }
+        },
+
+        startDOMReplacementSystem: function(formData, languageFlag) {
+            console.log('🔥 DOM REPLACEMENT: Starting aggressive text replacement...');
+            
+            this.domReplacementActive = true;
+            
+            // Store replacement data globally
+            window.userReplacementData = {
+                oldText: 'Anonymous User',
+                newName: formData.name,
+                flag: languageFlag,
+                restaurantName: formData.restaurantName,
+                userCategory: this.getUserCategoryFromSystemUsage(formData.systemUsage),
+                active: true
+            };
+
+            // Start immediate replacement cycle
+            this.performDOMReplacement();
+            
+            // Set up continuous monitoring
+            const replacementInterval = setInterval(() => {
+                if (!this.domReplacementActive) {
+                    clearInterval(replacementInterval);
+                    return;
+                }
+                this.performDOMReplacement();
+            }, 500);
+
+            // Also watch for DOM mutations
+            this.setupMutationObserver();
+
+            // Stop after 60 seconds
+            setTimeout(() => {
+                this.domReplacementActive = false;
+                if (window.userReplacementData) {
+                    window.userReplacementData.active = false;
+                }
+                console.log('🔥 DOM REPLACEMENT: System stopped after timeout');
+            }, 60000);
+        },
+
+        performDOMReplacement: function() {
+            if (!window.userReplacementData || !window.userReplacementData.active) return;
+
+            const { oldText, newName, flag, restaurantName, userCategory } = window.userReplacementData;
+            
+            // Find all text nodes containing "Anonymous User"
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function(node) {
+                        return node.nodeValue && node.nodeValue.includes(oldText) 
+                            ? NodeFilter.FILTER_ACCEPT 
+                            : NodeFilter.FILTER_REJECT;
+                    }
+                }
+            );
+
+            const textNodesToReplace = [];
+            let node;
+            while (node = walker.nextNode()) {
+                textNodesToReplace.push(node);
+            }
+
+            // Replace text in found nodes
+            textNodesToReplace.forEach(textNode => {
+                const parentElement = textNode.parentElement;
+                if (parentElement && !parentElement.classList.contains('user-replaced')) {
+                    
+                    console.log('🎯 REPLACING:', textNode.nodeValue);
+                    
+                    // Create new content with flag and name
+                    const newContent = document.createElement('span');
+                    newContent.classList.add('user-replaced', 'user-identified');
+                    newContent.innerHTML = `
+                        <i class="fas fa-user"></i> 
+                        ${flag} 
+                        ${newName}
+                        <span class="user-category-badge ${userCategory.toLowerCase().replace(/\s+/g, '-')}">${userCategory}</span>
+                    `;
+                    
+                    // Replace the text node with new content
+                    textNode.parentNode.replaceChild(newContent, textNode);
+                    
+                    // Style the parent element
+                    parentElement.classList.add('user-identified', 'recently-updated');
+                    parentElement.style.borderLeft = '3px solid #e8f24c';
+                    parentElement.style.backgroundColor = 'rgba(232, 242, 76, 0.1)';
+                    parentElement.setAttribute('data-user-registered', 'true');
+                    parentElement.setAttribute('data-user-name', newName);
+                }
+            });
+
+            // Also check for elements with specific classes/ids
+            const conversationSelectors = [
+                '.conversation-user',
+                '.user-name', 
+                '.chat-user',
+                '.conversation-card',
+                '.conversation-item',
+                '[data-conversation-id]'
+            ];
+
+            conversationSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    if (element.textContent.includes(oldText) && !element.classList.contains('user-replaced')) {
+                        console.log('🎯 REPLACING ELEMENT:', selector);
+                        
+                        element.innerHTML = element.innerHTML.replace(
+                            new RegExp(oldText, 'gi'),
+                            `<span class="user-replaced user-identified">
+                                <i class="fas fa-user"></i> 
+                                ${flag} 
+                                ${newName}
+                                <span class="user-category-badge ${userCategory.toLowerCase().replace(/\s+/g, '-')}">${userCategory}</span>
+                            </span>`
+                        );
+                        
+                        element.classList.add('user-replaced', 'user-identified');
+                    }
+                });
+            });
+        },
+
+        setupMutationObserver: function() {
+            const observer = new MutationObserver((mutations) => {
+                if (!this.domReplacementActive) return;
+                
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                // Check if new element contains "Anonymous User"
+                                if (node.textContent && node.textContent.includes('Anonymous User')) {
+                                    console.log('🔍 MUTATION: New anonymous content detected, replacing...');
+                                    setTimeout(() => this.performDOMReplacement(), 100);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                characterData: true
+            });
+
+            // Store observer reference to clean up later
+            window.userReplacementObserver = observer;
+            
+            // Stop observer after 60 seconds
+            setTimeout(() => {
+                observer.disconnect();
+                console.log('🔍 MUTATION: Observer stopped');
+            }, 60000);
         },
 
         sendToServerAPI: async function(formData) {
@@ -389,36 +551,6 @@
 
                 const userResult = await userResponse.json();
                 console.log('✅ User data sent to server:', userResult);
-
-                // Update conversation identity on server
-                if (formData.conversationId) {
-                    const conversationResponse = await fetch(`/api/chatbot/conversations/${formData.conversationId}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            userName: formData.name,
-                            userEmail: formData.email,
-                            userPhone: formData.phone,
-                            restaurantName: formData.restaurantName,
-                            userType: formData.systemUsage,
-                            language: formData.language,
-                            languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
-                            languageFlag: formData.language === 'svenska' ? '🇸🇪' : '🇺🇸',
-                            userRegistered: true,
-                            identityLinked: true,
-                            lastUpdated: formData.timestamp
-                        })
-                    });
-
-                    if (!conversationResponse.ok) {
-                        console.warn('⚠️ Conversation update failed:', conversationResponse.status);
-                    } else {
-                        const conversationResult = await conversationResponse.json();
-                        console.log('✅ Conversation identity updated on server:', conversationResult);
-                    }
-                }
 
             } catch (error) {
                 console.error('❌ Server API error:', error);
@@ -512,217 +644,6 @@
                 console.error('Error saving to user leads:', error);
             }
         },
-
-        aggressiveConversationUpdate: function(formData, languageFlag) {
-            console.log('🔥 AGGRESSIVE UPDATE: Starting comprehensive conversation update...');
-            
-            // Step 1: Update ALL storage locations
-            this.updateAllStorageLocations(formData, languageFlag);
-            
-            // Step 2: Update DOM immediately and repeatedly
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    this.forceUpdateConversationCards(formData, languageFlag);
-                }, i * 200);
-            }
-            
-            // Step 3: Set up persistent monitoring
-            this.setupConversationMonitoring(formData, languageFlag);
-        },
-
-        updateAllStorageLocations: function(formData, languageFlag) {
-            console.log('💾 Updating all storage locations...');
-            
-            // Get user category
-            const userCategory = this.getUserCategoryFromSystemUsage(formData.systemUsage);
-            
-            // Create user identity object
-            const userIdentity = {
-                userName: formData.name,
-                userEmail: formData.email,
-                restaurantName: formData.restaurantName,
-                userPhone: formData.phone,
-                userType: formData.systemUsage,
-                systemUsage: formData.systemUsage,
-                userRegistered: true,
-                language: formData.language,
-                languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
-                languageFlag: languageFlag,
-                displayFlag: languageFlag,
-                lastUpdated: formData.timestamp,
-                identityLinked: true,
-                previousName: 'Anonymous User',
-                userCategory: userCategory
-            };
-
-            // Update all possible conversation storage locations
-            const storageKeys = [
-                'chatbot-conversations',
-                'fooodis-chatbot-conversations', 
-                'chatbot-conversation-history',
-                'conversations'
-            ];
-
-            storageKeys.forEach(key => {
-                try {
-                    const conversations = JSON.parse(localStorage.getItem(key) || '[]');
-                    let updated = false;
-
-                    conversations.forEach(conv => {
-                        if (conv.userName === 'Anonymous User' || !conv.userName || conv.userName === '' || conv.userName === 'Anonymous') {
-                            Object.assign(conv, userIdentity);
-                            updated = true;
-                            console.log(`✅ Updated ${key}: ${conv.id || 'unknown'} → ${formData.name}`);
-                        }
-                    });
-
-                    if (updated) {
-                        localStorage.setItem(key, JSON.stringify(conversations));
-                    }
-                } catch (error) {
-                    console.warn(`Warning updating ${key}:`, error);
-                }
-            });
-
-            // Update current user context
-            window.currentUser = userIdentity;
-            window.registeredUser = userIdentity;
-            
-            console.log('✅ All storage locations updated');
-        },
-
-        forceUpdateConversationCards: function(formData, languageFlag) {
-            console.log('🎯 FORCE UPDATE: Searching and updating conversation cards...');
-            
-            // Find all possible conversation card selectors
-            const selectors = [
-                '.conversation-card',
-                '.conversation-item', 
-                '.chat-conversation',
-                '[data-conversation-id]',
-                '.recent-conversation',
-                '.conversation-list-item'
-            ];
-
-            let totalUpdated = 0;
-
-            selectors.forEach(selector => {
-                const cards = document.querySelectorAll(selector);
-                console.log(`🔍 Found ${cards.length} elements with selector: ${selector}`);
-
-                cards.forEach((card, index) => {
-                    const userElements = card.querySelectorAll('.conversation-user, .user-name, .chat-user, [class*="user"], [class*="name"]');
-                    
-                    userElements.forEach(element => {
-                        const currentText = element.textContent || element.innerText || '';
-                        
-                        if (currentText.includes('Anonymous') || currentText.includes('anonymous') || currentText.trim() === '') {
-                            console.log(`🎯 UPDATING: ${selector}[${index}] - "${currentText}" → "${formData.name}"`);
-                            
-                            // Get user category
-                            const userCategory = this.getUserCategoryFromSystemUsage(formData.systemUsage);
-                            const categoryClass = userCategory.toLowerCase().replace(/\s+/g, '-');
-                            
-                            // Extract message count if it exists
-                            const messageCountMatch = currentText.match(/\((\d+)\s+messages?\)/);
-                            const messageCount = messageCountMatch ? messageCountMatch[0] : '';
-                            
-                            // Create new content
-                            element.innerHTML = `
-                                <i class="fas fa-user"></i> 
-                                ${languageFlag} 
-                                ${formData.name}
-                                ${messageCount ? `<span class="message-count">${messageCount}</span>` : ''}
-                                <span class="user-category-badge ${categoryClass}">${userCategory}</span>
-                            `;
-                            
-                            // Style the updated card
-                            card.classList.add('user-identified', 'recently-updated');
-                            card.style.borderLeft = '3px solid #e8f24c';
-                            card.style.backgroundColor = 'rgba(232, 242, 76, 0.1)';
-                            card.setAttribute('data-user-registered', 'true');
-                            card.setAttribute('data-user-name', formData.name);
-                            
-                            totalUpdated++;
-                        }
-                    });
-                });
-            });
-
-            console.log(`✅ FORCE UPDATE COMPLETE: Updated ${totalUpdated} conversation elements`);
-            
-            // Trigger any refresh functions that might exist
-            this.triggerRefreshFunctions();
-        },
-
-        setupConversationMonitoring: function(formData, languageFlag) {
-            console.log('👀 Setting up conversation monitoring...');
-            
-            // Store user data for monitoring
-            window.registeredUserData = { formData, languageFlag };
-            
-            // Set up periodic checking
-            const monitoringInterval = setInterval(() => {
-                const anonymousElements = document.querySelectorAll('*');
-                let foundAnonymous = false;
-                
-                anonymousElements.forEach(element => {
-                    const text = element.textContent || '';
-                    if (text.includes('Anonymous User') && !element.classList.contains('user-identified')) {
-                        foundAnonymous = true;
-                        console.log('🔍 Monitoring: Found remaining anonymous element, updating...');
-                        this.forceUpdateConversationCards(formData, languageFlag);
-                    }
-                });
-                
-                if (!foundAnonymous) {
-                    console.log('✅ Monitoring: No more anonymous users found, stopping monitor');
-                    clearInterval(monitoringInterval);
-                }
-            }, 1000);
-            
-            // Stop monitoring after 30 seconds
-            setTimeout(() => {
-                clearInterval(monitoringInterval);
-                console.log('⏰ Monitoring timeout reached, stopping...');
-            }, 30000);
-        },
-
-        triggerRefreshFunctions: function() {
-            // Try to trigger any existing refresh functions
-            const refreshFunctions = [
-                'refreshConversations',
-                'loadConversations', 
-                'updateConversationList',
-                'renderConversations',
-                'reloadConversationData'
-            ];
-
-            refreshFunctions.forEach(funcName => {
-                if (window[funcName] && typeof window[funcName] === 'function') {
-                    try {
-                        console.log(`🔄 Triggering refresh function: ${funcName}`);
-                        window[funcName]();
-                    } catch (error) {
-                        console.warn(`Warning calling ${funcName}:`, error);
-                    }
-                }
-            });
-
-            // Trigger custom events
-            const events = ['userRegistered', 'conversationUpdated', 'userIdentityChanged'];
-            events.forEach(eventName => {
-                try {
-                    window.dispatchEvent(new CustomEvent(eventName, {
-                        detail: window.registeredUserData
-                    }));
-                } catch (error) {
-                    console.warn(`Warning dispatching ${eventName}:`, error);
-                }
-            });
-        },
-
-        
 
         getUserCategoryFromSystemUsage: function(systemUsage) {
             switch (systemUsage) {
@@ -920,16 +841,21 @@
                     transform: translateY(0);
                 }
                 
-                /* Identified User Cards Styling */
-                .conversation-card.user-identified {
-                    background: linear-gradient(135deg, rgba(232, 242, 76, 0.1), rgba(232, 242, 76, 0.05));
+                /* User Replaced Content Styling */
+                .user-replaced {
+                    font-weight: 600 !important;
+                    color: #000 !important;
+                    background: linear-gradient(135deg, rgba(232, 242, 76, 0.2), rgba(232, 242, 76, 0.1)) !important;
+                    padding: 2px 6px !important;
+                    border-radius: 4px !important;
                     border-left: 3px solid #e8f24c !important;
-                    transition: all 0.3s ease;
+                    display: inline-block !important;
                 }
                 
-                .conversation-card.user-identified .conversation-user {
-                    font-weight: 600;
-                    color: #e8f24c;
+                .user-identified {
+                    background: linear-gradient(135deg, rgba(232, 242, 76, 0.1), rgba(232, 242, 76, 0.05)) !important;
+                    border-left: 3px solid #e8f24c !important;
+                    transition: all 0.3s ease !important;
                 }
                 
                 .user-category-badge {
