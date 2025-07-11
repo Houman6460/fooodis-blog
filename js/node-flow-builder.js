@@ -208,7 +208,7 @@ class NodeFlowBuilder {
             // Then handle canvas interactions
             this.handleCanvasMouseDown(e);
         });
-        
+
         document.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
         document.addEventListener('mouseup', (e) => this.handleCanvasMouseUp(e));
         document.addEventListener('click', (e) => this.handleCanvasClick(e));
@@ -253,7 +253,7 @@ class NodeFlowBuilder {
                     <i class="fas fa-trash"></i> Clear
                 </button>
             </div>
-            
+
         `;
     }
 
@@ -308,11 +308,11 @@ class NodeFlowBuilder {
             if (node && e.button === 0) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 // Prevent canvas panning when dragging a node
                 this.isPanning = false;
                 this.draggedNode = node;
-                
+
                 const canvasRect = this.canvas.getBoundingClientRect();
 
                 // Calculate drag offset in world coordinates
@@ -326,7 +326,7 @@ class NodeFlowBuilder {
 
                 // Change cursor to indicate dragging
                 this.canvas.style.cursor = 'move';
-                
+
                 // Mark node as selected
                 document.querySelectorAll('.flow-node.selected').forEach(n => n.classList.remove('selected'));
                 nodeElement.classList.add('selected');
@@ -748,7 +748,7 @@ class NodeFlowBuilder {
                     // Show multilingual message preview
                     const englishMsg = node.data.messages?.english || '';
                     const swedishMsg = node.data.messages?.swedish || '';
-                    
+
                     if (englishMsg && swedishMsg) {
                         messageContent = `<div class="node-message multilingual">🇬🇧 ${englishMsg.substring(0, 50)}${englishMsg.length > 50 ? '...' : ''}<br>🇸🇪 ${swedishMsg.substring(0, 50)}${swedishMsg.length > 50 ? '...' : ''}</div>`;
                     } else {
@@ -2136,9 +2136,34 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseMove(e) {
-        // Handle canvas panning - highest priority when panning is active
-        if (this.isPanning) {
-            e.preventDefault();
+        // Update temp connection line if connecting
+        if (this.isConnecting && this.tempConnectionStart) {
+            this.updateTempConnectionLine(e.clientX, e.clientY);
+        }
+
+        // Handle node dragging with safe bounds checking
+        if (this.draggedNode && e.buttons === 1) {
+            const canvasRect = this.canvas.getBoundingClientRect();
+
+            // Calculate new position in world coordinates
+            const worldX = (e.clientX - canvasRect.left - this.panOffset.x) / this.zoom;
+            const worldY = (e.clientY - canvasRect.top - this.panOffset.y) / this.zoom;
+
+            // Update node position with bounds checking
+            const newX = worldX - this.draggedNode.dragOffset.x;
+            const newY = worldY - this.draggedNode.dragOffset.y;
+
+            // Apply reasonable bounds to prevent nodes from going too far off-canvas
+            this.draggedNode.position.x = Math.max(-1000, Math.min(5000, newX));
+            this.draggedNode.position.y = Math.max(-1000, Math.min(5000, newY));
+
+            // Re-render only if position actually changed
+            this.renderNodes();
+            this.renderConnections();
+        }
+
+        // Handle canvas panning with middle mouse or right mouse button
+        if (this.isPanning && (e.buttons === 4 || e.buttons === 2)) {
             const deltaX = e.clientX - this.lastPanPoint.x;
             const deltaY = e.clientY - this.lastPanPoint.y;
 
@@ -2149,37 +2174,6 @@ class NodeFlowBuilder {
             this.lastPanPoint.y = e.clientY;
 
             this.updateCanvasTransform();
-            return; // Exit early when panning
-        }
-
-        // Handle individual node dragging - only when not panning
-        if (this.draggedNode && !this.isPanning) {
-            e.preventDefault();
-            const rect = this.canvas.getBoundingClientRect();
-            
-            // Calculate world coordinates accounting for zoom and pan
-            const worldX = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
-            const worldY = (e.clientY - rect.top - this.panOffset.y) / this.zoom;
-
-            // Update node position
-            this.draggedNode.position.x = worldX - this.draggedNode.dragOffset.x;
-            this.draggedNode.position.y = worldY - this.draggedNode.dragOffset.y;
-
-            // Update visual position immediately
-            const nodeElement = document.querySelector(`[data-node-id="${this.draggedNode.id}"]`);
-            if (nodeElement) {
-                nodeElement.style.left = this.draggedNode.position.x + 'px';
-                nodeElement.style.top = this.draggedNode.position.y + 'px';
-            }
-
-            // Update connections when nodes move
-            this.renderConnections();
-            return; // Exit early when dragging
-        }
-
-        // Update temp connection line
-        if (this.isConnecting && this.tempConnectionStart) {
-            this.updateTempConnectionLine(e.clientX, e.clientY);
         }
     }
 
@@ -2248,7 +2242,7 @@ class NodeFlowBuilder {
         // Calculate a good position for the new node (center of visible area)
         const centerX = (-this.panOffset.x / this.zoom) + (window.innerWidth / (2 * this.zoom));
         const centerY = (-this.panOffset.y / this.zoom) + (window.innerHeight / (2 * this.zoom));
-        
+
         const randomOffset = Math.random() * 50 - 25; // -25 to +25
         const newNode = this.createNode({
             type,
@@ -2357,7 +2351,7 @@ class NodeFlowBuilder {
             this.canvas.style.cursor = 'grabbing';
             return;
         }
-        
+
         // Handle panning with right mouse button
         if (e.button === 2) {
             e.preventDefault();
@@ -2366,14 +2360,14 @@ class NodeFlowBuilder {
             this.canvas.style.cursor = 'grabbing';
             return;
         }
-        
+
         // Click on empty canvas - clear selection and enable panning
         if (!e.target.closest('.flow-node') && e.button === 0) {
             this.selectedNode = null;
             document.querySelectorAll('.flow-node.selected').forEach(node => {
                 node.classList.remove('selected');
             });
-            
+
             // Enable panning on left click on empty canvas
             this.isPanning = true;
             this.lastPanPoint = { x: e.clientX, y: e.clientY };
@@ -2418,15 +2412,19 @@ class NodeFlowBuilder {
     }
 
     autoSave() {
-        // Debounce auto-save to prevent excessive saves
+        // Auto-save with debouncing and error handling
         if (this.autoSaveTimeout) {
             clearTimeout(this.autoSaveTimeout);
         }
 
         this.autoSaveTimeout = setTimeout(() => {
-            this.saveFlow();
-            console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
-        }, 500); // Save after 500ms of inactivity
+            try {
+                this.saveFlow();
+                console.log('✅ Flow auto-saved successfully');
+            } catch (error) {
+                console.warn('⚠️ Auto-save failed:', error);
+            }
+        }, 2000); // Save after 2 seconds of inactivity
     }
 
     scheduleAutoSave() {
