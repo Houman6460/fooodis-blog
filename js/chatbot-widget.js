@@ -1195,6 +1195,29 @@
 
                 const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
 
+                // Check for agent switching logic before generating response
+        if (this.conversationPhase === 'agent' && this.currentAgent) {
+            console.log('=== AGENT INTERACTION DEBUG ===');
+            console.log('Current agent:', this.currentAgent?.name);
+            console.log('Handoff complete:', this.handoffComplete);
+            console.log('Message:', message);
+
+            // IMPORTANT: Once an agent is assigned and handoff is complete, 
+            // DON'T automatically switch agents unless explicitly requested
+            if (this.handoffComplete && this.currentAgent) {
+                console.log('✅ Agent assigned and handoff complete - staying with current agent');
+                // Skip all agent switching logic and continue with current agent
+            } else if (!this.handoffComplete && this.shouldPerformHandoff(message)) {
+                console.log('🔄 Initial department handoff detected');
+                const departmentId = this.detectDepartment(message);
+                this.performAgentHandoff(departmentId);
+                return;
+            }
+
+            // Use external API for agent responses (more reliable than local ChatbotManager)
+            console.log('📡 Using external API for agent response generation');
+        }
+
                 // 🔧 FIX: Always prioritize Node Flow Builder AI Message Nodes
                 if (window.nodeFlowBuilder && this.shouldUseNodeFlow(message)) {
                     console.log('🤖 Using Node Flow Builder AI Message Node for response');
@@ -1312,28 +1335,40 @@
             localStorage.setItem('fooodis-language', this.currentLanguage);
         },
 
-        performAgentHandoff: async function() {
-            console.log('Starting agent handoff process...');
+        performAgentHandoff: function(departmentId = null) {
+            if (this.handoffComplete || !this.availableAgents || this.availableAgents.length === 0) {
+                console.log('🚫 Agent handoff blocked - already complete or no agents available');
+                return;
+            }
 
-            const handoffMessage = this.currentLanguage === 'sv'
-                ? "Ett ögonblick, vi kopplar dig till en av våra supportagenter..."
-                : "Hold on, we're connecting you to one of our support agents...";
+            console.log('🤝 Performing agent handoff...', departmentId ? `Department: ${departmentId}` : 'No department specified');
 
-            this.hideTyping();
-            this.addMessage(handoffMessage, 'assistant');
+            // Add handoff message first
+            this.addMessage(this.getAgentHandoffMessage(), 'assistant');
 
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            this.selectRandomAgent();
-
+            // Show typing indicator during handoff
             this.showTyping();
 
+            // Switch to agent after delay
             setTimeout(() => {
                 this.hideTyping();
-                const introMessage = this.getAgentIntroduction();
-                this.addMessage(introMessage, 'assistant');
 
+                // Select and switch to agent (with department preference if specified)
                 this.conversationPhase = 'agent';
+                this.selectAndSetAgent(departmentId);
+
+                // Send agent introduction and mark handoff as complete
+                console.log('🤝 AGENT HANDOFF - Sending agent introduction and completing handoff');
+                const agentIntro = this.getLocalizedAgentIntroduction();
+                this.addMessage(agentIntro, 'assistant');
+
+                // CRITICAL: Mark handoff as complete to prevent future agent switches
+                this.handoffComplete = true;
+                console.log('✅ HANDOFF COMPLETE - Agent switching now disabled for this conversation');
+
+                // Store handoff completion in localStorage for persistence
+                localStorage.setItem(`handoff-complete-${this.conversationId}`, 'true');
+
             }, 2000 + Math.random() * 1000);
         },
 
@@ -1737,24 +1772,24 @@
 
         checkAndShowRegistrationForm: function() {
             console.log('🔍 Checking if registration form should be shown...');
-            
+
             // Check multiple storage locations for user data
             const currentUser = localStorage.getItem('chatbot-current-user');
             const userData = localStorage.getItem('chatbot-user-data');
             const users = localStorage.getItem('chatbot-users');
             const registrations = localStorage.getItem('chatbot-registrations');
-            
+
             console.log('📊 User data check:', {
                 currentUser: currentUser ? 'exists' : 'null',
                 userData: userData ? 'exists' : 'null',
                 users: users ? 'exists' : 'null',
                 registrations: registrations ? 'exists' : 'null'
             });
-            
+
             // If no user data at all, show form
             if (!currentUser && !userData && !users && !registrations) {
                 console.log('🔐 New user detected, showing registration form...');
-                
+
                 // Ensure registration form system is initialized
                 if (window.ChatbotRegistrationForm) {
                     if (!window.ChatbotRegistrationForm.initialized) {
@@ -1771,7 +1806,7 @@
                 }
             } else {
                 console.log('✅ User data found, checking if registration is needed...');
-                
+
                 // Still check if we should show the form based on data completeness
                 if (window.ChatbotRegistrationForm && window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
                     console.log('🔐 Registration form needed despite existing data');
@@ -1782,6 +1817,121 @@
                     console.log('✅ User already registered or skipped');
                 }
             }
+        },
+
+        // Validate if agent switching is appropriate based on context
+        shouldSwitchAgent: function(userMessage, currentContext) {
+            // CRITICAL FIX: Once handoff is complete, NEVER automatically switch agents
+            if (this.handoffComplete && this.currentAgent) {
+                console.log('🚫 AGENT SWITCH BLOCKED - Handoff complete, staying with current agent:', this.currentAgent.name);
+                return { shouldSwitch: false, reason: 'handoff_complete' };
+            }
+
+            // Don't switch agents unless explicitly needed
+            if (!userMessage || !currentContext) return { shouldSwitch: false, reason: 'insufficient_data' };
+
+            // Only allow switching if user EXPLICITLY asks to speak to a different department
+            // Look for very specific transfer requests like "I want to speak to sales" or "transfer me to billing"
+            const explicitTransferKeywords = [
+                'transfer me to', 'speak to', 'talk to', 'connect me to', 'switch to',
+                'överflytta mig till', 'prata med', 'koppla mig till'
+            ];
+
+            const messageWords = userMessage.toLowerCase();
+            const hasExplicitTransfer = explicitTransferKeywords.some(keyword => 
+                messageWords.includes(keyword)
+            );
+
+            if (!hasExplicitTransfer) {
+                console.log('🚫 No explicit transfer request detected - staying with current agent');
+                return { shouldSwitch: false, reason: 'no_explicit_transfer' };
+            }
+
+            // Only if user explicitly requests transfer, check for department
+            const departmentKeywords = {
+                technical: ['technical', 'tech', 'teknisk'],
+                sales: ['sales', 'försäljning'],
+                billing: ['billing', 'fakturering'],
+                support: ['support', 'stöd']
+            };
+
+            for (const [dept, keywords] of Object.entries(departmentKeywords)) {
+                if (keywords.some(keyword => messageWords.includes(keyword))) {
+                    const currentDept = this.currentAgent?.department || 'general';
+                    if (currentDept !== dept) {
+                        console.log(`Explicit agent transfer requested: ${currentDept} -> ${dept}`);
+                        return { shouldSwitch: true, targetDepartment: dept, reason: 'explicit_transfer_request' };
+                    }
+                }
+            }
+
+            console.log('🚫 No matching department found in transfer request');
+            return { shouldSwitch: false, reason: 'no_matching_department' };
+        },
+
+        detectDepartment: function(message) {
+            const messageLower = message.toLowerCase();
+
+            const departmentKeywords = {
+                technical: ['technical', 'tech', 'bug', 'error', 'problem', 'broken', 'not working', 'teknisk', 'fel', 'fungerar inte'],
+                sales: ['price', 'cost', 'buy', 'purchase', 'billing', 'payment', 'pris', 'köpa', 'betalning'],
+                support: ['help', 'support', 'assistance', 'question', 'hjälp', 'stöd', 'fråga']
+            };
+
+            for (const [dept, keywords] of Object.entries(departmentKeywords)) {
+                if (keywords.some(keyword => messageLower.includes(keyword))) {
+                    return dept;
+                }
+            }
+
+            return null;
+        },
+
+        getAgentHandoffMessage: function() {
+            if (this.currentLanguage === 'sv') {
+                return "Ett ögonblick, vi kopplar dig till en av våra supportagenter...";
+            } else {
+                return "Hold on, we're connecting you to one of our support agents...";
+            }
+        },
+
+        getLocalizedAgentIntroduction: function() {
+            const agentName = this.currentAgent?.name || 'Support Agent';
+            const userGreeting = this.userName ? ` ${this.userName}` : '';
+            const restaurantGreeting = this.restaurantName ? ` from ${this.restaurantName}` : '';
+
+            if (this.currentLanguage === 'sv') {
+                return `Hej${userGreeting}! Jag heter ${agentName} och jag kommer att hjälpa dig idag. Vad kan jag assistera dig med?`;
+            } else {
+                return `Hello${userGreeting}${restaurantGreeting}! I'm ${agentName} and I'll be helping you today. What can I assist you with?`;
+            }
+        },
+
+        selectAndSetAgent: function(departmentId = null) {
+            console.log('Selecting and setting agent with department ID:', departmentId);
+
+            if (departmentId && this.availableAgents) {
+                const deptAgents = this.availableAgents.filter(agent => agent.department === departmentId);
+                if (deptAgents.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * deptAgents.length);
+                    const selectedAgent = deptAgents[randomIndex];
+                    this.switchAgent(selectedAgent);
+                    return;
+                } else {
+                    console.warn('No agents found for department:', departmentId, 'using random agent');
+                }
+            }
+
+            this.selectRandomAgent();
+        },
+
+        getConversationContext: function() {
+            return {
+                userLanguage: this.currentLanguage,
+                recentMessages: this.messages.slice(-5),
+                userRegistered: this.userRegistered,
+                userInfo: this.userInfo
+            };
         }
     };
 })();
@@ -1970,3 +2120,25 @@ window.addEventListener('chatbotWidgetReady', () => {
                 window.ChatbotRegistrationForm.showRegistrationForm();
             }
         };
+
+        // Load handoff completion status
+        const handoffStatus = localStorage.getItem(`handoff-complete-${this.conversationId}`);
+        this.handoffComplete = handoffStatus === 'true';
+
+        this.loadSavedSettings();
+        this.loadLanguagePreference();
+        this.checkChatbotEnabled();
+        this.setupDashboardCommunication();
+        this.createWidget();
+        this.attachEventListeners();
+        this.setupAvatarUpdateListener();
+
+        // Force show registration form for new users after widget is ready
+        setTimeout(() => {
+            this.checkAndShowRegistrationForm();
+        }, 1000);
+
+        window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
+
+        console.log('Fooodis Chatbot Widget initialized successfully');
+    },
