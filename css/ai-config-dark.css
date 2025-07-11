@@ -382,38 +382,49 @@
     border: 1px solid var(--bs-gray-700);
 }
 
+/* AI Configuration Dark Theme */
+.ai-config-section {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.ai-config-section h3 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
 /* Connection Status Styles */
 .status {
-    margin-top: 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .status.success {
-    background-color: rgba(40, 167, 69, 0.1);
-    border: 1px solid rgba(40, 167, 69, 0.3);
-    color: #28a745;
+    background-color: #0f5132;
+    color: #d1e7dd;
+    border: 1px solid #198754;
 }
 
 .status.error {
-    background-color: rgba(220, 53, 69, 0.1);
-    border: 1px solid rgba(220, 53, 69, 0.3);
-    color: #dc3545;
+    background-color: #58151c;
+    color: #f8d7da;
+    border: 1px solid #dc3545;
 }
 
 .status.testing {
-    background-color: rgba(255, 193, 7, 0.1);
-    border: 1px solid rgba(255, 193, 7, 0.3);
-    color: #ffc107;
+    background-color: #055160;
+    color: #b3d4fc;
+    border: 1px solid #0dcaf0;
 }
 
-.status.info {
-    background-color: rgba(13, 202, 240, 0.1);
-    border: 1px solid rgba(13, 202, 240, 0.3);
-    color: #0dcaf0;
+.status i {
+    font-size: 16px;
 }

@@ -254,26 +254,25 @@
         }
 
         try {
-            const response = await fetch('https://api.openai.com/v1/models', {
-                method: 'GET',
+            // Use our server endpoint for testing
+            const response = await fetch('/api/chatbot/test-connection', {
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ apiKey })
             });
 
-            if (response.ok) {
+            const result = await response.json();
+
+            if (result.success) {
                 if (window.showConnectionStatus) {
-                    window.showConnectionStatus('success', 'Connection successful!');
+                    window.showConnectionStatus('success', result.message || 'Connection successful!');
                 }
                 return true;
             } else {
-                const errorMsg = response.status === 401 ? 'Invalid API key' : 
-                                response.status === 429 ? 'Rate limit exceeded' : 
-                                `Connection failed (${response.status})`;
-
                 if (window.showConnectionStatus) {
-                    window.showConnectionStatus('error', errorMsg);
+                    window.showConnectionStatus('error', result.error || 'Connection failed');
                 }
                 return false;
             }

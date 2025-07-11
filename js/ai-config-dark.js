@@ -233,30 +233,26 @@ async function testConnection() {
     showConnectionStatus('testing', 'Testing connection...');
 
     try {
-        // Test the API connection
-        const response = await fetch('https://api.openai.com/v1/models', {
-            method: 'GET',
+        // Use our server endpoint for testing
+        const response = await fetch('/api/chatbot/test-connection', {
+            method: 'POST',
             headers: {
-                'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ apiKey })
         });
 
-        if (response.ok) {
-            showConnectionStatus('success', 'Connection successful!');
+        const result = await response.json();
+
+        if (result.success) {
+            showConnectionStatus('success', result.message || 'Connection successful!');
             
             // Save the working API key
             window.aiConfig.apiKey = apiKey;
             saveConfiguration();
             return true;
-        } else if (response.status === 401) {
-            showConnectionStatus('error', 'Invalid API key');
-            return false;
-        } else if (response.status === 429) {
-            showConnectionStatus('error', 'Rate limit exceeded');
-            return false;
         } else {
-            showConnectionStatus('error', `Connection failed (${response.status})`);
+            showConnectionStatus('error', result.error || 'Connection failed');
             return false;
         }
     } catch (error) {
