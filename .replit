@@ -32,7 +32,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pkill -f \"node server.js\" || true"
+args = "echo \"🚀 Starting Fooodis Blog System...\""
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
