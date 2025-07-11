@@ -1742,7 +1742,7 @@
     window.ChatbotRegistrationData = {
         init: function() {
             console.log('Initializing Chatbot Registration Data...');
-        
+
             // Load settings from localStorage
             let settings = {};
             try {
@@ -1756,14 +1756,14 @@
             } catch (error) {
                 console.error('Error parsing settings from localStorage:', error);
             }
-        
+
             // Default settings
             this.settings = {
                 requireRegistration: true,
                 registrationFields: ['name', 'email', 'phone', 'location'],
                 ...settings
             };
-        
+
             this.attachFormSubmission();
             console.log('Chatbot Registration Data initialized.');
         },
@@ -1844,8 +1844,7 @@
             if (thankYouMessage) {
                 thankYouMessage.style.display = 'block';
             } else {
-                console.warn('Thank you message container not found.');
-            }
+                console.warn('Thank you message container not found.');            }
         },
 
         hideThankYouMessage: function() {
@@ -1893,3 +1892,27 @@ window.addEventListener('chatbotWidgetReady', () => {
         console.warn('Registration data system not found or not initialized.');
     }
 });
+
+// Fix registration form trigger in chatbot widget
+        setTimeout(() => {
+            if (window.ChatbotRegistrationForm && !window.ChatbotRegistrationForm.initialized) {
+                console.log('🔐 Initializing registration form...');
+                window.ChatbotRegistrationForm.init();
+
+                // Check if form should be shown immediately
+                setTimeout(() => {
+                    if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+                        console.log('🔐 Auto-showing registration form for new user...');
+                        window.ChatbotRegistrationForm.showRegistrationForm();
+                    }
+                }, 1000);
+            }
+        }, 500);
+
+        // Also provide manual trigger function
+        window.showChatbotRegistrationForm = function() {
+            console.log('🔐 Manual registration form trigger');
+            if (window.ChatbotRegistrationForm) {
+                window.ChatbotRegistrationForm.showRegistrationForm();
+            }
+        };

@@ -7,9 +7,13 @@
     'use strict';
 
     window.ChatbotRegistrationData = {
+        initialized: false,
+        
         init: function() {
+            if (this.initialized) return;
             console.log('📊 Registration Data Manager initialized');
             this.migrateOldData();
+            this.initialized = true;
         },
 
         // Get current user

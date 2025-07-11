@@ -71,19 +71,44 @@
         },
 
         shouldShowRegistrationForm: function() {
+            // Check multiple storage locations for user data
             const currentUser = localStorage.getItem('chatbot-current-user');
-            if (!currentUser) return true;
+            const userData = localStorage.getItem('chatbot-user-data');
+            const registrations = localStorage.getItem('chatbot-registrations');
+            
+            console.log('🔍 Checking if registration form should show...');
+            console.log('Current user:', currentUser);
+            console.log('User data:', userData);
+            
+            // If no user data at all, show form
+            if (!currentUser && !userData) {
+                console.log('✅ No user data found, should show form');
+                return true;
+            }
 
             try {
-                const userData = JSON.parse(currentUser);
-                if (userData.skipped) {
-                    const skipTime = new Date(userData.timestamp);
-                    const now = new Date();
-                    const hoursPassed = (now - skipTime) / (1000 * 60 * 60);
-                    return hoursPassed > 24;
+                if (currentUser) {
+                    const user = JSON.parse(currentUser);
+                    if (user.skipped) {
+                        const skipTime = new Date(user.timestamp);
+                        const now = new Date();
+                        const hoursPassed = (now - skipTime) / (1000 * 60 * 60);
+                        const shouldShow = hoursPassed > 24;
+                        console.log(`⏰ User skipped ${hoursPassed.toFixed(1)} hours ago, should show:`, shouldShow);
+                        return shouldShow;
+                    }
+                    
+                    // If user has name and email, don't show form
+                    if (user.name && user.email) {
+                        console.log('❌ User already registered, not showing form');
+                        return false;
+                    }
                 }
-                return false;
+                
+                console.log('✅ Incomplete user data, should show form');
+                return true;
             } catch (error) {
+                console.error('Error checking user data:', error);
                 return true;
             }
         },
