@@ -13,7 +13,8 @@
             primaryColor: '#e8f24c',
             language: 'en',
             assistants: [],
-            avatar: ''
+            avatar: '',
+            soundEnabled: true
         },
         conversationId: null,
         isOpen: false,
@@ -1072,6 +1073,7 @@
             messageInput.value = '';
 
             this.showTyping();
+            this.playSound('send'); // Play sound when sending message
 
             // Process message (without adding user message again)
             this.processMessage(message);
@@ -1123,12 +1125,12 @@
 
             let quickRepliesHtml = '';
 
-            // 🔧 FIX: Only show quick replies if explicitly provided and not using AI Message Nodes
+            // 🔧 FIX: Only show quick replies if explicitly provided and not using node flow
             if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
-                // Don't show default buttons when AI Message Nodes are active
-                if (!this.shouldUseNodeFlow() || quickReplies[0] !== 'Menu') {
-                    quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
-                }
+                quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
+            } else if (sender === 'assistant' && this.containsQuestionPrompt(content) && !this.shouldUseNodeFlow()) {
+                // Only show default quick replies if not using node flow
+                quickRepliesHtml = this.generateQuickReplyButtons();
             }
 
             messageElement.innerHTML = `
@@ -1179,8 +1181,6 @@
             const detectedLanguage = this.detectLanguage(message);
             this.currentLanguage = detectedLanguage;
             localStorage.setItem('fooodis-language', detectedLanguage);
-
-            this.playSound('send'); // Play sound when sending a message
 
             setTimeout(() => {
                 this.hideTyping();
@@ -1262,12 +1262,23 @@
         },
 
         // Generate quick reply buttons
-        generateQuickReplyButtons: function() {
+        generateQuickReplyButtons: function(quickReplies = null) {
             // Check if node flow is active - if so, don't show default buttons
             if (this.shouldUseNodeFlow()) {
                 return '';
             }
 
+            // If specific quick replies provided, use them
+            if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
+                let buttonsHtml = '<div class="chatbot-quick-replies">';
+                quickReplies.forEach(reply => {
+                    buttonsHtml += `<button class="chatbot-quick-reply" data-reply="${reply}">${reply}</button>`;
+                });
+                buttonsHtml += '</div>';
+                return buttonsHtml;
+            }
+
+            // Default quick replies only if no node flow
             return `
                 <div class="chatbot-quick-replies">
                     <button class="chatbot-quick-reply" data-reply="menu">Menu</button>
