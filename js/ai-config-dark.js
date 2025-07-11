@@ -1,4 +1,3 @@
-
 /**
  * AI Configuration Manager for Fooodis Blog System
  * Handles OpenAI API key and AI settings
@@ -17,13 +16,13 @@ window.aiConfig = {
  */
 function initializeAIConfig() {
     console.log('AI Config: Initializing...');
-    
+
     // Load saved configuration
     loadSavedConfig();
-    
+
     // Setup event listeners
     setupAIConfigEventListeners();
-    
+
     console.log('AI Config: Initialized successfully');
 }
 
@@ -33,18 +32,18 @@ function initializeAIConfig() {
 function loadSavedConfig() {
     try {
         let config = null;
-        
+
         // Try multiple storage locations
         const savedConfig = localStorage.getItem('aiConfig');
         if (savedConfig) {
             config = JSON.parse(savedConfig);
         }
-        
+
         // Try StorageManager if available
         if (!config && window.StorageManager) {
             config = StorageManager.get('ai-config');
         }
-        
+
         // Try alternative key
         if (!config) {
             const altConfig = localStorage.getItem('fooodis-aiConfig');
@@ -52,20 +51,20 @@ function loadSavedConfig() {
                 config = JSON.parse(altConfig);
             }
         }
-        
+
         if (config) {
             window.aiConfig = { ...window.aiConfig, ...config };
             console.log('AI Config: Loaded saved configuration');
-            
+
             // Update UI if elements exist
             updateConfigUI();
-            
+
             // Save to all storage locations for consistency
             saveConfiguration();
         } else {
             console.log('AI Config: No saved configuration found');
         }
-        
+
     } catch (error) {
         console.error('AI Config: Error loading saved configuration:', error);
     }
@@ -81,23 +80,23 @@ function saveConfiguration() {
             ...window.aiConfig,
             lastSaved: new Date().toISOString()
         };
-        
+
         const configString = JSON.stringify(configWithTimestamp);
-        
+
         // Save to multiple storage locations for redundancy
         localStorage.setItem('aiConfig', configString);
         localStorage.setItem('fooodis-aiConfig', configString);
-        
+
         // Save to StorageManager if available
         if (window.StorageManager) {
             StorageManager.set('ai-config', configWithTimestamp);
         }
-        
+
         // Save to sessionStorage as backup
         sessionStorage.setItem('aiConfig', configString);
-        
+
         console.log('AI Config: Configuration saved successfully');
-        
+
         // Verify save was successful
         const verification = localStorage.getItem('aiConfig');
         if (verification) {
@@ -110,7 +109,7 @@ function saveConfiguration() {
         } else {
             console.warn('AI Config: Save verification failed - no data found');
         }
-        
+
     } catch (error) {
         console.error('AI Config: Error saving configuration:', error);
     }
@@ -127,13 +126,13 @@ function setupAIConfigEventListeners() {
             window.aiConfig.apiKey = e.target.value.trim();
             saveConfiguration();
         });
-        
+
         apiKeyInput.addEventListener('blur', (e) => {
             window.aiConfig.apiKey = e.target.value.trim();
             saveConfiguration();
         });
     }
-    
+
     // Model selection
     const modelSelect = document.getElementById('aiModel');
     if (modelSelect) {
@@ -142,7 +141,7 @@ function setupAIConfigEventListeners() {
             saveConfiguration();
         });
     }
-    
+
     // Max tokens
     const maxTokensInput = document.getElementById('maxTokens');
     if (maxTokensInput) {
@@ -151,7 +150,7 @@ function setupAIConfigEventListeners() {
             saveConfiguration();
         });
     }
-    
+
     // Temperature
     const temperatureInput = document.getElementById('temperature');
     if (temperatureInput) {
@@ -160,7 +159,7 @@ function setupAIConfigEventListeners() {
             saveConfiguration();
         });
     }
-    
+
     // Save button
     const saveBtn = document.getElementById('saveAIConfig');
     if (saveBtn) {
@@ -179,17 +178,17 @@ function updateConfigUI() {
     if (apiKeyInput && window.aiConfig.apiKey) {
         apiKeyInput.value = window.aiConfig.apiKey;
     }
-    
+
     const modelSelect = document.getElementById('aiModel');
     if (modelSelect && window.aiConfig.model) {
         modelSelect.value = window.aiConfig.model;
     }
-    
+
     const maxTokensInput = document.getElementById('maxTokens');
     if (maxTokensInput && window.aiConfig.maxTokens) {
         maxTokensInput.value = window.aiConfig.maxTokens;
     }
-    
+
     const temperatureInput = document.getElementById('temperature');
     if (temperatureInput && window.aiConfig.temperature) {
         temperatureInput.value = window.aiConfig.temperature;
@@ -212,10 +211,10 @@ function showConfigSavedMessage() {
         saveMessage.style.zIndex = '9999';
         document.body.appendChild(saveMessage);
     }
-    
+
     saveMessage.textContent = 'AI Configuration saved successfully!';
     saveMessage.style.display = 'block';
-    
+
     // Hide after 3 seconds
     setTimeout(() => {
         saveMessage.style.display = 'none';
@@ -229,7 +228,7 @@ function validateAPIKey(apiKey) {
     if (!apiKey || apiKey.length < 10) {
         return false;
     }
-    
+
     // Basic OpenAI API key format validation
     return apiKey.startsWith('sk-') || apiKey.includes('openai');
 }
