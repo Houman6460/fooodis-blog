@@ -2554,22 +2554,27 @@ class ChatbotManager {
 
                 try {
                     // Show loading state
-                    this.showNotification('Compressing image...', 'info');
+                    this.showNotification('Processing image...', 'info');
                     
                     // Compress image to reduce storage size
                     const compressedDataUrl = await this.compressImage(file);
                     
                     if (avatarPreview) {
+                        // Remove any existing event listeners to prevent conflicts
+                        avatarPreview.onload = null;
+                        avatarPreview.onerror = null;
+                        
+                        // Set the new image
                         avatarPreview.src = compressedDataUrl;
-                        avatarPreview.onload = () => {
-                            // Save the avatar to settings
-                            this.saveChatbotAvatar(compressedDataUrl);
-                            this.showNotification('Avatar updated successfully!', 'success');
-                        };
+                        
+                        // Save immediately without waiting for onload
+                        this.saveChatbotAvatar(compressedDataUrl);
+                        this.showNotification('Avatar updated successfully!', 'success');
+                        
+                        // Add error handler for display issues only
                         avatarPreview.onerror = () => {
-                            this.showNotification('Failed to load image. Please try another file.', 'error');
-                            avatarPreview.src = this.getDefaultAvatar();
-                            avatarInput.value = '';
+                            console.error('Failed to display uploaded avatar');
+                            this.showNotification('Image uploaded but display failed. Please refresh the page.', 'warning');
                         };
                     }
                 } catch (error) {
@@ -2597,8 +2602,15 @@ class ChatbotManager {
     // Save chatbot avatar
     saveChatbotAvatar(avatarUrl) {
         try {
+            console.log('Saving avatar:', avatarUrl.substring(0, 50) + '...');
+            
+            // Update settings object
             this.settings.avatar = avatarUrl;
 
+            // Save to multiple storage locations for redundancy
+            localStorage.setItem('chatbot-avatar', avatarUrl);
+            localStorage.setItem('fooodis-chatbot-avatar', avatarUrl);
+            
             // Save all settings data
             this.saveData();
 
@@ -2608,18 +2620,19 @@ class ChatbotManager {
             // Update the widget avatar immediately if it exists
             if (window.updateChatbotWidgetAvatar) {
                 window.updateChatbotWidgetAvatar(avatarUrl);
-                console.log('Called updateChatbotWidgetAvatar with:', avatarUrl);
+                console.log('Called updateChatbotWidgetAvatar with:', avatarUrl.substring(0, 50) + '...');
             }
 
             // Also try to update directly if widget exists
             if (window.FoodisChatbot && window.FoodisChatbot.updateAvatar) {
                 window.FoodisChatbot.updateAvatar(avatarUrl);
-                console.log('Called FoodisChatbot.updateAvatar with:', avatarUrl);
+                console.log('Called FoodisChatbot.updateAvatar with:', avatarUrl.substring(0, 50) + '...');
             }
 
-            console.log('Avatar saved successfully:', avatarUrl);
+            console.log('Avatar saved successfully to all storage locations');
         } catch (error) {
             console.error('Error saving avatar:', error);
+            throw error;
         }
     }
 
@@ -2630,21 +2643,29 @@ class ChatbotManager {
             console.log('loadChatbotAvatar - this.settings.avatar:', this.settings.avatar);
 
             if (avatarPreview) {
-                if (this.settings.avatar) {
-                    avatarPreview.src = this.settings.avatar;
-                    console.log('Avatar loaded from settings:', this.settings.avatar.substring(0, 50) + '...');
+                // Only load if there's no current src or if it's the default avatar
+                const currentSrc = avatarPreview.src;
+                const defaultAvatarData = this.getDefaultAvatar();
+                
+                // Don't override if user has already uploaded a custom image
+                if (!currentSrc || currentSrc.includes(defaultAvatarData) || currentSrc.includes('default-bot-avatar.svg')) {
+                    if (this.settings.avatar) {
+                        avatarPreview.src = this.settings.avatar;
+                        console.log('Avatar loaded from settings:', this.settings.avatar.substring(0, 50) + '...');
+                    } else {
+                        avatarPreview.src = this.getDefaultAvatar();
+                        console.log('Default avatar loaded');
+                    }
                 } else {
-                    avatarPreview.src = this.getDefaultAvatar();
-                    console.log('Default avatar loaded');
+                    console.log('Preserving current uploaded avatar, not overriding');
                 }
                 
-                // Ensure the image loads properly
-                avatarPreview.onload = () => {
-                    console.log('Avatar image loaded successfully');
-                };
+                // Add error handler only for fallback to default
                 avatarPreview.onerror = () => {
                     console.error('Avatar image failed to load, using default');
-                    avatarPreview.src = this.getDefaultAvatar();
+                    if (avatarPreview.src !== this.getDefaultAvatar()) {
+                        avatarPreview.src = this.getDefaultAvatar();
+                    }
                 };
             } else {
                 console.error('chatbotAvatarPreview element not found');
