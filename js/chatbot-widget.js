@@ -143,7 +143,7 @@
 
                         this.availableAgents.forEach(agent => {
                             if (!agent.avatar || agent.avatar === this.getDefaultAvatar()) {
-                                agent.avatar = avatarUrl;
+                               agent.avatar = avatarUrl;
                             } else {
                                 agent.avatar = this.getAbsoluteAvatarUrl(agent.avatar);
                             }
@@ -918,7 +918,8 @@
                 #chatbot-send {
                     background: #e8f24c !important;
                     border: none !important;
-                    color: #26282f !important;
+                    color:```python
+ #26282f !important;
                     cursor: pointer !important;
                     padding: 10px !important;
                     border-radius: 50% !important;
@@ -1736,51 +1737,35 @@
         },
 
         checkAndShowRegistrationForm: function() {
-            console.log('🔍 Checking if registration form should be shown...');
-            
-            // Check multiple storage locations for user data
-            const currentUser = localStorage.getItem('chatbot-current-user');
-            const userData = localStorage.getItem('chatbot-user-data');
-            const users = localStorage.getItem('chatbot-users');
-            const registrations = localStorage.getItem('chatbot-registrations');
-            
-            console.log('📊 User data check:', {
-                currentUser: currentUser ? 'exists' : 'null',
-                userData: userData ? 'exists' : 'null',
-                users: users ? 'exists' : 'null',
-                registrations: registrations ? 'exists' : 'null'
-            });
-            
-            // If no user data at all, show form
-            if (!currentUser && !userData && !users && !registrations) {
-                console.log('🔐 New user detected, showing registration form...');
-                
-                // Ensure registration form system is initialized
-                if (window.ChatbotRegistrationForm) {
-                    if (!window.ChatbotRegistrationForm.initialized) {
+            console.log('🔍 Chatbot Widget: Checking if registration form should be shown...');
+
+            // Force initialize registration form system
+            if (window.ChatbotRegistrationForm) {
+                console.log('🔐 Registration form system found, initializing...');
+
+                if (!window.ChatbotRegistrationForm.initialized) {
+                    window.ChatbotRegistrationForm.init();
+                }
+
+                // Always check if form should show
+                if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+                    console.log('🔐 Widget: Form should show, displaying...');
+                    window.ChatbotRegistrationForm.showRegistrationForm();
+                } else {
+                    console.log('🔐 Widget: Form should not show');
+                }
+            } else {
+                console.warn('⚠️ Registration form system not available');
+
+                // Try to trigger it manually
+                setTimeout(() => {
+                    if (window.ChatbotRegistrationForm) {
                         window.ChatbotRegistrationForm.init();
-                    }
-                    // Show the form
-                    setTimeout(() => {
                         if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
                             window.ChatbotRegistrationForm.showRegistrationForm();
                         }
-                    }, 500);
-                } else {
-                    console.warn('⚠️ Registration form system not available');
-                }
-            } else {
-                console.log('✅ User data found, checking if registration is needed...');
-                
-                // Still check if we should show the form based on data completeness
-                if (window.ChatbotRegistrationForm && window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
-                    console.log('🔐 Registration form needed despite existing data');
-                    setTimeout(() => {
-                        window.ChatbotRegistrationForm.showRegistrationForm();
-                    }, 500);
-                } else {
-                    console.log('✅ User already registered or skipped');
-                }
+                    }
+                }, 1000);
             }
         }
     };
@@ -1865,7 +1850,7 @@
             this.hideRegistrationForm();
             this.showThankYouMessage();
 
-            // Update chatbot state
+            // Update chatbotstate
             if (window.FoodisChatbot) {
                 window.FoodisChatbot.userRegistered = true;
                 window.FoodisChatbot.userInfo = userData;

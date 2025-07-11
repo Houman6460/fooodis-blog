@@ -62,38 +62,61 @@
             this.setupEventListeners();
             this.initialized = true;
 
-            // Auto-show form if needed
-            setTimeout(() => {
-                if (this.shouldShowRegistrationForm()) {
-                    this.showRegistrationForm();
-                }
-            }, 2000);
+            console.log('🔐 Registration form initialized, checking if should show...');
+
+            // Check immediately and show if needed
+            if (this.shouldShowRegistrationForm()) {
+                console.log('🔐 Form should show, displaying now...');
+                this.showRegistrationForm();
+            } else {
+                console.log('🔐 Form should not show, user already registered');
+            }
         },
 
         shouldShowRegistrationForm: function() {
-            // Check multiple storage locations for user data
-            const currentUser = localStorage.getItem('chatbot-current-user');
-            const userData = localStorage.getItem('chatbot-user-data');
-            const registrations = localStorage.getItem('chatbot-registrations');
-            const userDataAlt = localStorage.getItem('chatbot-users');
-
             console.log('🔍 Checking if registration form should show...');
-            console.log('Current user:', currentUser);
-            console.log('User data:', userData);
-            console.log('Alt user data:', userDataAlt);
 
-            // If no user data at all, show form
-            if (!currentUser && !userData && !userDataAlt) {
-                console.log('✅ No user data found, should show form');
+            // Check all possible storage locations for user data
+            const storageKeys = [
+                'chatbot-current-user',
+                'chatbot-user-data', 
+                'chatbot-users',
+                'fooodis-user-name',
+                'fooodis-restaurant-name'
+            ];
+
+            let hasAnyUserData = false;
+
+            storageKeys.forEach(key => {
+                const value = localStorage.getItem(key);
+                console.log(`Storage check ${key}:`, value);
+                if (value && value !== 'null' && value !== '[]') {
+                    hasAnyUserData = true;
+                }
+            });
+
+            // Force show form if no user data at all
+            if (!hasAnyUserData) {
+                console.log('✅ No user data found anywhere, SHOULD SHOW FORM');
                 return true;
             }
 
             try {
                 // Check if user has complete registration data
-                let hasCompleteData = false;
+                const currentUser = localStorage.getItem('chatbot-current-user');
+                const userName = localStorage.getItem('fooodis-user-name');
+                const restaurantName = localStorage.getItem('fooodis-restaurant-name');
+
+                // If we have name and restaurant, consider registered
+                if (userName && restaurantName) {
+                    console.log('❌ User already has name and restaurant, not showing form');
+                    return false;
+                }
 
                 if (currentUser) {
                     const user = JSON.parse(currentUser);
+
+                    // If user skipped, check if enough time passed
                     if (user.skipped) {
                         const skipTime = new Date(user.timestamp);
                         const now = new Date();
@@ -103,38 +126,19 @@
                         return shouldShow;
                     }
 
-                    // If user has name and email, don't show form
-                    if (user.name && user.email) {
-                        hasCompleteData = true;
+                    // If user has complete data, don't show form
+                    if (user.name && user.restaurantName) {
+                        console.log('❌ User already registered with complete data, not showing form');
+                        return false;
                     }
                 }
 
-                if (userData) {
-                    const data = JSON.parse(userData);
-                    if (data.name && data.email) {
-                        hasCompleteData = true;
-                    }
-                }
-
-                if (userDataAlt) {
-                    const altData = JSON.parse(userDataAlt);
-                    if (Array.isArray(altData) && altData.length > 0) {
-                        const latestUser = altData[altData.length - 1];
-                        if (latestUser.name && latestUser.email) {
-                            hasCompleteData = true;
-                        }
-                    }
-                }
-
-                if (hasCompleteData) {
-                    console.log('❌ User already registered, not showing form');
-                    return false;
-                }
-
-                console.log('✅ Incomplete user data, should show form');
+                console.log('✅ Incomplete or no user data, SHOULD SHOW FORM');
                 return true;
+
             } catch (error) {
                 console.error('Error checking user data:', error);
+                console.log('✅ Error occurred, defaulting to SHOW FORM');
                 return true;
             }
         },
@@ -918,6 +922,7 @@
                     font-size: 14px;
                     font-weight: 700;
                     cursor: pointer;
+                    ```text
                     transition: all 0.2s ease;
                 }
 
@@ -1165,293 +1170,6 @@
                 // Fallback to alert
                 alert(message);
             }
-        },
-
-        init: function() {
-            if (this.initialized) return;
-
-            console.log('🔐 Initializing Chatbot Registration Form...');
-            this.injectStyles();
-            this.setupEventListeners();
-            this.initialized = true;
-
-            // Auto-show form if needed
-            setTimeout(() => {
-                if (this.shouldShowRegistrationForm()) {
-                    this.showRegistrationForm();
-                }
-            }, 2000);
-        },
-
-        shouldShowRegistrationForm: function() {
-            // Check multiple storage locations for user data
-            const currentUser = localStorage.getItem('chatbot-current-user');
-            const userData = localStorage.getItem('chatbot-user-data');
-            const registrations = localStorage.getItem('chatbot-registrations');
-            const userDataAlt = localStorage.getItem('chatbot-users');
-
-            console.log('🔍 Checking if registration form should show...');
-            console.log('Current user:', currentUser);
-            console.log('User data:', userData);
-            console.log('Alt user data:', userDataAlt);
-
-            // If no user data at all, show form
-            if (!currentUser && !userData && !userDataAlt) {
-                console.log('✅ No user data found, should show form');
-                return true;
-            }
-
-            try {
-                // Check if user has complete registration data
-                let hasCompleteData = false;
-
-                if (currentUser) {
-                    const user = JSON.parse(currentUser);
-                    if (user.skipped) {
-                        const skipTime = new Date(user.timestamp);
-                        const now = new Date();
-                        const hoursPassed = (now - skipTime) / (1000 * 60 * 60);
-                        const shouldShow = hoursPassed > 24;
-                        console.log(`⏰ User skipped ${hoursPassed.toFixed(1)} hours ago, should show:`, shouldShow);
-                        return shouldShow;
-                    }
-
-                    // If user has name and email, don't show form
-                    if (user.name && user.email) {
-                        hasCompleteData = true;
-                    }
-                }
-
-                if (userData) {
-                    const data = JSON.parse(userData);
-                    if (data.name && data.email) {
-                        hasCompleteData = true;
-                    }
-                }
-
-                if (userDataAlt) {
-                    const altData = JSON.parse(userDataAlt);
-                    if (Array.isArray(altData) && altData.length > 0) {
-                        const latestUser = altData[altData.length - 1];
-                        if (latestUser.name && latestUser.email) {
-                            hasCompleteData = true;
-                        }
-                    }
-                }
-
-                if (hasCompleteData) {
-                    console.log('❌ User already registered, not showing form');
-                    return false;
-                }
-
-                console.log('✅ Incomplete user data, should show form');
-                return true;
-            } catch (error) {
-                console.error('Error checking user data:', error);
-                return true;
-            }
-        },
-
-        showRegistrationForm: function() {
-            console.log('🔐 Showing registration form...');
-
-            // Find or create chatbot container
-            let chatbotContainer = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container');
-
-            if (!chatbotContainer) {
-                // Create a temporary container if chatbot doesn't exist
-                chatbotContainer = document.createElement('div');
-                chatbotContainer.id = 'temp-chatbot-container';
-                chatbotContainer.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    z-index: 10000;
-                    width: 400px;
-                    height: 500px;
-                    background: white;
-                    border-radius: 12px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                `;
-                document.body.appendChild(chatbotContainer);
-            }
-
-            // Remove existing form if any
-            const existingForm = document.querySelector('.registration-overlay');
-            if (existingForm) {
-                existingForm.remove();
-            }
-
-            // Create and show new form
-            this.formElement = this.createFormOverlay();
-            chatbotContainer.appendChild(this.formElement);
-
-            // Set initial language and update form
-            this.currentLanguage = 'english';
-            this.updateFormLanguage();
-
-            console.log('✅ Registration form displayed successfully');
-        },
-
-        createFormOverlay: function() {
-            const overlay = document.createElement('div');
-            overlay.className = 'registration-overlay';
-            overlay.innerHTML = `
-                <div class="registration-container">
-                    <div class="language-tabs">
-                        <button type="button" class="lang-tab active" data-lang="english">English</button>
-                        <button type="button" class="lang-tab" data-lang="svenska">Svenska</button>
-                    </div>
-
-                    <div class="registration-header">
-                        <h2 class="form-title">Let's Get Started!</h2>
-                        <p class="form-subtitle">Please provide your information to continue</p>
-                    </div>
-
-                    <form class="registration-form" id="registrationForm">
-                        <div class="form-group">
-                            <label for="userName" class="field-label">Your Name</label>
-                            <input type="text" id="userName" name="userName" placeholder="Enter your name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="userEmail" class="field-label">Email Address</label>
-                            <input type="email" id="userEmail" name="userEmail" placeholder="Enter your email" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="restaurantName" class="field-label">Restaurant Name</label>
-                            <input type="text" id="restaurantName" name="restaurantName" placeholder="Enter restaurant name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="userPhone" class="field-label">Phone Number</label>
-                            <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="systemUsage" class="field-label">Current delivery system</label>
-                            <select id="systemUsage" name="systemUsage" required>
-                                <option value="">Please select</option>
-                                <option value="current_user">Using Fooodis</option>
-                                <option value="competitor_user">Using another system</option>
-                                <option value="potential_user">Looking for solution</option>
-                            </select>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="skip-btn">Skip</button>
-                            <button type="submit" class="submit-btn">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            `;
-            return overlay;
-        },
-
-        setupEventListeners: function() {
-            document.addEventListener('click', (e) => {
-                // Language tab switching
-                if (e.target.classList.contains('lang-tab')) {
-                    e.preventDefault();
-                    this.handleLanguageSwitch(e.target);
-                }
-
-                // Skip button
-                if (e.target.classList.contains('skip-btn')) {
-                    e.preventDefault();
-                    this.skipForm();
-                }
-            });
-
-            document.addEventListener('submit', (e) => {
-                if (e.target.id === 'registrationForm') {
-                    e.preventDefault();
-                    this.handleFormSubmit(e);
-                }
-            });
-        },
-
-        handleLanguageSwitch: function(tabElement) {
-            const selectedLang = tabElement.getAttribute('data-lang');
-            console.log('🌐 Switching to language:', selectedLang);
-
-            // Update active tab
-            const container = tabElement.closest('.registration-container');
-            if (container) {
-                const allTabs = container.querySelectorAll('.lang-tab');
-                allTabs.forEach(tab => tab.classList.remove('active'));
-                tabElement.classList.add('active');
-
-                // Update current language and form
-                this.currentLanguage = selectedLang;
-                this.updateFormLanguage();
-            }
-        },
-
-        updateFormLanguage: function() {
-            const translations = this.translations[this.currentLanguage];
-            if (!translations) {
-                console.error('❌ No translations found for:', this.currentLanguage);
-                return;
-            }
-
-            console.log('🌐 Updating form language to:', this.currentLanguage);
-
-            const container = document.querySelector('.registration-container');
-            if (!container) return;
-
-            // Update header
-            const title = container.querySelector('.form-title');
-            const subtitle = container.querySelector('.form-subtitle');
-            if (title) title.textContent = translations.title;
-            if (subtitle) subtitle.textContent = translations.subtitle;
-
-            // Update labels
-            const labels = {
-                'label[for="userName"]': translations.nameLabel,
-                'label[for="userEmail"]': translations.emailLabel,
-                'label[for="restaurantName"]': translations.restaurantLabel,
-                'label[for="userPhone"]': translations.phoneLabel,
-                'label[for="systemUsage"]': translations.systemLabel
-            };
-
-            Object.entries(labels).forEach(([selector, text]) => {
-                const element = container.querySelector(selector);
-                if (element) element.textContent = text;
-            });
-
-            // Update placeholders
-            const placeholders = {
-                '#userName': translations.namePlaceholder,
-                '#userEmail': translations.emailPlaceholder,
-                '#restaurantName': translations.restaurantPlaceholder,
-                '#userPhone': translations.phonePlaceholder
-            };
-
-            Object.entries(placeholders).forEach(([selector, placeholder]) => {
-                const element = container.querySelector(selector);
-                if (element) element.placeholder = placeholder;
-            });
-
-            // Update select options
-            const systemSelect = container.querySelector('#systemUsage');
-            if (systemSelect) {
-                const options = systemSelect.querySelectorAll('option');
-                if (options[0]) options[0].textContent = translations.selectOption;
-                if (options[1]) options[1].textContent = translations.optionFooodis;
-                if (options[2]) options[2].textContent = translations.optionOther;
-                if (options[3]) options[3].textContent = translations.optionLooking;
-            }
-
-            // Update buttons
-            const skipBtn = container.querySelector('.skip-btn');
-            const submitBtn = container.querySelector('.submit-btn');
-            if (skipBtn) skipBtn.textContent = translations.skipButton;
-            if (submitBtn) submitBtn.textContent = translations.submitButton;
-
-            console.log('✅ Form language updated successfully');
         }
     };
 
