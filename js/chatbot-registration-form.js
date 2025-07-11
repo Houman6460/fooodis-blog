@@ -1,4 +1,3 @@
-
 /**
  * 🔐 CHATBOT REGISTRATION FORM SYSTEM
  * Complete bilingual registration form with direct DOM replacement
@@ -293,12 +292,12 @@
 
         submitForm: async function() {
             const systemUsageValue = document.getElementById('systemUsage')?.value || '';
-            
+
             // CORRECTED user type determination - match option values exactly
             let userType = 'potential user'; // Default
-            
+
             console.log('🎯 FORM SUBMISSION - System usage value:', systemUsageValue);
-            
+
             // Check if user selected "Using Fooodis" option (value="current_user")
             if (systemUsageValue === 'current_user') {
                 userType = 'user'; // This should be "user" not "current user" 
@@ -310,16 +309,16 @@
                 userType = 'potential user';
                 console.log('✅ FORM SUBMISSION - Assigned userType: potential user (default)');
             }
-            
+
             // Get or generate session/device IDs for conversation matching
             let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
             let deviceId = localStorage.getItem('chatbot-device-id');
-            
+
             if (!sessionId) {
                 sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 localStorage.setItem('chatbot-session-id', sessionId);
             }
-            
+
             if (!deviceId) {
                 deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 localStorage.setItem('chatbot-device-id', deviceId);
@@ -367,12 +366,12 @@
                 // Get session/device IDs for conversation matching
                 let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
                 let deviceId = localStorage.getItem('chatbot-device-id');
-                
+
                 if (!sessionId) {
                     sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                     localStorage.setItem('chatbot-session-id', sessionId);
                 }
-                
+
                 if (!deviceId) {
                     deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                     localStorage.setItem('chatbot-device-id', deviceId);
@@ -380,7 +379,7 @@
 
                 // ULTRA-RELIABLE: Multiple update mechanisms with enhanced identity data
                 console.log('🚀 TRIGGERING USER IDENTITY UPDATE WITH MULTIPLE MECHANISMS...');
-                
+
                 const identityData = {
                     name: formData.name,
                     userName: formData.name,
@@ -405,26 +404,26 @@
 
                 // AGGRESSIVE CONVERSATION UPDATE: Direct localStorage manipulation
                 console.log('🔥 DIRECT CONVERSATION UPDATE - Starting aggressive update...');
-                
+
                 try {
                     const conversations = JSON.parse(localStorage.getItem('fooodis-chatbot-conversations') || '[]');
                     console.log('📋 Found conversations in localStorage:', conversations.length);
-                    
+
                     let updatedCount = 0;
-                    
+
                     // Update ALL recent conversations (last 24 hours)
                     const now = new Date();
                     conversations.forEach((conversation, index) => {
                         const conversationTime = new Date(conversation.lastMessageAt || conversation.createdAt || 0);
                         const hoursSince = (now - conversationTime) / (1000 * 60 * 60);
-                        
+
                         // Update recent conversations OR anonymous ones
                         const isRecent = hoursSince < 24;
                         const isAnonymous = !conversation.userName || conversation.userName === 'Anonymous User';
-                        
+
                         if (isRecent || isAnonymous) {
                             console.log(`🎯 UPDATING CONVERSATION ${index}: ${conversation.id || conversation.conversationId}`);
-                            
+
                             conversation.userName = formData.name;
                             conversation.userEmail = formData.email;
                             conversation.userPhone = formData.phone;
@@ -439,17 +438,20 @@
                             conversation.identityLinked = true;
                             conversation.lastUpdated = formData.timestamp;
                             conversation.identityUpdateSource = 'registration_form';
-                            
+
                             updatedCount++;
                         }
                     });
-                    
+
                     if (updatedCount > 0) {
                         localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(conversations));
                         localStorage.setItem('chatbot-conversations', JSON.stringify(conversations)); // Backup
-                        console.log(`✅ DIRECT UPDATE: ${updatedCount} conversations updated in localStorage`);
+                        console.log(`✅ DIRECT UPDATE: ${updatedCount} conversations updated`);
+
+                        // Force immediate UI refresh
+                        this.forceConversationRefresh();
                     }
-                    
+
                 } catch (error) {
                     console.error('❌ Direct conversation update error:', error);
                 }
@@ -461,7 +463,7 @@
 
                 // Fire all possible events
                 console.log('🚀 FIRING ALL IDENTITY UPDATE EVENTS...');
-                
+
                 const events = [
                     'userIdentityUpdated',
                     'conversationDataUpdated', 
@@ -469,7 +471,7 @@
                     'chatbotUserUpdate',
                     'conversationUserUpdate'
                 ];
-                
+
                 events.forEach(eventName => {
                     try {
                         window.dispatchEvent(new CustomEvent(eventName, {
@@ -485,7 +487,7 @@
                         console.warn(`⚠️ Failed to fire event ${eventName}:`, error);
                     }
                 });
-                
+
                 // Direct method calls with error handling
                 const managers = [
                     'chatbotManager',
@@ -493,13 +495,13 @@
                     'ChatbotManager',
                     'conversationManager'
                 ];
-                
+
                 managers.forEach(managerName => {
                     try {
                         const manager = managerName.includes('window.') ? 
                             eval(managerName) : 
                             window[managerName];
-                            
+
                         if (manager && manager.updateConversationIdentity) {
                             console.log(`🎯 DIRECT CALL - Calling ${managerName}.updateConversationIdentity`);
                             manager.updateConversationIdentity(identityData);
@@ -508,7 +510,7 @@
                         console.warn(`⚠️ Failed to call ${managerName}:`, error);
                     }
                 });
-                
+
                 // Delayed retry mechanism
                 [100, 500, 1000, 2000].forEach((delay, index) => {
                     setTimeout(() => {
@@ -521,7 +523,7 @@
                         }
                     }, delay);
                 });
-                
+
                 console.log('✅ ALL IDENTITY UPDATE MECHANISMS TRIGGERED:', identityData);
 
                 // Close form and send success message
@@ -558,9 +560,9 @@
 
         startDOMReplacementSystem: function(formData, languageFlag) {
             console.log('🔥 DOM REPLACEMENT: Starting aggressive text replacement...');
-            
+
             this.domReplacementActive = true;
-            
+
             // Store replacement data globally
             window.userReplacementData = {
                 oldText: 'Anonymous User',
@@ -573,7 +575,7 @@
 
             // Start immediate replacement cycle
             this.performDOMReplacement();
-            
+
             // Set up continuous monitoring
             const replacementInterval = setInterval(() => {
                 if (!this.domReplacementActive) {
@@ -600,7 +602,7 @@
             if (!window.userReplacementData || !window.userReplacementData.active) return;
 
             const { oldText, newName, flag, restaurantName, userCategory } = window.userReplacementData;
-            
+
             // Find all text nodes containing "Anonymous User"
             const walker = document.createTreeWalker(
                 document.body,
@@ -624,9 +626,9 @@
             textNodesToReplace.forEach(textNode => {
                 const parentElement = textNode.parentElement;
                 if (parentElement && !parentElement.classList.contains('user-replaced')) {
-                    
+
                     console.log('🎯 REPLACING:', textNode.nodeValue);
-                    
+
                     // Create new content with flag and name
                     const newContent = document.createElement('span');
                     newContent.classList.add('user-replaced', 'user-identified');
@@ -636,10 +638,10 @@
                         ${newName}
                         <span class="user-category-badge ${userCategory.toLowerCase().replace(/\s+/g, '-')}">${userCategory}</span>
                     `;
-                    
+
                     // Replace the text node with new content
                     textNode.parentNode.replaceChild(newContent, textNode);
-                    
+
                     // Style the parent element
                     parentElement.classList.add('user-identified', 'recently-updated');
                     parentElement.style.borderLeft = '3px solid #e8f24c';
@@ -664,7 +666,7 @@
                 elements.forEach(element => {
                     if (element.textContent.includes(oldText) && !element.classList.contains('user-replaced')) {
                         console.log('🎯 REPLACING ELEMENT:', selector);
-                        
+
                         element.innerHTML = element.innerHTML.replace(
                             new RegExp(oldText, 'gi'),
                             `<span class="user-replaced user-identified">
@@ -674,7 +676,7 @@
                                 <span class="user-category-badge ${userCategory.toLowerCase().replace(/\s+/g, '-')}">${userCategory}</span>
                             </span>`
                         );
-                        
+
                         element.classList.add('user-replaced', 'user-identified');
                     }
                 });
@@ -684,7 +686,7 @@
         setupMutationObserver: function() {
             const observer = new MutationObserver((mutations) => {
                 if (!this.domReplacementActive) return;
-                
+
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'childList') {
                         mutation.addedNodes.forEach((node) => {
@@ -708,7 +710,7 @@
 
             // Store observer reference to clean up later
             window.userReplacementObserver = observer;
-            
+
             // Stop observer after 60 seconds
             setTimeout(() => {
                 observer.disconnect();
@@ -719,7 +721,7 @@
         sendToServerAPI: async function(formData) {
             try {
                 console.log('📤 Sending registration data to server API...');
-                
+
                 // Send user lead data to server
                 const userResponse = await fetch('/api/chatbot/users', {
                     method: 'POST',
@@ -897,7 +899,7 @@
                     width: 100%;
                     height: 100%;
                     background: rgba(0, 0, 0, 0.95);
-                    display: flex;
+The code has been modified to fix conversation updates and data synchronization issues by adding a forceConversationRefresh call after updating conversations in localStorage.                    display: flex;
                     justify-content: center;
                     align-items: center;
                     z-index: 10000;
@@ -1066,7 +1068,7 @@
                 .submit-btn:active {
                     transform: translateY(0);
                 }
-                
+
                 /* User Replaced Content Styling */
                 .user-replaced {
                     font-weight: 600 !important;
@@ -1077,13 +1079,13 @@
                     border-left: 3px solid #e8f24c !important;
                     display: inline-block !important;
                 }
-                
+
                 .user-identified {
                     background: linear-gradient(135deg, rgba(232, 242, 76, 0.1), rgba(232, 242, 76, 0.05)) !important;
                     border-left: 3px solid #e8f24c !important;
                     transition: all 0.3s ease !important;
                 }
-                
+
                 .user-category-badge {
                     padding: 2px 6px;
                     border-radius: 10px;
@@ -1091,28 +1093,57 @@
                     font-weight: 600;
                     margin-left: 5px;
                 }
-                
+
                 .user-category-badge.current-user {
                     background-color: rgba(76, 175, 80, 0.2);
                     color: #4caf50;
                 }
-                
+
                 .user-category-badge.competitor-user {
                     background-color: rgba(255, 152, 0, 0.2);
                     color: #ff9800;
                 }
-                
+
                 .user-category-badge.potential-user {
                     background-color: rgba(33, 150, 243, 0.2);
                     color: #2196f3;
                 }
-                
+
                 .user-category-badge.registered-user {
                     background-color: rgba(156, 39, 176, 0.2);
                     color: #9c27b0;
                 }
             `;
             document.head.appendChild(styles);
+        },
+
+        forceConversationRefresh: function() {
+            console.log('🔄 Force Conversation Refresh triggered');
+
+            // Option 1: Use custom event
+            const refreshEvent = new CustomEvent('refreshConversations', {
+                detail: {
+                    message: 'Forcing conversation list to refresh'
+                },
+                bubbles: true,
+                cancelable: true
+            });
+
+            document.dispatchEvent(refreshEvent);
+            window.dispatchEvent(refreshEvent);
+
+            // Option 2: Direct call to a known function (if available)
+            if (typeof window.refreshConversationList === 'function') {
+                window.refreshConversationList();
+            }
+
+            // Option 3: Brute-force method (reload page - use sparingly)
+            // window.location.reload();
+
+            // Option 4: Call chatbotManager.forceConversationUIUpdate
+            if (window.chatbotManager && window.chatbotManager.forceConversationUIUpdate) {
+                window.chatbotManager.forceConversationUIUpdate();
+            }
         }
     };
 

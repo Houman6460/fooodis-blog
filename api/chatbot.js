@@ -181,14 +181,14 @@ router.get('/users', async (req, res) => {
 router.post('/config', async (req, res) => {
     try {
         const configData = req.body;
-        
+
         // Save config to file
         const fs = require('fs');
         const path = require('path');
         const configPath = path.join(__dirname, '../chatbot-config.json');
-        
+
         fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-        
+
         res.json({
             success: true,
             message: 'Configuration saved successfully'
@@ -291,10 +291,10 @@ router.post('/', async (req, res) => {
         // 🎯 PRIORITY: If node context is provided, use the specified assistant
         if (nodeContext && nodeContext.assistantId) {
             console.log('🎯 Using node-specified assistant:', nodeContext.assistantId);
-            
+
             // Find assistant from config
             useAssistant = settings.assistants.find(a => a.assistantId === nodeContext.assistantId);
-            
+
             if (useAssistant) {
                 selectedAgent = {
                     name: useAssistant.name,
@@ -303,13 +303,13 @@ router.post('/', async (req, res) => {
                     nodeId: nodeContext.nodeId,
                     nodeTitle: nodeContext.nodeTitle
                 };
-                
+
                 console.log('✅ Found assistant for node:', {
                     name: selectedAgent.name,
                     assistantId: nodeContext.assistantId,
                     nodeTitle: nodeContext.nodeTitle
                 });
-                
+
                 // Override any previous agent selection
                 conversation.currentAgent = selectedAgent;
             } else {
@@ -862,4 +862,79 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     } else {
         const englishResponses = [
             "I'm here to help with any questions about Fooodis restaurant! Whether you need information about our menu, reservations, hours, or anything else, just let me know how I can assist you.",
-            "Thanks for reaching out! I'd love to help you with information about our restaurant. Whatjson|
+            "Thanks for reaching out! I'd love to help you with information about our restaurant. What would you like to know about our menu, services, or dining experiences?",
+            "I'm your Fooodis assistant and I'm here to help! Feel free to ask about our menu, reservations, hours, location, or anything else related to our restaurant."
+        ];
+        return englishResponses[Math.floor(Math.random() * englishResponses.length)];
+    }
+}
+
+// Styled response function
+function getStyledResponse(message, agentStyle, detectedLanguage) {
+    let styledMessage = message;
+
+    // Style the message based on agent personality
+    if (agentStyle === 'friendly') {
+        styledMessage = `${message} 😊`;
+    } else if (agentStyle === 'professional') {
+        styledMessage = `${message}`;
+    } else if (agentStyle === 'enthusiastic') {
+        styledMessage = `${message}! 🎉`;
+    } else if (agentStyle === 'calm') {
+        styledMessage = `${message}`;
+    } else if (agentStyle === 'technical') {
+        styledMessage = `${message}`;
+    } else if (agentStyle === 'warm') {
+        styledMessage = `${message} ❤️`;
+    } else if (agentStyle === 'experienced') {
+        styledMessage = `${message}`;
+    }
+
+    return styledMessage;
+}
+
+// Generate a unique conversation ID
+function generateConversationId() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
+// Save a new user lead
+router.post('/register', async (req, res) => {
+    try {
+        const userData = req.body;
+
+        if (!userData.id) {
+            userData.id = generateConversationId();
+        }
+
+        // Basic validation
+        if (!userData.name || !userData.email) {
+            console.error('Invalid user data provided');
+            return res.status(400).json({
+                success: false,
+                error: 'Name and email are required'
+            });
+        }
+
+        // Store user data (in production, store in a database)
+        registeredUsers.set(userData.id, userData);
+
+        // Save users to storage
+        saveUsersToStorage();
+
+        console.log('New user registered:', userData.name, userData.email);
+        res.json({
+            success: true,
+            message: 'User registered successfully',
+            userId: userData.id
+        });
+    } catch (error) {
+        console.error('User registration error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to register user'
+        });
+    }
+});
+
+module.exports = router;
