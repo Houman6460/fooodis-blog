@@ -143,6 +143,79 @@ function getChatbotSettings() {
     }
 }
 
+// Get conversations
+router.get('/conversations', async (req, res) => {
+    try {
+        const conversationsArray = Array.from(conversations.values());
+        res.json({
+            success: true,
+            conversations: conversationsArray
+        });
+    } catch (error) {
+        console.error('Error getting conversations:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get conversations'
+        });
+    }
+});
+
+// Get users/leads
+router.get('/users', async (req, res) => {
+    try {
+        const usersArray = Array.from(registeredUsers.values());
+        res.json({
+            success: true,
+            users: usersArray
+        });
+    } catch (error) {
+        console.error('Error getting users:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get users'
+        });
+    }
+});
+
+// Save configuration
+router.post('/config', async (req, res) => {
+    try {
+        const configData = req.body;
+        
+        // Save config to file
+        const fs = require('fs');
+        const path = require('path');
+        const configPath = path.join(__dirname, '../chatbot-config.json');
+        
+        fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
+        
+        res.json({
+            success: true,
+            message: 'Configuration saved successfully'
+        });
+    } catch (error) {
+        console.error('Error saving config:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to save configuration'
+        });
+    }
+});
+
+// Get configuration
+router.get('/config', async (req, res) => {
+    try {
+        const settings = getChatbotSettings();
+        res.json(settings);
+    } catch (error) {
+        console.error('Error getting config:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get configuration'
+        });
+    }
+});
+
 // Handle chat message
 router.post('/', async (req, res) => {
     try {
