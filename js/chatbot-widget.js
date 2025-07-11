@@ -1556,14 +1556,27 @@
             }
         },
 
-        generateQuickReplyButtons: function(quickReplies) {
+        generateQuickReplyButtons: function(buttons = null) {
+            if (buttons && Array.isArray(buttons)) {
+                // Use AI-generated buttons
+                const buttonElements = buttons.map(button => 
+                    `<button class="chatbot-quick-reply" data-reply="${button.action}" data-action="${button.action}">${button.text}</button>`
+                ).join('');
+
+                return `
+                    <div class="chatbot-quick-replies">
+                        ${buttonElements}
+                    </div>
+                `;
+            }
+
+            // Fallback to default buttons
             return `
                 <div class="chatbot-quick-replies">
-                    ${quickReplies.map(reply => `
-                        <button class="chatbot-quick-reply" data-reply="${reply}">
-                            ${reply}
-                        </button>
-                    `).join('')}
+                    <button class="chatbot-quick-reply" data-reply="menu">Menu</button>
+                    <button class="chatbot-quick-reply" data-reply="hours">Hours</button>
+                    <button class="chatbot-quick-reply" data-reply="location">Location</button>
+                    <button class="chatbot-quick-reply" data-reply="contact">Contact</button>
                 </div>
             `;
         },
