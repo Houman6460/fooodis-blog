@@ -62,28 +62,54 @@
             this.setupEventListeners();
             this.initialized = true;
 
-            // Auto-show form if needed
+            // Force registration form to show for testing
             setTimeout(() => {
+                console.log('🔐 Checking if registration form should show...');
                 if (this.shouldShowRegistrationForm()) {
+                    console.log('✅ Showing registration form');
                     this.showRegistrationForm();
+                } else {
+                    console.log('❌ Registration form not needed');
                 }
-            }, 2000);
+            }, 1000);
+
+            // Also add manual trigger
+            window.forceShowRegistrationForm = () => {
+                this.showRegistrationForm();
+            };
         },
 
         shouldShowRegistrationForm: function() {
             const currentUser = localStorage.getItem('chatbot-current-user');
-            if (!currentUser) return true;
+            console.log('🔍 Checking registration form need. Current user:', currentUser);
+            
+            if (!currentUser) {
+                console.log('✅ No current user - should show form');
+                return true;
+            }
 
             try {
                 const userData = JSON.parse(currentUser);
+                console.log('📋 User data:', userData);
+                
                 if (userData.skipped) {
                     const skipTime = new Date(userData.timestamp);
                     const now = new Date();
                     const hoursPassed = (now - skipTime) / (1000 * 60 * 60);
-                    return hoursPassed > 24;
+                    console.log('⏱️ Hours since skip:', hoursPassed);
+                    return hoursPassed > 1; // Changed from 24 to 1 hour for testing
                 }
+                
+                // If user has no name or email, show form
+                if (!userData.name || !userData.email) {
+                    console.log('✅ Incomplete user data - should show form');
+                    return true;
+                }
+                
+                console.log('❌ User complete - no need for form');
                 return false;
             } catch (error) {
+                console.log('✅ Error parsing user data - should show form');
                 return true;
             }
         },

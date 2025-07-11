@@ -1165,11 +1165,13 @@
 
             let quickRepliesHtml = '';
 
-            // 🔧 FIX: Only show quick replies if explicitly provided and not using node flow
-            if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
+            // 🔧 FIX: Never show quick replies if node flow is active
+            if (this.shouldUseNodeFlow()) {
+                console.log('🚫 Node flow active - no quick replies will be shown');
+                quickRepliesHtml = '';
+            } else if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
                 quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
-            } else if (sender === 'assistant' && this.containsQuestionPrompt(content) && !this.shouldUseNodeFlow()) {
-                // Only show default quick replies if not using node flow
+            } else if (sender === 'assistant' && this.containsQuestionPrompt(content)) {
                 quickRepliesHtml = this.generateQuickReplyButtons();
             }
 
@@ -1217,7 +1219,7 @@
         },
 
         processMessage: function(message) {
-            console.log('Processing message:', message);
+            console.log('🔄 Processing message:', message);
             
             // Language detection
             const detectedLanguage = this.detectLanguage(message);
@@ -1230,38 +1232,44 @@
                 let response = '';
                 let responseProcessed = false;
 
-                // Priority 1: Check if we should use node flow
+                // FORCE Priority 1: Always try node flow first if available
                 if (this.shouldUseNodeFlow()) {
-                    console.log('Using node flow for message processing');
+                    console.log('🎯 FORCING node flow for message processing');
                     response = this.processNodeFlowMessage(message);
-                    if (response) {
+                    if (response && response.trim() !== '') {
+                        console.log('✅ Node flow provided response:', response);
                         responseProcessed = true;
+                    } else {
+                        console.log('❌ Node flow failed to provide response');
                     }
                 }
                 
-                // Priority 2: Check if scenario-driven flow
+                // Priority 2: Scenario flow (only if node flow failed)
                 if (!responseProcessed && this.shouldUseScenarioFlow()) {
-                    console.log('Using scenario flow for message processing');
+                    console.log('🔄 Using scenario flow for message processing');
                     response = this.processScenarioMessage(message);
                     if (response) {
                         responseProcessed = true;
                     }
                 } 
                 
-                // Priority 3: Regular chat processing
+                // Priority 3: Regular chat (only if both above failed)
                 if (!responseProcessed) {
-                    console.log('Using regular message processing');
+                    console.log('🔄 Using regular message processing');
                     response = this.processRegularMessage(message);
                     if (response) {
                         responseProcessed = true;
                     }
                 }
 
+                // Add response or fallback to API
                 if (responseProcessed && response) {
-                    this.addMessage(response, 'assistant');
+                    // Don't add quick replies if using node flow
+                    const quickReplies = this.shouldUseNodeFlow() ? null : undefined;
+                    this.addMessage(response, 'assistant', quickReplies);
                 } else {
                     // Fallback API call
-                    console.log('Fallback to API call');
+                    console.log('🔄 Fallback to API call');
                     this.sendToAPI(message);
                 }
             }, Math.random() * 1000 + 500);
@@ -1269,52 +1277,67 @@
 
         // Process message through node flow
         processNodeFlowMessage: function(message) {
-            console.log('Attempting to process with node flow...');
+            console.log('🔥 PROCESSING WITH NODE FLOW:', message);
             
-            if (window.nodeFlowBuilder) {
+            // Check if we have active nodes
+            if (window.nodeFlowBuilder && window.nodeFlowBuilder.nodes && window.nodeFlowBuilder.nodes.length > 0) {
                 try {
-                    // Try multiple methods to process the message
+                    console.log('📋 Node flow builder available with', window.nodeFlowBuilder.nodes.length, 'nodes');
+                    
+                    // Try direct message processing
                     if (window.nodeFlowBuilder.processUserInput) {
+                        console.log('🎯 Trying processUserInput...');
                         const result = window.nodeFlowBuilder.processUserInput(message);
-                        if (result && result.response) {
-                            console.log('Node flow response:', result.response);
-                            return result.response;
+                        if (result && (result.response || result.message)) {
+                            const response = result.response || result.message;
+                            console.log('✅ Node flow processUserInput response:', response);
+                            return response;
                         }
                     }
                     
-                    // Alternative method - direct message processing
-                    if (window.nodeFlowBuilder.processMessage) {
-                        const result = window.nodeFlowBuilder.processMessage(message);
-                        if (result) {
-                            console.log('Node flow direct response:', result);
-                            return result;
-                        }
-                    }
-                    
-                    // Try to trigger node flow manually
+                    // Alternative method
                     if (window.nodeFlowBuilder.handleUserMessage) {
+                        console.log('🎯 Trying handleUserMessage...');
                         const result = window.nodeFlowBuilder.handleUserMessage(message);
-                        if (result) {
-                            console.log('Node flow handled response:', result);
+                        if (result && typeof result === 'string') {
+                            console.log('✅ Node flow handleUserMessage response:', result);
                             return result;
                         }
+                    }
+                    
+                    // Try triggering the flow manually
+                    if (window.nodeFlowBuilder.triggerFlow) {
+                        console.log('🎯 Trying triggerFlow...');
+                        const result = window.nodeFlowBuilder.triggerFlow(message);
+                        if (result) {
+                            console.log('✅ Node flow triggerFlow response:', result);
+                            return result;
+                        }
+                    }
+                    
+                    // Last resort - direct node processing
+                    console.log('🎯 Trying direct node processing...');
+                    const startNode = window.nodeFlowBuilder.nodes.find(node => node.type === 'start' || node.isStart);
+                    if (startNode) {
+                        const response = startNode.content || startNode.message || 'Hello! How can I help you today?';
+                        console.log('✅ Using start node response:', response);
+                        return response;
                     }
                     
                 } catch (error) {
-                    console.error('Node flow processing error:', error);
+                    console.error('❌ Node flow processing error:', error);
                 }
-            } else {
-                console.warn('NodeFlowBuilder not found');
             }
-
-            console.log('Node flow processing failed, returning null');
+            
+            console.log('❌ Node flow processing failed - no valid response found');
             return null;
         },
 
         // Check if message contains question prompts
         containsQuestionPrompt: function(message) {
-            // Don't show quick replies if node flow is active
+            // NEVER show quick replies if node flow is active
             if (this.shouldUseNodeFlow()) {
+                console.log('🚫 Node flow active - no question prompts');
                 return false;
             }
 
@@ -1327,67 +1350,64 @@
             ];
 
             const lowerMessage = message.toLowerCase();
-            return questionPrompts.some(prompt => lowerMessage.includes(prompt));
+            const hasPrompt = questionPrompts.some(prompt => lowerMessage.includes(prompt));
+            console.log('🔍 Question prompt check:', hasPrompt, 'for message:', message);
+            return hasPrompt;
         },
 
         // Check if node flow should be used
         shouldUseNodeFlow: function() {
-            // Check if ChatbotManager has node flow enabled
-            if (window.chatbotManager && window.chatbotManager.settings && window.chatbotManager.settings.enableNodeFlow) {
-                console.log('Node flow enabled via ChatbotManager settings');
+            // Primary check: NodeFlowBuilder exists and has nodes
+            if (window.nodeFlowBuilder && window.nodeFlowBuilder.nodes && window.nodeFlowBuilder.nodes.length > 0) {
+                console.log('🎯 Node flow ENABLED - Found', window.nodeFlowBuilder.nodes.length, 'nodes');
                 return true;
             }
 
-            // Check if NodeFlowBuilder exists and has active nodes
-            if (window.nodeFlowBuilder) {
-                if (window.nodeFlowBuilder.nodes && window.nodeFlowBuilder.nodes.length > 0) {
-                    console.log('Node flow enabled via NodeFlowBuilder with', window.nodeFlowBuilder.nodes.length, 'nodes');
-                    return true;
-                }
-                if (window.nodeFlowBuilder.getActiveNodes && window.nodeFlowBuilder.getActiveNodes().length > 0) {
-                    console.log('Node flow enabled via NodeFlowBuilder active nodes');
-                    return true;
-                }
+            // Secondary check: ChatbotManager has node flow enabled
+            if (window.chatbotManager && window.chatbotManager.settings && window.chatbotManager.settings.enableNodeFlow) {
+                console.log('🎯 Node flow ENABLED via ChatbotManager settings');
+                return true;
             }
 
-            // Check localStorage for node flow configuration
+            // Tertiary check: localStorage configuration
             try {
                 const nodeFlowSettings = localStorage.getItem('fooodis-nodeflow-settings');
                 if (nodeFlowSettings) {
                     const settings = JSON.parse(nodeFlowSettings);
                     if (settings.enabled) {
-                        console.log('Node flow enabled via localStorage settings');
+                        console.log('🎯 Node flow ENABLED via localStorage settings');
                         return true;
                     }
                 }
             } catch (e) {
-                console.warn('Error checking node flow settings:', e);
+                console.warn('⚠️ Error checking node flow settings:', e);
             }
 
-            console.log('Node flow not enabled, using default responses');
+            console.log('❌ Node flow DISABLED - using default responses');
             return false;
         },
 
         // Generate quick reply buttons
         generateQuickReplyButtons: function(quickReplies = null) {
-            // If specific quick replies provided, use them regardless of node flow
+            // If specific quick replies provided, use them
             if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
                 let buttonsHtml = '<div class="chatbot-quick-replies">';
                 quickReplies.forEach(reply => {
                     buttonsHtml += `<button class="chatbot-quick-reply" data-reply="${reply}">${reply}</button>`;
                 });
                 buttonsHtml += '</div>';
+                console.log('🔘 Showing custom quick replies:', quickReplies);
                 return buttonsHtml;
             }
 
-            // Check if node flow is active - if so, don't show default buttons
+            // NEVER show default quick replies if node flow is active
             if (this.shouldUseNodeFlow()) {
-                console.log('Node flow active, skipping default quick replies');
+                console.log('🚫 Node flow active - NO default quick replies');
                 return '';
             }
 
-            // Default quick replies only if no node flow
-            console.log('Showing default quick replies (no node flow active)');
+            // Only show default quick replies if NO node flow
+            console.log('🔘 No node flow - showing default quick replies');
             return `
                 <div class="chatbot-quick-replies">
                     <button class="chatbot-quick-reply" data-reply="menu">Menu</button>
