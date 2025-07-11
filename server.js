@@ -100,33 +100,16 @@ try {
     authAPI = require('express').Router();
 }
 
-// API routes - only mount if they are valid router functions
-if (typeof chatbotAPI === 'function' || (chatbotAPI && typeof chatbotAPI.handle === 'function')) {
-    app.use('/api/chatbot', chatbotAPI);
-    console.log('✅ Chatbot API routes mounted successfully');
-} else {
-    console.warn('⚠️ Chatbot API not properly loaded');
-}
+// API routes - mount chatbot API routes
+app.use('/api/chatbot', chatbotAPI);
+console.log('✅ Chatbot API routes mounted at /api/chatbot');
 
-if (typeof systemHealthAPI === 'function' || (systemHealthAPI && typeof systemHealthAPI.handle === 'function')) {
-    app.use('/api/system-health', systemHealthAPI);
-}
-
-if (typeof databaseAPI === 'function' || (databaseAPI && typeof databaseAPI.handle === 'function')) {
-    app.use('/api/database', databaseAPI);
-}
-
-if (typeof recoveryAPI === 'function' || (recoveryAPI && typeof recoveryAPI.handle === 'function')) {
-    app.use('/api/recovery', recoveryAPI);
-}
-
-if (typeof ticketsAPI === 'function' || (ticketsAPI && typeof ticketsAPI.handle === 'function')) {
-    app.use('/api/tickets', ticketsAPI);
-}
-
-if (typeof authAPI === 'function' || (authAPI && typeof authAPI.handle === 'function')) {
-    app.use('/api/auth', authAPI);
-}
+app.use('/api/system-health', systemHealthAPI);
+app.use('/api/database', databaseAPI);
+app.use('/api/recovery', recoveryAPI);
+app.use('/api/tickets', ticketsAPI);
+app.use('/api/auth', authAPI);
+console.log('✅ All API routes mounted successfully');
 
 // API Routes
 // Note: Static serving is now handled by express.static('.') above
