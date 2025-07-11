@@ -25,85 +25,50 @@
         availableAgents: [],
         currentAgent: null,
         chatbotSettings: null,
-        conversationPhase: 'welcome', // welcome -> handoff -> agent -> personalized
+        conversationPhase: 'welcome',
         userName: null,
         restaurantName: null,
         handoffComplete: false,
-        currentLanguage: null, // Will be detected from user input
+        currentLanguage: null,
         languageDetected: false,
 
         init: function(options = {}) {
             console.log('Initializing Fooodis Chatbot Widget...');
 
-            // Merge configuration
             this.config = { ...this.config, ...options };
 
-            // Set default API endpoint if not provided
             if (!this.config.apiEndpoint) {
                 this.config.apiEndpoint = window.location.origin + '/api/chatbot';
             }
 
-            // Initialize chat state
             this.conversationPhase = 'welcome';
             this.userName = localStorage.getItem('fooodis-user-name') || null;
             this.restaurantName = localStorage.getItem('fooodis-restaurant-name') || null;
             this.handoffComplete = false;
 
-            // Load saved settings and prepare agents
             this.loadSavedSettings();
-
-            // Load language preferences
             this.loadLanguagePreference();
-
-            // Check if chatbot is enabled before showing
             this.checkChatbotEnabled();
-
-            // Setup communication with dashboard
             this.setupDashboardCommunication();
-
-            // Create and inject widget
             this.createWidget();
             this.attachEventListeners();
-
-            // Set up avatar update listener
             this.setupAvatarUpdateListener();
 
-            // Notify that widget is ready
             window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
 
             console.log('Fooodis Chatbot Widget initialized successfully');
         },
 
         getInitialWelcomeMessage: function() {
-            console.log('🎯 Getting initial welcome message from node flow...');
-            
-            // First try to get message from node flow system
-            if (window.nodeFlowBuilder && typeof window.nodeFlowBuilder.getWelcomeNode === 'function') {
-                const welcomeNode = window.nodeFlowBuilder.getWelcomeNode();
-                console.log('🎯 Welcome node found:', welcomeNode);
-                
-                if (welcomeNode && welcomeNode.aiMode && welcomeNode.assistantId) {
-                    console.log('🤖 Node has AI mode enabled, will generate AI response on first user message');
-                    // Return a simple prompt that will be replaced by AI response
-                    return 'Hello! I\'m connecting you with our AI assistant...';
-                }
-                
-                if (welcomeNode && welcomeNode.message) {
-                    console.log('🎯 Using static message from welcome node');
-                    return welcomeNode.message;
-                }
-            }
+            console.log('Getting initial welcome message...');
 
-            // Ensure language detection is loaded first
             this.loadLanguagePreference();
 
-            // Use General Settings welcome message for initial greeting
             if (this.chatbotSettings && this.chatbotSettings.welcomeMessage) {
-                console.log('🌐 Using configured welcome message:', this.chatbotSettings.welcomeMessage);
+                console.log('Using configured welcome message:', this.chatbotSettings.welcomeMessage);
                 return this.chatbotSettings.welcomeMessage;
             }
 
-            // Fallback bilingual welcome message with proper formatting
             const fallbackMessage = `
                 <div class="bilingual-welcome">
                     <div class="welcome-en">🇬🇧 <strong>English:</strong> Hello! I'm your Fooodis assistant. How can I help you today?</div>
@@ -111,21 +76,20 @@
                 </div>
             `;
 
-            console.log('🌐 Using fallback bilingual welcome message');
+            console.log('Using fallback bilingual welcome message');
             return fallbackMessage;
         },
 
         loadSavedSettings: function() {
             try {
-                console.log('🔧 Widget: Starting loadSavedSettings...');
+                console.log('Widget: Starting loadSavedSettings...');
 
-                // Try multiple storage locations including backup and cross-page sync
                 let settings = null;
                 const storageKeys = [
                     'fooodis-chatbot-settings', 
                     'chatbot-settings-backup',
-                    'chatbot-widget-settings', // Additional key for widget-specific settings
-                    'chatbot-avatar-settings'   // Avatar-specific backup
+                    'chatbot-widget-settings',
+                    'chatbot-avatar-settings'
                 ];
 
                 for (const key of storageKeys) {
@@ -133,10 +97,8 @@
                     if (savedSettings) {
                         try {
                             settings = JSON.parse(savedSettings);
-                            console.log('📦 Widget loaded settings from:', key);
-                            console.log('🖼️ Settings avatar:', settings.avatar ? 'Present' : 'Missing');
+                            console.log('Widget loaded settings from:', key);
 
-                            // If we found valid settings, break
                             if (settings && (settings.avatar || settings.chatbotName)) {
                                 break;
                             }
@@ -147,9 +109,8 @@
                     }
                 }
 
-                // If no localStorage settings, try to load from config file
                 if (!settings) {
-                    console.log('📄 No localStorage settings, attempting to load from config file...');
+                    console.log('No localStorage settings, attempting to load from config file...');
                     this.loadFromConfigFile();
                     return;
                 }
@@ -157,29 +118,24 @@
                 if (settings) {
                     this.chatbotSettings = settings;
 
-                    // Enhanced avatar handling with absolute URL conversion
                     let avatarUrl = this.getDefaultAvatar();
                     if (settings.avatar && settings.avatar.trim() !== '' && this.isValidAvatarUrl(settings.avatar)) {
                         avatarUrl = this.getAbsoluteAvatarUrl(settings.avatar);
-                        console.log('🖼️ Using uploaded avatar from settings:', avatarUrl.substring(0, 50) + '...');
+                        console.log('Using uploaded avatar from settings');
                     } else {
-                        console.log('🖼️ Using default avatar (settings avatar invalid or missing)');
-                        console.log('🖼️ Settings avatar value:', settings.avatar);
+                        console.log('Using default avatar');
                     }
 
-                    // Set configuration with validated URL
                     this.config.avatar = avatarUrl;
                     this.config.enabled = settings.enabled !== false;
                     this.config.allowFileUpload = settings.allowFileUpload !== false;
 
-                    // Load agents from settings with proper avatar inheritance
                     if (settings.agents && settings.agents.length > 0) {
                         this.availableAgents = settings.agents.filter(agent => 
                             agent.active !== false
                         );
-                        console.log('📋 Widget loaded', this.availableAgents.length, 'active agents from settings');
+                        console.log('Widget loaded', this.availableAgents.length, 'active agents from settings');
 
-                        // Ensure all agents inherit the uploaded avatar if they don't have one
                         this.availableAgents.forEach(agent => {
                             if (!agent.avatar || agent.avatar === this.getDefaultAvatar()) {
                                 agent.avatar = avatarUrl;
@@ -189,18 +145,16 @@
                         });
                     }
 
-                    // Also check assistants (legacy support)
                     if (settings.assistants && settings.assistants.length > 0) {
                         const legacyAgents = settings.assistants.filter(agent => 
                             agent.status === 'active' || agent.enabled !== false
                         );
                         if (legacyAgents.length > 0 && (!this.availableAgents || this.availableAgents.length === 0)) {
                             this.availableAgents = legacyAgents;
-                            console.log('📋 Widget loaded', this.availableAgents.length, 'active legacy assistants');
+                            console.log('Widget loaded', this.availableAgents.length, 'active legacy assistants');
                         }
                     }
 
-                    // ALWAYS start with General Settings using the configured avatar
                     this.currentAgent = {
                         name: settings.chatbotName || 'Fooodis Assistant',
                         avatar: avatarUrl,
@@ -208,10 +162,9 @@
                         isGeneral: true
                     };
 
-                    console.log('🏢 Starting with General Settings agent:', this.currentAgent.name);
-                    console.log('🖼️ Final avatar URL:', avatarUrl.substring(0, 50) + '...');
+                    console.log('Starting with General Settings agent:', this.currentAgent.name);
                 } else {
-                    console.warn('⚠️ No settings found in any storage location');
+                    console.warn('No settings found in any storage location');
                     this.setDefaultAgent();
                 }
             } catch (error) {
@@ -223,7 +176,6 @@
         isValidAvatarUrl: function(url) {
             if (!url || typeof url !== 'string' || url.trim() === '') return false;
 
-            // Allow data URIs, HTTP(S) URLs, and local paths
             return url.startsWith('data:image/') || 
                    url.startsWith('http://') || 
                    url.startsWith('https://') || 
@@ -235,27 +187,22 @@
         getAbsoluteAvatarUrl: function(avatarUrl) {
             if (!avatarUrl) return this.getDefaultAvatar();
 
-            // Already absolute or data URI
             if (avatarUrl.startsWith('data:') || 
                 avatarUrl.startsWith('http://') || 
                 avatarUrl.startsWith('https://')) {
                 return avatarUrl;
             }
 
-            // Get base URL - handle both direct access and iframe contexts
             let baseUrl = window.location.origin;
 
-            // If we're in an iframe or different context, try to get the parent URL
             if (window.parent && window.parent !== window) {
                 try {
                     baseUrl = window.parent.location.origin;
                 } catch (e) {
-                    // Cross-origin iframe, use current origin
                     baseUrl = window.location.origin;
                 }
             }
 
-            // Convert relative paths with robust handling
             if (avatarUrl.startsWith('./')) {
                 return baseUrl + '/' + avatarUrl.substring(2);
             } else if (avatarUrl.startsWith('/')) {
@@ -263,29 +210,11 @@
             } else if (avatarUrl.startsWith('images/')) {
                 return baseUrl + '/' + avatarUrl;
             } else {
-                // Handle bare filenames by checking common avatar locations
-                const commonPaths = [
-                    'images/avatars/',
-                    'images/',
-                    'avatars/',
-                    ''
-                ];
-
-                for (const path of commonPaths) {
-                    const fullPath = baseUrl + '/' + path + avatarUrl;
-                    // Return the first valid-looking path (we'll handle validation in setAvatarImage)
-                    if (path === 'images/avatars/') {
-                        return fullPath;
-                    }
-                }
-
-                // Default to images/avatars/ path
                 return baseUrl + '/images/avatars/' + avatarUrl;
             }
         },
 
         getDefaultAvatar: function() {
-            // Return a robust, always-working default avatar
             return 'data:image/svg+xml;base64,' + btoa(`
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
                     <circle cx="20" cy="20" r="20" fill="#e8f24c"/>
@@ -296,13 +225,11 @@
         },
 
         loadLanguagePreference: function() {
-            // Load language preference from localStorage or detect from browser
             const savedLang = localStorage.getItem('fooodis-language');
             if (savedLang) {
                 this.currentLanguage = savedLang;
                 console.log('Loaded saved language:', this.currentLanguage);
             } else {
-                // Detect from browser language
                 const browserLang = navigator.language || navigator.userLanguage;
                 this.currentLanguage = browserLang.startsWith('sv') ? 'sv' : 'en';
                 console.log('Detected browser language:', this.currentLanguage);
@@ -316,12 +243,11 @@
                     const settings = JSON.parse(savedSettings);
                     this.config.enabled = settings.enabled !== false;
                 } else {
-                    // Check server config if no local settings
                     this.fetchServerConfig();
                 }
             } catch (error) {
                 console.error('Error checking chatbot enabled state:', error);
-                this.config.enabled = true; // Default to enabled
+                this.config.enabled = true;
             }
         },
 
@@ -339,7 +265,6 @@
         },
 
         setupDashboardCommunication: function() {
-            // Listen for dashboard events
             if (window.chatbotEvents) {
                 window.chatbotEvents.addEventListener('settingsChanged', (e) => {
                     this.handleDashboardSettingsChange(e.detail);
@@ -350,18 +275,16 @@
                 });
             }
 
-            // Listen for manager initialization
             window.addEventListener('chatbotManagerReady', () => {
-                console.log('🔗 Dashboard manager ready, syncing settings...');
+                console.log('Dashboard manager ready, syncing settings...');
                 this.syncWithDashboard();
             });
         },
 
         handleDashboardSettingsChange: function(data) {
-            console.log('📡 Widget received settings change:', data);
+            console.log('Widget received settings change:', data);
 
             if (data.settings) {
-                // Update widget configuration
                 this.config.enabled = data.settings.enabled;
                 this.config.primaryColor = data.settings.widgetColor;
                 this.config.allowFileUpload = data.settings.allowFileUpload;
@@ -370,7 +293,6 @@
                     this.updateAvatar(data.settings.avatar);
                 }
 
-                // Update widget visibility
                 if (this.widget) {
                     this.widget.style.display = this.config.enabled ? 'block' : 'none';
                 }
@@ -380,10 +302,9 @@
         },
 
         handleAssistantUpdate: function(data) {
-            console.log('📡 Widget received assistant update:', data);
+            console.log('Widget received assistant update:', data);
 
             if (data.assistant && this.widget) {
-                // Update current agent if needed
                 this.currentAgent = {
                     id: data.assistant.id,
                     name: data.assistant.name,
@@ -391,7 +312,6 @@
                     personality: data.assistant.description
                 };
 
-                // Update header info
                 this.updateAgentHeader();
             }
         },
@@ -400,7 +320,6 @@
             if (window.chatbotManager && window.chatbotManager.isInitialized) {
                 const manager = window.chatbotManager;
 
-                // Sync settings
                 this.config.enabled = manager.settings.enabled;
                 this.config.primaryColor = manager.settings.widgetColor;
                 this.config.allowFileUpload = manager.settings.allowFileUpload;
@@ -409,10 +328,9 @@
                     this.updateAvatar(manager.settings.avatar);
                 }
 
-                // Get active agent
                 this.currentAgent = manager.getActiveAgent();
 
-                console.log('✅ Widget synced with dashboard');
+                console.log('Widget synced with dashboard');
             }
         },
 
@@ -426,24 +344,21 @@
                 headerText.textContent = this.currentAgent.name;
             }
 
-            // Use a reliable avatar URL
             let avatarUrl = this.config.avatar || this.getDefaultAvatar();
-            console.log('🖼️ Updating avatar with URL:', avatarUrl.substring(0, 50) + '...');
+            console.log('Updating avatar with URL:', avatarUrl.substring(0, 50) + '...');
 
-            // Update all avatar images
             avatarImages.forEach((img, index) => {
                 this.setAvatarImage(img, avatarUrl, index + 1);
             });
 
-            console.log('🖼️ Updated agent header with avatar');
+            console.log('Updated agent header with avatar');
         },
 
         setAvatarImage: function(imgElement, avatarUrl, index) {
             if (!imgElement) return;
 
-            console.log(`🖼️ Setting avatar ${index} with URL:`, avatarUrl?.substring(0, 50) + '...');
+            console.log(`Setting avatar ${index} with URL:`, avatarUrl?.substring(0, 50) + '...');
 
-            // Set essential styles immediately
             imgElement.style.display = 'block';
             imgElement.style.objectFit = 'cover';
             imgElement.style.width = '100%';
@@ -452,22 +367,18 @@
             imgElement.style.backgroundColor = '#e8f24c';
             imgElement.alt = (this.currentAgent?.name || 'Assistant') + ' Avatar';
 
-            // Clear existing handlers
             imgElement.onerror = null;
             imgElement.onload = null;
 
-            // Validate avatar URL first
             if (!avatarUrl || typeof avatarUrl !== 'string' || avatarUrl.trim() === '') {
                 console.warn(`Avatar ${index} URL is invalid, using default`);
                 imgElement.src = this.getDefaultAvatar();
                 return;
             }
 
-            // Set up error handling with cascading fallbacks
             const setFallback = () => {
                 console.warn(`Avatar ${index} failed to load, trying fallbacks...`);
 
-                // Try different avatar sources
                 const fallbacks = [
                     this.config.avatar,
                     this.chatbotSettings?.avatar,
@@ -477,13 +388,12 @@
 
                 for (const fallback of fallbacks) {
                     if (fallback && fallback !== avatarUrl && this.isValidAvatarUrl(fallback)) {
-                        console.log(`🔄 Trying fallback avatar ${index}:`, fallback.substring(0, 50) + '...');
+                        console.log(`Trying fallback avatar ${index}:`, fallback.substring(0, 50) + '...');
                         imgElement.src = this.getAbsoluteAvatarUrl(fallback);
                         return;
                     }
                 }
 
-                // Final fallback to default
                 imgElement.src = this.getDefaultAvatar();
                 imgElement.style.display = 'block';
             };
@@ -491,20 +401,17 @@
             imgElement.onerror = setFallback;
 
             imgElement.onload = () => {
-                console.log(`✅ Avatar ${index} loaded successfully`);
+                console.log(`Avatar ${index} loaded successfully`);
                 imgElement.style.display = 'block';
             };
 
-            // Convert to absolute URL using the helper function
             const finalAvatarUrl = this.getAbsoluteAvatarUrl(avatarUrl);
-            console.log(`🔧 Final avatar URL: ${finalAvatarUrl.substring(0, 50)}...`);
+            console.log(`Final avatar URL: ${finalAvatarUrl.substring(0, 50)}...`);
 
-            // Set the source to trigger loading
             imgElement.src = finalAvatarUrl;
         },
 
         setupAvatarUpdateListener: function() {
-            // Listen for avatar updates from the dashboard
             window.addEventListener('storage', (e) => {
                 if (e.key === 'fooodis-chatbot-settings') {
                     try {
@@ -512,7 +419,6 @@
                         if (settings && settings.avatar && settings.avatar !== this.config.avatar) {
                             this.updateAvatar(settings.avatar);
                         }
-                        // Update file upload visibility
                         if (settings && typeof settings.allowFileUpload !== 'undefined') {
                             this.config.allowFileUpload = settings.allowFileUpload;
                             this.updateFileUploadVisibility();
@@ -523,7 +429,6 @@
                 }
             });
 
-            // Global function for direct avatar updates
             window.updateChatbotWidgetAvatar = (avatarUrl) => {
                 this.updateAvatar(avatarUrl);
             };
@@ -535,7 +440,7 @@
             const avatarUrl = this.config.avatar || this.getDefaultAvatar();
             const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .chatbot-avatar-header img, .message-avatar img');
 
-            console.log(`🖼️ Setting up ${avatarImages.length} avatar images`);
+            console.log(`Setting up ${avatarImages.length} avatar images`);
 
             avatarImages.forEach((img, index) => {
                 this.setAvatarImage(img, avatarUrl, index + 1);
@@ -545,12 +450,10 @@
         updateAvatar: function(avatarUrl) {
             this.config.avatar = avatarUrl;
 
-            // Update current agent avatar
             if (this.currentAgent) {
                 this.currentAgent.avatar = avatarUrl;
             }
 
-            // Store avatar in multiple locations for persistence
             try {
                 const avatarData = {
                     avatar: avatarUrl,
@@ -561,7 +464,6 @@
                 localStorage.setItem('chatbot-avatar-settings', JSON.stringify(avatarData));
                 localStorage.setItem('chatbot-widget-avatar', avatarUrl);
 
-                // Also update main settings if they exist
                 const mainSettings = localStorage.getItem('fooodis-chatbot-settings');
                 if (mainSettings) {
                     try {
@@ -576,12 +478,11 @@
                 console.error('Error storing avatar settings:', error);
             }
 
-            // Update all avatar images in the widget
             if (this.widget) {
                 this.setupAllAvatars();
             }
 
-            console.log('🖼️ Avatar updated and persisted in chatbot widget');
+            console.log('Avatar updated and persisted in chatbot widget');
         },
 
         updateFileUploadVisibility: function() {
@@ -592,28 +493,22 @@
         },
 
         createWidget: function() {
-            // Remove existing widget if present
             const existingWidget = document.getElementById('fooodis-chatbot');
             if (existingWidget) {
                 existingWidget.remove();
             }
 
-            // Get agent info and avatar
             const agentName = this.currentAgent ? this.currentAgent.name : 'Fooodis Assistant';
-
-            // Use a reliable avatar URL
             let agentAvatar = this.config.avatar || this.getDefaultAvatar();
 
-            console.log('🖼️ Creating widget with avatar:', agentAvatar.substring(0, 50) + '...');
+            console.log('Creating widget with avatar:', agentAvatar.substring(0, 50) + '...');
 
-            // Create widget container
             const widget = document.createElement('div');
             widget.id = 'fooodis-chatbot';
             widget.className = `chatbot-widget ${this.config.position}`;
 
             widget.innerHTML = `
                 <div class="chatbot-container">
-                    <!-- Chat Button -->
                     <div class="chatbot-button" id="chatbot-button">
                         <div class="chatbot-avatar">
                             <img src="${agentAvatar}" alt="${agentName} Avatar" style="display: block; object-fit: cover; width: 100%; height: 100%; border-radius: 50%; background-color: #e8f24c;" />
@@ -621,7 +516,6 @@
                         <div class="notification-badge" id="notification-badge">1</div>
                     </div>
 
-                    <!-- Chat Window -->
                     <div class="chatbot-window" id="chatbot-window">
                         <div class="chatbot-header" style="background-color: #26282f;">
                             <div class="header-top">
@@ -685,36 +579,31 @@
                 </div>
             `;
 
-            // Add styles
             this.injectStyles();
 
-            // Set initial visibility based on enabled state
             if (!this.config.enabled) {
                 widget.style.display = 'none';
             } else {
                 widget.style.display = 'block';
             }
 
-            // Append to body
             document.body.appendChild(widget);
             this.widget = widget;
 
-            // Set up avatars with proper error handling after DOM is ready
             setTimeout(() => {
                 this.setupAllAvatars();
-                console.log('🖼️ Avatar setup completed after widget creation');
+                console.log('Avatar setup completed after widget creation');
             }, 100);
         },
 
         injectStyles: function() {
             if (document.getElementById('fooodis-chatbot-styles')) {
-                return; // Styles already injected
+                return;
             }
 
             const styles = document.createElement('style');
             styles.id = 'fooodis-chatbot-styles';
             styles.textContent = `
-                /* Fooodis Chatbot Widget Styles */
                 #fooodis-chatbot {
                     position: fixed !important;
                     z-index: 999999 !important;
@@ -823,19 +712,6 @@
                     gap: 10px !important;
                 }
 
-                .chatbot-avatar-small {
-                    width: 30px !important;
-                    height: 30px !important;
-                    border-radius: 50% !important;
-                    overflow: hidden !important;
-                }
-
-                .chatbot-avatar-small img {
-                    width: 100% !important;
-                    height: 100% !important;
-                    object-fit: cover !important;
-                }
-
                 .chatbot-avatar-header {
                     width: 50px !important;
                     height: 50px !important;
@@ -923,7 +799,8 @@
                     padding: 15px !important;
                     align-items: center !important;
                     gap: 10px !important;
-                    background: #f8f9fa !importantborder-top: 1px solid #e9ecef !important;
+                    background: #f8f9fa !important;
+                    border-top: 1px solid #e9ecef !important;
                 }
 
                 .typing-indicator {
@@ -997,7 +874,8 @@
                     background: #e8f24c !important;
                     border: none !important;
                     color: #26282f !important;
-                    cursor: pointer !important                    padding: 10px !important;
+                    cursor: pointer !important;
+                    padding: 10px !important;
                     border-radius: 50% !important;
                     display: flex !important;
                     align-items: center !important;
@@ -1022,7 +900,6 @@
                     margin-bottom: 0 !important;
                 }
 
-                /* Mobile responsive */
                 @media (max-width: 768px) {
                     .chatbot-window {
                         width: 320px !important;
@@ -1042,7 +919,6 @@
             const sendButton = document.getElementById('chatbot-send');
             const messageInput = document.getElementById('chatbot-message-input');
 
-            // Toggle chat window
             if (chatButton) {
                 chatButton.addEventListener('click', () => this.toggleChat());
             }
@@ -1051,7 +927,6 @@
                 closeButton.addEventListener('click', () => this.closeChat());
             }
 
-            // Send message
             if (sendButton) {
                 sendButton.addEventListener('click', () => this.sendMessage());
             }
@@ -1064,7 +939,6 @@
                 });
             }
 
-            // File upload
             const uploadButton = document.getElementById('chatbot-upload');
             const fileInput = document.getElementById('chatbot-file-input');
 
@@ -1083,7 +957,6 @@
                 });
             }
 
-            // Show/hide upload button based on settings
             this.updateFileUploadVisibility();
         },
 
@@ -1099,12 +972,10 @@
                     chatWindow.classList.add('open');
                     this.isOpen = true;
 
-                    // Hide notification badge when chat is opened
                     if (notificationBadge) {
                         notificationBadge.style.display = 'none';
                     }
 
-                    // Focus on input
                     const messageInput = document.getElementById('chatbot-message-input');
                     if (messageInput) {
                         setTimeout(() => messageInput.focus(), 100);
@@ -1128,17 +999,11 @@
             const message = messageInput.value.trim();
             if (!message) return;
 
-            // Play send sound
-            this.playSound('send');
-
-            // Add user message to chat
             this.addMessage(message, 'user');
             messageInput.value = '';
 
-            // Show typing indicator
             this.showTyping();
 
-            // Process message
             this.processMessage(message);
         },
 
@@ -1146,19 +1011,12 @@
             const messagesContainer = document.getElementById('chatbot-messages');
             if (!messagesContainer) return;
 
-            // Play receive sound for assistant messages
-            if (sender === 'assistant') {
-                this.playSound('receive');
-            }
-
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}`;
 
             let avatarHtml = '';
 
-            // Only show avatar for assistant/system messages, not for user messages
             if (sender === 'assistant' || sender === 'system') {
-                // For assistant messages, use config avatar (which includes uploaded avatar)
                 const avatar = this.config.avatar || this.getDefaultAvatar();
 
                 const avatarImg = document.createElement('img');
@@ -1170,7 +1028,6 @@
                 avatarImg.style.backgroundColor = '#e8f24c';
                 avatarImg.style.borderRadius = '50%';
 
-                // Set up error handler before setting src
                 avatarImg.onerror = function() {
                     console.warn('Message avatar failed to load:', avatar);
                     avatarImg.src = this.getDefaultAvatar();
@@ -1181,7 +1038,6 @@
                     avatarImg.style.display = 'block';
                 };
 
-                // Set src last to trigger loading
                 avatarImg.src = avatar;
 
                 avatarHtml = `
@@ -1199,7 +1055,6 @@
             messagesContainer.appendChild(messageElement);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // Store message
             this.messages.push({
                 content: content,
                 sender: sender,
@@ -1213,10 +1068,6 @@
                 typingIndicator.style.display = 'flex';
                 this.isTyping = true;
 
-                // Play typing sound
-                this.playSound('typing');
-
-                // Update typing text with agent name and language
                 const agentName = this.currentAgent?.name || 'Assistant';
                 const typingText = typingIndicator.querySelector('span');
                 if (typingText) {
@@ -1237,157 +1088,96 @@
             }
         },
 
-        playSound: function(type) {
-            try {
-                let frequency, duration;
-
-                switch(type) {
-                    case 'send':
-                        frequency = 800;
-                        duration = 200;
-                        break;
-                    case 'receive':
-                        frequency = 600;
-                        duration = 300;
-                        break;
-                    case 'typing':
-                        frequency = 400;
-                        duration = 100;
-                        break;
-                    default:
-                        return;
-                }
-
-                // Create audio context
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-
-                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-                oscillator.type = 'sine';
-
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
-
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + duration / 1000);
-
-                console.log(`🔊 Playing ${type} sound at ${frequency}Hz for ${duration}ms`);
-            } catch (error) {
-                console.warn('Sound playback failed:', error);
-            }
-        },
-
         processMessage: async function(message) {
-        try {
-            // Generate conversation ID if not exists
-            if (!this.conversationId) {
-                this.conversationId = 'conv_' + Date.now() + '_'+ Math.random().toString(36).substr(2, 9);
-            }
-
-            console.log('🤖 Processing message:', message.substring(0, 50) + '...');
-
-            // Detect language on first message
-            if (!this.languageDetected) {
-                this.detectAndSetLanguage(message);
-                this.languageDetected = true;
-            }
-
-            // Add registration form trigger for manual activation
-            this.addRegistrationFormTrigger();
-
-            // 🎯 NEW: Check if we should use node flow AI system instead of agent handoff
-            const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
-
-            if (isFirstMessage && this.conversationPhase === 'welcome') {
-                console.log('🎯 First message detected, checking node flow system...');
-                
-                // Try to get response from node flow AI system first
-                if (await this.processMessageWithNodeFlow(message)) {
-                    return; // Node flow handled the message
-                }
-                
-                console.log('🔄 No node flow AI available, falling back to agent handoff...');
-                await this.performAgentHandoff();
-                return;
-            }
-
-            // Try to use chatbot manager if available
-            if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
-                console.log('🔄 Using chatbot manager for response');
-                const response = await window.chatbotManager.generateAgentResponse({
-                    message: message,
-                    conversationId: this.conversationId,
-                    language: this.currentLanguage || 'en',
-                    agent: this.currentAgent,
-                    userName: this.userName,
-                    userRegistered: this.userRegistered,
-                    recentMessages: this.messages.slice(-5),
-                    assistantId: this.currentAgent?.assignedAssistantId
-                });
-
-                this.hideTyping();
-                if (response && response.success) {
-                    this.addMessage(response.message, 'assistant');
-                    return;
-                } else {
-                    console.warn('⚠️ Manager response failed, trying API fallback');
-                }
-            }
-
-            // Try API endpoint
             try {
-                console.log('🌐 Trying API endpoint:', this.config.apiEndpoint);
-                const response = await fetch(this.config.apiEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
+                if (!this.conversationId) {
+                    this.conversationId = 'conv_' + Date.now() + '_'+ Math.random().toString(36).substr(2, 9);
+                }
+
+                console.log('Processing message:', message.substring(0, 50) + '...');
+
+                if (!this.languageDetected) {
+                    this.detectAndSetLanguage(message);
+                    this.languageDetected = true;
+                }
+
+                const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
+
+                if (isFirstMessage && this.conversationPhase === 'welcome') {
+                    console.log('First message detected, performing agent handoff...');
+                    await this.performAgentHandoff();
+                    return;
+                }
+
+                if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
+                    console.log('Using chatbot manager for response');
+                    const response = await window.chatbotManager.generateAgentResponse({
                         message: message,
                         conversationId: this.conversationId,
                         language: this.currentLanguage || 'en',
                         agent: this.currentAgent,
+                        userName: this.userName,
+                        userRegistered: this.userRegistered,
+                        recentMessages: this.messages.slice(-5),
                         assistantId: this.currentAgent?.assignedAssistantId
-                    })
-                });
+                    });
 
-                if (response.ok) {
-                    const data = await response.json();
                     this.hideTyping();
-                    if (data.success && data.message) {
-                        this.addMessage(data.message, 'assistant');
+                    if (response && response.success) {
+                        this.addMessage(response.message, 'assistant');
                         return;
+                    } else {
+                        console.warn('Manager response failed, trying API fallback');
                     }
                 }
-            } catch (apiError) {
-                console.warn('⚠️ API endpoint failed:', apiError);
+
+                try {
+                    console.log('Trying API endpoint:', this.config.apiEndpoint);
+                    const response = await fetch(this.config.apiEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            conversationId: this.conversationId,
+                            language: this.currentLanguage || 'en',
+                            agent: this.currentAgent,
+                            assistantId: this.currentAgent?.assignedAssistantId
+                        })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.hideTyping();
+                        if (data.success && data.message) {
+                            this.addMessage(data.message, 'assistant');
+                            return;
+                        }
+                    }
+                } catch (apiError) {
+                    console.warn('API endpoint failed:', apiError);
+                }
+
+                setTimeout(() => {
+                    this.hideTyping();
+                    const fallbackResponse = this.generateIntelligentFallback(message);
+                    this.addMessage(fallbackResponse, 'assistant');
+                }, 1000 + Math.random() * 2000);
+
+            } catch (error) {
+                console.error('Error processing message:', error);
+                setTimeout(() => {
+                    this.hideTyping();
+                    const errorResponse = this.currentLanguage === 'sv' 
+                        ? 'Jag kan inte svara just nu på grund av tekniska problem. Vänligen försök igen om ett ögonblick.'
+                        : 'I\'m unable to respond right now due to technical issues. Please try again in a moment.';
+                    this.addMessage(errorResponse, 'assistant');
+                }, 500);
             }
-
-            // Enhanced fallback response with typing simulation
-            setTimeout(() => {
-                this.hideTyping();
-                const fallbackResponse = this.generateIntelligentFallback(message);
-                this.addMessage(fallbackResponse, 'assistant');
-            }, 1000 + Math.random() * 2000); // Simulate realistic typing delay
-
-        } catch (error) {
-            console.error('💥 Error processing message:', error);
-            setTimeout(() => {
-                this.hideTyping();
-                const errorResponse = this.currentLanguage === 'sv' 
-                    ? 'Jag kan inte svara just nu på grund av tekniska problem. Vänligen försök igen om ett ögonblick.'
-                    : 'I\'m unable to respond right now due to technical issues. Please try again in a moment.';
-                this.addMessage(errorResponse, 'assistant');
-            }, 500);
-        }
-    },
+        },
 
         detectAndSetLanguage: function(message) {
-            // Swedish language indicators
             const swedishWords = ['hej', 'hallo', 'tjena', 'morn', 'god', 'dag', 'kväll', 'morgon', 'vad', 'hur', 'kan', 'jag', 'du', 'är', 'det', 'och', 'eller', 'tack', 'bra', 'här', 'där', 'när', 'vem', 'vilken', 'svenska', 'sverige'];
             const englishWords = ['hello', 'hi', 'hey', 'good', 'morning', 'evening', 'what', 'how', 'can', 'you', 'are', 'is', 'and', 'or', 'thanks', 'thank', 'here', 'there', 'when', 'who', 'which', 'english'];
 
@@ -1395,37 +1185,32 @@
             let swedishScore = 0;
             let englishScore = 0;
 
-            // Check for Swedish words
             swedishWords.forEach(word => {
                 if (messageLower.includes(word)) {
                     swedishScore++;
                 }
             });
 
-            // Check for English words
             englishWords.forEach(word => {
                 if (messageLower.includes(word)) {
                     englishScore++;
                 }
             });
 
-            // Set language based on detection
             if (swedishScore > englishScore) {
                 this.currentLanguage = 'sv';
-                console.log('🇸🇪 Swedish language detected');
+                console.log('Swedish language detected');
             } else {
                 this.currentLanguage = 'en';
-                console.log('🇺🇸 English language detected');
+                console.log('English language detected');
             }
 
-            // Save language preference
             localStorage.setItem('fooodis-language', this.currentLanguage);
         },
 
         performAgentHandoff: async function() {
-            console.log('🔄 Starting agent handoff process...');
+            console.log('Starting agent handoff process...');
 
-            // Show handoff message
             const handoffMessage = this.currentLanguage === 'sv'
                 ? "Ett ögonblick, vi kopplar dig till en av våra supportagenter..."
                 : "Hold on, we're connecting you to one of our support agents...";
@@ -1433,35 +1218,28 @@
             this.hideTyping();
             this.addMessage(handoffMessage, 'assistant');
 
-            // Brief pause for realism
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            // Select random agent (this will call switchAgent internally)
             this.selectRandomAgent();
 
-            // Show typing indicator
             this.showTyping();
 
-            // Agent introduction after typing delay
             setTimeout(() => {
                 this.hideTyping();
                 const introMessage = this.getAgentIntroduction();
                 this.addMessage(introMessage, 'assistant');
 
-                // Update conversation phase
                 this.conversationPhase = 'agent';
             }, 2000 + Math.random() * 1000);
         },
 
         selectRandomAgent: function() {
-            console.log('🎲 Selecting random agent from available agents...');
+            console.log('Selecting random agent from available agents...');
 
-            // Get active agents from settings
             if (this.availableAgents && this.availableAgents.length > 0) {
                 const randomIndex = Math.floor(Math.random() * this.availableAgents.length);
                 const selectedAgent = this.availableAgents[randomIndex];
 
-                // Use agent's specific avatar if available, otherwise use the general uploaded avatar
                 const agentAvatar = selectedAgent.avatar && selectedAgent.avatar !== this.getDefaultAvatar() 
                     ? selectedAgent.avatar
                     : this.config.avatar || this.getDefaultAvatar();
@@ -1475,19 +1253,16 @@
                     department: selectedAgent.department
                 };
 
-                console.log('✅ Selected agent:', agentData.name, 'with avatar:', agentAvatar.substring(0, 50) + '...');
+                console.log('Selected agent:', agentData.name, 'with avatar:', agentAvatar.substring(0, 50) + '...');
 
-                // Use switchAgent to properly handle the avatar change
                 this.switchAgent(agentData);
             } else {
-                // Fallback to default agents from config
-                console.log('⚠️ No available agents, using config fallback');
+                console.log('No available agents, using config fallback');
                 this.loadAgentsFromConfig();
             }
         },
 
         loadAgentsFromConfig: function() {
-            // Try to load from chatbot-config.json assistants
             if (window.chatbotManager && window.chatbotManager.assistants) {
                 const activeAssistants = window.chatbotManager.assistants.filter(a => a.status === 'active');
                 if (activeAssistants.length > 0) {
@@ -1502,7 +1277,7 @@
                         assignedAssistantId: selectedAssistant.assistantId
                     };
 
-                    console.log('✅ Selected agent from config:', this.currentAgent.name);
+                    console.log('Selected agent from config:', this.currentAgent.name);
                 } else {
                     this.setDefaultAgent();
                 }
@@ -1523,82 +1298,7 @@
             }
         },
 
-        processMessageWithNodeFlow: async function(message) {
-            console.log('🎯 Trying to process message with node flow system...');
-            
-            if (!window.nodeFlowBuilder) {
-                console.log('❌ Node flow builder not available');
-                return false;
-            }
-
-            try {
-                // Get the current active node (should be welcome or first message node)
-                const currentNode = window.nodeFlowBuilder.getCurrentNode();
-                console.log('🎯 Current node:', currentNode);
-
-                if (!currentNode || !currentNode.aiMode) {
-                    console.log('❌ No AI-enabled node found');
-                    return false;
-                }
-
-                // Check if node has AI assistant configured
-                if (!currentNode.assistantId) {
-                    console.log('❌ Node has no assistant ID configured');
-                    return false;
-                }
-
-                console.log('🤖 Using AI assistant from node:', currentNode.assistantId);
-
-                // Create node context for AI request
-                const nodeContext = {
-                    assistantId: currentNode.assistantId,
-                    aiPrompt: currentNode.aiPrompt || 'You are a helpful assistant for Fooodis. Provide helpful and friendly responses.',
-                    nodeId: currentNode.id,
-                    nodeTitle: currentNode.title
-                };
-
-                console.log('🎯 Node context:', nodeContext);
-
-                // Try to use the API with node context
-                const response = await fetch(this.config.apiEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        conversationId: this.conversationId,
-                        language: this.currentLanguage || 'en',
-                        nodeContext: nodeContext, // Pass node context to API
-                        agent: this.currentAgent
-                    })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    this.hideTyping();
-                    
-                    if (data.success && data.message) {
-                        console.log('✅ Got AI response from node flow:', data.message.substring(0, 100) + '...');
-                        this.addMessage(data.message, 'assistant');
-                        
-                        // Update conversation phase
-                        this.conversationPhase = 'ai-node';
-                        return true;
-                    }
-                }
-
-                console.log('❌ Node flow API request failed');
-                return false;
-
-            } catch (error) {
-                console.error('❌ Error in node flow processing:', error);
-                return false;
-            }
-        },
-
         generateIntelligentFallback: function(message) {
-            // Basic keyword-based fallback
             const messageLower = message.toLowerCase();
 
             if (messageLower.includes('order') || messageLower.includes('delivery') || messageLower.includes('beställ') || messageLower.includes('leverans')) {
@@ -1626,7 +1326,7 @@
                 return;
             }
 
-            const maxSize = 5 * 1024 * 1024; // 5MB
+            const maxSize = 5 * 1024 * 1024;
             if (file.size > maxSize) {
                 this.addMessage('File size too large. Please select a file under 5MB.', 'assistant');
                 return;
@@ -1649,7 +1349,6 @@
         },
 
         loadFromConfigFile: function() {
-            // Try to load settings from config file as fallback
             fetch('./chatbot-config.json')
                 .then(response => {
                     if (!response.ok) {
@@ -1658,7 +1357,7 @@
                     return response.json();
                 })
                 .then(config => {
-                    console.log('📄 Loaded config from file:', config);
+                    console.log('Loaded config from file:', config);
 
                     this.chatbotSettings = {
                         enabled: config.enabled !== false,
@@ -1671,21 +1370,18 @@
                         defaultModel: config.defaultModel || 'gpt-4'
                     };
 
-                    // Store API key for manager access
                     if (config.openaiApiKey) {
                         localStorage.setItem('openai-api-key', config.openaiApiKey);
                         localStorage.setItem('OPENAI_API_KEY', config.openaiApiKey);
                     }
 
-                    // Update available agents
                     if (this.chatbotSettings.assistants && this.chatbotSettings.assistants.length > 0) {
                         this.availableAgents = this.chatbotSettings.assistants.filter(a => 
                             a.status === 'active' || a.enabled !== false
                         );
-                        console.log('📋 Loaded', this.availableAgents.length, 'active agents from config');
+                        console.log('Loaded', this.availableAgents.length, 'active agents from config');
                     }
 
-                    // Set current agent
                     if (this.availableAgents && this.availableAgents.length > 0) {
                         this.currentAgent = {
                             id: this.availableAgents[0].id,
@@ -1698,13 +1394,12 @@
                         this.setDefaultAgent();
                     }
 
-                    // Save to localStorage for future use
                     localStorage.setItem('fooodis-chatbot-settings', JSON.stringify(this.chatbotSettings));
                     localStorage.setItem('chatbot-settings-backup', JSON.stringify(this.chatbotSettings));
-                    console.log('✅ Config loaded and saved to localStorage');
+                    console.log('Config loaded and saved to localStorage');
                 })
                 .catch(error => {
-                    console.error('❌ Failed to load config file:', error);
+                    console.error('Failed to load config file:', error);
                     this.setDefaultAgent();
                 });
         },
@@ -1718,52 +1413,41 @@
                 assignedAssistantId: null,
                 isGeneral: true
             };
-            console.log('🏢 Set default general settings agent:', this.currentAgent.name);
+            console.log('Set default general settings agent:', this.currentAgent.name);
         },
 
         switchAgent: function(agentData) {
             if (!agentData) return;
 
-            console.log('🔄 Switching to agent:', agentData.name);
+            console.log('Switching to agent:', agentData.name);
 
-            // Store previous agent state
             const previousAgent = this.currentAgent;
 
-            // Get the correct avatar URL for the new agent
             let newAvatarUrl = agentData.avatar;
 
-            // If agent doesn't have a specific avatar, use the general uploaded avatar
             if (!newAvatarUrl || newAvatarUrl === this.getDefaultAvatar()) {
                 newAvatarUrl = this.config.avatar || this.getDefaultAvatar();
             }
 
-            // Convert to absolute URL
             newAvatarUrl = this.getAbsoluteAvatarUrl(newAvatarUrl);
 
-            // Update current agent with the correct avatar
             this.currentAgent = {
                 ...agentData,
                 avatar: newAvatarUrl
             };
 
-            // Update the widget's main avatar configuration
             this.config.avatar = newAvatarUrl;
 
-            console.log('🖼️ Switching to agent avatar:', newAvatarUrl.substring(0, 50) + '...');
+            console.log('Switching to agent avatar:', newAvatarUrl.substring(0, 50) + '...');
 
-            // Update header with new agent info
             this.updateAgentHeader();
 
-            // Force immediate avatar update on all elements
             this.setupAllAvatars();
 
-            // Add agent switch message with correct avatar
             this.addMessage(`Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`, 'assistant');
 
-            // Store the new avatar for persistence
             this.updateAvatar(newAvatarUrl);
 
-            // Trigger avatar sync event with the new avatar
             window.dispatchEvent(new CustomEvent('chatbotAgentSwitched', {
                 detail: { 
                     agent: {
@@ -1774,68 +1458,7 @@
                 }
             }));
 
-            console.log('✅ Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
-        },
-
-        shouldShowRegistrationForm: function() {
-            // Check if user is already registered or has skipped registration
-            const currentUser = localStorage.getItem('chatbot-current-user');
-            return !currentUser;
-        },
-
-        addRegistrationFormTrigger: function() {
-            // Add registration option to chat
-            const self = this;
-
-            // Check for registration keywords in messages
-            const originalAddMessage = this.addMessage;
-            this.addMessage = function(message, type) {
-                originalAddMessage.call(this, message, type);
-
-                // If user asks about registration or account
-                if (type === 'user' && (
-                    message.toLowerCase().includes('register') || 
-                    message.toLowerCase().includes('form') ||
-                    message.toLowerCase().includes('information')
-                )) {
-                    setTimeout(() => {
-                        self.triggerRegistrationForm();
-                    }, 1000);
-                }
-            };
-
-            // Add console command for manual testing
-            window.showChatbotForm = function() {
-                console.log('🧪 Manual form trigger activated');
-                if (window.ChatbotRegistrationForm) {
-                    window.ChatbotRegistrationForm.showRegistrationForm();
-                } else {
-                    console.warn('Registration form not available');
-                }
-            };
-        },
-
-        triggerRegistrationForm: function() {
-            if (window.ChatbotRegistrationForm) {
-                window.ChatbotRegistrationForm.showRegistrationForm();
-            }
-        },
-
-        showRegistrationForm: function() {
-            // Show registration form safely
-            if (window.ChatbotRegistrationForm && typeof window.ChatbotRegistrationForm.showRegistrationForm === 'function') {
-                // Check if form should be shown
-                if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
-                    window.ChatbotRegistrationForm.showRegistrationForm();
-                    console.log('✅ Registration form displayed safely');
-                } else {
-                    console.log('🔒 Registration form skipped - user already registered');
-                }
-            } else {
-                // Fallback: show simple registration message
-                this.addMessage('Welcome! To get started, I\'ll need some basic information. Would you like to register now?', 'assistant');
-                this.addMessage('Type "register" to begin registration', 'assistant');
-            }
-        },
+            console.log('Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
+        }
     };
 })();
