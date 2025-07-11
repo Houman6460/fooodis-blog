@@ -915,7 +915,7 @@
                     border: none !important;
                     color: #26282f !important;
                     cursor: pointer !important;
-                    padding: 10px !important;border-radius: 50% !important;
+                    padding: 10px !important;border-radius: 50%!important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
@@ -1194,7 +1194,7 @@
                 if (this.shouldUseNodeFlow()) {
                     response = this.processNodeFlowMessage(message);
                 }
-                // Priority 2: Check if we should use scenario-driven flow
+                // Check if scenario-driven flow
                 else if (this.shouldUseScenarioFlow()) {
                     response = this.processScenarioMessage(message);
                 } 

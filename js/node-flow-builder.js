@@ -425,7 +425,10 @@ class NodeFlowBuilder {
 
         // Handle modal closing
         if (target.classList.contains('modal-close') || target.classList.contains('modal-overlay')) {
-            this.closeModal();
+            const modal = target.closest('.node-modal') || target.closest('.test-flow-modal');
+            if (modal) {
+                modal.remove();
+            }
         }
     }
 
@@ -1352,6 +1355,11 @@ class NodeFlowBuilder {
         }, 500);
 
         this.showToast('Flow saved successfully', 'success');
+    }
+
+    closeModal() {
+        const modals = document.querySelectorAll('.node-modal, .test-flow-modal');
+        modals.forEach(modal => modal.remove());
     }
 
     loadFlow() {
