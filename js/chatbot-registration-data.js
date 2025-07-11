@@ -1,4 +1,3 @@
-
 /**
  * 📊 CHATBOT REGISTRATION DATA MANAGER
  * Manages user registration data and persistence
@@ -40,19 +39,19 @@
             try {
                 // Save current user
                 localStorage.setItem('chatbot-current-user', JSON.stringify(userData));
-                
+
                 // Add to users list
                 const users = this.getAllUsers();
                 const existingIndex = users.findIndex(u => u.email === userData.email);
-                
+
                 if (existingIndex >= 0) {
                     users[existingIndex] = userData;
                 } else {
                     users.push(userData);
                 }
-                
+
                 localStorage.setItem('chatbot-users', JSON.stringify(users));
-                
+
                 console.log('✅ User data saved successfully');
                 return true;
             } catch (error) {
@@ -71,7 +70,7 @@
         updateUser: function(updates) {
             const currentUser = this.getCurrentUser();
             if (!currentUser) return false;
-            
+
             const updatedUser = { ...currentUser, ...updates };
             return this.saveUser(updatedUser);
         },
@@ -103,7 +102,7 @@
                         registrationDate: userData.registrationDate || new Date().toISOString(),
                         status: 'active'
                     };
-                    
+
                     this.saveUser(newUserData);
                     localStorage.removeItem('chatbot-user'); // Remove old format
                     console.log('✅ User data migrated to new format');
@@ -117,7 +116,7 @@
         exportUserData: function() {
             const currentUser = this.getCurrentUser();
             if (!currentUser) return null;
-            
+
             return {
                 user: currentUser,
                 exportDate: new Date().toISOString(),
@@ -155,7 +154,7 @@
 
         // Update any visible conversation lists
         updateConversationDisplays(userData);
-        
+
         // Update lead management displays
         updateLeadDisplays(userData);
     });
@@ -166,7 +165,7 @@
         conversationElements.forEach(element => {
             const conversationId = element.getAttribute('data-conversation-id') || 
                                  element.querySelector('[data-conversation-id]')?.getAttribute('data-conversation-id');
-            
+
             if (conversationId === userData.conversationId) {
                 // Update displayed name from "Anonymous User" to actual name
                 const nameElements = element.querySelectorAll('.user-name, .conversation-name, [data-user-name]');
@@ -209,4 +208,218 @@
     };
 
     console.log('📋 Chatbot Registration Data Integration loaded');
+})();
+
+window.ChatbotRegistrationData = (function() {
+    'use strict';
+
+    // Registration data storage
+    let registrationData = {
+        users: new Map(),
+        conversations: new Map(),
+        settings: {
+            enabled: true,
+            requireRegistration: true,
+            collectEmail: true,
+            collectPhone: false,
+            collectCompany: false
+        }
+    };
+
+    // Initialize function
+    function init() {
+        console.log('🔧 ChatbotRegistrationData: Initializing...');
+        loadStoredData();
+        setupEventListeners();
+        console.log('✅ ChatbotRegistrationData: Initialized successfully');
+        return true;
+    }
+
+    // Load stored registration data
+    function loadStoredData() {
+        try {
+            // Load users from localStorage
+            const storedUsers = localStorage.getItem('chatbot-registered-users');
+            if (storedUsers) {
+                const users = JSON.parse(storedUsers);
+                users.forEach(user => {
+                    registrationData.users.set(user.id, user);
+                });
+                console.log(`📊 Loaded ${users.length} registered users`);
+            }
+
+            // Load conversations
+            const storedConversations = localStorage.getItem('chatbot-conversations');
+            if (storedConversations) {
+                const conversations = JSON.parse(storedConversations);
+                conversations.forEach(conv => {
+                    registrationData.conversations.set(conv.id, conv);
+                });
+                console.log(`📊 Loaded ${conversations.length} conversations`);
+            }
+
+            // Load settings
+            const storedSettings = localStorage.getItem('chatbot-registration-settings');
+            if (storedSettings) {
+                registrationData.settings = { ...registrationData.settings, ...JSON.parse(storedSettings) };
+                console.log('📊 Loaded registration settings');
+            }
+        } catch (error) {
+            console.error('❌ Error loading stored registration data:', error);
+        }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Listen for user registration events
+        window.addEventListener('userRegistered', (event) => {
+            const userData = event.detail;
+            console.log('👤 User registered:', userData.name);
+            registerUser(userData);
+        });
+
+        // Listen for conversation updates
+        window.addEventListener('conversationUpdated', (event) => {
+            const conversationData = event.detail;
+            updateConversation(conversationData);
+        });
+    }
+
+    // Register a new user
+    function registerUser(userData) {
+        try {
+            const user = {
+                id: userData.id || generateUserId(),
+                name: userData.name,
+                email: userData.email,
+                phone: userData.phone || '',
+                company: userData.company || '',
+                registeredAt: new Date().toISOString(),
+                lastActivity: new Date().toISOString(),
+                conversations: []
+            };
+
+            registrationData.users.set(user.id, user);
+            saveToStorage();
+
+            // Dispatch event
+            window.dispatchEvent(new CustomEvent('userDataUpdated', {
+                detail: { userId: user.id, userData: user }
+            }));
+
+            console.log('✅ User registered successfully:', user.name);
+            return user;
+        } catch (error) {
+            console.error('❌ Error registering user:', error);
+            return null;
+        }
+    }
+
+    // Update conversation data
+    function updateConversation(conversationData) {
+        try {
+            registrationData.conversations.set(conversationData.id, conversationData);
+            saveToStorage();
+        } catch (error) {
+            console.error('❌ Error updating conversation:', error);
+        }
+    }
+
+    // Generate unique user ID
+    function generateUserId() {
+        return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Save data to storage
+    function saveToStorage() {
+        try {
+            // Save users
+            const usersArray = Array.from(registrationData.users.values());
+            localStorage.setItem('chatbot-registered-users', JSON.stringify(usersArray));
+
+            // Save conversations
+            const conversationsArray = Array.from(registrationData.conversations.values());
+            localStorage.setItem('chatbot-conversations', JSON.stringify(conversationsArray));
+
+            // Save settings
+            localStorage.setItem('chatbot-registration-settings', JSON.stringify(registrationData.settings));
+
+            console.log('💾 Registration data saved to storage');
+        } catch (error) {
+            console.error('❌ Error saving registration data:', error);
+        }
+    }
+
+    // Get user by ID
+    function getUser(userId) {
+        return registrationData.users.get(userId);
+    }
+
+    // Get user by email
+    function getUserByEmail(email) {
+        for (let user of registrationData.users.values()) {
+            if (user.email === email) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    // Get all users
+    function getAllUsers() {
+        return Array.from(registrationData.users.values());
+    }
+
+    // Get conversation by ID
+    function getConversation(conversationId) {
+        return registrationData.conversations.get(conversationId);
+    }
+
+    // Get all conversations
+    function getAllConversations() {
+        return Array.from(registrationData.conversations.values());
+    }
+
+    // Check if user exists
+    function userExists(email) {
+        return getUserByEmail(email) !== null;
+    }
+
+    // Update settings
+    function updateSettings(newSettings) {
+        registrationData.settings = { ...registrationData.settings, ...newSettings };
+        saveToStorage();
+    }
+
+    // Get settings
+    function getSettings() {
+        return { ...registrationData.settings };
+    }
+
+    // Clear all data
+    function clearAllData() {
+        registrationData.users.clear();
+        registrationData.conversations.clear();
+        localStorage.removeItem('chatbot-registered-users');
+        localStorage.removeItem('chatbot-conversations');
+        localStorage.removeItem('chatbot-registration-settings');
+        console.log('🗑️ All registration data cleared');
+    }
+
+    // Public API
+    return {
+        init,
+        registerUser,
+        updateConversation,
+        getUser,
+        getUserByEmail,
+        getAllUsers,
+        getConversation,
+        getAllConversations,
+        userExists,
+        updateSettings,
+        getSettings,
+        clearAllData,
+        saveToStorage
+    };
 })();

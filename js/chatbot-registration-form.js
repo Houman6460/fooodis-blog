@@ -899,7 +899,7 @@
                     width: 100%;
                     height: 100%;
                     background: rgba(0, 0, 0, 0.95);
-The code has been modified to fix conversation updates and data synchronization issues by adding a forceConversationRefresh call after updating conversations in localStorage.                    display: flex;
+                    display: flex;
                     justify-content: center;
                     align-items: center;
                     z-index: 10000;
@@ -1148,12 +1148,31 @@ The code has been modified to fix conversation updates and data synchronization 
     };
 
     // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 ChatbotRegistrationForm: DOM ready, initializing...');
+
+        // Ensure ChatbotRegistrationData is initialized first
+        if (window.ChatbotRegistrationData && typeof window.ChatbotRegistrationData.init === 'function') {
+            window.ChatbotRegistrationData.init();
+        }
+
+        window.ChatbotRegistrationForm.init();
+    });
+
+    // Also initialize if called after DOM is ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => window.ChatbotRegistrationForm.init(), 100);
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.ChatbotRegistrationData && typeof window.ChatbotRegistrationData.init === 'function') {
+                window.ChatbotRegistrationData.init();
+            }
+            window.ChatbotRegistrationForm.init();
         });
     } else {
-        setTimeout(() => window.ChatbotRegistrationForm.init(), 100);
+        // DOM is already ready
+        if (window.ChatbotRegistrationData && typeof window.ChatbotRegistrationData.init === 'function') {
+            window.ChatbotRegistrationData.init();
+        }
+        window.ChatbotRegistrationForm.init();
     }
 
     // Also provide manual trigger function

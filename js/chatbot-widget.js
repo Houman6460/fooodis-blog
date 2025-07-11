@@ -495,11 +495,11 @@
         playSound: function(type) {
             // 🔧 FIX: Add sound feedback for chat interactions
             if (!this.config.soundEnabled) return;
-            
+
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 let frequency = 440; // Default frequency
-                
+
                 switch(type) {
                     case 'send':
                         frequency = 800; // Higher pitch for send
@@ -511,19 +511,19 @@
                         frequency = 400; // Lower pitch for typing
                         break;
                 }
-                
+
                 const oscillator = audioContext.createOscillator();
                 const gain = audioContext.createGain();
-                
+
                 oscillator.connect(gain);
                 gain.connect(audioContext.destination);
-                
+
                 oscillator.frequency.value = frequency;
                 oscillator.type = 'sine';
-                
+
                 gain.gain.setValueAtTime(0.1, audioContext.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                
+
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.1);
             } catch (error) {
@@ -1123,7 +1123,7 @@
             }
 
             let quickRepliesHtml = '';
-            
+
             // 🔧 FIX: Only show quick replies if explicitly provided and not using AI Message Nodes
             if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
                 // Don't show default buttons when AI Message Nodes are active
@@ -1403,11 +1403,11 @@
                 console.log('⚠️ NodeFlowBuilder not available or no nodes found');
                 return false;
             }
-            
+
             const aiNodes = window.nodeFlowBuilder.nodes.filter(node => 
                 node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
             );
-            
+
             console.log(`🔍 Found ${aiNodes.length} AI-enabled Message Nodes`);
             return aiNodes.length > 0;
         },
@@ -1418,30 +1418,30 @@
                     console.log('⚠️ NodeFlowBuilder not available');
                     return null;
                 }
-                
+
                 // Find AI-enabled message nodes
                 const aiNodes = window.nodeFlowBuilder.nodes.filter(node => 
                     node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
                 );
-                
+
                 if (aiNodes.length === 0) {
                     console.log('⚠️ No AI-enabled Message Nodes found');
                     return null;
                 }
-                
+
                 // Use the first AI node for simplicity (could be enhanced with intent matching)
                 const aiNode = aiNodes[0];
                 console.log(`🤖 Using AI Message Node: ${aiNode.data.title} with assistant: ${aiNode.data.selectedAssistant}`);
-                
+
                 // Get the assistant from chatbot manager
                 if (window.chatbotManager && window.chatbotManager.assistants) {
                     const assistant = window.chatbotManager.assistants.find(a => 
                         a.id === aiNode.data.selectedAssistant
                     );
-                    
+
                     if (assistant && assistant.assistantId) {
                         console.log(`🎯 Found assistant: ${assistant.name} (${assistant.assistantId})`);
-                        
+
                         const response = await window.chatbotManager.generateAgentResponse({
                             message: message,
                             conversationId: this.conversationId,
@@ -1454,7 +1454,7 @@
                             customPrompt: aiNode.data.aiPrompt,
                             useCustomPrompt: true // Flag to indicate this is from Node Flow
                         });
-                        
+
                         if (response && response.success) {
                             console.log('✅ AI Message Node generated response successfully');
                             return response.message;
@@ -1467,7 +1467,7 @@
                 } else {
                     console.error('❌ ChatbotManager not available or no assistants');
                 }
-                
+
                 return null;
             } catch (error) {
                 console.error('❌ Error processing with Node Flow:', error);
@@ -1731,3 +1731,165 @@
         }
     };
 })();
+
+// Chatbot Registration Form
+(function() {
+    'use strict';
+
+    const formContainerId = 'chatbot-registration-form';
+    const thankYouMessageId = 'chatbot-thank-you-message';
+
+    window.ChatbotRegistrationData = {
+        init: function() {
+            console.log('Initializing Chatbot Registration Data...');
+        
+            // Load settings from localStorage
+            let settings = {};
+            try {
+                const savedSettings = localStorage.getItem('fooodis-chatbot-settings');
+                if (savedSettings) {
+                    settings = JSON.parse(savedSettings);
+                    console.log('Loaded settings from localStorage:', settings);
+                } else {
+                    console.warn('No settings found in localStorage, using defaults.');
+                }
+            } catch (error) {
+                console.error('Error parsing settings from localStorage:', error);
+            }
+        
+            // Default settings
+            this.settings = {
+                requireRegistration: true,
+                registrationFields: ['name', 'email', 'phone', 'location'],
+                ...settings
+            };
+        
+            this.attachFormSubmission();
+            console.log('Chatbot Registration Data initialized.');
+        },
+
+        attachFormSubmission: function() {
+            const form = document.getElementById(formContainerId);
+
+            if (form) {
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    this.submitForm();
+                });
+                console.log('Form submission listener attached.');
+            } else {
+                console.warn('Registration form not found. Ensure the form is present in the DOM.');
+            }
+        },
+
+        submitForm: function() {
+            console.log('Submitting registration form...');
+
+            const form = document.getElementById(formContainerId);
+            if (!form) {
+                console.error('Form not found.');
+                return;
+            }
+
+            // Collect form data
+            const formData = new FormData(form);
+            const userData = {};
+            formData.forEach((value, key) => {
+                userData[key] = value;
+            });
+
+            // Validate form data (basic validation)
+            if (!userData.name || !userData.email) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Save user data to local storage
+            localStorage.setItem('chatbot-user-data', JSON.stringify(userData));
+
+            // Hide the form and show thank you message
+            this.hideRegistrationForm();
+            this.showThankYouMessage();
+
+            // Update chatbot state
+            if (window.FoodisChatbot) {
+                window.FoodisChatbot.userRegistered = true;
+                window.FoodisChatbot.userInfo = userData;
+                console.log('Updated chatbot user info:', userData);
+            } else {
+                console.warn('Chatbot widget not found.');
+            }
+
+            console.log('Registration form submitted successfully.');
+        },
+
+        showRegistrationForm: function() {
+            const formContainer = document.getElementById(formContainerId);
+            if (formContainer) {
+                formContainer.style.display = 'block';
+            } else {
+                console.warn('Registration form container not found.');
+            }
+        },
+
+        hideRegistrationForm: function() {
+            const formContainer = document.getElementById(formContainerId);
+            if (formContainer) {
+                formContainer.style.display = 'none';
+            }
+        },
+
+        showThankYouMessage: function() {
+            const thankYouMessage = document.getElementById(thankYouMessageId);
+            if (thankYouMessage) {
+                thankYouMessage.style.display = 'block';
+            } else {
+                console.warn('Thank you message container not found.');
+            }
+        },
+
+        hideThankYouMessage: function() {
+            const thankYouMessage = document.getElementById(thankYouMessageId);
+            if (thankYouMessage) {
+                thankYouMessage.style.display = 'none';
+            }
+        },
+
+        // Show registration form if needed
+        showRegistrationFormIfNeeded: function() {
+            // Check if user needs to register
+            const hasUserData = localStorage.getItem('chatbot-user-data');
+            if (!hasUserData && this.settings.requireRegistration !== false) {
+                console.log('👤 User registration required, showing form...');
+
+                // Ensure registration system is initialized
+                if (window.ChatbotRegistrationData && typeof window.ChatbotRegistrationData.init === 'function') {
+                    try {
+                        window.ChatbotRegistrationData.init();
+                        console.log('✅ Registration data system initialized');
+                    } catch (error) {
+                        console.error('❌ Error initializing registration data:', error);
+                    }
+                }
+
+                this.showRegistrationForm();
+                return true;
+            }
+            return false;
+        }
+    };
+})();
+
+// Integrate with chatbot widget
+window.addEventListener('chatbotWidgetReady', () => {
+    console.log('Chatbot widget ready, integrating registration form...');
+
+    if (window.ChatbotRegistrationData && typeof window.ChatbotRegistrationData.showRegistrationFormIfNeeded === 'function') {
+        // Delay to ensure the form is fully rendered
+        setTimeout(() => {
+            window.ChatbotRegistrationData.showRegistrationFormIfNeeded();
+        }, 500);
+    } else {
+        console.warn('Registration data system not found or not initialized.');
+    }
+});
