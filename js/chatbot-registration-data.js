@@ -12,11 +12,17 @@
         init: function() {
             if (this.initialized) return;
             console.log('📊 Registration Data Manager initialized');
+            
+            // Simple initialization without problematic migration
             try {
-                this.migrateOldData();
+                // Just ensure we have basic storage structure
+                if (!localStorage.getItem('fooodis-chatbot-registrations')) {
+                    localStorage.setItem('fooodis-chatbot-registrations', '[]');
+                }
             } catch (error) {
-                console.warn('Migration error (non-critical):', error);
+                console.warn('Storage initialization error (non-critical):', error);
             }
+            
             this.initialized = true;
         },
 

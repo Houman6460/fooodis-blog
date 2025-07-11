@@ -76,12 +76,12 @@
             const userData = localStorage.getItem('chatbot-user-data');
             const registrations = localStorage.getItem('chatbot-registrations');
             const userDataAlt = localStorage.getItem('chatbot-users');
-            
+
             console.log('🔍 Checking if registration form should show...');
             console.log('Current user:', currentUser);
             console.log('User data:', userData);
             console.log('Alt user data:', userDataAlt);
-            
+
             // If no user data at all, show form
             if (!currentUser && !userData && !userDataAlt) {
                 console.log('✅ No user data found, should show form');
@@ -91,7 +91,7 @@
             try {
                 // Check if user has complete registration data
                 let hasCompleteData = false;
-                
+
                 if (currentUser) {
                     const user = JSON.parse(currentUser);
                     if (user.skipped) {
@@ -102,20 +102,20 @@
                         console.log(`⏰ User skipped ${hoursPassed.toFixed(1)} hours ago, should show:`, shouldShow);
                         return shouldShow;
                     }
-                    
+
                     // If user has name and email, don't show form
                     if (user.name && user.email) {
                         hasCompleteData = true;
                     }
                 }
-                
+
                 if (userData) {
                     const data = JSON.parse(userData);
                     if (data.name && data.email) {
                         hasCompleteData = true;
                     }
                 }
-                
+
                 if (userDataAlt) {
                     const altData = JSON.parse(userDataAlt);
                     if (Array.isArray(altData) && altData.length > 0) {
@@ -125,12 +125,12 @@
                         }
                     }
                 }
-                
+
                 if (hasCompleteData) {
                     console.log('❌ User already registered, not showing form');
                     return false;
                 }
-                
+
                 console.log('✅ Incomplete user data, should show form');
                 return true;
             } catch (error) {
@@ -255,7 +255,7 @@
             document.addEventListener('submit', (e) => {
                 if (e.target.id === 'registrationForm') {
                     e.preventDefault();
-                    this.submitForm();
+                    this.handleFormSubmit(e);
                 }
             });
         },
@@ -341,240 +341,49 @@
             console.log('✅ Form language updated successfully');
         },
 
-        submitForm: async function() {
-            const systemUsageValue = document.getElementById('systemUsage')?.value || '';
-
-            // CORRECTED user type determination - match option values exactly
-            let userType = 'potential user'; // Default
-
-            console.log('🎯 FORM SUBMISSION - System usage value:', systemUsageValue);
-
-            // Check if user selected "Using Fooodis" option (value="current_user")
-            if (systemUsageValue === 'current_user') {
-                userType = 'user'; // This should be "user" not "current user" 
-                console.log('✅ FORM SUBMISSION - Assigned userType: user (Current Fooodis User)');
-            } else if (systemUsageValue === 'competitor_user') {
-                userType = 'competitor user';
-                console.log('✅ FORM SUBMISSION - Assigned userType: competitor user');
-            } else {
-                userType = 'potential user';
-                console.log('✅ FORM SUBMISSION - Assigned userType: potential user (default)');
-            }
-
-            // Get or generate session/device IDs for conversation matching
-            let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
-            let deviceId = localStorage.getItem('chatbot-device-id');
-
-            if (!sessionId) {
-                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('chatbot-session-id', sessionId);
-            }
-
-            if (!deviceId) {
-                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('chatbot-device-id', deviceId);
-            }
-
-            const formData = {
-                name: document.getElementById('userName')?.value || '',
-                email: document.getElementById('userEmail')?.value || '',
-                restaurantName: document.getElementById('restaurantName')?.value || '',
-                phone: document.getElementById('userPhone')?.value || '',
-                systemUsage: systemUsageValue,
-                userType: userType, // Add the determined user type
-                timestamp: new Date().toISOString(),
-                language: this.currentLanguage,
-                conversationId: window.FoodisChatbot?.conversationId || null,
-                sessionId: sessionId,
-                deviceId: deviceId
-            };
-
-            // Basic email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                const errorMessage = this.currentLanguage === 'svenska' ? 
-                    'Vänligen ange en giltig e-postadress' : 
-                    'Please enter a valid email address';
-                alert(errorMessage);
-                return;
-            }
-
+        submitForm: function(formData) {
             try {
-                // Save data locally first
-                this.saveRegistrationData(formData);
-                this.saveToUserLeads(formData);
+                console.log('📝 Submitting registration form:', formData);
 
-                // Update user status
-                localStorage.setItem('chatbot-current-user', JSON.stringify(formData));
-                localStorage.setItem('fooodis-user-name', formData.name);
-                localStorage.setItem('fooodis-user-email', formData.email);
-                localStorage.setItem('fooodis-restaurant-name', formData.restaurantName);
-
-                // Set language flag
-                const languageFlag = formData.language === 'svenska' ? '🇸🇪' : '🇺🇸';
-                localStorage.setItem('fooodis-language-flag', languageFlag);
-
-                // Get session/device IDs for conversation matching
-                let sessionId = window.FoodisChatbot?.sessionId || localStorage.getItem('chatbot-session-id');
-                let deviceId = localStorage.getItem('chatbot-device-id');
-
-                if (!sessionId) {
-                    sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('chatbot-session-id', sessionId);
+                // Validate form data
+                if (!formData.name || !formData.restaurantName) {
+                    console.error('❌ Missing required form data');
+                    const errorMessage = this.currentLanguage === 'svenska' ? 
+                        'Namn och restaurangnamn krävs.' : 
+                        'Name and restaurant name are required.';
+                    this.showError(errorMessage);
+                    return false;
                 }
 
-                if (!deviceId) {
-                    deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('chatbot-device-id', deviceId);
-                }
-
-                // ULTRA-RELIABLE: Multiple update mechanisms with enhanced identity data
-                console.log('🚀 TRIGGERING USER IDENTITY UPDATE WITH MULTIPLE MECHANISMS...');
-
+                // Save user data
                 const identityData = {
                     name: formData.name,
-                    userName: formData.name,
-                    email: formData.email,
-                    userEmail: formData.email,
-                    phone: formData.phone,
-                    userPhone: formData.phone,
                     restaurantName: formData.restaurantName,
-                    systemUsage: formData.systemUsage,
-                    userType: formData.userType, // Use the corrected userType
-                    language: formData.language,
-                    languageCode: formData.language === 'svenska' ? 'sv-SE' : 'en-US',
-                    languageFlag: languageFlag,
-                    displayFlag: languageFlag,
-                    timestamp: formData.timestamp,
-                    conversationId: formData.conversationId,
-                    sessionId: formData.sessionId,
-                    deviceId: formData.deviceId,
-                    userRegistered: true,
-                    identityLinked: true
+                    email: formData.email || '',
+                    language: formData.language || 'english'
                 };
 
-                // AGGRESSIVE CONVERSATION UPDATE: Direct localStorage manipulation
-                console.log('🔥 DIRECT CONVERSATION UPDATE - Starting aggressive update...');
+                // Multiple save mechanisms for redundancy
+                localStorage.setItem('fooodis-user-name', identityData.name);
+                localStorage.setItem('fooodis-restaurant-name', identityData.restaurantName);
+                localStorage.setItem('fooodis-language', identityData.language);
+                localStorage.setItem('fooodis-user-email', identityData.email);
 
-                try {
-                    const conversations = JSON.parse(localStorage.getItem('fooodis-chatbot-conversations') || '[]');
-                    console.log('📋 Found conversations in localStorage:', conversations.length);
+                // Save complete user data
+                localStorage.setItem('chatbot-current-user', JSON.stringify(identityData));
+                localStorage.setItem('chatbot-user-data', JSON.stringify(identityData));
 
-                    let updatedCount = 0;
-
-                    // Update ALL recent conversations (last 24 hours)
-                    const now = new Date();
-                    conversations.forEach((conversation, index) => {
-                        const conversationTime = new Date(conversation.lastMessageAt || conversation.createdAt || 0);
-                        const hoursSince = (now - conversationTime) / (1000 * 60 * 60);
-
-                        // Update recent conversations OR anonymous ones
-                        const isRecent = hoursSince < 24;
-                        const isAnonymous = !conversation.userName || conversation.userName === 'Anonymous User';
-
-                        if (isRecent || isAnonymous) {
-                            console.log(`🎯 UPDATING CONVERSATION ${index}: ${conversation.id || conversation.conversationId}`);
-
-                            conversation.userName = formData.name;
-                            conversation.userEmail = formData.email;
-                            conversation.userPhone = formData.phone;
-                            conversation.restaurantName = formData.restaurantName;
-                            conversation.userType = formData.userType;
-                            conversation.systemUsage = formData.systemUsage;
-                            conversation.language = formData.language;
-                            conversation.languageCode = formData.language === 'svenska' ? 'sv-SE' : 'en-US';
-                            conversation.languageFlag = languageFlag;
-                            conversation.displayFlag = languageFlag;
-                            conversation.userRegistered = true;
-                            conversation.identityLinked = true;
-                            conversation.lastUpdated = formData.timestamp;
-                            conversation.identityUpdateSource = 'registration_form';
-
-                            updatedCount++;
-                        }
-                    });
-
-                    if (updatedCount > 0) {
-                        localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(conversations));
-                        localStorage.setItem('chatbot-conversations', JSON.stringify(conversations)); // Backup
-                        console.log(`✅ DIRECT UPDATE: ${updatedCount} conversations updated`);
-
-                        // Force immediate UI refresh
-                        this.forceConversationRefresh();
-                    }
-
-                } catch (error) {
-                    console.error('❌ Direct conversation update error:', error);
+                // Update chatbot widget state
+                if (window.FoodisChatbot) {
+                    window.FoodisChatbot.userRegistered = true;
+                    window.FoodisChatbot.userInfo = identityData;
+                    window.FoodisChatbot.userName = identityData.name;
+                    window.FoodisChatbot.restaurantName = identityData.restaurantName;
+                    console.log('✅ Updated chatbot widget state');
                 }
 
-                // Store in multiple locations for persistence
-                localStorage.setItem('last-user-identity', JSON.stringify(identityData));
-                sessionStorage.setItem('current-user-identity', JSON.stringify(identityData));
+                // Update global identity
                 window.currentUserIdentity = identityData;
-
-                // Fire all possible events
-                console.log('🚀 FIRING ALL IDENTITY UPDATE EVENTS...');
-
-                const events = [
-                    'userIdentityUpdated',
-                    'conversationDataUpdated', 
-                    'userRegistered',
-                    'chatbotUserUpdate',
-                    'conversationUserUpdate'
-                ];
-
-                events.forEach(eventName => {
-                    try {
-                        window.dispatchEvent(new CustomEvent(eventName, {
-                            detail: identityData,
-                            bubbles: true
-                        }));
-                        document.dispatchEvent(new CustomEvent(eventName, {
-                            detail: identityData,
-                            bubbles: true
-                        }));
-                        console.log(`✅ Fired event: ${eventName}`);
-                    } catch (error) {
-                        console.warn(`⚠️ Failed to fire event ${eventName}:`, error);
-                    }
-                });
-
-                // Direct method calls with error handling
-                const managers = [
-                    'chatbotManager',
-                    'window.chatbotManager',
-                    'ChatbotManager',
-                    'conversationManager'
-                ];
-
-                managers.forEach(managerName => {
-                    try {
-                        const manager = managerName.includes('window.') ? 
-                            eval(managerName) : 
-                            window[managerName];
-
-                        if (manager && manager.updateConversationIdentity) {
-                            console.log(`🎯 DIRECT CALL - Calling ${managerName}.updateConversationIdentity`);
-                            manager.updateConversationIdentity(identityData);
-                        }
-                    } catch (error) {
-                        console.warn(`⚠️ Failed to call ${managerName}:`, error);
-                    }
-                });
-
-                // Delayed retry mechanism
-                [100, 500, 1000, 2000].forEach((delay, index) => {
-                    setTimeout(() => {
-                        console.log(`🔄 RETRY ${index + 1} - Triggering identity update after ${delay}ms`);
-                        if (window.chatbotManager && window.chatbotManager.updateConversationIdentity) {
-                            window.chatbotManager.updateConversationIdentity(identityData);
-                        }
-                        if (window.chatbotManager && window.chatbotManager.forceConversationUIUpdate) {
-                            window.chatbotManager.forceConversationUIUpdate();
-                        }
-                    }, delay);
-                });
-
                 console.log('✅ ALL IDENTITY UPDATE MECHANISMS TRIGGERED:', identityData);
 
                 // Close form and send success message
@@ -599,13 +408,15 @@
                 });
 
                 console.log('✅ Form submitted successfully:', formData.name);
+                return true;
 
             } catch (error) {
                 console.error('❌ Error submitting form:', error);
                 const errorMessage = this.currentLanguage === 'svenska' ? 
                     'Ett fel uppstod. Vänligen försök igen.' : 
                     'An error occurred. Please try again.';
-                alert(errorMessage);
+                this.showError(errorMessage);
+                return false;
             }
         },
 
@@ -1195,6 +1006,452 @@
             if (window.chatbotManager && window.chatbotManager.forceConversationUIUpdate) {
                 window.chatbotManager.forceConversationUIUpdate();
             }
+        },
+
+        handleFormSubmit: function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('📝 Form submit event triggered');
+
+            // Get form element
+            const form = event.target.closest('form') || event.target;
+
+            // Collect form data
+            const formData = this.collectFormData(form);
+
+            if (formData) {
+                console.log('📋 Collected form data:', formData);
+                const success = this.submitForm(formData);
+
+                if (success) {
+                    console.log('✅ Form submission successful');
+                } else {
+                    console.error('❌ Form submission failed');
+                }
+            } else {
+                console.error('❌ Failed to collect form data');
+                const errorMessage = this.currentLanguage === 'svenska' ? 
+                    'Vänligen fyll i alla obligatoriska fält.' : 
+                    'Please fill in all required fields.';
+                this.showError(errorMessage);
+            }
+        },
+
+        collectFormData: function(formElement) {
+            const form = formElement || document.querySelector('#registrationForm');
+            if (!form) {
+                console.error('❌ Registration form not found');
+                return null;
+            }
+
+            const nameInput = form.querySelector('#userName') || form.querySelector('input[name="userName"]');
+            const restaurantInput = form.querySelector('#restaurantName') || form.querySelector('input[name="restaurantName"]');
+            const emailInput = form.querySelector('#userEmail') || form.querySelector('input[name="userEmail"]');
+            const languageSelect = form.querySelector('#userLanguage') || form.querySelector('select[name="userLanguage"]');
+
+            if (!nameInput || !restaurantInput) {
+                console.error('❌ Required form fields not found');
+                console.log('Available inputs:', form.querySelectorAll('input, select'));
+                return null;
+            }
+
+            const formData = {
+                name: nameInput.value.trim(),
+                restaurantName: restaurantInput.value.trim(),
+                email: emailInput ? emailInput.value.trim() : '',
+                language: languageSelect ? languageSelect.value : 'english'
+            };
+
+            // Validate required fields
+            if (!formData.name || !formData.restaurantName) {
+                console.error('❌ Missing required field values:', formData);
+                return null;
+            }
+
+            return formData;
+        },
+
+        submitForm: function(formData) {
+            try {
+                console.log('📝 Submitting registration form:', formData);
+
+                // Validate form data
+                if (!formData.name || !formData.restaurantName) {
+                    console.error('❌ Missing required form data');
+                    const errorMessage = this.currentLanguage === 'svenska' ? 
+                        'Namn och restaurangnamn krävs.' : 
+                        'Name and restaurant name are required.';
+                    this.showError(errorMessage);
+                    return false;
+                }
+
+                // Save user data
+                const identityData = {
+                    name: formData.name,
+                    restaurantName: formData.restaurantName,
+                    email: formData.email || '',
+                    language: formData.language || 'english'
+                };
+
+                // Multiple save mechanisms for redundancy
+                localStorage.setItem('fooodis-user-name', identityData.name);
+                localStorage.setItem('fooodis-restaurant-name', identityData.restaurantName);
+                localStorage.setItem('fooodis-language', identityData.language);
+                localStorage.setItem('fooodis-user-email', identityData.email);
+
+                // Save complete user data
+                localStorage.setItem('chatbot-current-user', JSON.stringify(identityData));
+                localStorage.setItem('chatbot-user-data', JSON.stringify(identityData));
+
+                // Update chatbot widget state
+                if (window.FoodisChatbot) {
+                    window.FoodisChatbot.userRegistered = true;
+                    window.FoodisChatbot.userInfo = identityData;
+                    window.FoodisChatbot.userName = identityData.name;
+                    window.FoodisChatbot.restaurantName = identityData.restaurantName;
+                    console.log('✅ Updated chatbot widget state');
+                }
+
+                // Update global identity
+                window.currentUserIdentity = identityData;
+                console.log('✅ ALL IDENTITY UPDATE MECHANISMS TRIGGERED:', identityData);
+
+                // Close form and send success message
+                this.closeForm();
+
+                // Trigger registration completion event for force refresh
+                window.dispatchEvent(new CustomEvent('registrationFormCompleted', {
+                    detail: identityData,
+                    bubbles: true
+                }));
+
+                if (window.FoodisChatbot?.addMessage) {
+                    const message = formData.language === 'svenska' 
+                        ? `Tack ${formData.name} från ${formData.restaurantName}! Hur kan jag hjälpa dig idag?`
+                        : `Thank you ${formData.name} from ${formData.restaurantName}! How can I help you today?`;
+                    window.FoodisChatbot.addMessage(message, 'assistant');
+                }
+
+                // Send to server API (non-blocking)
+                this.sendToServerAPI(formData).catch(error => {
+                    console.warn('Server API warning:', error);
+                });
+
+                console.log('✅ Form submitted successfully:', formData.name);
+                return true;
+
+            } catch (error) {
+                console.error('❌ Error submitting form:', error);
+                const errorMessage = this.currentLanguage === 'svenska' ? 
+                    'Ett fel uppstod. Vänligen försök igen.' : 
+                    'An error occurred. Please try again.';
+                this.showError(errorMessage);
+                return false;
+            }
+        },
+
+        showError: function(message) {
+            console.error('📋 Form Error:', message);
+
+            // Try to find an error display element
+            const errorElement = document.querySelector('#registrationFormError') || 
+                                document.querySelector('.registration-form-error') ||
+                                document.querySelector('.error-message');
+
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            } else {
+                // Fallback to alert
+                alert(message);
+            }
+        },
+
+        init: function() {
+            if (this.initialized) return;
+
+            console.log('🔐 Initializing Chatbot Registration Form...');
+            this.injectStyles();
+            this.setupEventListeners();
+            this.initialized = true;
+
+            // Auto-show form if needed
+            setTimeout(() => {
+                if (this.shouldShowRegistrationForm()) {
+                    this.showRegistrationForm();
+                }
+            }, 2000);
+        },
+
+        shouldShowRegistrationForm: function() {
+            // Check multiple storage locations for user data
+            const currentUser = localStorage.getItem('chatbot-current-user');
+            const userData = localStorage.getItem('chatbot-user-data');
+            const registrations = localStorage.getItem('chatbot-registrations');
+            const userDataAlt = localStorage.getItem('chatbot-users');
+
+            console.log('🔍 Checking if registration form should show...');
+            console.log('Current user:', currentUser);
+            console.log('User data:', userData);
+            console.log('Alt user data:', userDataAlt);
+
+            // If no user data at all, show form
+            if (!currentUser && !userData && !userDataAlt) {
+                console.log('✅ No user data found, should show form');
+                return true;
+            }
+
+            try {
+                // Check if user has complete registration data
+                let hasCompleteData = false;
+
+                if (currentUser) {
+                    const user = JSON.parse(currentUser);
+                    if (user.skipped) {
+                        const skipTime = new Date(user.timestamp);
+                        const now = new Date();
+                        const hoursPassed = (now - skipTime) / (1000 * 60 * 60);
+                        const shouldShow = hoursPassed > 24;
+                        console.log(`⏰ User skipped ${hoursPassed.toFixed(1)} hours ago, should show:`, shouldShow);
+                        return shouldShow;
+                    }
+
+                    // If user has name and email, don't show form
+                    if (user.name && user.email) {
+                        hasCompleteData = true;
+                    }
+                }
+
+                if (userData) {
+                    const data = JSON.parse(userData);
+                    if (data.name && data.email) {
+                        hasCompleteData = true;
+                    }
+                }
+
+                if (userDataAlt) {
+                    const altData = JSON.parse(userDataAlt);
+                    if (Array.isArray(altData) && altData.length > 0) {
+                        const latestUser = altData[altData.length - 1];
+                        if (latestUser.name && latestUser.email) {
+                            hasCompleteData = true;
+                        }
+                    }
+                }
+
+                if (hasCompleteData) {
+                    console.log('❌ User already registered, not showing form');
+                    return false;
+                }
+
+                console.log('✅ Incomplete user data, should show form');
+                return true;
+            } catch (error) {
+                console.error('Error checking user data:', error);
+                return true;
+            }
+        },
+
+        showRegistrationForm: function() {
+            console.log('🔐 Showing registration form...');
+
+            // Find or create chatbot container
+            let chatbotContainer = document.querySelector('#fooodis-chatbot, #chatbot-window, .chatbot-container');
+
+            if (!chatbotContainer) {
+                // Create a temporary container if chatbot doesn't exist
+                chatbotContainer = document.createElement('div');
+                chatbotContainer.id = 'temp-chatbot-container';
+                chatbotContainer.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: 10000;
+                    width: 400px;
+                    height: 500px;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                `;
+                document.body.appendChild(chatbotContainer);
+            }
+
+            // Remove existing form if any
+            const existingForm = document.querySelector('.registration-overlay');
+            if (existingForm) {
+                existingForm.remove();
+            }
+
+            // Create and show new form
+            this.formElement = this.createFormOverlay();
+            chatbotContainer.appendChild(this.formElement);
+
+            // Set initial language and update form
+            this.currentLanguage = 'english';
+            this.updateFormLanguage();
+
+            console.log('✅ Registration form displayed successfully');
+        },
+
+        createFormOverlay: function() {
+            const overlay = document.createElement('div');
+            overlay.className = 'registration-overlay';
+            overlay.innerHTML = `
+                <div class="registration-container">
+                    <div class="language-tabs">
+                        <button type="button" class="lang-tab active" data-lang="english">English</button>
+                        <button type="button" class="lang-tab" data-lang="svenska">Svenska</button>
+                    </div>
+
+                    <div class="registration-header">
+                        <h2 class="form-title">Let's Get Started!</h2>
+                        <p class="form-subtitle">Please provide your information to continue</p>
+                    </div>
+
+                    <form class="registration-form" id="registrationForm">
+                        <div class="form-group">
+                            <label for="userName" class="field-label">Your Name</label>
+                            <input type="text" id="userName" name="userName" placeholder="Enter your name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userEmail" class="field-label">Email Address</label>
+                            <input type="email" id="userEmail" name="userEmail" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="restaurantName" class="field-label">Restaurant Name</label>
+                            <input type="text" id="restaurantName" name="restaurantName" placeholder="Enter restaurant name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userPhone" class="field-label">Phone Number</label>
+                            <input type="tel" id="userPhone" name="userPhone" placeholder="+46 70 123 45 67" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="systemUsage" class="field-label">Current delivery system</label>
+                            <select id="systemUsage" name="systemUsage" required>
+                                <option value="">Please select</option>
+                                <option value="current_user">Using Fooodis</option>
+                                <option value="competitor_user">Using another system</option>
+                                <option value="potential_user">Looking for solution</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="skip-btn">Skip</button>
+                            <button type="submit" class="submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            return overlay;
+        },
+
+        setupEventListeners: function() {
+            document.addEventListener('click', (e) => {
+                // Language tab switching
+                if (e.target.classList.contains('lang-tab')) {
+                    e.preventDefault();
+                    this.handleLanguageSwitch(e.target);
+                }
+
+                // Skip button
+                if (e.target.classList.contains('skip-btn')) {
+                    e.preventDefault();
+                    this.skipForm();
+                }
+            });
+
+            document.addEventListener('submit', (e) => {
+                if (e.target.id === 'registrationForm') {
+                    e.preventDefault();
+                    this.handleFormSubmit(e);
+                }
+            });
+        },
+
+        handleLanguageSwitch: function(tabElement) {
+            const selectedLang = tabElement.getAttribute('data-lang');
+            console.log('🌐 Switching to language:', selectedLang);
+
+            // Update active tab
+            const container = tabElement.closest('.registration-container');
+            if (container) {
+                const allTabs = container.querySelectorAll('.lang-tab');
+                allTabs.forEach(tab => tab.classList.remove('active'));
+                tabElement.classList.add('active');
+
+                // Update current language and form
+                this.currentLanguage = selectedLang;
+                this.updateFormLanguage();
+            }
+        },
+
+        updateFormLanguage: function() {
+            const translations = this.translations[this.currentLanguage];
+            if (!translations) {
+                console.error('❌ No translations found for:', this.currentLanguage);
+                return;
+            }
+
+            console.log('🌐 Updating form language to:', this.currentLanguage);
+
+            const container = document.querySelector('.registration-container');
+            if (!container) return;
+
+            // Update header
+            const title = container.querySelector('.form-title');
+            const subtitle = container.querySelector('.form-subtitle');
+            if (title) title.textContent = translations.title;
+            if (subtitle) subtitle.textContent = translations.subtitle;
+
+            // Update labels
+            const labels = {
+                'label[for="userName"]': translations.nameLabel,
+                'label[for="userEmail"]': translations.emailLabel,
+                'label[for="restaurantName"]': translations.restaurantLabel,
+                'label[for="userPhone"]': translations.phoneLabel,
+                'label[for="systemUsage"]': translations.systemLabel
+            };
+
+            Object.entries(labels).forEach(([selector, text]) => {
+                const element = container.querySelector(selector);
+                if (element) element.textContent = text;
+            });
+
+            // Update placeholders
+            const placeholders = {
+                '#userName': translations.namePlaceholder,
+                '#userEmail': translations.emailPlaceholder,
+                '#restaurantName': translations.restaurantPlaceholder,
+                '#userPhone': translations.phonePlaceholder
+            };
+
+            Object.entries(placeholders).forEach(([selector, placeholder]) => {
+                const element = container.querySelector(selector);
+                if (element) element.placeholder = placeholder;
+            });
+
+            // Update select options
+            const systemSelect = container.querySelector('#systemUsage');
+            if (systemSelect) {
+                const options = systemSelect.querySelectorAll('option');
+                if (options[0]) options[0].textContent = translations.selectOption;
+                if (options[1]) options[1].textContent = translations.optionFooodis;
+                if (options[2]) options[2].textContent = translations.optionOther;
+                if (options[3]) options[3].textContent = translations.optionLooking;
+            }
+
+            // Update buttons
+            const skipBtn = container.querySelector('.skip-btn');
+            const submitBtn = container.querySelector('.submit-btn');
+            if (skipBtn) skipBtn.textContent = translations.skipButton;
+            if (submitBtn) submitBtn.textContent = translations.submitButton;
+
+            console.log('✅ Form language updated successfully');
         }
     };
 
