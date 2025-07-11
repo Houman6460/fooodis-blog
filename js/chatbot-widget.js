@@ -89,25 +89,6 @@
             try {
                 console.log('Widget: Starting loadSavedSettings...');
 
-                // Check for persistent agent first
-                const persistentAgentData = localStorage.getItem('chatbot-current-agent-data');
-                const persistentAgentAvatar = localStorage.getItem('chatbot-current-agent-avatar');
-
-                if (persistentAgentData && persistentAgentAvatar) {
-                    try {
-                        const agentData = JSON.parse(persistentAgentData);
-                        if (agentData.isPersistent) {
-                            console.log('🔄 Restoring persistent agent:', agentData.name);
-                            this.currentAgent = agentData;
-                            this.config.avatar = persistentAgentAvatar;
-                            console.log('✅ Persistent agent restored successfully');
-                            return;
-                        }
-                    } catch (e) {
-                        console.warn('Failed to restore persistent agent, falling back to settings');
-                    }
-                }
-
                 let settings = null;
                 const storageKeys = [
                     'fooodis-chatbot-settings', 
@@ -472,15 +453,9 @@
         },
 
         updateAvatar: function(avatarUrl) {
-            // If we have a persistent agent, don't allow avatar changes
-            if (this.currentAgent && this.currentAgent.isPersistent) {
-                console.log('🔒 Avatar update blocked - persistent agent active');
-                return;
-            }
-
             this.config.avatar = avatarUrl;
 
-            if (this.currentAgent && !this.currentAgent.isPersistent) {
+            if (this.currentAgent) {
                 this.currentAgent.avatar = avatarUrl;
             }
 
@@ -943,7 +918,8 @@
                 #chatbot-send {
                     background: #e8f24c !important;
                     border: none !important;
-                    color: #26282f !important;
+                    color```text
+: #26282f !important;
                     cursor: pointer !important;
                     padding: 10px !important;
                     border-radius: 50% !important;
@@ -1638,7 +1614,6 @@
 
             const previousAgent = this.currentAgent;
 
-            // Store the agent's specific avatar permanently
             let newAvatarUrl = agentData.avatar;
 
             if (!newAvatarUrl || newAvatarUrl === this.getDefaultAvatar()) {
@@ -1647,35 +1622,44 @@
 
             newAvatarUrl = this.getAbsoluteAvatarUrl(newAvatarUrl);
 
-            // Update current agent with persistent avatar
+            // CRITICAL: Lock the agent to prevent further switching
             this.currentAgent = {
                 ...agentData,
                 avatar: newAvatarUrl,
-                isPersistent: true // Flag to indicate this agent's avatar should persist
+                locked: true // Prevent avatar changes once agent is set
             };
 
-            // Store agent avatar separately to prevent overwriting
-            localStorage.setItem('chatbot-current-agent-avatar', newAvatarUrl);
-            localStorage.setItem('chatbot-current-agent-data', JSON.stringify(this.currentAgent));
+            this.config.avatar = newAvatarUrl;
+            this.agentAvatarLocked = true; // Global lock flag
 
-            console.log('🎯 Agent avatar set and persisted:', newAvatarUrl.substring(0, 50) + '...');
+            console.log('🔒 Agent avatar locked:', newAvatarUrl.substring(0, 50) + '...');
+
+            // Store agent-specific avatar with a unique key
+            const agentAvatarKey = `chatbot-agent-${agentData.id || agentData.name}-avatar`;
+            localStorage.setItem(agentAvatarKey, newAvatarUrl);
+            localStorage.setItem('chatbot-current-agent-avatar', newAvatarUrl);
+            localStorage.setItem('chatbot-agent-locked', 'true');
 
             this.updateAgentHeader();
             this.setupAllAvatars();
 
             this.addMessage(`Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`, 'assistant');
 
+            // Use direct avatar update without triggering storage overwrites
+            this.setAgentAvatarDirectly(newAvatarUrl);
+
             window.dispatchEvent(new CustomEvent('chatbotAgentSwitched', {
                 detail: { 
                     agent: {
                         ...agentData,
-                        avatar: newAvatarUrl
+                        avatar: newAvatarUrl,
+                        locked: true
                     },
                     previousAgent: previousAgent 
                 }
             }));
 
-            console.log('✅ Agent switched successfully to:', agentData.name, 'with persistent avatar');
+            console.log('✅ Agent switched and locked to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
         },
 
         playSound: function(type) {
@@ -1762,38 +1746,26 @@
             this.processMessage(reply);
         },
 
-        resetPersistentAgent: function() {
-            console.log('🔄 Resetting persistent agent...');
-            localStorage.removeItem('chatbot-current-agent-avatar');
-            localStorage.removeItem('chatbot-current-agent-data');
-            
-            if (this.currentAgent) {
-                this.currentAgent.isPersistent = false;
-            }
-            
-            console.log('✅ Persistent agent reset completed');
-        },
-
         checkAndShowRegistrationForm: function() {
             console.log('🔍 Checking if registration form should be shown...');
-            
+
             // Check multiple storage locations for user data
             const currentUser = localStorage.getItem('chatbot-current-user');
             const userData = localStorage.getItem('chatbot-user-data');
             const users = localStorage.getItem('chatbot-users');
             const registrations = localStorage.getItem('chatbot-registrations');
-            
+
             console.log('📊 User data check:', {
                 currentUser: currentUser ? 'exists' : 'null',
                 userData: userData ? 'exists' : 'null',
                 users: users ? 'exists' : 'null',
                 registrations: registrations ? 'exists' : 'null'
             });
-            
+
             // If no user data at all, show form
             if (!currentUser && !userData && !users && !registrations) {
                 console.log('🔐 New user detected, showing registration form...');
-                
+
                 // Ensure registration form system is initialized
                 if (window.ChatbotRegistrationForm) {
                     if (!window.ChatbotRegistrationForm.initialized) {
@@ -1810,7 +1782,7 @@
                 }
             } else {
                 console.log('✅ User data found, checking if registration is needed...');
-                
+
                 // Still check if we should show the form based on data completeness
                 if (window.ChatbotRegistrationForm && window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
                     console.log('🔐 Registration form needed despite existing data');
@@ -1821,6 +1793,30 @@
                     console.log('✅ User already registered or skipped');
                 }
             }
+        },
+
+        setAgentAvatarDirectly: function(avatarUrl) {
+            if (!this.widget) return;
+        
+            const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .chatbot-avatar-header img, .message-avatar img');
+        
+            avatarImages.forEach(img => {
+                img.src = avatarUrl;
+                img.style.display = 'block';
+                img.style.objectFit = 'cover';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.borderRadius = '50%';
+                img.style.backgroundColor = '#e8f24c';
+                img.alt = (this.currentAgent?.name || 'Assistant') + ' Avatar';
+        
+                img.onerror = () => {
+                    console.warn('Failed to load avatar, using default');
+                    img.src = this.getDefaultAvatar();
+                };
+            });
+        
+            console.log('Agent avatar updated directly without storage events');
         }
     };
 })();
