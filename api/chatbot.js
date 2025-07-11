@@ -937,4 +937,28 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// Clear all conversations endpoint
+router.delete('/conversations/clear-all', (req, res) => {
+    try {
+        console.log('🗑️ Clearing all conversations from server');
+        
+        // Clear all conversations from memory
+        conversations.clear();
+        
+        // Save empty conversations to storage
+        saveConversationsToStorage();
+        
+        res.json({
+            success: true,
+            message: 'All conversations cleared successfully'
+        });
+    } catch (error) {
+        console.error('Error clearing all conversations:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to clear conversations'
+        });
+    }
+});
+
 module.exports = router;
