@@ -12,7 +12,11 @@
         init: function() {
             if (this.initialized) return;
             console.log('📊 Registration Data Manager initialized');
-            this.migrateOldData();
+            try {
+                this.migrateOldData();
+            } catch (error) {
+                console.warn('Migration error (non-critical):', error);
+            }
             this.initialized = true;
         },
 

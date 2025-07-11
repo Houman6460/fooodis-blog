@@ -54,6 +54,11 @@
             this.attachEventListeners();
             this.setupAvatarUpdateListener();
 
+            // Force show registration form for new users after widget is ready
+            setTimeout(() => {
+                this.checkAndShowRegistrationForm();
+            }, 1000);
+
             window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
 
             console.log('Fooodis Chatbot Widget initialized successfully');
@@ -1728,6 +1733,33 @@
             this.addMessage(reply, 'user');
             this.showTyping();
             this.processMessage(reply);
+        },
+
+        checkAndShowRegistrationForm: function() {
+            console.log('🔍 Checking if registration form should be shown...');
+            
+            // Check if user is already registered
+            const currentUser = localStorage.getItem('chatbot-current-user');
+            const userData = localStorage.getItem('chatbot-user-data');
+            
+            if (!currentUser && !userData) {
+                console.log('🔐 New user detected, showing registration form...');
+                
+                // Ensure registration form system is initialized
+                if (window.ChatbotRegistrationForm) {
+                    if (!window.ChatbotRegistrationForm.initialized) {
+                        window.ChatbotRegistrationForm.init();
+                    }
+                    // Show the form
+                    setTimeout(() => {
+                        window.ChatbotRegistrationForm.showRegistrationForm();
+                    }, 500);
+                } else {
+                    console.warn('⚠️ Registration form system not available');
+                }
+            } else {
+                console.log('✅ User already registered or skipped');
+            }
         }
     };
 })();

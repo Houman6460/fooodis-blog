@@ -74,6 +74,13 @@
         <div class="loader"></div>
         <h2>Redirecting to Fooodis Blog System...</h2>
         <p>If you are not redirected automatically, <a href="login.html">click here</a>.</p>
+        
+        <!-- Test Registration Form Button -->
+        <div style="margin-top: 20px;">
+            <button onclick="testRegistrationForm()" style="background: #e8f24c; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                Test Registration Form
+            </button>
+        </div>
     </div>
 <!-- Scripts -->
     <script class="u-script" type="text/javascript" src="js/jquery.js" defer=""></script>
@@ -103,6 +110,22 @@
           }]
         });
       });
+
+      // Test function to manually trigger registration form
+      function testRegistrationForm() {
+        console.log('🧪 Manual registration form test triggered');
+        
+        // Clear user data to simulate new user
+        localStorage.removeItem('chatbot-current-user');
+        localStorage.removeItem('chatbot-user-data');
+        
+        // Force show registration form
+        if (window.ChatbotRegistrationForm) {
+          window.ChatbotRegistrationForm.showRegistrationForm();
+        } else {
+          alert('Registration form system not available');
+        }
+      }
     </script>
 </body>
 </html>
