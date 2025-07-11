@@ -89,6 +89,25 @@
             try {
                 console.log('Widget: Starting loadSavedSettings...');
 
+                // Check for persistent agent first
+                const persistentAgentData = localStorage.getItem('chatbot-current-agent-data');
+                const persistentAgentAvatar = localStorage.getItem('chatbot-current-agent-avatar');
+
+                if (persistentAgentData && persistentAgentAvatar) {
+                    try {
+                        const agentData = JSON.parse(persistentAgentData);
+                        if (agentData.isPersistent) {
+                            console.log('🔄 Restoring persistent agent:', agentData.name);
+                            this.currentAgent = agentData;
+                            this.config.avatar = persistentAgentAvatar;
+                            console.log('✅ Persistent agent restored successfully');
+                            return;
+                        }
+                    } catch (e) {
+                        console.warn('Failed to restore persistent agent, falling back to settings');
+                    }
+                }
+
                 let settings = null;
                 const storageKeys = [
                     'fooodis-chatbot-settings', 
@@ -453,9 +472,15 @@
         },
 
         updateAvatar: function(avatarUrl) {
+            // If we have a persistent agent, don't allow avatar changes
+            if (this.currentAgent && this.currentAgent.isPersistent) {
+                console.log('🔒 Avatar update blocked - persistent agent active');
+                return;
+            }
+
             this.config.avatar = avatarUrl;
 
-            if (this.currentAgent) {
+            if (this.currentAgent && !this.currentAgent.isPersistent) {
                 this.currentAgent.avatar = avatarUrl;
             }
 
@@ -1609,10 +1634,11 @@
         switchAgent: function(agentData) {
             if (!agentData) return;
 
-            console.log('Switching to agent:', agentData.name);
+            console.log('🔄 Switching to agent:', agentData.name);
 
             const previousAgent = this.currentAgent;
 
+            // Store the agent's specific avatar permanently
             let newAvatarUrl = agentData.avatar;
 
             if (!newAvatarUrl || newAvatarUrl === this.getDefaultAvatar()) {
@@ -1621,22 +1647,23 @@
 
             newAvatarUrl = this.getAbsoluteAvatarUrl(newAvatarUrl);
 
+            // Update current agent with persistent avatar
             this.currentAgent = {
                 ...agentData,
-                avatar: newAvatarUrl
+                avatar: newAvatarUrl,
+                isPersistent: true // Flag to indicate this agent's avatar should persist
             };
 
-            this.config.avatar = newAvatarUrl;
+            // Store agent avatar separately to prevent overwriting
+            localStorage.setItem('chatbot-current-agent-avatar', newAvatarUrl);
+            localStorage.setItem('chatbot-current-agent-data', JSON.stringify(this.currentAgent));
 
-            console.log('Switching to agent avatar:', newAvatarUrl.substring(0, 50) + '...');
+            console.log('🎯 Agent avatar set and persisted:', newAvatarUrl.substring(0, 50) + '...');
 
             this.updateAgentHeader();
-
             this.setupAllAvatars();
 
             this.addMessage(`Hello! I'm ${agentData.name} and I'll be helping you today. What can I assist you with?`, 'assistant');
-
-            this.updateAvatar(newAvatarUrl);
 
             window.dispatchEvent(new CustomEvent('chatbotAgentSwitched', {
                 detail: { 
@@ -1648,7 +1675,7 @@
                 }
             }));
 
-            console.log('Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
+            console.log('✅ Agent switched successfully to:', agentData.name, 'with persistent avatar');
         },
 
         playSound: function(type) {
@@ -1733,6 +1760,18 @@
             this.addMessage(reply, 'user');
             this.showTyping();
             this.processMessage(reply);
+        },
+
+        resetPersistentAgent: function() {
+            console.log('🔄 Resetting persistent agent...');
+            localStorage.removeItem('chatbot-current-agent-avatar');
+            localStorage.removeItem('chatbot-current-agent-data');
+            
+            if (this.currentAgent) {
+                this.currentAgent.isPersistent = false;
+            }
+            
+            console.log('✅ Persistent agent reset completed');
         },
 
         checkAndShowRegistrationForm: function() {
