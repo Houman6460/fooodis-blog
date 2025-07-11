@@ -908,6 +908,28 @@
                         right: 10px !important;
                     }
                 }
+
+                .chatbot-quick-replies {
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                    gap: 8px !important;
+                    margin-top: 10px !important;
+                }
+
+                .chatbot-quick-reply {
+                    background: #e0e0e0 !important;
+                    border: none !important;
+                    color: #333 !important;
+                    cursor: pointer !important;
+                    padding: 8px 12px !important;
+                    border-radius: 20px !important;
+                    font-size: 14px !important;
+                    transition: background-color 0.2s !important;
+                }
+
+                .chatbot-quick-reply:hover {
+                    background: #d0d0d0 !important;
+                }
             `;
 
             document.head.appendChild(styles);
@@ -958,6 +980,13 @@
             }
 
             this.updateFileUploadVisibility();
+
+            document.addEventListener('click', (event) => {
+                if (event.target.classList.contains('chatbot-quick-reply')) {
+                    const reply = event.target.dataset.reply;
+                    this.handleQuickReply(reply);
+                }
+            });
         },
 
         toggleChat: function() {
@@ -1009,7 +1038,7 @@
             this.processMessage(message);
         },
 
-        addMessage: function(content, sender) {
+        addMessage: function(content, sender, quickReplies = null) {
             const messagesContainer = document.getElementById('chatbot-messages');
             if (!messagesContainer) return;
 
@@ -1053,9 +1082,15 @@
                 }
             }
 
+            let quickRepliesHtml = '';
+            if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
+                quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
+            }
+
             messageElement.innerHTML = `
                 ${avatarHtml}
                 <div class="message-content" style="color: #333333 !important; background: ${sender === 'user' ? '#e8f24c' : '#f8f9fa'} !important;">${content}</div>
+                ${quickRepliesHtml}
             `;
 
             messagesContainer.appendChild(messageElement);
@@ -1519,6 +1554,37 @@
             } catch (error) {
                 console.warn('Could not play sound:', error);
             }
+        },
+
+        generateQuickReplyButtons: function(buttons = null) {
+            if (buttons && Array.isArray(buttons)) {
+                // Use AI-generated buttons
+                const buttonElements = buttons.map(button => 
+                    `<button class="chatbot-quick-reply" data-reply="${button.action}" data-action="${button.action}">${button.text}</button>`
+                ).join('');
+
+                return `
+                    <div class="chatbot-quick-replies">
+                        ${buttonElements}
+                    </div>
+                `;
+            }
+
+            // Fallback to default buttons
+            return `
+                <div class="chatbot-quick-replies">
+                    <button class="chatbot-quick-reply" data-reply="menu">Menu</button>
+                    <button class="chatbot-quick-reply" data-reply="hours">Hours</button>
+                    <button class="chatbot-quick-reply" data-reply="location">Location</button>
+                    <button class="chatbot-quick-reply" data-reply="contact">Contact</button>
+                </div>
+            `;
+        },
+
+        handleQuickReply: function(reply) {
+            this.addMessage(reply, 'user');
+            this.showTyping();
+            this.processMessage(reply);
         }
     };
 })();

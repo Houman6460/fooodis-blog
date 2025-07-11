@@ -208,7 +208,7 @@ class NodeFlowBuilder {
             // Then handle canvas interactions
             this.handleCanvasMouseDown(e);
         });
-        
+
         document.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
         document.addEventListener('mouseup', (e) => this.handleCanvasMouseUp(e));
         document.addEventListener('click', (e) => this.handleCanvasClick(e));
@@ -253,7 +253,7 @@ class NodeFlowBuilder {
                     <i class="fas fa-trash"></i> Clear
                 </button>
             </div>
-            
+
         `;
     }
 
@@ -308,11 +308,11 @@ class NodeFlowBuilder {
             if (node && e.button === 0) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 // Prevent canvas panning when dragging a node
                 this.isPanning = false;
                 this.draggedNode = node;
-                
+
                 const canvasRect = this.canvas.getBoundingClientRect();
 
                 // Calculate drag offset in world coordinates
@@ -326,7 +326,7 @@ class NodeFlowBuilder {
 
                 // Change cursor to indicate dragging
                 this.canvas.style.cursor = 'move';
-                
+
                 // Mark node as selected
                 document.querySelectorAll('.flow-node.selected').forEach(n => n.classList.remove('selected'));
                 nodeElement.classList.add('selected');
@@ -748,7 +748,7 @@ class NodeFlowBuilder {
                     // Show multilingual message preview
                     const englishMsg = node.data.messages?.english || '';
                     const swedishMsg = node.data.messages?.swedish || '';
-                    
+
                     if (englishMsg && swedishMsg) {
                         messageContent = `<div class="node-message multilingual">🇬🇧 ${englishMsg.substring(0, 50)}${englishMsg.length > 50 ? '...' : ''}<br>🇸🇪 ${swedishMsg.substring(0, 50)}${swedishMsg.length > 50 ? '...' : ''}</div>`;
                     } else {
@@ -2156,7 +2156,7 @@ class NodeFlowBuilder {
         if (this.draggedNode && !this.isPanning) {
             e.preventDefault();
             const rect = this.canvas.getBoundingClientRect();
-            
+
             // Calculate world coordinates accounting for zoom and pan
             const worldX = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
             const worldY = (e.clientY - rect.top - this.panOffset.y) / this.zoom;
@@ -2248,7 +2248,7 @@ class NodeFlowBuilder {
         // Calculate a good position for the new node (center of visible area)
         const centerX = (-this.panOffset.x / this.zoom) + (window.innerWidth / (2 * this.zoom));
         const centerY = (-this.panOffset.y / this.zoom) + (window.innerHeight / (2 * this.zoom));
-        
+
         const randomOffset = Math.random() * 50 - 25; // -25 to +25
         const newNode = this.createNode({
             type,
@@ -2357,7 +2357,7 @@ class NodeFlowBuilder {
             this.canvas.style.cursor = 'grabbing';
             return;
         }
-        
+
         // Handle panning with right mouse button
         if (e.button === 2) {
             e.preventDefault();
@@ -2366,14 +2366,14 @@ class NodeFlowBuilder {
             this.canvas.style.cursor = 'grabbing';
             return;
         }
-        
+
         // Click on empty canvas - clear selection and enable panning
         if (!e.target.closest('.flow-node') && e.button === 0) {
             this.selectedNode = null;
             document.querySelectorAll('.flow-node.selected').forEach(node => {
                 node.classList.remove('selected');
             });
-            
+
             // Enable panning on left click on empty canvas
             this.isPanning = true;
             this.lastPanPoint = { x: e.clientX, y: e.clientY };
@@ -2511,6 +2511,191 @@ class NodeFlowBuilder {
             { id: 'general-ai', name: 'Fooodis AI Assistant', department: 'General' }
         ];
     }
+
+        // New function to execute message nodes with AI or static content
+        async executeNode(node, userMessage, context) {
+            switch (node.type) {
+                case 'message':
+                    return this.executeMessageNode(node, userMessage, context);
+                // Implement other node types as needed (intent, handoff, etc.)
+                default:
+                    console.warn('Node type not implemented:', node.type);
+                    return {
+                        success: false,
+                        message: 'Node type not implemented',
+                        type: 'error',
+                        nodeId: node.id
+                    };
+            }
+        }
+
+        // Core logic for message node execution (AI or static)
+        async executeMessageNode(node, userMessage, context) {
+            console.log('📨 Executing message node:', node.data.title);
+
+            // Check if AI mode is enabled for this node
+            if (node.data.aiMode && node.data.selectedAssistant && node.data.aiPrompt) {
+                console.log('🤖 Generating AI-powered response for node:', node.data.title);
+                return await this.generateAIResponse(node.data, userMessage, context);
+            }
+
+            // Fallback to static content
+            return {
+                success: true,
+                message: node.data.messages?.english || 'Hello! How can I help you?',
+                type: 'message',
+                nodeId: node.id
+            };
+        }
+
+        // Centralized AI response generation
+        async generateAIResponse(node, userMessage, context) {
+            try {
+                // Detect user language from context or message
+                const userLanguage = this.detectUserLanguage(userMessage, context);
+                console.log('🌐 Detected user language:', userLanguage);
+
+                // Enhanced prompt that includes button generation
+                const enhancedPrompt = `${node.aiPrompt}
+
+IMPORTANT INSTRUCTIONS:
+1. Generate a short, helpful message (1-2 sentences) followed by 3-4 relevant clickable button options
+2. Use language: ${userLanguage === 'sv' ? 'Swedish' : 'English'}
+3. Format response as JSON: {"message": "your message", "buttons": [{"text": "button text", "action": "button_action"}]}
+4. Button actions should be platform-relevant like: "pricing", "menu_setup", "contact", "support", "hours", "location"
+5. Keep button text concise (3-5 words max)
+
+Context: User is interacting with Fooodis platform (restaurant management system)`;
+
+                // Get AI response through chatbot manager
+                let aiResponse = null;
+                if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
+                    const response = await window.chatbotManager.generateAgentResponse({
+                        message: enhancedPrompt,
+                        conversationId: context.conversationId || 'node_flow_' + Date.now(),
+                        language: userLanguage,
+                        agent: { assignedAssistantId: node.selectedAssistant },
+                        assistantId: node.selectedAssistant
+                    });
+
+                    if (response && response.success) {
+                        aiResponse = response.message;
+                    }
+                }
+
+                // Parse AI response or use fallback
+                const parsedResponse = this.parseAIResponse(aiResponse, userLanguage);
+
+                console.log('✅ Generated AI response:', parsedResponse);
+
+                return {
+                    success: true,
+                    message: parsedResponse.message,
+                    buttons: parsedResponse.buttons,
+                    type: 'message_with_buttons',
+                    nodeId: node.id,
+                    language: userLanguage
+                };
+
+            } catch (error) {
+                console.error('❌ Error generating AI response:', error);
+                return this.getFallbackResponse(userMessage, context);
+            }
+        }
+
+        // User language detection (context, localStorage, message)
+        detectUserLanguage(userMessage, context) {
+            // Check context for language preference
+            if (context && context.language) {
+                return context.language;
+            }
+
+            // Check localStorage for saved preference
+            const savedLang = localStorage.getItem('fooodis-language');
+            if (savedLang) {
+                return savedLang;
+            }
+
+            // Simple language detection based on message content
+            if (userMessage) {
+                const swedishWords = ['hej', 'hallo', 'tjena', 'vad', 'hur', 'kan', 'jag', 'du', 'är', 'och', 'tack'];
+                const messageLower = userMessage.toLowerCase();
+
+                const swedishScore = swedishWords.filter(word => messageLower.includes(word)).length;
+                if (swedishScore > 0) {
+                    return 'sv';
+                }
+            }
+
+            // Default to browser language or English
+            const browserLang = navigator.language || navigator.userLanguage;
+            return browserLang.startsWith('sv') ? 'sv' : 'en';
+        }
+
+        // JSON parsing with fallback
+        parseAIResponse(aiResponse, userLanguage) {
+            try {
+                // Try to parse JSON response
+                if (aiResponse && aiResponse.includes('{') && aiResponse.includes('}')) {
+                    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const parsed = JSON.parse(jsonMatch[0]);
+                        if (parsed.message && parsed.buttons) {
+                            return {
+                                message: parsed.message,
+                                buttons: parsed.buttons.slice(0, 4) // Limit to 4 buttons
+                            };
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to parse AI JSON response:', error);
+            }
+
+            // Fallback to predefined localized content
+            return this.getFallbackButtonContent(userLanguage);
+        }
+
+        // Predefined button content for different languages
+        getFallbackButtonContent(userLanguage) {
+            const content = {
+                en: {
+                    message: "Hello! I'm your Fooodis assistant. How can I help you today?",
+                    buttons: [
+                        { text: "Price Plans", action: "pricing" },
+                        { text: "Menu Setup", action: "menu_setup" },
+                        { text: "Contact Support", action: "contact" },
+                        { text: "Platform Features", action: "features" }
+                    ]
+                },
+                sv: {
+                    message: "Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?",
+                    buttons: [
+                        { text: "Prisplaner", action: "pricing" },
+                        { text: "Meny Setup", action: "menu_setup" },
+                        { text: "Kontakta Support", action: "contact" },
+                        { text: "Plattformsfunktioner", action: "features" }
+                    ]
+                }
+            };
+
+            return content[userLanguage] || content.en;
+        }
+
+        // Fallback response in case of AI failure
+        getFallbackResponse(userMessage, context) {
+            const userLanguage = this.detectUserLanguage(userMessage, context);
+            const fallbackContent = this.getFallbackButtonContent(userLanguage);
+
+            return {
+                success: true,
+                message: fallbackContent.message,
+                buttons: fallbackContent.buttons,
+                type: 'message_with_buttons',
+                nodeId: 'fallback',
+                language: userLanguage
+            };
+        }
 }
 
 // Initialize the node flow builder
