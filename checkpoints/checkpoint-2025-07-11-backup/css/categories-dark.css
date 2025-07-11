@@ -1,0 +1,236 @@
+/* Categories & Tags Dark Theme Styles */
+:root {
+    --primary-color: #e8f24c; /* Yellow accent color */
+    --secondary-color: #1e2127; /* Dark background */
+    --text-color: #ffffff; /* White text */
+    --accent-color: #c7d037; /* Darker yellow for hover states */
+    --dark-accent: #1d2029; /* Slightly darker background for cards */
+    --border-color: rgba(232, 242, 76, 0.3); /* Semi-transparent yellow for borders */
+    --dark-bg: #1e2127; /* Main dark background */
+    --darker-bg: #171a1f; /* Darker background for contrast */
+    --dark-card: #252830; /* Dark card background */
+    --dark-input: #2a2e36; /* Dark input background */
+    --dark-border: #32363f; /* Dark border color */
+    --dark-text: #e0e0e0; /* Main text color on dark background */
+    --dark-text-secondary: #a0a0a0; /* Secondary text color on dark background */
+}
+
+/* Categories Management Container */
+.categories-management {
+    background-color: var(--dark-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.categories-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Category Section Styles */
+.category-section {
+    background-color: var(--dark-card);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.category-section-title {
+    color: var(--primary-color);
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--dark-border);
+}
+
+/* Category List Styles */
+.category-list, .subcategory-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding-right: 5px;
+}
+
+.category-list::-webkit-scrollbar, 
+.subcategory-list::-webkit-scrollbar,
+.tags-cloud::-webkit-scrollbar {
+    width: 6px;
+}
+
+.category-list::-webkit-scrollbar-track, 
+.subcategory-list::-webkit-scrollbar-track,
+.tags-cloud::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+    border-radius: 3px;
+}
+
+.category-list::-webkit-scrollbar-thumb, 
+.subcategory-list::-webkit-scrollbar-thumb,
+.tags-cloud::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 3px;
+}
+
+/* Category Item Styles */
+.category-item, .subcategory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--dark-input);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.category-item:hover, .subcategory-item:hover {
+    background-color: rgba(232, 242, 76, 0.1);
+}
+
+.category-name, .subcategory-name {
+    color: var(--dark-text);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.subcategory-parent {
+    color: var(--dark-text-secondary);
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.category-actions, .subcategory-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.edit-btn, .delete-btn {
+    background: none;
+    border: none;
+    color: var(--dark-text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 3px;
+    transition: color 0.2s ease;
+}
+
+.edit-btn:hover {
+    color: var(--primary-color);
+}
+
+.delete-btn:hover {
+    color: #ff4d4d;
+}
+
+/* Add Form Styles */
+.add-category-form, .add-subcategory-form, .add-tag-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.add-category-form input, 
+.add-subcategory-form input,
+.add-subcategory-form select,
+.add-tag-form input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid var(--dark-border);
+    border-radius: 4px;
+    background-color: var(--dark-input);
+    color: var(--dark-text);
+    font-size: 14px;
+}
+
+.add-category-form input::placeholder, 
+.add-subcategory-form input::placeholder,
+.add-tag-form input::placeholder {
+    color: var(--dark-text-secondary);
+}
+
+.add-subcategory-form select {
+    color: var(--dark-text);
+    background-color: var(--dark-input);
+}
+
+.add-subcategory-form select option {
+    background-color: var(--dark-input);
+    color: var(--dark-text);
+}
+
+/* Button Styles */
+.btn-small {
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-small:hover {
+    background-color: var(--accent-color);
+}
+
+/* Tags Cloud Styles */
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--dark-input);
+    border-radius: 20px;
+    padding: 6px 12px;
+    transition: all 0.2s ease;
+}
+
+.tag-item:hover {
+    background-color: rgba(232, 242, 76, 0.1);
+}
+
+.tag-name {
+    color: var(--dark-text);
+    font-size: 13px;
+    margin-right: 5px;
+}
+
+.tag-actions {
+    display: flex;
+    align-items: center;
+}
+
+.tag-delete-btn {
+    background: none;
+    border: none;
+    color: var(--dark-text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0 3px;
+    transition: color 0.2s ease;
+}
+
+.tag-delete-btn:hover {
+    color: #ff4d4d;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .categories-container {
+        grid-template-columns: 1fr;
+    }
+}

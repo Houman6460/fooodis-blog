@@ -1,0 +1,777 @@
+/* Direct inline styles for the modern email builder - GRAY & YELLOW THEME */
+
+/* Email Marketing Tabs Navigation */
+.email-marketing-tabs {
+    display: flex;
+    background-color: #333333;
+    border-bottom: 1px solid #444444;
+}
+
+.email-tab {
+    padding: 15px 20px;
+    color: #cccccc;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+}
+
+.email-tab i {
+    margin-right: 8px;
+}
+
+.email-tab.active {
+    color: #FFD700; /* Yellow gold */
+    border-bottom-color: #FFD700;
+    background-color: #444444;
+}
+
+.email-tab:hover:not(.active) {
+    background-color: #444444;
+    color: #ffffff;
+}
+
+/* Main Builder Layout */
+.email-builder-main {
+    display: flex;
+    flex-wrap: nowrap;
+    height: calc(100vh - 300px);
+    min-height: 500px;
+    background-color: #333333;
+    color: #eeeeee;
+}
+
+/* Email Studio Header */
+.email-studio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #444444;
+    border-bottom: 1px solid #555555;
+}
+
+.email-campaign-title input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #555555;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 5px 10px;
+}
+
+.email-campaign-title input:focus {
+    outline: none;
+    border-bottom: 1px solid #FFD700;
+}
+
+.email-campaign-title .edit-label {
+    color: #cccccc;
+    font-size: 12px;
+}
+
+/* Action buttons */
+.email-studio-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-indicator {
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #444444;
+    color: #ffffff;
+    border: 1px solid #555555;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-icon:hover {
+    background-color: #555555;
+}
+
+.btn-secondary {
+    background-color: #555555;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #FFD700;
+    color: #333333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-success {
+    background-color: #C0C0C0;
+    color: #333333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Email Canvas */
+.email-canvas {
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
+    background-color: #222222;
+    display: flex;
+    justify-content: center;
+}
+
+.email-document {
+    width: 600px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Elements Sidebar */
+.email-elements-sidebar {
+    width: 250px;
+    background-color: #444444;
+    border-right: 1px solid #555555;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 15px;
+    border-bottom: 1px solid #555555;
+}
+
+.sidebar-header h4 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.sidebar-content {
+    padding: 15px;
+}
+
+.element-category {
+    margin-bottom: 25px;
+}
+
+.category-title {
+    font-size: 14px;
+    color: #cccccc;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.element-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #555555;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+
+.element-item:hover {
+    background-color: #666666;
+    border-left: 3px solid #FFD700;
+}
+
+.element-item i {
+    margin-right: 8px;
+    color: #FFD700;
+}
+
+.element-item span {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+/* Settings Sidebar */
+.email-settings-sidebar {
+    width: 300px;
+    background-color: #444444;
+    border-left: 1px solid #555555;
+    overflow-y: auto;
+}
+
+.settings-tabs {
+    display: flex;
+    border-bottom: 1px solid #555555;
+}
+
+.settings-tab {
+    padding: 12px 15px;
+    color: #cccccc;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+}
+
+.settings-tab.active {
+    color: #FFD700;
+    border-bottom-color: #FFD700;
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.settings-panel {
+    display: none;
+    padding: 15px;
+}
+
+.settings-panel.active {
+    display: block;
+}
+
+.settings-group {
+    margin-bottom: 20px;
+}
+
+.settings-group h4 {
+    color: #ffffff;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    color: #cccccc;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    background-color: #333333;
+    border: 1px solid #555555;
+    border-radius: 4px;
+    color: #ffffff;
+    padding: 8px;
+    width: 100%;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #FFD700;
+}
+
+/* Form Specific Controls */
+.settings-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.color-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.color-label {
+    color: #cccccc;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+input[type="color"] {
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+
+.range-control {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.range-control label {
+    color: #cccccc;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.range-control span {
+    color: #cccccc;
+    font-size: 12px;
+    margin-top: 4px;
+    text-align: right;
+}
+
+/* Email Content Styles */
+
+.email-template-header {
+    padding: 10px;
+    text-align: center;
+}
+
+.blue-background {
+    background-color: #FFD700; /* Yellow gold */
+    color: #333333;
+}
+
+.pink-background {
+    background-color: #999999; /* Gray */
+    color: #333333;
+}
+
+.brand-header {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.email-content-block {
+    padding: 15px;
+}
+
+.text-content-block {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.email-heading {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #333333;
+}
+
+.email-text {
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.email-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.email-button {
+    padding: 10px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+}
+
+.primary-button {
+    background-color: #FFD700; /* Yellow gold */
+    color: #333333;
+}
+
+.secondary-button {
+    background-color: #999999; /* Gray */
+    color: #333333;
+}
+
+/* Product Grid Styles */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.product-item {
+    flex: 0 0 calc(33.333% - 10px);
+    text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding-bottom: 15px;
+}
+
+.product-image {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f7f7f7;
+    margin-bottom: 10px;
+}
+
+.product-image-placeholder {
+    color: #888888;
+    font-size: 14px;
+}
+
+.product-name {
+    font-size: 16px;
+    margin: 0 0 5px;
+    padding: 0 10px;
+}
+
+.product-price {
+    color: #555555;
+    margin: 0 0 10px;
+    font-weight: 500;
+}
+
+.product-button {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: #FFD700; /* Yellow gold */
+    color: #333333;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* CTA Block Styles */
+.cta-block {
+    text-align: center;
+    padding: 25px 15px;
+}
+
+.cta-title {
+    font-size: 22px;
+    margin: 0 0 10px;
+    color: #333333;
+}
+
+.cta-text {
+    margin: 0 0 20px;
+    color: #333333;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #333333;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* Footer Styles */
+.footer-block {
+    padding: 0;
+}
+
+.email-footer-nav {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+    gap: 20px;
+}
+
+.footer-link {
+    color: #333333;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.email-footer-info {
+    background-color: #ffffff;
+    padding: 15px;
+    text-align: center;
+}
+
+.footer-company {
+    margin: 0 0 5px;
+    font-size: 14px;
+    color: #666666;
+}
+
+.footer-address {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #666666;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.social-link {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    color: #555555;
+    text-decoration: none;
+}
+
+/* Drag and Drop Styling */
+.email-content-block[data-block-type].dragging {
+    opacity: 0.5;
+    border: 2px dashed #FFD700;
+}
+
+.email-content-block[data-block-type].drag-over {
+    border-top: 2px solid #FFD700;
+}
+
+.element-item.dragging {
+    opacity: 0.5;
+}
+
+/* Editable Element Styling */
+.email-content-block[contenteditable="true"] {
+    cursor: text;
+    outline: 2px dashed #FFD700;
+    outline-offset: 2px;
+}
+
+/* Highlighted element when selected */
+.email-content-block.selected {
+    position: relative;
+}
+
+.email-content-block.selected::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #FFD700;
+    pointer-events: none;
+}
+
+/* Block handles for drag-and-drop reordering */
+.block-handle {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #FFD700;
+    color: #333333;
+    padding: 5px;
+    cursor: grab;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.email-content-block:hover .block-handle {
+    opacity: 1;
+}
+
+/* Empty placeholder for droppable areas */
+.email-drop-placeholder {
+    border: 2px dashed #FFD700;
+    background-color: rgba(255, 215, 0, 0.1);
+    min-height: 60px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #999999;
+}
+
+.email-template-header {
+    background-color: #AEE1F0;
+    padding: 15px 0;
+    text-align: center;
+}
+
+.brand-header {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.email-content-block {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.email-image-content {
+    height: 200px;
+    background-color: slategray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.product-image-placeholder {
+    height: 120px;
+    background-color: #AEE1F0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.email-heading {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.email-text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.email-buttons {
+    margin-top: 20px;
+}
+
+.email-button {
+    display: block;
+    padding: 10px 15px;
+    text-align: center;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.primary-button {
+    background-color: #AEE1F0;
+    color: #333;
+}
+
+.secondary-button {
+    background-color: #F8C3CB;
+    color: #333;
+}
+
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.product-item {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+.product-name {
+    font-size: 16px;
+    margin: 10px 0 5px;
+}
+
+.product-price {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.product-button {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #AEE1F0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.blue-background {
+    background-color: #AEE1F0;
+}
+
+.pink-background {
+    background-color: #F8C3CB;
+}
+
+.cta-block {
+    text-align: center;
+    padding: 25px 15px;
+}
+
+.cta-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.footer-block {
+    background-color: #f9f9f9;
+}
+
+.email-footer-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0;
+}
+
+.footer-link {
+    color: #333;
+    text-decoration: none;
+}
+
+.email-footer-info {
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+}
+
+.footer-social {
+    margin-top: 10px;
+}
+
+.social-link {
+    display: inline-block;
+    margin: 0 5px;
+    color: #555;
+    font-size: 18px;
+}
+
+.section-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+}
