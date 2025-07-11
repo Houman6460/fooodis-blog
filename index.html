@@ -77,11 +77,8 @@
         
         <!-- Test Registration Form Button -->
         <div style="margin-top: 20px;">
-            <button onclick="testRegistrationForm()" style="background: #e8f24c; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+            <button onclick="testRegistrationForm()" style="background: #e8f24c; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
                 Test Registration Form
-            </button>
-            <button onclick="checkRegistrationStatus()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                Check Status
             </button>
         </div>
     </div>
@@ -146,35 +143,29 @@
         
         console.log('🧹 Cleared all user data - simulating new user');
         
-        // Force show registration form immediately
-        if (window.ChatbotRegistrationForm) {
-          console.log('🔐 Found registration form system, forcing display...');
+        // Initialize registration systems
+        setTimeout(() => {
+          // Initialize registration data manager
+          if (window.ChatbotRegistrationData && !window.ChatbotRegistrationData.initialized) {
+            window.ChatbotRegistrationData.init();
+          }
           
-          // Force initialize if not already
-          if (!window.ChatbotRegistrationForm.initialized) {
+          // Initialize registration form
+          if (window.ChatbotRegistrationForm && !window.ChatbotRegistrationForm.initialized) {
             window.ChatbotRegistrationForm.init();
           }
           
-          // Force show form
-          window.ChatbotRegistrationForm.showRegistrationForm();
-          console.log('📋 Registration form forced to show');
-        } else {
-          console.error('❌ Registration form system not available');
-          alert('Registration form system not available. Please refresh the page.');
-        }
-      }
-      
-      // Add debug function to check registration status
-      function checkRegistrationStatus() {
-        console.log('🔍 Registration Status Check:');
-        console.log('ChatbotRegistrationForm available:', !!window.ChatbotRegistrationForm);
-        console.log('ChatbotRegistrationForm initialized:', window.ChatbotRegistrationForm?.initialized);
-        console.log('Should show form:', window.ChatbotRegistrationForm?.shouldShowRegistrationForm());
-        
-        const keys = ['chatbot-current-user', 'fooodis-user-name', 'fooodis-restaurant-name'];
-        keys.forEach(key => {
-          console.log(`${key}:`, localStorage.getItem(key));
-        });
+          // Force show registration form
+          setTimeout(() => {
+            if (window.ChatbotRegistrationForm) {
+              window.ChatbotRegistrationForm.showRegistrationForm();
+              console.log('📋 Registration form should now be visible');
+            } else {
+              console.error('❌ Registration form system not available');
+              alert('Registration form system not available. Please refresh the page.');
+            }
+          }, 500);
+        }, 500);
       }
     </script>
 </body>
