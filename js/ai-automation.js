@@ -232,20 +232,6 @@ function executeAutomation() {
 
     console.log('AI Automation: Starting execution...');
 
-    // Get OpenAI API key from AI Config system
-    let apiKey = '';
-
-    if (window.aiConfig && typeof window.aiConfig.getApiKey === 'function') {
-        apiKey = window.aiConfig.getApiKey();
-        console.log('✅ Using API key from AI Config system');
-    } else {
-        // Fallback to direct storage access
-        apiKey = localStorage.getItem('openai-api-key') || 
-                localStorage.getItem('OPENAI_API_KEY') || 
-                window.OPENAI_API_KEY;
-        console.log('⚠️ Using fallback API key access');
-    }
-
     // Implementation for automation execution
     window.aiAutomationPaths.forEach(path => {
         if (path.status === 'scheduled') {

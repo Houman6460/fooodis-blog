@@ -1,3 +1,4 @@
+
 /**
  * AI Configuration Manager for Fooodis Blog System
  * Handles OpenAI API key and AI settings
@@ -16,13 +17,13 @@ window.aiConfig = {
  */
 function initializeAIConfig() {
     console.log('AI Config: Initializing...');
-
+    
     // Load saved configuration
     loadSavedConfig();
-
+    
     // Setup event listeners
     setupAIConfigEventListeners();
-
+    
     console.log('AI Config: Initialized successfully');
 }
 
@@ -32,18 +33,18 @@ function initializeAIConfig() {
 function loadSavedConfig() {
     try {
         let config = null;
-
+        
         // Try multiple storage locations
         const savedConfig = localStorage.getItem('aiConfig');
         if (savedConfig) {
             config = JSON.parse(savedConfig);
         }
-
+        
         // Try StorageManager if available
         if (!config && window.StorageManager) {
             config = StorageManager.get('ai-config');
         }
-
+        
         // Try alternative key
         if (!config) {
             const altConfig = localStorage.getItem('fooodis-aiConfig');
@@ -51,20 +52,20 @@ function loadSavedConfig() {
                 config = JSON.parse(altConfig);
             }
         }
-
+        
         if (config) {
             window.aiConfig = { ...window.aiConfig, ...config };
             console.log('AI Config: Loaded saved configuration');
-
+            
             // Update UI if elements exist
             updateConfigUI();
-
+            
             // Save to all storage locations for consistency
             saveConfiguration();
         } else {
             console.log('AI Config: No saved configuration found');
         }
-
+        
     } catch (error) {
         console.error('AI Config: Error loading saved configuration:', error);
     }
@@ -80,23 +81,23 @@ function saveConfiguration() {
             ...window.aiConfig,
             lastSaved: new Date().toISOString()
         };
-
+        
         const configString = JSON.stringify(configWithTimestamp);
-
+        
         // Save to multiple storage locations for redundancy
         localStorage.setItem('aiConfig', configString);
         localStorage.setItem('fooodis-aiConfig', configString);
-
+        
         // Save to StorageManager if available
         if (window.StorageManager) {
             StorageManager.set('ai-config', configWithTimestamp);
         }
-
+        
         // Save to sessionStorage as backup
         sessionStorage.setItem('aiConfig', configString);
-
+        
         console.log('AI Config: Configuration saved successfully');
-
+        
         // Verify save was successful
         const verification = localStorage.getItem('aiConfig');
         if (verification) {
@@ -109,7 +110,7 @@ function saveConfiguration() {
         } else {
             console.warn('AI Config: Save verification failed - no data found');
         }
-
+        
     } catch (error) {
         console.error('AI Config: Error saving configuration:', error);
     }
@@ -120,231 +121,53 @@ function saveConfiguration() {
  */
 function setupAIConfigEventListeners() {
     // API Key input
-    const apiKeyInput = document.getElementById('openai-api-key');
+    const apiKeyInput = document.getElementById('openaiApiKey');
     if (apiKeyInput) {
         apiKeyInput.addEventListener('change', (e) => {
             window.aiConfig.apiKey = e.target.value.trim();
             saveConfiguration();
         });
-
+        
         apiKeyInput.addEventListener('blur', (e) => {
             window.aiConfig.apiKey = e.target.value.trim();
             saveConfiguration();
         });
     }
-
+    
     // Model selection
-    const modelOptions = document.querySelectorAll('.model-option');
-    modelOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-            // Remove selected class from all options
-            modelOptions.forEach(opt => opt.classList.remove('selected'));
-            // Add selected class to clicked option
-            option.classList.add('selected');
-            
-            window.aiConfig.model = option.dataset.model;
+    const modelSelect = document.getElementById('aiModel');
+    if (modelSelect) {
+        modelSelect.addEventListener('change', (e) => {
+            window.aiConfig.model = e.target.value;
             saveConfiguration();
         });
-    });
-
-    // Assistant selection
-    const assistantOptions = document.querySelectorAll('.assistant-option');
-    assistantOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-            // Remove selected class from all options
-            assistantOptions.forEach(opt => opt.classList.remove('selected'));
-            // Add selected class to clicked option
-            option.classList.add('selected');
-            
-            window.aiConfig.assistant = option.dataset.assistant;
-            
-            // Show/hide custom assistant form
-            const customForm = document.querySelector('.custom-assistant-form');
-            if (customForm) {
-                if (option.dataset.assistant === 'custom') {
-                    customForm.style.display = 'block';
-                } else {
-                    customForm.style.display = 'none';
-                }
-            }
-            
-            saveConfiguration();
-        });
-    });
-
-    // Test connection button
-    const testBtn = document.getElementById('test-connection');
-    if (testBtn) {
-        testBtn.addEventListener('click', testConnection);
     }
-
+    
+    // Max tokens
+    const maxTokensInput = document.getElementById('maxTokens');
+    if (maxTokensInput) {
+        maxTokensInput.addEventListener('change', (e) => {
+            window.aiConfig.maxTokens = parseInt(e.target.value) || 1000;
+            saveConfiguration();
+        });
+    }
+    
+    // Temperature
+    const temperatureInput = document.getElementById('temperature');
+    if (temperatureInput) {
+        temperatureInput.addEventListener('change', (e) => {
+            window.aiConfig.temperature = parseFloat(e.target.value) || 0.7;
+            saveConfiguration();
+        });
+    }
+    
     // Save button
-    const saveBtn = document.getElementById('save-config');
+    const saveBtn = document.getElementById('saveAIConfig');
     if (saveBtn) {
         saveBtn.addEventListener('click', () => {
             saveConfiguration();
             showConfigSavedMessage();
         });
-    }
-
-    // Reset button
-    const resetBtn = document.getElementById('reset-config');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', resetConfiguration);
-    }
-
-    // API key visibility toggle
-    const toggleBtn = document.querySelector('.toggle-visibility');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const input = document.getElementById('openai-api-key');
-            const icon = toggleBtn.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'fas fa-eye-slash';
-            } else {
-                input.type = 'password';
-                icon.className = 'fas fa-eye';
-            }
-        });
-    }
-}
-
-/**
- * Test OpenAI API connection
- */
-async function testConnection() {
-    const apiKeyInput = document.getElementById('openai-api-key');
-    
-    if (!apiKeyInput || !apiKeyInput.value.trim()) {
-        showConnectionStatus('error', 'API key is required');
-        return false;
-    }
-
-    const apiKey = apiKeyInput.value.trim();
-    
-    // Validate API key format
-    if (!apiKey.startsWith('sk-') && !apiKey.includes('openai')) {
-        showConnectionStatus('error', 'Invalid API key format');
-        return false;
-    }
-
-    showConnectionStatus('testing', 'Testing connection...');
-
-    try {
-        // Use our server endpoint for testing
-        const response = await fetch('/api/chatbot/test-connection', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ apiKey })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            showConnectionStatus('success', result.message || 'Connection successful!');
-            
-            // Save the working API key
-            window.aiConfig.apiKey = apiKey;
-            saveConfiguration();
-            return true;
-        } else {
-            showConnectionStatus('error', result.error || 'Connection failed');
-            return false;
-        }
-    } catch (error) {
-        console.error('Connection test failed:', error);
-        showConnectionStatus('error', 'Connection failed - check your internet connection');
-        return false;
-    }
-}
-
-/**
- * Show connection status
- */
-function showConnectionStatus(type, message) {
-    let statusElement = document.getElementById('connection-status');
-    
-    if (!statusElement) {
-        statusElement = document.createElement('div');
-        statusElement.id = 'connection-status';
-        statusElement.className = 'status';
-        
-        // Try multiple insertion points
-        const actions = document.querySelector('.ai-config-actions') || 
-                       document.querySelector('#ai-config-section .form-group:last-child') ||
-                       document.querySelector('#ai-config-section');
-        
-        if (actions) {
-            if (actions.nextSibling) {
-                actions.parentNode.insertBefore(statusElement, actions.nextSibling);
-            } else {
-                actions.parentNode.appendChild(statusElement);
-            }
-        } else {
-            // Fallback: append to AI config section
-            const aiConfigSection = document.getElementById('ai-config-section');
-            if (aiConfigSection) {
-                aiConfigSection.appendChild(statusElement);
-            }
-        }
-    }
-
-    statusElement.className = `status ${type}`;
-    statusElement.style.display = 'flex';
-    
-    let icon = '';
-    switch (type) {
-        case 'success':
-            icon = '<i class="fas fa-check-circle"></i>';
-            break;
-        case 'error':
-            icon = '<i class="fas fa-exclamation-circle"></i>';
-            break;
-        case 'testing':
-            icon = '<i class="fas fa-spinner fa-spin"></i>';
-            break;
-        default:
-            icon = '<i class="fas fa-info-circle"></i>';
-    }
-
-    statusElement.innerHTML = `${icon} ${message}`;
-    
-    // Auto-hide success/error messages after 5 seconds
-    if (type === 'success' || type === 'error') {
-        setTimeout(() => {
-            if (statusElement && statusElement.className.includes(type)) {
-                statusElement.style.display = 'none';
-            }
-        }, 5000);
-    }
-}
-
-/**
- * Reset configuration to defaults
- */
-function resetConfiguration() {
-    if (confirm('Are you sure you want to reset all AI configuration to defaults?')) {
-        // Reset to defaults
-        window.aiConfig = {
-            apiKey: '',
-            model: 'gpt-4',
-            maxTokens: 1000,
-            temperature: 0.7,
-            assistant: 'default'
-        };
-
-        // Update UI
-        updateConfigUI();
-        
-        // Clear storage
-        localStorage.removeItem('aiConfig');
-        localStorage.removeItem('fooodis-aiConfig');
-        
-        showConnectionStatus('success', 'Configuration reset to defaults');
     }
 }
 
@@ -352,40 +175,24 @@ function resetConfiguration() {
  * Update configuration UI
  */
 function updateConfigUI() {
-    // Update API key input
-    const apiKeyInput = document.getElementById('openai-api-key');
+    const apiKeyInput = document.getElementById('openaiApiKey');
     if (apiKeyInput && window.aiConfig.apiKey) {
         apiKeyInput.value = window.aiConfig.apiKey;
     }
-
-    // Update model selection
-    const modelOptions = document.querySelectorAll('.model-option');
-    modelOptions.forEach(option => {
-        if (option.dataset.model === window.aiConfig.model) {
-            option.classList.add('selected');
-        } else {
-            option.classList.remove('selected');
-        }
-    });
-
-    // Update assistant selection
-    const assistantOptions = document.querySelectorAll('.assistant-option');
-    assistantOptions.forEach(option => {
-        if (option.dataset.assistant === window.aiConfig.assistant) {
-            option.classList.add('selected');
-        } else {
-            option.classList.remove('selected');
-        }
-    });
-
-    // Show/hide custom assistant form
-    const customForm = document.querySelector('.custom-assistant-form');
-    if (customForm) {
-        if (window.aiConfig.assistant === 'custom') {
-            customForm.style.display = 'block';
-        } else {
-            customForm.style.display = 'none';
-        }
+    
+    const modelSelect = document.getElementById('aiModel');
+    if (modelSelect && window.aiConfig.model) {
+        modelSelect.value = window.aiConfig.model;
+    }
+    
+    const maxTokensInput = document.getElementById('maxTokens');
+    if (maxTokensInput && window.aiConfig.maxTokens) {
+        maxTokensInput.value = window.aiConfig.maxTokens;
+    }
+    
+    const temperatureInput = document.getElementById('temperature');
+    if (temperatureInput && window.aiConfig.temperature) {
+        temperatureInput.value = window.aiConfig.temperature;
     }
 }
 
@@ -405,10 +212,10 @@ function showConfigSavedMessage() {
         saveMessage.style.zIndex = '9999';
         document.body.appendChild(saveMessage);
     }
-
+    
     saveMessage.textContent = 'AI Configuration saved successfully!';
     saveMessage.style.display = 'block';
-
+    
     // Hide after 3 seconds
     setTimeout(() => {
         saveMessage.style.display = 'none';
@@ -422,7 +229,7 @@ function validateAPIKey(apiKey) {
     if (!apiKey || apiKey.length < 10) {
         return false;
     }
-
+    
     // Basic OpenAI API key format validation
     return apiKey.startsWith('sk-') || apiKey.includes('openai');
 }

@@ -364,67 +364,12 @@
     .assistant-options {
         grid-template-columns: 1fr;
     }
-
+    
     .ai-config-actions {
         flex-direction: column;
     }
-
+    
     .ai-config-actions button {
         width: 100%;
     }
-}
-
-/* AI Configuration Dark Theme Styles */
-.ai-config-form {
-    background: var(--bs-dark);
-    border-radius: 12px;
-    padding: 2rem;
-    border: 1px solid var(--bs-gray-700);
-}
-
-/* AI Configuration Dark Theme */
-.ai-config-section {
-    background: #1a1a1a;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.ai-config-section h3 {
-    color: #fff;
-    margin-bottom: 15px;
-}
-
-/* Connection Status Styles */
-.status {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin-top: 15px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.status.success {
-    background-color: #0f5132;
-    color: #d1e7dd;
-    border: 1px solid #198754;
-}
-
-.status.error {
-    background-color: #58151c;
-    color: #f8d7da;
-    border: 1px solid #dc3545;
-}
-
-.status.testing {
-    background-color: #055160;
-    color: #b3d4fc;
-    border: 1px solid #0dcaf0;
-}
-
-.status i {
-    font-size: 16px;
 }

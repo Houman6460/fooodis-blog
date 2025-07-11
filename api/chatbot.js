@@ -983,27 +983,6 @@ router.get('/conversations', (req, res) => {
     }
 });
 
-// Get all conversations endpoint
-router.get('/conversations', (req, res) => {
-    try {
-        console.log('📝 Getting all conversations from server');
-        
-        const conversationArray = Array.from(conversations.values());
-        
-        res.json({
-            success: true,
-            conversations: conversationArray,
-            count: conversationArray.length
-        });
-    } catch (error) {
-        console.error('Error getting conversations:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to get conversations'
-        });
-    }
-});
-
 // Clear all conversations endpoint
 router.delete('/conversations/clear-all', (req, res) => {
     try {
@@ -1024,65 +1003,6 @@ router.delete('/conversations/clear-all', (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to clear conversations'
-        });
-    }
-});
-
-// Test OpenAI API connection endpoint
-router.post('/test-connection', async (req, res) => {
-    try {
-        const { apiKey } = req.body;
-
-        if (!apiKey || !apiKey.trim()) {
-            return res.status(400).json({
-                success: false,
-                error: 'API key is required'
-            });
-        }
-
-        // Validate API key format
-        if (!apiKey.startsWith('sk-') && !apiKey.includes('openai')) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid API key format'
-            });
-        }
-
-        // Test the API connection
-        const response = await fetch('https://api.openai.com/v1/models', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (response.ok) {
-            res.json({
-                success: true,
-                message: 'Connection successful!'
-            });
-        } else if (response.status === 401) {
-            res.status(401).json({
-                success: false,
-                error: 'Invalid API key'
-            });
-        } else if (response.status === 429) {
-            res.status(429).json({
-                success: false,
-                error: 'Rate limit exceeded'
-            });
-        } else {
-            res.status(response.status).json({
-                success: false,
-                error: `Connection failed (${response.status})`
-            });
-        }
-    } catch (error) {
-        console.error('Connection test failed:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Connection failed - check your internet connection'
         });
     }
 });
