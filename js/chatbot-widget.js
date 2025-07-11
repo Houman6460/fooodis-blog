@@ -1004,6 +1004,8 @@
 
             this.showTyping();
 
+            this.playSound('send'); // Play sound when sending a message
+
             this.processMessage(message);
         },
 
@@ -1045,6 +1047,10 @@
                         ${avatarImg.outerHTML}
                     </div>
                 `;
+
+                if (sender === 'assistant') {
+                    this.playSound('receive'); // Play sound when receiving a message
+                }
             }
 
             messageElement.innerHTML = `
@@ -1077,6 +1083,7 @@
                         typingText.textContent = `${agentName} is typing...`;
                     }
                 }
+                this.playSound('typing'); // Play sound when typing
             }
         },
 
@@ -1459,6 +1466,59 @@
             }));
 
             console.log('Agent switched successfully to:', agentData.name, 'with avatar:', newAvatarUrl.substring(0, 50) + '...');
+        },
+
+        playSound: function(type) {
+            try {
+                // Check if sounds are enabled (can be controlled by user preference)
+                const soundsEnabled = localStorage.getItem('chatbot-sounds-enabled') !== 'false';
+                if (!soundsEnabled) return;
+
+                let frequency, duration;
+
+                switch(type) {
+                    case 'send':
+                        frequency = 800;
+                        duration = 200;
+                        break;
+                    case 'receive':
+                        frequency = 600;
+                        duration = 300;
+                        break;
+                    case 'typing':
+                        frequency = 400;
+                        duration = 100;
+                        break;
+                    default:
+                        return;
+                }
+
+                // Create audio context
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                // Configure oscillator
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+
+                // Configure gain (volume)
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+
+                // Start and stop the sound
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration / 1000);
+
+                console.log(`🔊 Played ${type} sound (${frequency}Hz, ${duration}ms)`);
+
+            } catch (error) {
+                console.warn('Could not play sound:', error);
+            }
         }
     };
 })();
