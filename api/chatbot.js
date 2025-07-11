@@ -898,6 +898,30 @@ function generateConversationId() {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
+// Clear all users/leads endpoint
+router.delete('/users/clear-all', (req, res) => {
+    try {
+        console.log('🗑️ Clearing all users/leads from server');
+        
+        // Clear all registered users from memory
+        registeredUsers.clear();
+        
+        // Save empty users to storage
+        saveUsersToStorage();
+        
+        res.json({
+            success: true,
+            message: 'All users cleared successfully'
+        });
+    } catch (error) {
+        console.error('Error clearing all users:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to clear all users'
+        });
+    }
+});
+
 // Save a new user lead
 router.post('/register', async (req, res) => {
     try {
