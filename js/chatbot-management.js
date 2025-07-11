@@ -17,35 +17,16 @@ class ChatbotManager {
     }
 
     async init() {
-        console.log('🤖 ChatbotManager: Starting initialization...');
-        
-        // Set global reference for widget integration
-        window.chatbotManager = this;
-        this.isInitialized = false;
-        
-        try {
-            await this.loadData();
-            this.setupEventListeners();
-            this.setupTabs();
-            this.renderAssistants();
-            this.renderScenarios();
-            this.renderConversations();
-            this.renderAnalytics();
-            this.updateStatus();
-            await this.loadLeads(); // Load leads data
-            this.renderLeads(); // Render leads
-            
-            this.isInitialized = true;
-            
-            // Notify widget that manager is ready
-            window.dispatchEvent(new CustomEvent('chatbotManagerReady', {
-                detail: { manager: this }
-            }));
-            
-            console.log('✅ ChatbotManager: Initialization complete');
-        } catch (error) {
-            console.error('❌ ChatbotManager: Initialization failed:', error);
-        }
+        await this.loadData();
+        this.setupEventListeners();
+        this.setupTabs();
+        this.renderAssistants();
+        this.renderScenarios();
+        this.renderConversations();
+        this.renderAnalytics();
+        this.updateStatus();
+        await this.loadLeads(); // Load leads data
+        this.renderLeads(); // Render leads
 
         // Set up periodic refresh of conversations and leads
         setInterval(() => {
@@ -285,12 +266,6 @@ class ChatbotManager {
             const response = await fetch('/api/chatbot/conversations');
             console.log('📡 Server response status:', response.status, response.ok);
             
-            // Handle specific error cases
-            if (response.status === 404) {
-                console.log('📋 Chatbot API not available (404), using localStorage only');
-                return;
-            }
-            
             if (response.ok) {
                 const result = await response.json();
                 console.log('📋 Server response data:', result);
@@ -503,178 +478,6 @@ class ChatbotManager {
                 this.renderConversations();
                 console.log(`✅ FORCED REFRESH ${index + 1} (${delay}ms) - UI updated`);
             }, delay);
-
-
-    // Method to generate agent responses (called by widget)
-    async generateAgentResponse(requestData) {
-        try {
-            console.log('🤖 ChatbotManager: Generating response for:', requestData.message?.substring(0, 50) + '...');
-            
-            const { message, conversationId, language, agent, assistantId } = requestData;
-            
-            // Check if we have OpenAI API key
-            if (!this.settings.openaiApiKey) {
-                console.warn('⚠️ No OpenAI API key configured');
-                return {
-                    success: false,
-                    error: 'No API key configured'
-                };
-            }
-            
-            // Find active assistant
-            const activeAssistant = this.assistants.find(a => 
-                a.status === 'active' && (a.id === assistantId || a.assistantId === assistantId)
-            );
-            
-            if (!activeAssistant) {
-                console.warn('⚠️ No active assistant found');
-                return {
-                    success: false,
-                    error: 'No active assistant'
-                };
-            }
-            
-            // Generate response using OpenAI
-            const aiResponse = await this.callOpenAI({
-                message,
-                assistant: activeAssistant,
-                language: language || 'en',
-                conversationHistory: requestData.recentMessages || []
-            });
-            
-            if (aiResponse) {
-                console.log('✅ ChatbotManager: Response generated successfully');
-                return {
-                    success: true,
-                    message: aiResponse,
-                    agent: agent,
-                    timestamp: new Date().toISOString()
-                };
-            } else {
-                return {
-                    success: false,
-                    error: 'Failed to generate response'
-                };
-            }
-            
-        } catch (error) {
-            console.error('❌ ChatbotManager: Error generating response:', error);
-            return {
-                success: false,
-                error: error.message
-            };
-        }
-    }
-    
-    // Method to call OpenAI API
-    async callOpenAI(params) {
-        try {
-            const { message, assistant, language, conversationHistory } = params;
-            
-            // Build system prompt
-            const systemPrompt = assistant.systemPrompt || 
-                `You are ${assistant.name}, a helpful assistant. Always respond in ${language === 'sv' ? 'Swedish' : 'English'}.`;
-            
-            // Build messages array
-            const messages = [
-                { role: 'system', content: systemPrompt }
-            ];
-            
-            // Add conversation history
-            if (conversationHistory && conversationHistory.length > 0) {
-                conversationHistory.forEach(msg => {
-                    messages.push({
-                        role: msg.sender === 'user' ? 'user' : 'assistant',
-                        content: msg.content
-                    });
-                });
-            }
-            
-            // Add current message
-            messages.push({ role: 'user', content: message });
-            
-            // Call OpenAI API
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.settings.openaiApiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: assistant.model || this.settings.defaultModel || 'gpt-4o-mini',
-                    messages: messages,
-                    max_tokens: 1000,
-                    temperature: 0.7
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`OpenAI API error: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return data.choices[0].message.content;
-            
-        } catch (error) {
-            console.error('❌ OpenAI API call failed:', error);
-            throw error;
-        }
-    }
-    
-    // Method to store conversations (called by widget)
-    storeConversation(conversationData) {
-        try {
-            console.log('💾 ChatbotManager: Storing conversation:', conversationData.id);
-            
-            // Find existing conversation or create new one
-            const existingIndex = this.conversations.findIndex(c => c.id === conversationData.id);
-            
-            if (existingIndex >= 0) {
-                // Update existing conversation
-                this.conversations[existingIndex] = {
-                    ...this.conversations[existingIndex],
-                    ...conversationData,
-                    lastMessageAt: new Date().toISOString()
-                };
-            } else {
-                // Add new conversation
-                this.conversations.push({
-                    ...conversationData,
-                    createdAt: new Date().toISOString(),
-                    lastMessageAt: new Date().toISOString(),
-                    status: 'active'
-                });
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('fooodis-chatbot-conversations', JSON.stringify(this.conversations));
-            
-            // Update analytics
-            this.analytics.totalConversations = this.conversations.length;
-            
-            console.log('✅ Conversation stored successfully');
-            
-        } catch (error) {
-            console.error('❌ Error storing conversation:', error);
-        }
-    }
-    
-    // Method to get active agent for widget
-    getActiveAgent() {
-        const activeAssistants = this.assistants.filter(a => a.status === 'active');
-        if (activeAssistants.length > 0) {
-            return {
-                id: activeAssistants[0].id,
-                name: activeAssistants[0].name,
-                avatar: this.settings.avatar || this.getDefaultAvatar(),
-                personality: activeAssistants[0].description,
-                assignedAssistantId: activeAssistants[0].assistantId
-            };
-        }
-        return null;
-    }
-
-
         });
         
         // Also trigger any external conversation updates

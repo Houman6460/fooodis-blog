@@ -1,2 +1,26 @@
-
-[]
+[
+  {
+    "id": "conv_1752170459873_wkvm6bm7c",
+    "name": "Houman ",
+    "email": "info@logoland.se",
+    "phone": "0987897097",
+    "systemUsage": "current_user",
+    "conversationId": null,
+    "registeredAt": "2025-07-10T18:00:59.873Z",
+    "source": "chatbot-widget"
+  },
+  {
+    "id": "conv_1752174375538_z1z5rzi01",
+    "name": "Houman",
+    "email": "info@dod.com",
+    "phone": "9070878797",
+    "systemUsage": "current_user",
+    "userType": "user",
+    "conversationId": "conv_1752174375538_z1z5rzi01",
+    "registeredAt": "2025-07-10T19:07:21.183Z",
+    "source": "chatbot-widget",
+    "language": "english",
+    "languageCode": "en-US",
+    "languageFlag": "🇺🇸"
+  }
+]

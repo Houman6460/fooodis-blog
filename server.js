@@ -59,10 +59,8 @@ let chatbotAPI, systemHealthAPI, databaseAPI, recoveryAPI, ticketsAPI, authAPI;
 
 try {
     chatbotAPI = require('./api/chatbot');
-    console.log('✅ Chatbot API loaded successfully');
 } catch (error) {
-    console.error('❌ Failed to load chatbot API:', error.message);
-    console.error('Full error:', error);
+    console.warn('Warning: Failed to load chatbot API:', error.message);
     chatbotAPI = require('express').Router();
 }
 
@@ -102,9 +100,13 @@ try {
     authAPI = require('express').Router();
 }
 
-// API routes - mount chatbot API with proper error handling
-app.use('/api/chatbot', chatbotAPI);
-console.log('✅ Chatbot API routes mounted successfully at /api/chatbot');
+// API routes - only mount if they are valid router functions
+if (typeof chatbotAPI === 'function' || (chatbotAPI && typeof chatbotAPI.handle === 'function')) {
+    app.use('/api/chatbot', chatbotAPI);
+    console.log('✅ Chatbot API routes mounted successfully');
+} else {
+    console.warn('⚠️ Chatbot API not properly loaded');
+}
 
 if (typeof systemHealthAPI === 'function' || (systemHealthAPI && typeof systemHealthAPI.handle === 'function')) {
     app.use('/api/system-health', systemHealthAPI);

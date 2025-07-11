@@ -4,16 +4,7 @@
  */
 
 const express = require('express');
-const fs = require('fs').promises;
-const path = require('path');
-
 const router = express.Router();
-
-// Add logging middleware
-router.use((req, res, next) => {
-    console.log(`📡 Chatbot API: ${req.method} ${req.path}`);
-    next();
-});
 
 // Store for conversations and users (in production, use a proper database)
 const conversations = new Map();
@@ -190,14 +181,14 @@ router.get('/users', async (req, res) => {
 router.post('/config', async (req, res) => {
     try {
         const configData = req.body;
-
+        
         // Save config to file
         const fs = require('fs');
         const path = require('path');
         const configPath = path.join(__dirname, '../chatbot-config.json');
-
+        
         fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-
+        
         res.json({
             success: true,
             message: 'Configuration saved successfully'
@@ -672,10 +663,6 @@ function detectLanguage(message) {
         if (lowerMessage.includes(word)) englishScore++;
     });
 
-    englishWords.forEach(word => {
-        if (lowerMessage.includes(word)) englishScore++;
-    });
-
     // Check for explicit language indicators
     if (lowerMessage.includes('svenska') || lowerMessage.includes('på svenska')) return 'sv';
     if (lowerMessage.includes('english') || lowerMessage.includes('in english')) return 'en';
@@ -822,7 +809,8 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
             return "Vårt kassasystem (POS) är en modern lösning som hanterar alla transaktioner, lageruppföljning och kundhantering. Det integreras med vårt köksdisplaysystem för effektiv orderbehandling och stöder olika betalningsmetoder inklusive kort, mobilbetalningar och kontaktlösa alternativ. Skulle du vilja veta mer om våra betalningsalternativ eller beställningsprocessen?";
         }
         return "Our POS (Point of Sale) system is a modern solution that handles all transactions, inventory tracking, and customer management. It integrates with our kitchen display system for efficient order processing and supports various payment methods including cards, mobile payments, and contactless options. Would you like to know more about our payment options or ordering process?";
-    }```text
+    }
+
     // Technology inquiries
     if (keywords.includes('technology') || keywords.includes('system') || keywords.includes('software') ||
         keywords.includes('teknik') || keywords.includes('system') || keywords.includes('mjukvara')) {
@@ -857,115 +845,4 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     } else {
         const englishResponses = [
             "I'm here to help with any questions about Fooodis restaurant! Whether you need information about our menu, reservations, hours, or anything else, just let me know how I can assist you.",
-            "Thanks for reaching out! I'd love to help you with information about our restaurant. What would you like to know about our menu, services, or dining experiences?",
-            "I'm your Fooodis assistant and I'm here to help! Feel free to ask about our menu, reservations, hours, location, or anything else related to our restaurant."
-        ];
-        return englishResponses[Math.floor(Math.random() * englishResponses.length)];
-    }
-}
-
-// Styled response function
-function getStyledResponse(response, style, detectedLanguage) {
-    if (!response) {
-        console.error('Empty response provided to getStyledResponse');
-        return "Sorry, I couldn't generate a response at this time.";
-    }
-
-    const trimmedResponse = response.trim();
-
-    if (!trimmedResponse) {
-        console.error('Empty trimmed response provided to getStyledResponse');
-        return "Sorry, I couldn't generate a response at this time.";
-    }
-
-    // Language-specific styling
-    const greeting = detectedLanguage === 'sv' ? "Här är en hjälpande svar:" : "Here's a helpful response:";
-    const closing = detectedLanguage === 'sv' ? "Hoppas det hjälper!" : "Hope that helps!";
-
-    switch (style) {
-        case 'friendly':
-            return `${greeting}\n\n${trimmedResponse}\n\n${closing} 😊`;
-        case 'professional':
-            return `${greeting}\n\n${trimmedResponse}\n\nBest regards.`;
-        case 'enthusiastic':
-            return `${greeting}\n\n${trimmedResponse}\n\nSo exciting! 🎉`;
-        case 'calm':
-            return `${greeting}\n\n${trimmedResponse}\n\nLet me know if you need further assistance.`;
-        case 'technical':
-            return `${greeting}\n\n${trimmedResponse}\n\nFor more details, consult the documentation.`;
-        case 'warm':
-            return `${greeting}\n\n${trimmedResponse}\n\nHave a wonderful day! ☀️`;
-        case 'experienced':
-            return `${greeting}\n\n${trimmedResponse}\n\nBased on my experience, that should resolve the issue.`;
-        default:
-            return `${greeting}\n\n${trimmedResponse}\n\nHope this helps!`;
-    }
-}
-
-// Generate conversation ID
-function generateConversationId() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
-
-// Load conversations
-async function loadConversations() {
-    try {
-        const data = await fs.readFile(path.join(__dirname, '../chatbot-conversations.json'), 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error loading conversations:', error);
-        return [];
-    }
-}
-
-// Load users
-async function loadUsers() {
-    try {
-        const data = await fs.readFile(path.join(__dirname, '../chatbot-users.json'), 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error loading users:', error);
-        return [];
-    }
-}
-
-// Health check endpoint
-router.get('/health', (req, res) => {
-    res.json({ success: true, status: 'Chatbot API is running' });
-});
-
-// Ensure conversations endpoint exists
-if (!router.stack.find(layer => layer.route && layer.route.path === '/conversations')) {
-    router.get('/conversations', async (req, res) => {
-        try {
-            const conversations = await loadConversations();
-            res.json({ success: true, conversations });
-        } catch (error) {
-            console.error('Error loading conversations:', error);
-            res.json({ success: true, conversations: [] });
-        }
-    });
-}
-
-// Ensure users endpoint exists
-if (!router.stack.find(layer => layer.route && layer.route.path === '/users')) {
-    router.get('/users', async (req, res) => {
-        try {
-            const users = await loadUsers();
-            res.json({ success: true, users });
-        } catch (error) {
-            console.error('Error loading users:', error);
-            res.json({ success: true, users: [] });
-        }
-    });
-}
-
-// Ensure config endpoint exists
-if (!router.stack.find(layer => layer.route && layer.route.path === '/config')) {
-    router.post('/config', (req, res) => {
-        console.log('Config update received:', req.body);
-        res.json({ success: true });
-    });
-}
-
-module.exports = router;
+            "Thanks for reaching out! I'd love to help you with information about our restaurant. Whatjson|
