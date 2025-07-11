@@ -918,8 +918,7 @@
                 #chatbot-send {
                     background: #e8f24c !important;
                     border: none !important;
-                    color```text
-: #26282f !important;
+                    color: #26282f !important;
                     cursor: pointer !important;
                     padding: 10px !important;
                     border-radius: 50% !important;
@@ -1797,9 +1796,9 @@
 
         setAgentAvatarDirectly: function(avatarUrl) {
             if (!this.widget) return;
-        
+
             const avatarImages = this.widget.querySelectorAll('.chatbot-avatar img, .chatbot-avatar-small img, .chatbot-avatar-header img, .message-avatar img');
-        
+
             avatarImages.forEach(img => {
                 img.src = avatarUrl;
                 img.style.display = 'block';
@@ -1809,13 +1808,13 @@
                 img.style.borderRadius = '50%';
                 img.style.backgroundColor = '#e8f24c';
                 img.alt = (this.currentAgent?.name || 'Assistant') + ' Avatar';
-        
+
                 img.onerror = () => {
                     console.warn('Failed to load avatar, using default');
                     img.src = this.getDefaultAvatar();
                 };
             });
-        
+
             console.log('Agent avatar updated directly without storage events');
         }
     };
@@ -1827,10 +1826,17 @@
 
     const formContainerId = 'chatbot-registration-form';
     const thankYouMessageId = 'chatbot-thank-you-message';
+    let initialized = false; // Flag to track initialization
 
-    window.ChatbotRegistrationData = {
+    window.ChatbotRegistrationForm = {
+        initialized: false,
         init: function() {
-            console.log('Initializing Chatbot Registration Data...');
+            if (this.initialized) {
+                console.log('Registration form already initialized.');
+                return;
+            }
+
+            console.log('Initializing Chatbot Registration Form...');
 
             // Load settings from localStorage
             let settings = {};
@@ -1854,7 +1860,8 @@
             };
 
             this.attachFormSubmission();
-            console.log('Chatbot Registration Data initialized.');
+            this.initialized = true; // Set initialized flag
+            console.log('Chatbot Registration Form initialized.');
         },
 
         attachFormSubmission: function() {
@@ -1895,6 +1902,7 @@
 
             // Save user data to local storage
             localStorage.setItem('chatbot-user-data', JSON.stringify(userData));
+            localStorage.setItem('chatbot-current-user', JSON.stringify(userData)); // Store current user
 
             // Hide the form and show thank you message
             this.hideRegistrationForm();
@@ -1943,27 +1951,17 @@
             }
         },
 
-        // Show registration form if needed
-        showRegistrationFormIfNeeded: function() {
-            // Check if user needs to register
+        shouldShowRegistrationForm: function() {
+            // Check if user data exists
             const hasUserData = localStorage.getItem('chatbot-user-data');
-            if (!hasUserData && this.settings.requireRegistration !== false) {
-                console.log('👤 User registration required, showing form...');
+            const hasCurrentUser = localStorage.getItem('chatbot-current-user');
 
-                // Ensure registration system is initialized
-                if (window.ChatbotRegistrationData && typeof window.ChatbotRegistrationData.init === 'function') {
-                    try {
-                        window.ChatbotRegistrationData.init();
-                        console.log('✅ Registration data system initialized');
-                    } catch (error) {
-                        console.error('❌ Error initializing registration data:', error);
-                    }
-                }
-
-                this.showRegistrationForm();
-                return true;
+            // If user data exists, no need to show the form
+            if (hasUserData || hasCurrentUser) {
+                return false;
             }
-            return false;
+
+            return this.settings.requireRegistration !== false;
         }
     };
 })();
@@ -1972,36 +1970,30 @@
 window.addEventListener('chatbotWidgetReady', () => {
     console.log('Chatbot widget ready, integrating registration form...');
 
-    if (window.ChatbotRegistrationData && typeof window.ChatbotRegistrationData.showRegistrationFormIfNeeded === 'function') {
-        // Delay to ensure the form is fully rendered
-        setTimeout(() => {
-            window.ChatbotRegistrationData.showRegistrationFormIfNeeded();
-        }, 500);
+    // Initialize and show registration form if needed
+    if (window.ChatbotRegistrationForm) {
+        if (!window.ChatbotRegistrationForm.initialized) {
+            window.ChatbotRegistrationForm.init();
+        }
+
+        if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+            console.log('Showing registration form...');
+            window.ChatbotRegistrationForm.showRegistrationForm();
+        } else {
+            console.log('Registration not required or user already registered.');
+        }
     } else {
-        console.warn('Registration data system not found or not initialized.');
+        console.warn('Chatbot registration form not found.');
     }
 });
 
-// Fix registration form trigger in chatbot widget
-        setTimeout(() => {
-            if (window.ChatbotRegistrationForm && !window.ChatbotRegistrationForm.initialized) {
-                console.log('🔐 Initializing registration form...');
-                window.ChatbotRegistrationForm.init();
-
-                // Check if form should be shown immediately
-                setTimeout(() => {
-                    if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
-                        console.log('🔐 Auto-showing registration form for new user...');
-                        window.ChatbotRegistrationForm.showRegistrationForm();
-                    }
-                }, 1000);
-            }
-        }, 500);
-
-        // Also provide manual trigger function
-        window.showChatbotRegistrationForm = function() {
-            console.log('🔐 Manual registration form trigger');
-            if (window.ChatbotRegistrationForm) {
-                window.ChatbotRegistrationForm.showRegistrationForm();
-            }
-        };
+// Also provide manual trigger function
+window.showChatbotRegistrationForm = function() {
+    console.log('Manual registration form trigger');
+    if (window.ChatbotRegistrationForm) {
+        if (!window.ChatbotRegistrationForm.initialized) {
+            window.ChatbotRegistrationForm.init();
+        }
+        window.ChatbotRegistrationForm.showRegistrationForm();
+    }
+};
