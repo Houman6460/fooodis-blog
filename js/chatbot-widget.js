@@ -1067,13 +1067,13 @@
             const message = messageInput.value.trim();
             if (!message) return;
 
+            // Add user message once
             this.addMessage(message, 'user');
             messageInput.value = '';
 
             this.showTyping();
 
-            this.playSound('send'); // Play sound when sending a message
-
+            // Process message (without adding user message again)
             this.processMessage(message);
         },
 
@@ -1175,18 +1175,15 @@
         },
 
         processMessage: function(message) {
-            this.addMessage(message, 'user');
-            this.showTyping();
+            // Language detection
+            const detectedLanguage = this.detectLanguage(message);
+            this.currentLanguage = detectedLanguage;
+            localStorage.setItem('fooodis-language', detectedLanguage);
 
             this.playSound('send'); // Play sound when sending a message
 
             setTimeout(() => {
                 this.hideTyping();
-
-                // Language detection
-                const detectedLanguage = this.detectLanguage(message);
-                this.currentLanguage = detectedLanguage;
-                localStorage.setItem('fooodis-language', detectedLanguage);
 
                 let response = '';
 
@@ -1282,8 +1279,11 @@
         },
 
         handleQuickReply: function(reply) {
+            // Add user message once
             this.addMessage(reply, 'user');
             this.showTyping();
+            
+            // Process message (without adding user message again)
             this.processMessage(reply);
         },
 
