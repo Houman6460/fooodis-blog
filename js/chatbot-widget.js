@@ -13,8 +13,7 @@
             primaryColor: '#e8f24c',
             language: 'en',
             assistants: [],
-            avatar: '',
-            soundEnabled: true
+            avatar: ''
         },
         conversationId: null,
         isOpen: false,
@@ -32,7 +31,6 @@
         handoffComplete: false,
         currentLanguage: null,
         languageDetected: false,
-        isProcessing: false,
 
         init: function(options = {}) {
             console.log('Initializing Fooodis Chatbot Widget...');
@@ -496,37 +494,10 @@
 
         playSound: function(type) {
             // 🔧 FIX: Add sound feedback for chat interactions
-            if (!this.config.soundEnabled) {
-                console.log('Sound disabled in config');
-                return;
-            }
+            if (!this.config.soundEnabled) return;
 
             try {
-                // Check if audio context is supported
-                if (!window.AudioContext && !window.webkitAudioContext) {
-                    console.log('AudioContext not supported');
-                    return;
-                }
-
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Resume audio context if suspended (required for Chrome)
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume().then(() => {
-                        this.createAndPlayTone(audioContext, type);
-                    }).catch(e => {
-                        console.log('Failed to resume audio context:', e.message);
-                    });
-                } else {
-                    this.createAndPlayTone(audioContext, type);
-                }
-            } catch (error) {
-                console.log('Audio feedback error:', error.message);
-            }
-        },
-
-        createAndPlayTone: function(audioContext, type) {
-            try {
                 let frequency = 440; // Default frequency
 
                 switch(type) {
@@ -550,15 +521,14 @@
                 oscillator.frequency.value = frequency;
                 oscillator.type = 'sine';
 
-                gain.gain.setValueAtTime(0.05, audioContext.currentTime); // Lower volume
-                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
 
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.1);
-
-                console.log(`Played ${type} sound at ${frequency}Hz`);
             } catch (error) {
-                console.log('Failed to create tone:', error.message);
+                // Silently fail if audio context is not supported
+                console.log('Audio feedback not available');
             }
         },
 
@@ -945,7 +915,7 @@
                     border: none !important;
                     color: #26282f !important;
                     cursor: pointer !important;
-                    padding: 10px !important;border-radius: 50%!important;
+                    padding: 10px !important;border-radius: 50% !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
@@ -1097,26 +1067,14 @@
             const message = messageInput.value.trim();
             if (!message) return;
 
-            // Prevent duplicate sends
-            if (this.isProcessing) {
-                console.log('Already processing a message, ignoring duplicate send');
-                return;
-            }
-
-            this.isProcessing = true;
-
-            // Add user message once
             this.addMessage(message, 'user');
             messageInput.value = '';
 
             this.showTyping();
-            this.playSound('send');
 
-            // Process message with timeout to prevent hanging
-            setTimeout(() => {
-                this.processMessage(message);
-                this.isProcessing = false;
-            }, 100);
+            this.playSound('send'); // Play sound when sending a message
+
+            this.processMessage(message);
         },
 
         addMessage: function(content, sender, quickReplies = null) {
@@ -1165,14 +1123,12 @@
 
             let quickRepliesHtml = '';
 
-            // 🔧 FIX: Never show quick replies if node flow is active
-            if (this.shouldUseNodeFlow()) {
-                console.log('🚫 Node flow active - no quick replies will be shown');
-                quickRepliesHtml = '';
-            } else if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
-                quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
-            } else if (sender === 'assistant' && this.containsQuestionPrompt(content)) {
-                quickRepliesHtml = this.generateQuickReplyButtons();
+            // 🔧 FIX: Only show quick replies if explicitly provided and not using AI Message Nodes
+            if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
+                // Don't show default buttons when AI Message Nodes are active
+                if (!this.shouldUseNodeFlow() || quickReplies[0] !== 'Menu') {
+                    quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
+                }
             }
 
             messageElement.innerHTML = `
@@ -1219,57 +1175,38 @@
         },
 
         processMessage: function(message) {
-            console.log('🔄 Processing message:', message);
-            
-            // Language detection
-            const detectedLanguage = this.detectLanguage(message);
-            this.currentLanguage = detectedLanguage;
-            localStorage.setItem('fooodis-language', detectedLanguage);
+            this.addMessage(message, 'user');
+            this.showTyping();
+
+            this.playSound('send'); // Play sound when sending a message
 
             setTimeout(() => {
                 this.hideTyping();
 
+                // Language detection
+                const detectedLanguage = this.detectLanguage(message);
+                this.currentLanguage = detectedLanguage;
+                localStorage.setItem('fooodis-language', detectedLanguage);
+
                 let response = '';
-                let responseProcessed = false;
 
-                // FORCE Priority 1: Always try node flow first if available
+                // Priority 1: Check if we should use node flow
                 if (this.shouldUseNodeFlow()) {
-                    console.log('🎯 FORCING node flow for message processing');
                     response = this.processNodeFlowMessage(message);
-                    if (response && response.trim() !== '') {
-                        console.log('✅ Node flow provided response:', response);
-                        responseProcessed = true;
-                    } else {
-                        console.log('❌ Node flow failed to provide response');
-                    }
                 }
-                
-                // Priority 2: Scenario flow (only if node flow failed)
-                if (!responseProcessed && this.shouldUseScenarioFlow()) {
-                    console.log('🔄 Using scenario flow for message processing');
+                // Priority 2: Check if we should use scenario-driven flow
+                else if (this.shouldUseScenarioFlow()) {
                     response = this.processScenarioMessage(message);
-                    if (response) {
-                        responseProcessed = true;
-                    }
                 } 
-                
-                // Priority 3: Regular chat (only if both above failed)
-                if (!responseProcessed) {
-                    console.log('🔄 Using regular message processing');
+                // Priority 3: Regular chat processing
+                else {
                     response = this.processRegularMessage(message);
-                    if (response) {
-                        responseProcessed = true;
-                    }
                 }
 
-                // Add response or fallback to API
-                if (responseProcessed && response) {
-                    // Don't add quick replies if using node flow
-                    const quickReplies = this.shouldUseNodeFlow() ? null : undefined;
-                    this.addMessage(response, 'assistant', quickReplies);
+                if (response) {
+                    this.addMessage(response, 'assistant');
                 } else {
                     // Fallback API call
-                    console.log('🔄 Fallback to API call');
                     this.sendToAPI(message);
                 }
             }, Math.random() * 1000 + 500);
@@ -1277,67 +1214,26 @@
 
         // Process message through node flow
         processNodeFlowMessage: function(message) {
-            console.log('🔥 PROCESSING WITH NODE FLOW:', message);
-            
-            // Check if we have active nodes
-            if (window.nodeFlowBuilder && window.nodeFlowBuilder.nodes && window.nodeFlowBuilder.nodes.length > 0) {
+            if (window.nodeFlowBuilder && window.nodeFlowBuilder.processUserInput) {
                 try {
-                    console.log('📋 Node flow builder available with', window.nodeFlowBuilder.nodes.length, 'nodes');
-                    
-                    // Try direct message processing
-                    if (window.nodeFlowBuilder.processUserInput) {
-                        console.log('🎯 Trying processUserInput...');
-                        const result = window.nodeFlowBuilder.processUserInput(message);
-                        if (result && (result.response || result.message)) {
-                            const response = result.response || result.message;
-                            console.log('✅ Node flow processUserInput response:', response);
-                            return response;
-                        }
+                    const result = window.nodeFlowBuilder.processUserInput(message);
+                    if (result && result.response) {
+                        return result.response;
                     }
-                    
-                    // Alternative method
-                    if (window.nodeFlowBuilder.handleUserMessage) {
-                        console.log('🎯 Trying handleUserMessage...');
-                        const result = window.nodeFlowBuilder.handleUserMessage(message);
-                        if (result && typeof result === 'string') {
-                            console.log('✅ Node flow handleUserMessage response:', result);
-                            return result;
-                        }
-                    }
-                    
-                    // Try triggering the flow manually
-                    if (window.nodeFlowBuilder.triggerFlow) {
-                        console.log('🎯 Trying triggerFlow...');
-                        const result = window.nodeFlowBuilder.triggerFlow(message);
-                        if (result) {
-                            console.log('✅ Node flow triggerFlow response:', result);
-                            return result;
-                        }
-                    }
-                    
-                    // Last resort - direct node processing
-                    console.log('🎯 Trying direct node processing...');
-                    const startNode = window.nodeFlowBuilder.nodes.find(node => node.type === 'start' || node.isStart);
-                    if (startNode) {
-                        const response = startNode.content || startNode.message || 'Hello! How can I help you today?';
-                        console.log('✅ Using start node response:', response);
-                        return response;
-                    }
-                    
                 } catch (error) {
-                    console.error('❌ Node flow processing error:', error);
+                    console.error('Node flow processing error:', error);
                 }
             }
-            
-            console.log('❌ Node flow processing failed - no valid response found');
+
+            // If node flow fails, fall back to API
+            this.sendToAPI(message);
             return null;
         },
 
         // Check if message contains question prompts
         containsQuestionPrompt: function(message) {
-            // NEVER show quick replies if node flow is active
+            // Don't show quick replies if node flow is active
             if (this.shouldUseNodeFlow()) {
-                console.log('🚫 Node flow active - no question prompts');
                 return false;
             }
 
@@ -1350,64 +1246,31 @@
             ];
 
             const lowerMessage = message.toLowerCase();
-            const hasPrompt = questionPrompts.some(prompt => lowerMessage.includes(prompt));
-            console.log('🔍 Question prompt check:', hasPrompt, 'for message:', message);
-            return hasPrompt;
+            return questionPrompts.some(prompt => lowerMessage.includes(prompt));
         },
 
         // Check if node flow should be used
         shouldUseNodeFlow: function() {
-            // Primary check: NodeFlowBuilder exists and has nodes
-            if (window.nodeFlowBuilder && window.nodeFlowBuilder.nodes && window.nodeFlowBuilder.nodes.length > 0) {
-                console.log('🎯 Node flow ENABLED - Found', window.nodeFlowBuilder.nodes.length, 'nodes');
-                return true;
+            // Check if ChatbotManager has node flow enabled
+            if (window.chatbotManager && window.chatbotManager.settings) {
+                return window.chatbotManager.settings.enableNodeFlow;
             }
 
-            // Secondary check: ChatbotManager has node flow enabled
-            if (window.chatbotManager && window.chatbotManager.settings && window.chatbotManager.settings.enableNodeFlow) {
-                console.log('🎯 Node flow ENABLED via ChatbotManager settings');
-                return true;
+            // Check if NodeFlowBuilder exists and has active nodes
+            if (window.nodeFlowBuilder && window.nodeFlowBuilder.nodes) {
+                return window.nodeFlowBuilder.nodes.length > 0;
             }
 
-            // Tertiary check: localStorage configuration
-            try {
-                const nodeFlowSettings = localStorage.getItem('fooodis-nodeflow-settings');
-                if (nodeFlowSettings) {
-                    const settings = JSON.parse(nodeFlowSettings);
-                    if (settings.enabled) {
-                        console.log('🎯 Node flow ENABLED via localStorage settings');
-                        return true;
-                    }
-                }
-            } catch (e) {
-                console.warn('⚠️ Error checking node flow settings:', e);
-            }
-
-            console.log('❌ Node flow DISABLED - using default responses');
             return false;
         },
 
         // Generate quick reply buttons
-        generateQuickReplyButtons: function(quickReplies = null) {
-            // If specific quick replies provided, use them
-            if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
-                let buttonsHtml = '<div class="chatbot-quick-replies">';
-                quickReplies.forEach(reply => {
-                    buttonsHtml += `<button class="chatbot-quick-reply" data-reply="${reply}">${reply}</button>`;
-                });
-                buttonsHtml += '</div>';
-                console.log('🔘 Showing custom quick replies:', quickReplies);
-                return buttonsHtml;
-            }
-
-            // NEVER show default quick replies if node flow is active
+        generateQuickReplyButtons: function() {
+            // Check if node flow is active - if so, don't show default buttons
             if (this.shouldUseNodeFlow()) {
-                console.log('🚫 Node flow active - NO default quick replies');
                 return '';
             }
 
-            // Only show default quick replies if NO node flow
-            console.log('🔘 No node flow - showing default quick replies');
             return `
                 <div class="chatbot-quick-replies">
                     <button class="chatbot-quick-reply" data-reply="menu">Menu</button>
@@ -1419,198 +1282,9 @@
         },
 
         handleQuickReply: function(reply) {
-            // Add user message once
             this.addMessage(reply, 'user');
             this.showTyping();
-            
-            // Process message (without adding user message again)
             this.processMessage(reply);
-        },
-
-        // Determine if scenario flow should be used
-        shouldUseScenarioFlow: function() {
-            return this.conversationPhase !== 'welcome' && this.conversationPhase !== 'regular';
-        },
-
-        // Process message through scenario flow
-        processScenarioMessage: function(message) {
-            switch (this.conversationPhase) {
-                case 'registration':
-                    return this.handleRegistration(message);
-                case 'order':
-                    return this.handleOrder(message);
-                // Add more cases as needed
-                default:
-                    console.warn('Unknown conversation phase:', this.conversationPhase);
-                    return 'Sorry, I am unable to process your request at this time.';
-            }
-        },
-
-        // Process message through regular chat
-        processRegularMessage: function(message) {
-            // Basic keyword-based responses
-            message = message.toLowerCase();
-
-            if (message.includes('menu')) {
-                return 'You can view our menu on our website.';
-            } else if (message.includes('hours')) {
-                return 'We are open from 10 AM to 10 PM every day.';
-            } else if (message.includes('location')) {
-                return 'We are located at 123 Main Street.';
-            } else if (message.includes('contact')) {
-                return 'You can contact us at 555-1234.';
-            } else {
-                return null; // Fallback to API
-            }
-        },
-
-        // Detect language
-        detectLanguage: function(message) {
-            const swedishKeywords = ['hej', 'hur', 'är', 'du', 'tack', 'snälla'];
-            const englishKeywords = ['hello', 'how', 'are', 'you', 'thanks', 'please'];
-
-            let swedishCount = 0;
-            let englishCount = 0;
-
-            swedishKeywords.forEach(keyword => {
-                if (message.toLowerCase().includes(keyword)) {
-                    swedishCount++;
-                }
-            });
-
-            englishKeywords.forEach(keyword => {
-                if (message.toLowerCase().includes(keyword)) {
-                    englishCount++;
-                }
-            });
-
-            return swedishCount > englishCount ? 'sv' : 'en';
-        },
-
-        sendToAPI: async function(message) {
-            console.log('Sending message to API:', message);
-            this.showTyping();
-
-            try {
-                // Check if we have a valid API endpoint
-                if (!this.config.apiEndpoint || this.config.apiEndpoint === '') {
-                    console.warn('No API endpoint configured, using fallback response');
-                    this.hideTyping();
-                    this.provideFallbackResponse(message);
-                    return;
-                }
-
-                const response = await fetch(`${this.config.apiEndpoint}/conversations`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        conversationId: this.conversationId,
-                        language: this.currentLanguage
-                    })
-                });
-
-                if (!response.ok) {
-                    console.error('API request failed:', response.status, response.statusText);
-                    this.hideTyping();
-                    this.provideFallbackResponse(message);
-                    return;
-                }
-
-                const data = await response.json();
-                console.log('API Response:', data);
-
-                if (data.conversationId && !this.conversationId) {
-                    this.conversationId = data.conversationId;
-                    console.log('New conversation ID:', this.conversationId);
-                }
-
-                if (data.response) {
-                    this.addMessage(data.response, 'assistant');
-                } else {
-                    this.provideFallbackResponse(message);
-                }
-
-                if (data.quick_replies) {
-                    this.addMessage('', 'assistant', data.quick_replies);
-                }
-            } catch (error) {
-                console.error('API request error:', error);
-                this.hideTyping();
-                this.provideFallbackResponse(message);
-            } finally {
-                this.hideTyping();
-            }
-        },
-
-        provideFallbackResponse: function(message) {
-            const lowerMessage = message.toLowerCase();
-            let response = '';
-
-            if (lowerMessage.includes('menu')) {
-                response = this.currentLanguage === 'sv' ? 
-                    'Du kan se vår meny på vår hemsida.' : 
-                    'You can view our menu on our website.';
-            } else if (lowerMessage.includes('hours') || lowerMessage.includes('öppet')) {
-                response = this.currentLanguage === 'sv' ? 
-                    'Vi är öppna från 10:00 till 22:00 varje dag.' : 
-                    'We are open from 10 AM to 10 PM every day.';
-            } else if (lowerMessage.includes('location') || lowerMessage.includes('plats')) {
-                response = this.currentLanguage === 'sv' ? 
-                    'Vi finns på Huvudgatan 123.' : 
-                    'We are located at 123 Main Street.';
-            } else if (lowerMessage.includes('contact') || lowerMessage.includes('kontakt')) {
-                response = this.currentLanguage === 'sv' ? 
-                    'Du kan kontakta oss på 555-1234.' : 
-                    'You can contact us at 555-1234.';
-            } else {
-                response = this.currentLanguage === 'sv' ? 
-                    'Tack för ditt meddelande! Hur kan jag hjälpa dig idag?' : 
-                    'Thank you for your message! How can I help you today?';
-            }
-
-            this.addMessage(response, 'assistant');
-        },
-
-        handleFileUpload: async function(file) {
-            if (!this.config.allowFileUpload) {
-                this.addMessage('File uploads are not enabled.', 'assistant');
-                return;
-            }
-
-            this.showTyping();
-
-            try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('conversationId', this.conversationId);
-
-                const response = await fetch(`${this.config.apiEndpoint}/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    console.error('File upload failed:', response.status, response.statusText);
-                    this.addMessage('File upload failed. Please try again later.', 'assistant');
-                    return;
-                }
-
-                const data = await response.json();
-
-                if (data.success) {
-                    this.addMessage('File uploaded successfully!', 'assistant');
-                } else {
-                    this.addMessage('File upload failed. Please try again later.', 'assistant');
-                }
-            } catch (error) {
-                console.error('File upload error:', error);
-                this.addMessage('File upload failed. Please try again later.', 'assistant');
-            } finally {
-                this.hideTyping();
-            }
         }
     };
 })();

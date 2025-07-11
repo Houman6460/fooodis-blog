@@ -425,10 +425,7 @@ class NodeFlowBuilder {
 
         // Handle modal closing
         if (target.classList.contains('modal-close') || target.classList.contains('modal-overlay')) {
-            const modal = target.closest('.node-modal') || target.closest('.test-flow-modal');
-            if (modal) {
-                modal.remove();
-            }
+            this.closeModal();
         }
     }
 
@@ -836,7 +833,7 @@ class NodeFlowBuilder {
         path.style.cursor = 'pointer';
         path.style.pointerEvents = 'stroke';
 
-        // Create invisible wider path for easierclicking
+        // Create invisible wider path for easier clicking
         const invisiblePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         invisiblePath.setAttribute('d', pathData);
         invisiblePath.setAttribute('stroke', 'transparent');
@@ -1208,7 +1205,7 @@ class NodeFlowBuilder {
 
     showMessageNodeEditor(node) {
         const assistants = this.getAvailableAIAssistants();
-
+        
         const modal = document.createElement('div');
         modal.className = 'node-modal';
         modal.innerHTML = `
@@ -1223,14 +1220,14 @@ class NodeFlowBuilder {
                         <label>Node Title</label>
                         <input type="text" id="edit-node-title" value="${node.data.title}" class="form-control">
                     </div>
-
+                    
                     <div class="form-group">
                         <label>
                             <input type="checkbox" id="ai-mode-toggle" ${node.data.aiMode ? 'checked' : ''}> 
                             Use AI Assistant
                         </label>
                     </div>
-
+                    
                     <div id="ai-options" style="display: ${node.data.aiMode ? 'block' : 'none'}">
                         <div class="form-group">
                             <label>Select AI Assistant</label>
@@ -1240,19 +1237,19 @@ class NodeFlowBuilder {
                                 ).join('')}
                             </select>
                         </div>
-
+                        
                         <div class="form-group">
                             <label>AI Prompt</label>
                             <textarea id="ai-prompt" class="form-control" rows="4" placeholder="Enter instructions for the AI assistant...">${node.data.aiPrompt || ''}</textarea>
                         </div>
                     </div>
-
+                    
                     <div id="manual-message-options" style="display: ${node.data.aiMode ? 'none' : 'block'}">
                         <div class="form-group">
                             <label>English Message</label>
                             <textarea id="english-message" class="form-control" rows="3">${node.data.messages?.english || ''}</textarea>
                         </div>
-
+                        
                         <div class="form-group">
                             <label>Swedish Message</label>
                             <textarea id="swedish-message" class="form-control" rows="3">${node.data.messages?.swedish || ''}</textarea>
@@ -1293,11 +1290,11 @@ class NodeFlowBuilder {
         if (!node) return;
 
         const modal = document.querySelector('.node-modal');
-
+        
         // Update node data
         node.data.title = modal.querySelector('#edit-node-title').value;
         node.data.aiMode = modal.querySelector('#ai-mode-toggle').checked;
-
+        
         if (node.data.aiMode) {
             node.data.selectedAssistant = modal.querySelector('#ai-assistant-select').value;
             node.data.aiPrompt = modal.querySelector('#ai-prompt').value;
@@ -1311,13 +1308,13 @@ class NodeFlowBuilder {
         // Re-render nodes
         this.renderNodes();
         this.renderConnections();
-
+        
         // Close modal
         modal.remove();
-
+        
         // Auto-save
         this.autoSave();
-
+        
         this.showToast('Message node updated successfully', 'success');
     }
 
@@ -1355,11 +1352,6 @@ class NodeFlowBuilder {
         }, 500);
 
         this.showToast('Flow saved successfully', 'success');
-    }
-
-    closeModal() {
-        const modals = document.querySelectorAll('.node-modal, .test-flow-modal');
-        modals.forEach(modal => modal.remove());
     }
 
     loadFlow() {
@@ -1661,7 +1653,7 @@ class NodeFlowBuilder {
                 assistant.status === 'active' || assistant.enabled !== false
             );
         }
-
+        
         // Fallback to default assistants
         return [
             { id: 'general', name: 'General Assistant', description: 'General purpose assistant' },
@@ -1669,52 +1661,6 @@ class NodeFlowBuilder {
             { id: 'sales', name: 'Sales Assistant', description: 'Sales and marketing expert' }
         ];
     }
-// Process user input through the flow
-    processUserInput: function(userInput) {
-        console.log('🎯 NodeFlow: Processing user input:', userInput);
-
-        if (!this.currentNode) {
-            console.log('📍 NodeFlow: No current node, finding start node');
-            this.currentNode = this.findStartNode();
-        }
-
-        if (!this.currentNode) {
-            console.log('❌ NodeFlow: No start node found, using default');
-            return { 
-                response: 'Hello! I\'m here to help you with your Fooodis inquiries. How can I assist you today?',
-                message: 'Hello! I\'m here to help you with your Fooodis inquiries. How can I assist you today?'
-            };
-        }
-
-        console.log('🎯 NodeFlow: Processing node:', this.currentNode.text || this.currentNode.content);
-
-        // Process the current node
-        const response = this.processNode(this.currentNode, userInput);
-
-        // Move to next node if there are connections
-        const connections = this.getNodeConnections(this.currentNode.id);
-        if (connections.length > 0) {
-            const nextNodeId = connections[0].to;
-            const nextNode = this.nodes.find(n => n.id === nextNodeId);
-            if (nextNode) {
-                this.currentNode = nextNode;
-                console.log('🔄 NodeFlow: Moving to next node:', this.currentNode.text || this.currentNode.content);
-            }
-        }
-
-        console.log('✅ NodeFlow: Returning response:', response);
-        return { 
-            response: response,
-            message: response
-        };
-    },
-
-    // Handle user message (alternative entry point)
-    handleUserMessage: function(message) {
-        console.log('🎯 NodeFlow: handleUserMessage called with:', message);
-        const result = this.processUserInput(message);
-        return result.response || result.message;
-    },
 
     processTestMessage(message) {
         // Simple intent matching for testing
@@ -2619,7 +2565,7 @@ class NodeFlowBuilder {
 
         this.autoSaveTimeout = setTimeout(() => {
             this.saveFlow();
-            console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length);
+            console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
         }, 500); // Save after 500ms of inactivity
     }
 
