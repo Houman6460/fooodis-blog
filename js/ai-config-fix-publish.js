@@ -1,4 +1,3 @@
-
 /**
  * AI Config Publish Fix
  * This script ensures the aiConfig object is properly initialized with all required functions
@@ -19,7 +18,7 @@
     // Core configuration management
     window.aiConfig.getConfig = function() {
         console.log('🔍 AI Config Fix: Getting configuration...');
-        
+
         // Check multiple storage locations
         const storageKeys = [
             'aiConfig',
@@ -30,7 +29,7 @@
         ];
 
         let config = null;
-        
+
         for (const key of storageKeys) {
             try {
                 const stored = localStorage.getItem(key);
@@ -77,7 +76,7 @@
 
     window.aiConfig.saveConfig = function(config) {
         console.log('💾 AI Config Fix: Saving configuration...');
-        
+
         if (!config) {
             console.error('❌ AI Config Fix: No config provided to save');
             return false;
@@ -85,7 +84,7 @@
 
         // Add timestamp
         config.timestamp = Date.now();
-        
+
         // Ensure both API key fields are set
         if (config.apiKey && !config.openaiApiKey) {
             config.openaiApiKey = config.apiKey;
@@ -95,7 +94,7 @@
 
         try {
             const configJson = JSON.stringify(config);
-            
+
             // Save to multiple locations for redundancy
             const storageKeys = [
                 'aiConfig',
@@ -150,10 +149,10 @@
         if (!config.customAssistants) {
             config.customAssistants = [];
         }
-        
+
         assistant.id = assistant.id || 'assistant_' + Date.now();
         assistant.createdAt = assistant.createdAt || new Date().toISOString();
-        
+
         config.customAssistants.push(assistant);
         return this.saveConfig(config);
     };
@@ -203,17 +202,17 @@
         // Check if AI Automation is available
         if (window.aiAutomation || window.automationPaths) {
             console.log('🔗 AI Config Fix: Integrating with AI Automation...');
-            
+
             // Ensure API key is available for automation
             const config = window.aiConfig.getConfig();
             if (config.apiKey) {
                 // Set global API key for automation scripts
                 window.OPENAI_API_KEY = config.apiKey;
-                
+
                 // Also set in localStorage for persistence
                 localStorage.setItem('openai-api-key', config.apiKey);
                 localStorage.setItem('OPENAI_API_KEY', config.apiKey);
-                
+
                 console.log('✅ AI Config Fix: API key integrated with automation system');
             }
         }
@@ -229,15 +228,116 @@
     try {
         const initialConfig = window.aiConfig.getConfig();
         console.log('🎯 AI Config Fix: Initial configuration loaded');
-        
+
         // Trigger integration event
         window.dispatchEvent(new CustomEvent('aiConfigReady', { 
             detail: { config: initialConfig } 
         }));
-        
+
     } catch (error) {
         console.error('❌ AI Config Fix: Error during initialization:', error);
     }
+
+    // Add test connection function
+    window.aiConfig.testConnection = async function() {
+        const apiKey = this.getApiKey();
+
+        if (!apiKey) {
+            if (window.showConnectionStatus) {
+                window.showConnectionStatus('error', 'API key is required');
+            }
+            return false;
+        }
+
+        if (window.showConnectionStatus) {
+            window.showConnectionStatus('testing', 'Testing connection...');
+        }
+
+        try {
+            const response = await fetch('https://api.openai.com/v1/models', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                if (window.showConnectionStatus) {
+                    window.showConnectionStatus('success', 'Connection successful!');
+                }
+                return true;
+            } else {
+                const errorMsg = response.status === 401 ? 'Invalid API key' : 
+                                response.status === 429 ? 'Rate limit exceeded' : 
+                                `Connection failed (${response.status})`;
+
+                if (window.showConnectionStatus) {
+                    window.showConnectionStatus('error', errorMsg);
+                }
+                return false;
+            }
+        } catch (error) {
+            console.error('Connection test failed:', error);
+            if (window.showConnectionStatus) {
+                window.showConnectionStatus('error', 'Connection failed - check your internet connection');
+            }
+            return false;
+        }
+    };
+
+    // Export functions for global access
+    window.initializeAIConfig = initializeAIConfig;
+    window.loadSavedConfig = loadSavedConfig;
+    window.saveConfiguration = saveConfiguration;
+    window.getAIConfig = getAIConfig;
+    window.isAIConfigured = isAIConfigured;
+    window.validateAPIKey = validateAPIKey;
+
+    // Export new functions
+    window.testConnection = window.aiConfig.testConnection;
+    window.showConnectionStatus = function(type, message) {
+        let statusElement = document.getElementById('connection-status');
+
+        if (!statusElement) {
+            statusElement = document.createElement('div');
+            statusElement.id = 'connection-status';
+            statusElement.className = 'status';
+
+            const actions = document.querySelector('.ai-config-actions');
+            if (actions) {
+                actions.parentNode.insertBefore(statusElement, actions.nextSibling);
+            }
+        }
+
+        statusElement.className = `status ${type}`;
+
+        let icon = '';
+        switch (type) {
+            case 'success':
+                icon = '<i class="fas fa-check-circle"></i>';
+                break;
+            case 'error':
+                icon = '<i class="fas fa-exclamation-circle"></i>';
+                break;
+            case 'testing':
+                icon = '<i class="fas fa-spinner fa-spin"></i>';
+                break;
+            default:
+                icon = '<i class="fas fa-info-circle"></i>';
+        }
+
+        statusElement.innerHTML = `${icon} ${message}`;
+        statusElement.style.display = 'flex';
+
+        if (type === 'success' || type === 'error') {
+            setTimeout(() => {
+                if (statusElement.className.includes(type)) {
+                    statusElement.style.display = 'none';
+                }
+            }, 5000);
+        }
+    };
 
     console.log('✅ AI Config Fix: Comprehensive fix applied successfully');
 

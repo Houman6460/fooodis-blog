@@ -364,12 +364,56 @@
     .assistant-options {
         grid-template-columns: 1fr;
     }
-    
+
     .ai-config-actions {
         flex-direction: column;
     }
-    
+
     .ai-config-actions button {
         width: 100%;
     }
+}
+
+/* AI Configuration Dark Theme Styles */
+.ai-config-form {
+    background: var(--bs-dark);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid var(--bs-gray-700);
+}
+
+/* Connection Status Styles */
+.status {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status.success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
+.status.error {
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+}
+
+.status.testing {
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: #ffc107;
+}
+
+.status.info {
+    background-color: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    color: #0dcaf0;
 }
