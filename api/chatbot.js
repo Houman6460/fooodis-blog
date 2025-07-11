@@ -225,7 +225,7 @@ router.post('/', async (req, res) => {
             language: req.body.language 
         });
 
-        const { message, conversationId, language = 'en', assistants: requestAssistants, agent } = req.body;
+        const { message, conversationId, language = 'en', assistants: requestAssistants, agent, nodeContext } = req.body;
 
         if (!message || !message.trim()) {
             console.error('No message provided in request');
@@ -287,8 +287,22 @@ router.post('/', async (req, res) => {
         let useAssistant = null;
         let selectedAgent = null;
 
-        // Check if multiple agents are enabled and select random agent
-        if (settings.enableMultipleAgents && settings.agents && settings.agents.length > 0) {
+        // If node context is provided, use the specified assistant
+        if (nodeContext && nodeContext.assistantId) {
+            console.log('🎯 Using node-specified assistant:', nodeContext.assistantId);
+            useAssistant = settings.assistants.find(a => a.assistantId === nodeContext.assistantId);
+            if (useAssistant) {
+                selectedAgent = {
+                    name: useAssistant.name,
+                    personality: useAssistant.systemPrompt || 'helpful assistant',
+                    prompt: nodeContext.aiPrompt || ''
+                };
+                console.log('✅ Found assistant for node:', selectedAgent.name);
+            }
+        }
+
+        // Fallback: Check if multiple agents are enabled and select random agent
+        if (!selectedAgent && settings.enableMultipleAgents && settings.agents && settings.agents.length > 0) {
             // Select a random agent from the available agents
             const randomIndex = Math.floor(Math.random() * settings.agents.length);
             selectedAgent = settings.agents[randomIndex];
