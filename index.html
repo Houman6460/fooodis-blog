@@ -74,7 +74,7 @@
         <div class="loader"></div>
         <h2>Redirecting to Fooodis Blog System...</h2>
         <p>If you are not redirected automatically, <a href="login.html">click here</a>.</p>
-        
+
         <!-- Test Registration Form Button -->
         <div style="margin-top: 20px;">
             <button onclick="testRegistrationForm()" style="background: #e8f24c; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
@@ -88,12 +88,11 @@
 
     <!-- Fooodis AI Chatbot Widget -->
     <script src="js/chatbot-message-enhancer.js"></script>
-    <script src="js/chatbot-widget.js"></script>
-
+    
     <!-- Registration Form System -->
     <script src="js/chatbot-registration-form.js"></script>
     <script src="js/chatbot-registration-data.js"></script>
-    <script src="js/chatbot-integration-fixes.js"></script>
+    
     <script src="js/chatbot-integration-patch.js"></script>
     <script>
       // Initialize chatbot when page loads
@@ -114,7 +113,7 @@
       // Test function to manually trigger registration form
       function testRegistrationForm() {
         console.log('🧪 Manual registration form test triggered');
-        
+
         // Clear all data to simulate new user
         const keysToRemove = [
           'chatbot-current-user', 'chatbot-user-data', 'chatbot-users', 'chatbot-registrations',
@@ -122,12 +121,12 @@
           'fooodis-restaurant-name', 'fooodis-language', 'fooodis-user-email', 'chatbot-session-id',
           'chatbot-device-id', 'user-leads', 'last-user-identity', 'current-user-identity'
         ];
-        
+
         keysToRemove.forEach(key => {
           localStorage.removeItem(key);
           sessionStorage.removeItem(key);
         });
-        
+
         // Reset chatbot state
         if (window.FoodisChatbot) {
           window.FoodisChatbot.userRegistered = false;
@@ -137,24 +136,24 @@
           window.FoodisChatbot.conversationPhase = 'welcome';
           console.log('🔄 Reset chatbot state');
         }
-        
+
         // Reset global identity
         window.currentUserIdentity = null;
-        
+
         console.log('🧹 Cleared all user data - simulating new user');
-        
+
         // Initialize registration systems
         setTimeout(() => {
           // Initialize registration data manager
           if (window.ChatbotRegistrationData && !window.ChatbotRegistrationData.initialized) {
             window.ChatbotRegistrationData.init();
           }
-          
+
           // Initialize registration form
           if (window.ChatbotRegistrationForm && !window.ChatbotRegistrationForm.initialized) {
             window.ChatbotRegistrationForm.init();
           }
-          
+
           // Force show registration form
           setTimeout(() => {
             if (window.ChatbotRegistrationForm) {
@@ -168,5 +167,11 @@
         }, 500);
       }
     </script>
+<script src="js/enhanced-banner-fixed.js"></script>
+
+    <!-- Chatbot Widget -->
+    <script src="js/chatbot-widget.js"></script>
+    <script src="js/chatbot-integration-fixes.js"></script>
+    <script src="js/chatbot-safe-init.js"></script>
 </body>
 </html>

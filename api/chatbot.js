@@ -961,6 +961,28 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// Get all conversations endpoint
+router.get('/conversations', (req, res) => {
+    try {
+        console.log('📋 Getting all conversations');
+        
+        // Convert Map to Array for response
+        const conversationsArray = Array.from(conversations.values());
+        
+        res.json({
+            success: true,
+            conversations: conversationsArray,
+            total: conversationsArray.length
+        });
+    } catch (error) {
+        console.error('Error getting conversations:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get conversations'
+        });
+    }
+});
+
 // Clear all conversations endpoint
 router.delete('/conversations/clear-all', (req, res) => {
     try {
