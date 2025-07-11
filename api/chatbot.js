@@ -6,15 +6,6 @@
 const express = require('express');
 const router = express.Router();
 
-console.log('✅ Chatbot API router created successfully');
-
-// Add basic health check endpoint
-router.get('/health', (req, res) => {
-    res.json({ status: 'ok', message: 'Chatbot API is running' });
-});
-
-// Ensure all routes are properly defined before export
-
 // Store for conversations and users (in production, use a proper database)
 const conversations = new Map();
 const assistants = new Map();
@@ -946,5 +937,4 @@ router.post('/register', async (req, res) => {
     }
 });
 
-console.log('✅ Chatbot API module exporting router');
 module.exports = router;

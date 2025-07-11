@@ -100,27 +100,42 @@ try {
     authAPI = require('express').Router();
 }
 
-// API routes - mount chatbot API routes
-app.use('/api/chatbot', chatbotAPI);
-console.log('✅ Chatbot API routes mounted at /api/chatbot');
+// API routes - only mount if they are valid router functions
+if (typeof chatbotAPI === 'function' || (chatbotAPI && typeof chatbotAPI.handle === 'function')) {
+    app.use('/api/chatbot', chatbotAPI);
+    console.log('✅ Chatbot API routes mounted successfully');
+} else {
+    console.warn('⚠️ Chatbot API not properly loaded');
+}
 
-app.use('/api/system-health', systemHealthAPI);
-app.use('/api/database', databaseAPI);
-app.use('/api/recovery', recoveryAPI);
-app.use('/api/tickets', ticketsAPI);
-app.use('/api/auth', authAPI);
-console.log('✅ All API routes mounted successfully');
+if (typeof systemHealthAPI === 'function' || (systemHealthAPI && typeof systemHealthAPI.handle === 'function')) {
+    app.use('/api/system-health', systemHealthAPI);
+}
+
+if (typeof databaseAPI === 'function' || (databaseAPI && typeof databaseAPI.handle === 'function')) {
+    app.use('/api/database', databaseAPI);
+}
+
+if (typeof recoveryAPI === 'function' || (recoveryAPI && typeof recoveryAPI.handle === 'function')) {
+    app.use('/api/recovery', recoveryAPI);
+}
+
+if (typeof ticketsAPI === 'function' || (ticketsAPI && typeof ticketsAPI.handle === 'function')) {
+    app.use('/api/tickets', ticketsAPI);
+}
+
+if (typeof authAPI === 'function' || (authAPI && typeof authAPI.handle === 'function')) {
+    app.use('/api/auth', authAPI);
+}
 
 // API Routes
 // Note: Static serving is now handled by express.static('.') above
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Fooodis Blog System server running on port ${PORT}`);
-  console.log(`🌐 Access your application at the webview URL provided by Replit`);
-  console.log(`📊 Dashboard: /dashboard.html`);
-  console.log(`📝 Blog: /blog.html`);
-  console.log(`🔐 Login: /login.html`);
-  console.log(`👤 Profile: /profile.html`);
-  console.log(`❤️ API Health: /api/system-health`);
+  console.log(`Fooodis Blog System server running on http://0.0.0.0:${PORT}`);
+  console.log(`- Dashboard: http://0.0.0.0:${PORT}/dashboard.html`);
+  console.log(`- Login: http://0.0.0.0:${PORT}/login.html`);
+  console.log(`- Profile: http://0.0.0.0:${PORT}/profile.html`);
+  console.log(`- API Health: http://0.0.0.0:${PORT}/api/system-health`);
 });
