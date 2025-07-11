@@ -222,7 +222,8 @@ router.post('/', async (req, res) => {
         console.log('Received chat request:', { 
             message: req.body.message ? req.body.message.substring(0, 100) + '...' : 'No message',
             conversationId: req.body.conversationId,
-            language: req.body.language 
+            language: req.body.language,
+            nodeContext: req.body.nodeContext ? 'Present' : 'None'
         });
 
         const { message, conversationId, language = 'en', assistants: requestAssistants, agent, nodeContext } = req.body;
@@ -287,17 +288,32 @@ router.post('/', async (req, res) => {
         let useAssistant = null;
         let selectedAgent = null;
 
-        // If node context is provided, use the specified assistant
+        // 🎯 PRIORITY: If node context is provided, use the specified assistant
         if (nodeContext && nodeContext.assistantId) {
             console.log('🎯 Using node-specified assistant:', nodeContext.assistantId);
+            
+            // Find assistant from config
             useAssistant = settings.assistants.find(a => a.assistantId === nodeContext.assistantId);
+            
             if (useAssistant) {
                 selectedAgent = {
                     name: useAssistant.name,
                     personality: useAssistant.systemPrompt || 'helpful assistant',
-                    prompt: nodeContext.aiPrompt || ''
+                    prompt: nodeContext.aiPrompt || '',
+                    nodeId: nodeContext.nodeId,
+                    nodeTitle: nodeContext.nodeTitle
                 };
-                console.log('✅ Found assistant for node:', selectedAgent.name);
+                
+                console.log('✅ Found assistant for node:', {
+                    name: selectedAgent.name,
+                    assistantId: nodeContext.assistantId,
+                    nodeTitle: nodeContext.nodeTitle
+                });
+                
+                // Override any previous agent selection
+                conversation.currentAgent = selectedAgent;
+            } else {
+                console.warn('⚠️ Assistant not found for node:', nodeContext.assistantId);
             }
         }
 
@@ -568,13 +584,14 @@ async function getFastOpenAIResponse(message, conversation, settings, selectedAg
     const agentName = safeAgent.name;
     const agentPersonality = safeAgent.personality;
     const agentPrompt = safeAgent.prompt || '';
+    const nodeContext = safeAgent.nodeId ? `[Node: ${safeAgent.nodeTitle || safeAgent.nodeId}] ` : '';
 
     const systemPrompt = `You are ${agentName}, a ${agentPersonality} for Fooodis.
 ${languageInstruction}
 
 ${agentPersonality}
 
-${agentPrompt ? `IMPORTANT PROMPT: ${agentPrompt}
+${agentPrompt ? `IMPORTANT CONTEXT: ${nodeContext}${agentPrompt}
 
 ` : ''}Context: Fooodis is a modern food delivery and restaurant platform. Help customers with:
 - Menu questions and recommendations

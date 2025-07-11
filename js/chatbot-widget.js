@@ -75,6 +75,25 @@
         },
 
         getInitialWelcomeMessage: function() {
+            console.log('🎯 Getting initial welcome message from node flow...');
+            
+            // First try to get message from node flow system
+            if (window.nodeFlowBuilder && typeof window.nodeFlowBuilder.getWelcomeNode === 'function') {
+                const welcomeNode = window.nodeFlowBuilder.getWelcomeNode();
+                console.log('🎯 Welcome node found:', welcomeNode);
+                
+                if (welcomeNode && welcomeNode.aiMode && welcomeNode.assistantId) {
+                    console.log('🤖 Node has AI mode enabled, will generate AI response on first user message');
+                    // Return a simple prompt that will be replaced by AI response
+                    return 'Hello! I\'m connecting you with our AI assistant...';
+                }
+                
+                if (welcomeNode && welcomeNode.message) {
+                    console.log('🎯 Using static message from welcome node');
+                    return welcomeNode.message;
+                }
+            }
+
             // Ensure language detection is loaded first
             this.loadLanguagePreference();
 
@@ -1280,11 +1299,18 @@
             // Add registration form trigger for manual activation
             this.addRegistrationFormTrigger();
 
-            // Check if this is the first user message and we need agent handoff
+            // 🎯 NEW: Check if we should use node flow AI system instead of agent handoff
             const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
 
             if (isFirstMessage && this.conversationPhase === 'welcome') {
-                console.log('🔄 First message detected, initiating agent handoff...');
+                console.log('🎯 First message detected, checking node flow system...');
+                
+                // Try to get response from node flow AI system first
+                if (await this.processMessageWithNodeFlow(message)) {
+                    return; // Node flow handled the message
+                }
+                
+                console.log('🔄 No node flow AI available, falling back to agent handoff...');
                 await this.performAgentHandoff();
                 return;
             }
@@ -1494,6 +1520,80 @@
                 return `Hej${userGreeting}! Jag heter ${agentName} och jag kommer att hjälpa dig idag. Vad kan jag assistera dig med?`;
             } else {
                 return `Hello${userGreeting}${restaurantGreeting}! I'm ${agentName} and I'll be helping you today. What can I assist you with?`;
+            }
+        },
+
+        processMessageWithNodeFlow: async function(message) {
+            console.log('🎯 Trying to process message with node flow system...');
+            
+            if (!window.nodeFlowBuilder) {
+                console.log('❌ Node flow builder not available');
+                return false;
+            }
+
+            try {
+                // Get the current active node (should be welcome or first message node)
+                const currentNode = window.nodeFlowBuilder.getCurrentNode();
+                console.log('🎯 Current node:', currentNode);
+
+                if (!currentNode || !currentNode.aiMode) {
+                    console.log('❌ No AI-enabled node found');
+                    return false;
+                }
+
+                // Check if node has AI assistant configured
+                if (!currentNode.assistantId) {
+                    console.log('❌ Node has no assistant ID configured');
+                    return false;
+                }
+
+                console.log('🤖 Using AI assistant from node:', currentNode.assistantId);
+
+                // Create node context for AI request
+                const nodeContext = {
+                    assistantId: currentNode.assistantId,
+                    aiPrompt: currentNode.aiPrompt || 'You are a helpful assistant for Fooodis. Provide helpful and friendly responses.',
+                    nodeId: currentNode.id,
+                    nodeTitle: currentNode.title
+                };
+
+                console.log('🎯 Node context:', nodeContext);
+
+                // Try to use the API with node context
+                const response = await fetch(this.config.apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversationId: this.conversationId,
+                        language: this.currentLanguage || 'en',
+                        nodeContext: nodeContext, // Pass node context to API
+                        agent: this.currentAgent
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    this.hideTyping();
+                    
+                    if (data.success && data.message) {
+                        console.log('✅ Got AI response from node flow:', data.message.substring(0, 100) + '...');
+                        this.addMessage(data.message, 'assistant');
+                        
+                        // Update conversation phase
+                        this.conversationPhase = 'ai-node';
+                        return true;
+                    }
+                }
+
+                console.log('❌ Node flow API request failed');
+                return false;
+
+            } catch (error) {
+                console.error('❌ Error in node flow processing:', error);
+                return false;
             }
         },
 
