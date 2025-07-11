@@ -1290,8 +1290,11 @@
             }
 
             // Try to use chatbot manager if available
-            if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
-                console.log('🔄 Using chatbot manager for response');
+        if (window.chatbotManager && window.chatbotManager.isInitialized) {
+            console.log('🔄 Using chatbot manager for response');
+
+            // Check if manager has agent response capability
+            if (typeof window.chatbotManager.generateAgentResponse === 'function') {
                 const response = await window.chatbotManager.generateAgentResponse({
                     message: message,
                     conversationId: this.conversationId,
@@ -1306,11 +1309,27 @@
                 this.hideTyping();
                 if (response && response.success) {
                     this.addMessage(response.message, 'assistant');
+
+                    // Store conversation in manager
+                    if (window.chatbotManager.storeConversation) {
+                        window.chatbotManager.storeConversation({
+                            id: this.conversationId,
+                            messages: this.messages,
+                            agent: this.currentAgent,
+                            language: this.currentLanguage,
+                            lastMessageAt: new Date().toISOString()
+                        });
+                    }
                     return;
                 } else {
                     console.warn('⚠️ Manager response failed, trying API fallback');
                 }
+            } else {
+                console.log('📋 Manager available but no generateAgentResponse method');
             }
+        } else {
+            console.log('⚠️ ChatbotManager not available or not initialized, using API');
+        }
 
             // Try API endpoint
             try {
