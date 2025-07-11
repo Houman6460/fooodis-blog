@@ -75,8 +75,17 @@
         },
 
         getInitialWelcomeMessage: function() {
-            // Ensure language detection is loaded first
+            // Load language preference first
             this.loadLanguagePreference();
+
+            // Check if node flow builder has a welcome message
+            if (window.nodeFlowBuilder && typeof window.nodeFlowBuilder.getWelcomeMessage === 'function') {
+                const flowWelcome = window.nodeFlowBuilder.getWelcomeMessage(this.currentLanguage);
+                if (flowWelcome) {
+                    console.log('🌐 Using Node Flow Builder welcome message');
+                    return flowWelcome;
+                }
+            }
 
             // Use General Settings welcome message for initial greeting
             if (this.chatbotSettings && this.chatbotSettings.welcomeMessage) {
@@ -84,15 +93,15 @@
                 return this.chatbotSettings.welcomeMessage;
             }
 
-            // Fallback bilingual welcome message with proper formatting
+            // Enhanced multilingual welcome message
             const fallbackMessage = `
                 <div class="bilingual-welcome">
-                    <div class="welcome-en">🇬🇧 <strong>English:</strong> Hello! I'm your Fooodis assistant. How can I help you today?</div>
-                    <div class="welcome-sv">🇸🇪 <strong>Svenska:</strong> Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?</div>
+                    <div class="welcome-en">🇬🇧 Hello! I'm your Fooodis assistant. How can I help you today?</div>
+                    <div class="welcome-sv">🇸🇪 Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?</div>
                 </div>
             `;
 
-            console.log('🌐 Using fallback bilingual welcome message');
+            console.log('🌐 Using enhanced multilingual welcome message');
             return fallbackMessage;
         },
 
@@ -1277,16 +1286,39 @@
                 this.languageDetected = true;
             }
 
-            // Add registration form trigger for manual activation
-            this.addRegistrationFormTrigger();
+            // 🔧 NEW: Use Node Flow Builder for message processing
+            if (window.nodeFlowBuilder && typeof window.nodeFlowBuilder.processUserMessage === 'function') {
+                console.log('🔄 Using Node Flow Builder for processing');
+                try {
+                    const flowResponse = await window.nodeFlowBuilder.processUserMessage({
+                        message: message,
+                        conversationId: this.conversationId,
+                        language: this.currentLanguage || 'en',
+                        userContext: {
+                            name: this.userName,
+                            registered: this.userRegistered,
+                            phase: this.conversationPhase
+                        }
+                    });
 
-            // Check if this is the first user message and we need agent handoff
-            const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
-
-            if (isFirstMessage && this.conversationPhase === 'welcome') {
-                console.log('🔄 First message detected, initiating agent handoff...');
-                await this.performAgentHandoff();
-                return;
+                    this.hideTyping();
+                    if (flowResponse && flowResponse.message) {
+                        // Handle agent switches from flow
+                        if (flowResponse.agentSwitch && flowResponse.agent) {
+                            this.switchAgent(flowResponse.agent);
+                        }
+                        
+                        this.addMessage(flowResponse.message, 'assistant');
+                        
+                        // Add quick replies if provided by flow
+                        if (flowResponse.quickReplies) {
+                            this.addQuickReplies(flowResponse.quickReplies);
+                        }
+                        return;
+                    }
+                } catch (flowError) {
+                    console.warn('⚠️ Node Flow Builder failed, trying fallback:', flowError);
+                }
             }
 
             // Try to use chatbot manager if available
@@ -1312,9 +1344,9 @@
                 }
             }
 
-            // Try API endpoint
+            // Try API endpoint with node flow context
             try {
-                console.log('🌐 Trying API endpoint:', this.config.apiEndpoint);
+                console.log('🌐 Trying API endpoint with node flow context:', this.config.apiEndpoint);
                 const response = await fetch(this.config.apiEndpoint, {
                     method: 'POST',
                     headers: {
@@ -1325,7 +1357,13 @@
                         conversationId: this.conversationId,
                         language: this.currentLanguage || 'en',
                         agent: this.currentAgent,
-                        assistantId: this.currentAgent?.assignedAssistantId
+                        assistantId: this.currentAgent?.assignedAssistantId,
+                        useNodeFlow: true, // Signal to use node flow processing
+                        nodeContext: {
+                            phase: this.conversationPhase,
+                            userName: this.userName,
+                            userRegistered: this.userRegistered
+                        }
                     })
                 });
 
@@ -1333,7 +1371,17 @@
                     const data = await response.json();
                     this.hideTyping();
                     if (data.success && data.message) {
+                        // Handle agent routing from API response
+                        if (data.agentSwitch && data.agent) {
+                            this.switchAgent(data.agent);
+                        }
+                        
                         this.addMessage(data.message, 'assistant');
+                        
+                        // Add quick replies if provided
+                        if (data.quickReplies) {
+                            this.addQuickReplies(data.quickReplies);
+                        }
                         return;
                     }
                 }
@@ -1341,12 +1389,12 @@
                 console.warn('⚠️ API endpoint failed:', apiError);
             }
 
-            // Enhanced fallback response with typing simulation
+            // Enhanced multilingual fallback
             setTimeout(() => {
                 this.hideTyping();
-                const fallbackResponse = this.generateIntelligentFallback(message);
+                const fallbackResponse = this.generateNodeFlowFallback(message);
                 this.addMessage(fallbackResponse, 'assistant');
-            }, 1000 + Math.random() * 2000); // Simulate realistic typing delay
+            }, 1000 + Math.random() * 2000);
 
         } catch (error) {
             console.error('💥 Error processing message:', error);
@@ -1497,27 +1545,143 @@
             }
         },
 
-        generateIntelligentFallback: function(message) {
-            // Basic keyword-based fallback
-            const messageLower = message.toLowerCase();
+        addQuickReplies: function(quickReplies) {
+            if (!quickReplies || quickReplies.length === 0) return;
 
-            if (messageLower.includes('order') || messageLower.includes('delivery') || messageLower.includes('beställ') || messageLower.includes('leverans')) {
-                return this.currentLanguage === 'sv'
-                    ? "Jag kan hjälpa dig med beställningar och leveranser. Vad vill du veta?"
-                    : "I can help you with orders and deliveries. What would you like to know?";
-            } else if (messageLower.includes('menu') || messageLower.includes('food') || messageLower.includes('meny') || messageLower.includes('mat')) {
-                return this.currentLanguage === 'sv'
-                    ? "Jag kan visa dig vår meny. Vilken typ av mat är du intresserad av?"
-                    : "I can show you our menu. What kind of food are you interested in?";
-            } else if (messageLower.includes('hours') || messageLower.includes('open') || messageLower.includes('öppet') || messageLower.includes('öppettider')) {
-                return this.currentLanguage === 'sv'
-                    ? "Våra öppettider är 10:00 till 22:00 varje dag."
-                    : "Our opening hours are 10:00 AM to 10:00 PM every day.";
-            } else {
-                return this.currentLanguage === 'sv'
-                    ? "Tack för ditt meddelande. Kan du berätta mer om vad du behöver hjälp med?"
-                    : "Thank you for your message. Can you tell me more about what you need help with?";
+            const messagesContainer = document.getElementById('chatbot-messages');
+            if (!messagesContainer) return;
+
+            // Remove existing quick replies
+            const existingQuickReplies = messagesContainer.querySelector('.fooodis-quick-replies');
+            if (existingQuickReplies) {
+                existingQuickReplies.remove();
             }
+
+            // Create quick replies container
+            const quickRepliesDiv = document.createElement('div');
+            quickRepliesDiv.className = 'fooodis-quick-replies';
+            quickRepliesDiv.style.cssText = `
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin: 10px 0;
+                padding: 0 15px;
+            `;
+
+            quickReplies.forEach(reply => {
+                const button = document.createElement('button');
+                button.className = 'fooodis-quick-reply-btn';
+                button.textContent = reply;
+                button.style.cssText = `
+                    background: #f1f1f1;
+                    border: 1px solid #ddd;
+                    border-radius: 15px;
+                    padding: 8px 16px;
+                    font-size: 14px;
+                    color: #333;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                `;
+
+                button.addEventListener('mouseenter', () => {
+                    button.style.background = '#e0e0e0';
+                    button.style.borderColor = '#ccc';
+                });
+
+                button.addEventListener('mouseleave', () => {
+                    button.style.background = '#f1f1f1';
+                    button.style.borderColor = '#ddd';
+                });
+
+                button.addEventListener('click', () => {
+                    // Send the quick reply as a user message
+                    this.addMessage(reply, 'user');
+                    quickRepliesDiv.remove(); // Remove quick replies after selection
+                    this.showTyping();
+                    this.processMessage(reply);
+                });
+
+                quickRepliesDiv.appendChild(button);
+            });
+
+            messagesContainer.appendChild(quickRepliesDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        },
+
+        generateNodeFlowFallback: function(message) {
+            // Enhanced fallback that mimics node flow behavior
+            const messageLower = message.toLowerCase();
+            const isSwedish = this.detectSwedish(message);
+
+            // Intent detection for routing
+            let intent = 'general';
+            let department = 'customer-support';
+
+            if (messageLower.includes('menu') || messageLower.includes('food') || messageLower.includes('meny') || messageLower.includes('mat')) {
+                intent = 'menu-inquiry';
+                department = 'customer-support';
+            } else if (messageLower.includes('order') || messageLower.includes('delivery') || messageLower.includes('beställ') || messageLower.includes('leverans')) {
+                intent = 'order-inquiry';
+                department = 'delivery';
+            } else if (messageLower.includes('billing') || messageLower.includes('payment') || messageLower.includes('faktur') || messageLower.includes('betalning')) {
+                intent = 'billing-inquiry';
+                department = 'billing';
+            } else if (messageLower.includes('technical') || messageLower.includes('api') || messageLower.includes('integration') || messageLower.includes('teknisk')) {
+                intent = 'technical-inquiry';
+                department = 'technical-support';
+            } else if (messageLower.includes('sales') || messageLower.includes('plan') || messageLower.includes('pricing') || messageLower.includes('försäljning') || messageLower.includes('pris')) {
+                intent = 'sales-inquiry';
+                department = 'sales';
+            }
+
+            // Generate contextual response based on detected intent
+            const responses = {
+                'menu-inquiry': {
+                    english: "I can help you with menu-related questions. Let me connect you with our Menu Management specialist.",
+                    swedish: "Jag kan hjälpa dig med menyrelaterade frågor. Låt mig koppla dig till vår Menyhanteringsspecialist."
+                },
+                'order-inquiry': {
+                    english: "I'll help you with your order questions. Connecting you to our Delivery team.",
+                    swedish: "Jag hjälper dig med dina orderfrågor. Kopplar dig till vårt Leveransteam."
+                },
+                'billing-inquiry': {
+                    english: "I can assist with billing and payment questions. Let me transfer you to our Billing department.",
+                    swedish: "Jag kan hjälpa till med fakturerings- och betalningsfrågor. Låt mig överföra dig till vår Faktureringsavdelning."
+                },
+                'technical-inquiry': {
+                    english: "I'll connect you with our Technical Support team for technical assistance.",
+                    swedish: "Jag kopplar dig till vårt Tekniska Support-team för teknisk assistans."
+                },
+                'sales-inquiry': {
+                    english: "Let me connect you with our Sales team to discuss plans and pricing.",
+                    swedish: "Låt mig koppla dig till vårt Säljteam för att diskutera planer och priser."
+                },
+                'general': {
+                    english: "Thank you for your message. I'm here to help! Let me connect you with the right team member.",
+                    swedish: "Tack för ditt meddelande. Jag är här för att hjälpa! Låt mig koppla dig till rätt teammedlem."
+                }
+            };
+
+            const language = isSwedish ? 'swedish' : 'english';
+            const response = responses[intent][language];
+
+            // Simulate agent handoff by updating conversation phase
+            this.conversationPhase = 'handoff';
+
+            // Add quick replies based on detected language
+            setTimeout(() => {
+                const quickReplies = isSwedish 
+                    ? ['Meny', 'Öppettider', 'Plats', 'Kontakt']
+                    : ['Menu', 'Hours', 'Location', 'Contact'];
+                this.addQuickReplies(quickReplies);
+            }, 500);
+
+            return response;
+        },
+
+        generateIntelligentFallback: function(message) {
+            // Legacy fallback - redirect to new node flow fallback
+            return this.generateNodeFlowFallback(message);
         },
 
         handleFileUpload: function(file) {
