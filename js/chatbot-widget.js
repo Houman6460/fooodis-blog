@@ -1285,6 +1285,153 @@
             this.addMessage(reply, 'user');
             this.showTyping();
             this.processMessage(reply);
+        },
+
+        // Determine if scenario flow should be used
+        shouldUseScenarioFlow: function() {
+            return this.conversationPhase !== 'welcome' && this.conversationPhase !== 'regular';
+        },
+
+        // Process message through scenario flow
+        processScenarioMessage: function(message) {
+            switch (this.conversationPhase) {
+                case 'registration':
+                    return this.handleRegistration(message);
+                case 'order':
+                    return this.handleOrder(message);
+                // Add more cases as needed
+                default:
+                    console.warn('Unknown conversation phase:', this.conversationPhase);
+                    return 'Sorry, I am unable to process your request at this time.';
+            }
+        },
+
+        // Process message through regular chat
+        processRegularMessage: function(message) {
+            // Basic keyword-based responses
+            message = message.toLowerCase();
+
+            if (message.includes('menu')) {
+                return 'You can view our menu on our website.';
+            } else if (message.includes('hours')) {
+                return 'We are open from 10 AM to 10 PM every day.';
+            } else if (message.includes('location')) {
+                return 'We are located at 123 Main Street.';
+            } else if (message.includes('contact')) {
+                return 'You can contact us at 555-1234.';
+            } else {
+                return null; // Fallback to API
+            }
+        },
+
+        // Detect language
+        detectLanguage: function(message) {
+            const swedishKeywords = ['hej', 'hur', 'är', 'du', 'tack', 'snälla'];
+            const englishKeywords = ['hello', 'how', 'are', 'you', 'thanks', 'please'];
+
+            let swedishCount = 0;
+            let englishCount = 0;
+
+            swedishKeywords.forEach(keyword => {
+                if (message.toLowerCase().includes(keyword)) {
+                    swedishCount++;
+                }
+            });
+
+            englishKeywords.forEach(keyword => {
+                if (message.toLowerCase().includes(keyword)) {
+                    englishCount++;
+                }
+            });
+
+            return swedishCount > englishCount ? 'sv' : 'en';
+        },
+
+        sendToAPI: async function(message) {
+            console.log('Sending message to API:', message);
+            this.showTyping();
+
+            try {
+                const response = await fetch(`${this.config.apiEndpoint}/conversations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversationId: this.conversationId,
+                        language: this.currentLanguage
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('API request failed:', response.status, response.statusText);
+                    this.addMessage('Sorry, I encountered an error. Please try again later.', 'assistant');
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                if (data.conversationId && !this.conversationId) {
+                    this.conversationId = data.conversationId;
+                    console.log('New conversation ID:', this.conversationId);
+                }
+
+                if (data.response) {
+                    this.addMessage(data.response, 'assistant');
+                } else {
+                    this.addMessage('Sorry, I didn\'t understand that. Could you please rephrase?', 'assistant');
+                }
+
+                if (data.quick_replies) {
+                    this.addMessage('', 'assistant', data.quick_replies);
+                }
+            } catch (error) {
+                console.error('API request error:', error);
+                this.addMessage('Sorry, I encountered an error. Please try again later.', 'assistant');
+            } finally {
+                this.hideTyping();
+            }
+        },
+
+        handleFileUpload: async function(file) {
+            if (!this.config.allowFileUpload) {
+                this.addMessage('File uploads are not enabled.', 'assistant');
+                return;
+            }
+
+            this.showTyping();
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('conversationId', this.conversationId);
+
+                const response = await fetch(`${this.config.apiEndpoint}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    console.error('File upload failed:', response.status, response.statusText);
+                    this.addMessage('File upload failed. Please try again later.', 'assistant');
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.addMessage('File uploaded successfully!', 'assistant');
+                } else {
+                    this.addMessage('File upload failed. Please try again later.', 'assistant');
+                }
+            } catch (error) {
+                console.error('File upload error:', error);
+                this.addMessage('File upload failed. Please try again later.', 'assistant');
+            } finally {
+                this.hideTyping();
+            }
         }
     };
 })();
