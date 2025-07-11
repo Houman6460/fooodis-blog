@@ -115,38 +115,44 @@
       function testRegistrationForm() {
         console.log('🧪 Manual registration form test triggered');
         
-        // Clear ALL user data to simulate new user
-        localStorage.removeItem('chatbot-current-user');
-        localStorage.removeItem('chatbot-user-data');
-        localStorage.removeItem('chatbot-users');
-        localStorage.removeItem('chatbot-registrations');
-        localStorage.removeItem('fooodis-chatbot-registrations');
-        localStorage.removeItem('fooodis-chatbot-conversations');
-        localStorage.removeItem('fooodis-user-name');
-        localStorage.removeItem('fooodis-restaurant-name');
-        localStorage.removeItem('fooodis-language');
-        
-        console.log('🧹 Cleared all user data - simulating new user');
-        
-        // Reset chatbot state
-        if (window.FoodisChatbot) {
-          window.FoodisChatbot.userRegistered = false;
-          window.FoodisChatbot.userInfo = null;
-          window.FoodisChatbot.userName = null;
-          window.FoodisChatbot.restaurantName = null;
-          window.FoodisChatbot.conversationPhase = 'welcome';
-          console.log('🔄 Reset chatbot state');
-        }
-        
-        // Force show registration form
-        if (window.ChatbotRegistrationForm) {
-          // Wait a moment for state to reset
-          setTimeout(() => {
-            window.ChatbotRegistrationForm.showRegistrationForm();
-            console.log('📋 Registration form should now be visible');
-          }, 500);
+        // Use the complete reset function from debug script
+        if (window.completeReset) {
+          window.completeReset();
         } else {
-          alert('Registration form system not available');
+          // Fallback manual clear
+          const keysToRemove = [
+            'chatbot-current-user', 'chatbot-user-data', 'chatbot-users', 'chatbot-registrations',
+            'fooodis-chatbot-registrations', 'fooodis-chatbot-conversations', 'fooodis-user-name',
+            'fooodis-restaurant-name', 'fooodis-language', 'fooodis-user-email', 'chatbot-session-id',
+            'chatbot-device-id', 'user-leads', 'last-user-identity', 'current-user-identity'
+          ];
+          
+          keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+          });
+          
+          // Reset chatbot state
+          if (window.FoodisChatbot) {
+            window.FoodisChatbot.userRegistered = false;
+            window.FoodisChatbot.userInfo = null;
+            window.FoodisChatbot.userName = null;
+            window.FoodisChatbot.restaurantName = null;
+            window.FoodisChatbot.conversationPhase = 'welcome';
+            console.log('🔄 Reset chatbot state');
+          }
+          
+          console.log('🧹 Cleared all user data - simulating new user');
+          
+          // Force show registration form
+          setTimeout(() => {
+            if (window.ChatbotRegistrationForm) {
+              window.ChatbotRegistrationForm.showRegistrationForm();
+              console.log('📋 Registration form should now be visible');
+            } else {
+              alert('Registration form system not available');
+            }
+          }, 1000);
         }
       }
     </script>

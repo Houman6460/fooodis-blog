@@ -1,4 +1,3 @@
-
 console.log('=== CHATBOT DEBUG INFO ===');
 console.log('Registration Data:', JSON.parse(localStorage.getItem('fooodis-chatbot-registrations') || '[]'));
 console.log('Conversation Data:', JSON.parse(localStorage.getItem('fooodis-chatbot-conversations') || '[]'));
@@ -11,34 +10,70 @@ localStorage.removeItem('fooodis-chatbot-registrations');
 localStorage.removeItem('fooodis-chatbot-conversations');
 
 
-// Test registration form
-function testRegistrationForm() {
-    console.log('🧪 Testing registration form...');
-    
-    // Clear user data to simulate new user
-    localStorage.removeItem('chatbot-current-user');
-    localStorage.removeItem('chatbot-user-data');
-    localStorage.removeItem('chatbot-registrations');
-    
-    console.log('🧹 Cleared user data');
-    
-    // Force show registration form
-    if (window.ChatbotRegistrationForm) {
-        console.log('📋 Showing registration form...');
-        window.ChatbotRegistrationForm.showRegistrationForm();
-    } else {
-        console.error('❌ ChatbotRegistrationForm not available');
+function completeReset() {
+    console.log('🧹 COMPLETE CHATBOT RESET - Clearing all data...');
+
+    // Clear ALL possible user data keys
+    const keysToRemove = [
+        'chatbot-current-user',
+        'chatbot-user-data',
+        'chatbot-users',
+        'chatbot-registrations',
+        'chatbot-user',
+        'fooodis-chatbot-registrations',
+        'fooodis-chatbot-conversations', 
+        'fooodis-user-name',
+        'fooodis-restaurant-name',
+        'fooodis-language',
+        'fooodis-user-email',
+        'chatbot-session-id',
+        'chatbot-device-id',
+        'user-leads',
+        'last-user-identity',
+        'current-user-identity',
+        'chatbot-widget-avatar',
+        'chatbot-avatar-settings'
+    ];
+
+    keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+    });
+
+    // Reset window objects
+    if (window.FoodisChatbot) {
+        window.FoodisChatbot.userRegistered = false;
+        window.FoodisChatbot.userInfo = null;
+        window.FoodisChatbot.userName = null;
+        window.FoodisChatbot.restaurantName = null;
+        window.FoodisChatbot.conversationPhase = 'welcome';
+        console.log('🔄 Reset chatbot widget state');
     }
+
+    // Clear global identity data
+    window.currentUserIdentity = null;
+
+    console.log('✅ Complete reset finished - you are now a completely new user');
+
+    // Force show registration form after a short delay
+    setTimeout(() => {
+        if (window.ChatbotRegistrationForm) {
+            console.log('📋 Force showing registration form...');
+            window.ChatbotRegistrationForm.showRegistrationForm();
+        } else {
+            console.warn('⚠️ Registration form system not available');
+        }
+    }, 1000);
 }
 
-// Make it globally accessible
+function testRegistrationForm() {
+    console.log('🧪 Testing registration form...');
+    completeReset();
+}
+
+// Make functions globally accessible
 window.testRegistrationForm = testRegistrationForm;
-console.log('🧪 Run testRegistrationForm() to manually show the registration form');
+window.completeReset = completeReset;
 
-localStorage.removeItem('chatbot-current-user');
-localStorage.removeItem('chatbot-users');
-localStorage.removeItem('chatbot-user'); // Remove old format too
-localStorage.removeItem('chatbot-registrations'); // Alternative key
-
-console.log('✅ Chatbot data cleared - you are now a new user');
-console.log('=== END DEBUG INFO ===');
+console.log('🧪 Run completeReset() or testRegistrationForm() in console to show the registration form');
+console.log('✅ Chatbot debug tools loaded');
