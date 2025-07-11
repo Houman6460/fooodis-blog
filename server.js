@@ -102,23 +102,9 @@ try {
     authAPI = require('express').Router();
 }
 
-// API routes - only mount if they are valid router functions
-if (chatbotAPI && (typeof chatbotAPI === 'function' || typeof chatbotAPI.handle === 'function' || chatbotAPI.use)) {
-    app.use('/api/chatbot', chatbotAPI);
-    console.log('✅ Chatbot API routes mounted successfully at /api/chatbot');
-} else {
-    console.error('❌ Chatbot API not properly loaded - creating fallback routes');
-    // Create basic fallback routes
-    app.get('/api/chatbot/conversations', (req, res) => {
-        res.json({ success: true, conversations: [] });
-    });
-    app.get('/api/chatbot/users', (req, res) => {
-        res.json({ success: true, users: [] });
-    });
-    app.post('/api/chatbot/config', (req, res) => {
-        res.json({ success: true });
-    });
-}
+// API routes - mount chatbot API with proper error handling
+app.use('/api/chatbot', chatbotAPI);
+console.log('✅ Chatbot API routes mounted successfully at /api/chatbot');
 
 if (typeof systemHealthAPI === 'function' || (systemHealthAPI && typeof systemHealthAPI.handle === 'function')) {
     app.use('/api/system-health', systemHealthAPI);
