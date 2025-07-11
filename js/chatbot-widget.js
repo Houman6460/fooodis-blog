@@ -495,11 +495,11 @@
         playSound: function(type) {
             // 🔧 FIX: Add sound feedback for chat interactions
             if (!this.config.soundEnabled) return;
-            
+
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 let frequency = 440; // Default frequency
-                
+
                 switch(type) {
                     case 'send':
                         frequency = 800; // Higher pitch for send
@@ -511,19 +511,19 @@
                         frequency = 400; // Lower pitch for typing
                         break;
                 }
-                
+
                 const oscillator = audioContext.createOscillator();
                 const gain = audioContext.createGain();
-                
+
                 oscillator.connect(gain);
                 gain.connect(audioContext.destination);
-                
+
                 oscillator.frequency.value = frequency;
                 oscillator.type = 'sine';
-                
+
                 gain.gain.setValueAtTime(0.1, audioContext.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                
+
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.1);
             } catch (error) {
@@ -915,8 +915,7 @@
                     border: none !important;
                     color: #26282f !important;
                     cursor: pointer !important;
-                    padding: 10px !important;
-                    border-radius: 50% !important;
+                    padding: 10px !important;border-radius: 50% !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
@@ -1123,7 +1122,7 @@
             }
 
             let quickRepliesHtml = '';
-            
+
             // 🔧 FIX: Only show quick replies if explicitly provided and not using AI Message Nodes
             if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
                 // Don't show default buttons when AI Message Nodes are active
@@ -1403,11 +1402,11 @@
                 console.log('⚠️ NodeFlowBuilder not available or no nodes found');
                 return false;
             }
-            
+
             const aiNodes = window.nodeFlowBuilder.nodes.filter(node => 
                 node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
             );
-            
+
             console.log(`🔍 Found ${aiNodes.length} AI-enabled Message Nodes`);
             return aiNodes.length > 0;
         },
@@ -1418,30 +1417,30 @@
                     console.log('⚠️ NodeFlowBuilder not available');
                     return null;
                 }
-                
+
                 // Find AI-enabled message nodes
                 const aiNodes = window.nodeFlowBuilder.nodes.filter(node => 
                     node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
                 );
-                
+
                 if (aiNodes.length === 0) {
                     console.log('⚠️ No AI-enabled Message Nodes found');
                     return null;
                 }
-                
+
                 // Use the first AI node for simplicity (could be enhanced with intent matching)
                 const aiNode = aiNodes[0];
                 console.log(`🤖 Using AI Message Node: ${aiNode.data.title} with assistant: ${aiNode.data.selectedAssistant}`);
-                
+
                 // Get the assistant from chatbot manager
                 if (window.chatbotManager && window.chatbotManager.assistants) {
                     const assistant = window.chatbotManager.assistants.find(a => 
                         a.id === aiNode.data.selectedAssistant
                     );
-                    
+
                     if (assistant && assistant.assistantId) {
                         console.log(`🎯 Found assistant: ${assistant.name} (${assistant.assistantId})`);
-                        
+
                         const response = await window.chatbotManager.generateAgentResponse({
                             message: message,
                             conversationId: this.conversationId,
@@ -1454,7 +1453,7 @@
                             customPrompt: aiNode.data.aiPrompt,
                             useCustomPrompt: true // Flag to indicate this is from Node Flow
                         });
-                        
+
                         if (response && response.success) {
                             console.log('✅ AI Message Node generated response successfully');
                             return response.message;
@@ -1467,7 +1466,7 @@
                 } else {
                     console.error('❌ ChatbotManager not available or no assistants');
                 }
-                
+
                 return null;
             } catch (error) {
                 console.error('❌ Error processing with Node Flow:', error);
