@@ -1609,6 +1609,284 @@ class NodeFlowBuilder {
         this.showToast(`Switched to ${language} flow`, 'info');
     }
 
+    // Chatbot Integration Methods
+    processUserMessage: async function(context) {
+        try {
+            const { message, conversationId, language, userContext } = context;
+            console.log('🔄 Node Flow Builder processing message:', message.substring(0, 50) + '...');
+
+            // Start from welcome node if this is the first message
+            let currentNode = this.nodes.find(node => node.type === 'welcome');
+            
+            if (!currentNode) {
+                console.warn('⚠️ No welcome node found in flow');
+                return this.generateFallbackResponse(message, language);
+            }
+
+            // Process through the flow
+            const result = await this.processNodeFlow(currentNode, message, language, userContext);
+            
+            return {
+                success: true,
+                message: result.message,
+                agentSwitch: result.agentSwitch,
+                agent: result.agent,
+                quickReplies: result.quickReplies
+            };
+
+        } catch (error) {
+            console.error('❌ Node Flow Builder error:', error);
+            return this.generateFallbackResponse(context.message, context.language);
+        }
+    },
+
+    processNodeFlow: async function(node, message, language, userContext) {
+        console.log('🔄 Processing node:', node.type, node.data.title);
+
+        switch (node.type) {
+            case 'welcome':
+                return this.processWelcomeNode(node, message, language, userContext);
+            
+            case 'intent':
+                return this.processIntentNode(node, message, language, userContext);
+            
+            case 'handoff':
+                return this.processHandoffNode(node, message, language, userContext);
+            
+            case 'condition':
+                return this.processConditionNode(node, message, language, userContext);
+            
+            case 'message':
+                return this.processMessageNode(node, message, language, userContext);
+            
+            default:
+                return this.generateFallbackResponse(message, language);
+        }
+    },
+
+    processWelcomeNode: function(node, message, language, userContext) {
+        // Get welcome message based on language
+        const welcomeMessage = this.getNodeMessage(node, language);
+        
+        // Find connected intent node
+        const connection = this.connections.find(conn => conn.from === node.id);
+        let quickReplies = [];
+
+        if (connection) {
+            const nextNode = this.nodes.find(n => n.id === connection.to);
+            if (nextNode && nextNode.type === 'intent') {
+                // Generate quick replies based on intent categories
+                quickReplies = this.generateQuickRepliesFromIntents(nextNode, language);
+            }
+        }
+
+        return {
+            message: welcomeMessage,
+            quickReplies: quickReplies
+        };
+    },
+
+    processIntentNode: function(node, message, language, userContext) {
+        // Detect intent from message
+        const detectedIntent = this.detectIntent(message, node.data.intents);
+        console.log('🎯 Detected intent:', detectedIntent);
+
+        // Find handoff nodes connected to this intent node
+        const connections = this.connections.filter(conn => conn.from === node.id);
+        
+        for (const connection of connections) {
+            const targetNode = this.nodes.find(n => n.id === connection.to);
+            
+            if (targetNode && targetNode.type === 'handoff') {
+                // Route to appropriate department based on intent
+                if (this.intentMatchesDepartment(detectedIntent, targetNode.data.department)) {
+                    return this.processHandoffNode(targetNode, message, language, userContext);
+                }
+            }
+        }
+
+        // Default handoff if no specific match
+        const defaultHandoff = this.nodes.find(n => n.type === 'handoff' && n.data.department === 'customer-support');
+        if (defaultHandoff) {
+            return this.processHandoffNode(defaultHandoff, message, language, userContext);
+        }
+
+        return this.generateFallbackResponse(message, language);
+    },
+
+    processHandoffNode: function(node, message, language, userContext) {
+        const handoffMessage = language === 'sv' 
+            ? `Jag kopplar dig till vårt ${this.getDepartmentName(node.data.department, 'sv')}-team...`
+            : `Connecting you to our ${this.getDepartmentName(node.data.department, 'en')} team...`;
+
+        // Select agent from department
+        const agent = this.selectAgentFromDepartment(node.data.department);
+
+        return {
+            message: handoffMessage,
+            agentSwitch: true,
+            agent: agent,
+            quickReplies: language === 'sv' 
+                ? ['Hjälp', 'Information', 'Support']
+                : ['Help', 'Information', 'Support']
+        };
+    },
+
+    processMessageNode: function(node, message, language, userContext) {
+        const nodeMessage = this.getNodeMessage(node, language);
+        
+        // If AI mode is enabled, use AI assistant
+        if (node.data.aiMode && node.data.selectedAssistant) {
+            // This would integrate with the AI system
+            return {
+                message: `[AI Response from ${node.data.selectedAssistant}] ${nodeMessage}`,
+                quickReplies: []
+            };
+        }
+
+        return {
+            message: nodeMessage,
+            quickReplies: []
+        };
+    },
+
+    getWelcomeMessage: function(language) {
+        const welcomeNode = this.nodes.find(node => node.type === 'welcome');
+        if (welcomeNode) {
+            return this.getNodeMessage(welcomeNode, language);
+        }
+        return null;
+    },
+
+    getNodeMessage: function(node, language) {
+        if (!node.data.messages) return node.data.title || 'Message not configured';
+
+        // Support for both old and new message formats
+        if (language === 'sv' && node.data.messages.swedish) {
+            return node.data.messages.swedish;
+        } else if (language === 'en' && node.data.messages.english) {
+            return node.data.messages.english;
+        } else if (node.data.messages.bilingual) {
+            return node.data.messages.bilingual;
+        } else {
+            // Fallback to any available message
+            return node.data.messages.english || node.data.messages.swedish || node.data.title;
+        }
+    },
+
+    detectIntent: function(message, availableIntents) {
+        const messageLower = message.toLowerCase();
+        
+        // Intent mapping
+        const intentKeywords = {
+            'menu-creation': ['menu', 'meny', 'food', 'mat', 'dish', 'rätt'],
+            'pos-system': ['pos', 'payment', 'kassasystem', 'betalning'],
+            'order-tracking': ['order', 'delivery', 'beställning', 'leverans'],
+            'billing-cycles': ['billing', 'invoice', 'faktura', 'payment'],
+            'technical-support': ['technical', 'api', 'integration', 'teknisk'],
+            'plan-comparison': ['plan', 'pricing', 'price', 'pris', 'subscription']
+        };
+
+        // Find best matching intent
+        let bestMatch = 'general-inquiries';
+        let maxScore = 0;
+
+        for (const intent of availableIntents) {
+            const keywords = intentKeywords[intent] || [];
+            let score = 0;
+            
+            for (const keyword of keywords) {
+                if (messageLower.includes(keyword)) {
+                    score++;
+                }
+            }
+            
+            if (score > maxScore) {
+                maxScore = score;
+                bestMatch = intent;
+            }
+        }
+
+        return bestMatch;
+    },
+
+    intentMatchesDepartment: function(intent, department) {
+        const departmentIntents = {
+            'customer-support': ['menu-creation', 'general-inquiries'],
+            'sales': ['plan-comparison', 'billing-cycles'],
+            'technical-support': ['pos-system', 'technical-support'],
+            'delivery': ['order-tracking'],
+            'billing': ['billing-cycles']
+        };
+
+        return departmentIntents[department]?.includes(intent) || department === 'customer-support';
+    },
+
+    getDepartmentName: function(departmentId, language) {
+        const names = {
+            'customer-support': { en: 'Customer Support', sv: 'Kundsupport' },
+            'sales': { en: 'Sales', sv: 'Försäljning' },
+            'technical-support': { en: 'Technical Support', sv: 'Teknisk Support' },
+            'delivery': { en: 'Delivery', sv: 'Leverans' },
+            'billing': { en: 'Billing', sv: 'Fakturering' }
+        };
+
+        return names[departmentId]?.[language] || departmentId;
+    },
+
+    selectAgentFromDepartment: function(department) {
+        // Get agents from the department
+        const departmentInfo = this.masterTemplate.departments.find(d => d.id === department);
+        
+        if (departmentInfo && this.availableAgents && this.availableAgents.length > 0) {
+            const departmentAgents = this.availableAgents.filter(agent => 
+                agent.department === department || departmentInfo.agents.includes(agent.id)
+            );
+            
+            if (departmentAgents.length > 0) {
+                const randomIndex = Math.floor(Math.random() * departmentAgents.length);
+                return departmentAgents[randomIndex];
+            }
+        }
+
+        // Fallback to any available agent
+        if (this.availableAgents && this.availableAgents.length > 0) {
+            const randomIndex = Math.floor(Math.random() * this.availableAgents.length);
+            return this.availableAgents[randomIndex];
+        }
+
+        // Final fallback
+        return {
+            id: 'default-agent',
+            name: 'Support Agent',
+            department: department,
+            avatar: this.config?.avatar || '/images/avatars/default.jpg'
+        };
+    },
+
+    generateQuickRepliesFromIntents: function(intentNode, language) {
+        const quickReplies = language === 'sv' 
+            ? ['Meny', 'Beställning', 'Support', 'Priser']
+            : ['Menu', 'Orders', 'Support', 'Pricing'];
+        
+        return quickReplies;
+    },
+
+    generateFallbackResponse: function(message, language) {
+        const fallbackMessage = language === 'sv'
+            ? 'Tack för ditt meddelande. Låt mig koppla dig till vår support.'
+            : 'Thank you for your message. Let me connect you to our support team.';
+
+        return {
+            success: true,
+            message: fallbackMessage,
+            agentSwitch: false,
+            quickReplies: language === 'sv' 
+                ? ['Hjälp', 'Support', 'Information']
+                : ['Help', 'Support', 'Information']
+        };
+    }
+
     editNode(node) {
         this.showEditNodeModal(node);
     }
