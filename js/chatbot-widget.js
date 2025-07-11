@@ -492,6 +492,46 @@
             }
         },
 
+        playSound: function(type) {
+            // 🔧 FIX: Add sound feedback for chat interactions
+            if (!this.config.soundEnabled) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                let frequency = 440; // Default frequency
+                
+                switch(type) {
+                    case 'send':
+                        frequency = 800; // Higher pitch for send
+                        break;
+                    case 'receive':
+                        frequency = 600; // Medium pitch for receive
+                        break;
+                    case 'typing':
+                        frequency = 400; // Lower pitch for typing
+                        break;
+                }
+                
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+                
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (error) {
+                // Silently fail if audio context is not supported
+                console.log('Audio feedback not available');
+            }
+        },
+
         createWidget: function() {
             const existingWidget = document.getElementById('fooodis-chatbot');
             if (existingWidget) {
@@ -1083,8 +1123,13 @@
             }
 
             let quickRepliesHtml = '';
+            
+            // 🔧 FIX: Only show quick replies if explicitly provided and not using AI Message Nodes
             if (quickReplies && Array.isArray(quickReplies) && quickReplies.length > 0) {
-                quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
+                // Don't show default buttons when AI Message Nodes are active
+                if (!this.shouldUseNodeFlow() || quickReplies[0] !== 'Menu') {
+                    quickRepliesHtml = this.generateQuickReplyButtons(quickReplies);
+                }
             }
 
             messageElement.innerHTML = `
@@ -1145,21 +1190,22 @@
 
                 const isFirstMessage = this.messages.filter(msg => msg.sender === 'user').length === 1;
 
+                // 🔧 FIX: Always prioritize Node Flow Builder AI Message Nodes
+                if (window.nodeFlowBuilder && this.shouldUseNodeFlow(message)) {
+                    console.log('🤖 Using Node Flow Builder AI Message Node for response');
+                    const response = await this.processWithNodeFlow(message);
+                    this.hideTyping();
+                    if (response) {
+                        // Don't add default buttons when AI generates response
+                        this.addMessage(response, 'assistant', null);
+                        return;
+                    }
+                }
+
                 if (isFirstMessage && this.conversationPhase === 'welcome') {
                     console.log('First message detected, performing agent handoff...');
                     await this.performAgentHandoff();
                     return;
-                }
-
-                // Check if Node Flow Builder has AI-enabled message nodes to process
-                if (window.nodeFlowBuilder && this.shouldUseNodeFlow(message)) {
-                    console.log('Using Node Flow Builder for AI response');
-                    const response = await this.processWithNodeFlow(message);
-                    this.hideTyping();
-                    if (response) {
-                        this.addMessage(response, 'assistant');
-                        return;
-                    }
                 }
 
                 if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
@@ -1352,27 +1398,40 @@
         },
 
         shouldUseNodeFlow: function(message) {
-            // Check if there are AI-enabled message nodes in the flow
-            if (!window.nodeFlowBuilder || !window.nodeFlowBuilder.nodes) return false;
+            // 🔧 FIX: Always prioritize AI Message Nodes when available
+            if (!window.nodeFlowBuilder || !window.nodeFlowBuilder.nodes) {
+                console.log('⚠️ NodeFlowBuilder not available or no nodes found');
+                return false;
+            }
             
-            return window.nodeFlowBuilder.nodes.some(node => 
+            const aiNodes = window.nodeFlowBuilder.nodes.filter(node => 
                 node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
             );
+            
+            console.log(`🔍 Found ${aiNodes.length} AI-enabled Message Nodes`);
+            return aiNodes.length > 0;
         },
 
         processWithNodeFlow: async function(message) {
             try {
-                if (!window.nodeFlowBuilder) return null;
+                if (!window.nodeFlowBuilder) {
+                    console.log('⚠️ NodeFlowBuilder not available');
+                    return null;
+                }
                 
                 // Find AI-enabled message nodes
                 const aiNodes = window.nodeFlowBuilder.nodes.filter(node => 
                     node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
                 );
                 
-                if (aiNodes.length === 0) return null;
+                if (aiNodes.length === 0) {
+                    console.log('⚠️ No AI-enabled Message Nodes found');
+                    return null;
+                }
                 
                 // Use the first AI node for simplicity (could be enhanced with intent matching)
                 const aiNode = aiNodes[0];
+                console.log(`🤖 Using AI Message Node: ${aiNode.data.title} with assistant: ${aiNode.data.selectedAssistant}`);
                 
                 // Get the assistant from chatbot manager
                 if (window.chatbotManager && window.chatbotManager.assistants) {
@@ -1381,6 +1440,8 @@
                     );
                     
                     if (assistant && assistant.assistantId) {
+                        console.log(`🎯 Found assistant: ${assistant.name} (${assistant.assistantId})`);
+                        
                         const response = await window.chatbotManager.generateAgentResponse({
                             message: message,
                             conversationId: this.conversationId,
@@ -1390,24 +1451,40 @@
                             userRegistered: this.userRegistered,
                             recentMessages: this.messages.slice(-5),
                             assistantId: assistant.assistantId,
-                            customPrompt: aiNode.data.aiPrompt
+                            customPrompt: aiNode.data.aiPrompt,
+                            useCustomPrompt: true // Flag to indicate this is from Node Flow
                         });
                         
                         if (response && response.success) {
+                            console.log('✅ AI Message Node generated response successfully');
                             return response.message;
+                        } else {
+                            console.error('❌ AI Message Node failed to generate response:', response);
                         }
+                    } else {
+                        console.error('❌ Assistant not found or missing assistantId:', aiNode.data.selectedAssistant);
                     }
+                } else {
+                    console.error('❌ ChatbotManager not available or no assistants');
                 }
                 
                 return null;
             } catch (error) {
-                console.error('Error processing with Node Flow:', error);
+                console.error('❌ Error processing with Node Flow:', error);
                 return null;
             }
         },
 
         generateIntelligentFallback: function(message) {
             const messageLower = message.toLowerCase();
+
+            // 🔧 FIX: Don't provide specific responses that might trigger default buttons
+            // when AI Message Nodes should be handling the conversation
+            if (this.shouldUseNodeFlow(message)) {
+                return this.currentLanguage === 'sv'
+                    ? "Jag förstår din förfrågan och arbetar på ett svar. Kan du vänta ett ögonblick?"
+                    : "I understand your request and I'm working on a response. Please wait a moment.";
+            }
 
             if (messageLower.includes('order') || messageLower.includes('delivery') || messageLower.includes('beställ') || messageLower.includes('leverans')) {
                 return this.currentLanguage === 'sv'
