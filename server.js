@@ -116,9 +116,11 @@ console.log('✅ All API routes mounted successfully');
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Fooodis Blog System server running on http://0.0.0.0:${PORT}`);
-  console.log(`- Dashboard: http://0.0.0.0:${PORT}/dashboard.html`);
-  console.log(`- Login: http://0.0.0.0:${PORT}/login.html`);
-  console.log(`- Profile: http://0.0.0.0:${PORT}/profile.html`);
-  console.log(`- API Health: http://0.0.0.0:${PORT}/api/system-health`);
+  console.log(`✅ Fooodis Blog System server running on port ${PORT}`);
+  console.log(`🌐 Access your application at the webview URL provided by Replit`);
+  console.log(`📊 Dashboard: /dashboard.html`);
+  console.log(`📝 Blog: /blog.html`);
+  console.log(`🔐 Login: /login.html`);
+  console.log(`👤 Profile: /profile.html`);
+  console.log(`❤️ API Health: /api/system-health`);
 });
