@@ -61,41 +61,81 @@
             // Setup communication with dashboard
             this.setupDashboardCommunication();
 
-            // Create and inject widget
-            this.createWidget();
-            this.attachEventListeners();
+            // Wait for Node Flow Builder to be ready before creating widget
+            this.waitForNodeFlowBuilder(() => {
+                // Create and inject widget
+                this.createWidget();
+                this.attachEventListeners();
 
-            // Set up avatar update listener
-            this.setupAvatarUpdateListener();
+                // Set up avatar update listener
+                this.setupAvatarUpdateListener();
 
-            // Notify that widget is ready
-            window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
+                // Notify that widget is ready
+                window.dispatchEvent(new CustomEvent('chatbotWidgetReady'));
 
-            console.log('Fooodis Chatbot Widget initialized successfully');
+                console.log('Fooodis Chatbot Widget initialized successfully');
+            });
+        },
+
+        waitForNodeFlowBuilder: function(callback) {
+            // Check if Node Flow Builder is ready
+            if (window.nodeFlowBuilder && typeof window.nodeFlowBuilder.getWelcomeNode === 'function') {
+                console.log('🎯 Node Flow Builder is ready');
+                callback();
+                return;
+            }
+
+            // Wait up to 5 seconds for Node Flow Builder
+            let attempts = 0;
+            const maxAttempts = 50; // 5 seconds with 100ms intervals
+            
+            const checkReady = () => {
+                attempts++;
+                
+                if (window.nodeFlowBuilder && typeof window.nodeFlowBuilder.getWelcomeNode === 'function') {
+                    console.log('🎯 Node Flow Builder became ready after', attempts * 100, 'ms');
+                    callback();
+                    return;
+                }
+
+                if (attempts >= maxAttempts) {
+                    console.log('🎯 Node Flow Builder not ready after 5 seconds, proceeding without it');
+                    callback();
+                    return;
+                }
+
+                setTimeout(checkReady, 100);
+            };
+
+            console.log('🎯 Waiting for Node Flow Builder to be ready...');
+            setTimeout(checkReady, 100);
         },
 
         getInitialWelcomeMessage: function() {
             console.log('🎯 Getting initial welcome message from node flow...');
             
-            // First try to get message from node flow system
+            // Wait for Node Flow Builder to be ready
             if (window.nodeFlowBuilder && typeof window.nodeFlowBuilder.getWelcomeNode === 'function') {
                 const welcomeNode = window.nodeFlowBuilder.getWelcomeNode();
                 console.log('🎯 Welcome node found:', welcomeNode);
+                
+                if (welcomeNode && welcomeNode.message && welcomeNode.message.trim()) {
+                    console.log('🎯 Using static message from welcome node:', welcomeNode.message);
+                    return welcomeNode.message;
+                }
                 
                 if (welcomeNode && welcomeNode.aiMode && welcomeNode.assistantId) {
                     console.log('🤖 Node has AI mode enabled, will generate AI response on first user message');
                     // Return a simple prompt that will be replaced by AI response
                     return 'Hello! I\'m connecting you with our AI assistant...';
                 }
-                
-                if (welcomeNode && welcomeNode.message) {
-                    console.log('🎯 Using static message from welcome node');
-                    return welcomeNode.message;
-                }
             }
 
-            // Ensure language detection is loaded first
-            this.loadLanguagePreference();
+            // Try to load from ChatbotManager settings
+            if (window.chatbotManager && window.chatbotManager.settings && window.chatbotManager.settings.welcomeMessage) {
+                console.log('🌐 Using ChatbotManager welcome message:', window.chatbotManager.settings.welcomeMessage);
+                return window.chatbotManager.settings.welcomeMessage;
+            }
 
             // Use General Settings welcome message for initial greeting
             if (this.chatbotSettings && this.chatbotSettings.welcomeMessage) {
@@ -103,16 +143,10 @@
                 return this.chatbotSettings.welcomeMessage;
             }
 
-            // Fallback bilingual welcome message with proper formatting
-            const fallbackMessage = `
-                <div class="bilingual-welcome">
-                    <div class="welcome-en">🇬🇧 <strong>English:</strong> Hello! I'm your Fooodis assistant. How can I help you today?</div>
-                    <div class="welcome-sv">🇸🇪 <strong>Svenska:</strong> Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?</div>
-                </div>
-            `;
-
-            console.log('🌐 Using fallback bilingual welcome message');
-            return fallbackMessage;
+            // Simple default message - no more bilingual fallback
+            const defaultMessage = "Hello! I'm your Fooodis assistant. How can I help you today?";
+            console.log('🌐 Using default welcome message');
+            return defaultMessage;
         },
 
         loadSavedSettings: function() {

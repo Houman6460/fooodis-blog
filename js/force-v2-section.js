@@ -96,6 +96,9 @@ class ForceV2Section {
                 console.log('✅ Force V2: Node Flow Builder connected to ChatbotManager');
             }
             
+            // Add chatbot integration methods
+            this.integrateWithChatbotWidget();
+            
             this.showNotification('Visual Flow Builder initialized!', 'success');
         } catch (error) {
             console.error('❌ Force V2: Error initializing Node Flow Builder:', error);
@@ -149,42 +152,51 @@ class ForceV2Section {
         }
     }
 
-    // Add methods to support chatbot integration
-    window.nodeFlowBuilder.getWelcomeNode = function() {
-        console.log('🎯 Looking for welcome node in flow...');
-        
-        // Look for the first node in the flow (should be welcome/start node)
-        const welcomeNode = this.nodes.find(node => {
-            // Check if it's a start node or has no incoming connections
-            const hasIncoming = this.connections.some(conn => conn.to === node.id);
-            return !hasIncoming || node.type === 'start' || node.title.toLowerCase().includes('welcome');
-        });
+    integrateWithChatbotWidget: function() {
+        // Add methods to support chatbot integration when Node Flow Builder is ready
+        if (window.nodeFlowBuilder) {
+            window.nodeFlowBuilder.getWelcomeNode = function() {
+                console.log('🎯 Looking for welcome node in flow...');
+                
+                if (!this.nodes || this.nodes.length === 0) {
+                    console.log('❌ No nodes found in flow');
+                    return null;
+                }
+                
+                // Look for the first node in the flow (should be welcome/start node)
+                const welcomeNode = this.nodes.find(node => {
+                    // Check if it's a start node or has no incoming connections
+                    const hasIncoming = this.connections.some(conn => conn.to === node.id);
+                    return !hasIncoming || node.type === 'start' || node.title.toLowerCase().includes('welcome');
+                });
 
-        if (welcomeNode) {
-            console.log('🎯 Found welcome node:', welcomeNode.title);
-            return {
-                id: welcomeNode.id,
-                title: welcomeNode.title,
-                message: welcomeNode.message || '',
-                aiMode: welcomeNode.aiMode || false,
-                assistantId: welcomeNode.assistantId || null,
-                aiPrompt: welcomeNode.aiPrompt || ''
+                if (welcomeNode) {
+                    console.log('🎯 Found welcome node:', welcomeNode.title);
+                    return {
+                        id: welcomeNode.id,
+                        title: welcomeNode.title,
+                        message: welcomeNode.message || '',
+                        aiMode: welcomeNode.aiMode || false,
+                        assistantId: welcomeNode.assistantId || null,
+                        aiPrompt: welcomeNode.aiPrompt || ''
+                    };
+                }
+
+                console.log('❌ No welcome node found');
+                return null;
             };
+
+            window.nodeFlowBuilder.getCurrentNode = function() {
+                console.log('🎯 Getting current active node...');
+                
+                // For now, return the welcome node as the current node
+                // In a more complex implementation, this would track conversation state
+                return this.getWelcomeNode();
+            };
+
+            console.log('✅ Force V2: Chatbot integration methods added');
         }
-
-        console.log('❌ No welcome node found');
-        return null;
-    };
-
-    window.nodeFlowBuilder.getCurrentNode = function() {
-        console.log('🎯 Getting current active node...');
-        
-        // For now, return the welcome node as the current node
-        // In a more complex implementation, this would track conversation state
-        return this.getWelcomeNode();
-    };
-
-    console.log('✅ Force V2: Chatbot integration methods added');plete');
+    }
         }
     }
 
