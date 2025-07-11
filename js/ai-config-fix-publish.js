@@ -304,13 +304,25 @@
             statusElement.id = 'connection-status';
             statusElement.className = 'status';
 
-            const actions = document.querySelector('.ai-config-actions');
+            // Try multiple insertion points
+            const actions = document.querySelector('.ai-config-actions') || 
+                           document.querySelector('#ai-config-section .form-group:last-child') ||
+                           document.querySelector('#ai-config-section');
+            
             if (actions) {
-                actions.parentNode.insertBefore(statusElement, actions.nextSibling);
+                if (actions.nextSibling) {
+                    actions.parentNode.insertBefore(statusElement, actions.nextSibling);
+                } else {
+                    actions.parentNode.appendChild(statusElement);
+                }
+            } else {
+                // Fallback: append to body
+                document.body.appendChild(statusElement);
             }
         }
 
         statusElement.className = `status ${type}`;
+        statusElement.style.display = 'flex';
 
         let icon = '';
         switch (type) {
@@ -328,11 +340,10 @@
         }
 
         statusElement.innerHTML = `${icon} ${message}`;
-        statusElement.style.display = 'flex';
 
         if (type === 'success' || type === 'error') {
             setTimeout(() => {
-                if (statusElement.className.includes(type)) {
+                if (statusElement && statusElement.className.includes(type)) {
                     statusElement.style.display = 'none';
                 }
             }, 5000);

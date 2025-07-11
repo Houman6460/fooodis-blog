@@ -983,6 +983,27 @@ router.get('/conversations', (req, res) => {
     }
 });
 
+// Get all conversations endpoint
+router.get('/conversations', (req, res) => {
+    try {
+        console.log('📝 Getting all conversations from server');
+        
+        const conversationArray = Array.from(conversations.values());
+        
+        res.json({
+            success: true,
+            conversations: conversationArray,
+            count: conversationArray.length
+        });
+    } catch (error) {
+        console.error('Error getting conversations:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get conversations'
+        });
+    }
+});
+
 // Clear all conversations endpoint
 router.delete('/conversations/clear-all', (req, res) => {
     try {

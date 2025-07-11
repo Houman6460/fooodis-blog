@@ -215,12 +215,11 @@ function setupAIConfigEventListeners() {
  * Test OpenAI API connection
  */
 async function testConnection() {
-    const statusElement = document.getElementById('connection-status');
     const apiKeyInput = document.getElementById('openai-api-key');
     
     if (!apiKeyInput || !apiKeyInput.value.trim()) {
         showConnectionStatus('error', 'API key is required');
-        return;
+        return false;
     }
 
     const apiKey = apiKeyInput.value.trim();
@@ -228,7 +227,7 @@ async function testConnection() {
     // Validate API key format
     if (!apiKey.startsWith('sk-') && !apiKey.includes('openai')) {
         showConnectionStatus('error', 'Invalid API key format');
-        return;
+        return false;
     }
 
     showConnectionStatus('testing', 'Testing connection...');
@@ -249,16 +248,21 @@ async function testConnection() {
             // Save the working API key
             window.aiConfig.apiKey = apiKey;
             saveConfiguration();
+            return true;
         } else if (response.status === 401) {
             showConnectionStatus('error', 'Invalid API key');
+            return false;
         } else if (response.status === 429) {
             showConnectionStatus('error', 'Rate limit exceeded');
+            return false;
         } else {
             showConnectionStatus('error', `Connection failed (${response.status})`);
+            return false;
         }
     } catch (error) {
         console.error('Connection test failed:', error);
         showConnectionStatus('error', 'Connection failed - check your internet connection');
+        return false;
     }
 }
 
@@ -273,14 +277,28 @@ function showConnectionStatus(type, message) {
         statusElement.id = 'connection-status';
         statusElement.className = 'status';
         
-        // Insert after the actions
-        const actions = document.querySelector('.ai-config-actions');
+        // Try multiple insertion points
+        const actions = document.querySelector('.ai-config-actions') || 
+                       document.querySelector('#ai-config-section .form-group:last-child') ||
+                       document.querySelector('#ai-config-section');
+        
         if (actions) {
-            actions.parentNode.insertBefore(statusElement, actions.nextSibling);
+            if (actions.nextSibling) {
+                actions.parentNode.insertBefore(statusElement, actions.nextSibling);
+            } else {
+                actions.parentNode.appendChild(statusElement);
+            }
+        } else {
+            // Fallback: append to AI config section
+            const aiConfigSection = document.getElementById('ai-config-section');
+            if (aiConfigSection) {
+                aiConfigSection.appendChild(statusElement);
+            }
         }
     }
 
     statusElement.className = `status ${type}`;
+    statusElement.style.display = 'flex';
     
     let icon = '';
     switch (type) {
@@ -302,7 +320,7 @@ function showConnectionStatus(type, message) {
     // Auto-hide success/error messages after 5 seconds
     if (type === 'success' || type === 'error') {
         setTimeout(() => {
-            if (statusElement.className.includes(type)) {
+            if (statusElement && statusElement.className.includes(type)) {
                 statusElement.style.display = 'none';
             }
         }, 5000);
