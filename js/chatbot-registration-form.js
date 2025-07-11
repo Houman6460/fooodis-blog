@@ -75,18 +75,23 @@
             const currentUser = localStorage.getItem('chatbot-current-user');
             const userData = localStorage.getItem('chatbot-user-data');
             const registrations = localStorage.getItem('chatbot-registrations');
+            const userDataAlt = localStorage.getItem('chatbot-users');
             
             console.log('🔍 Checking if registration form should show...');
             console.log('Current user:', currentUser);
             console.log('User data:', userData);
+            console.log('Alt user data:', userDataAlt);
             
             // If no user data at all, show form
-            if (!currentUser && !userData) {
+            if (!currentUser && !userData && !userDataAlt) {
                 console.log('✅ No user data found, should show form');
                 return true;
             }
 
             try {
+                // Check if user has complete registration data
+                let hasCompleteData = false;
+                
                 if (currentUser) {
                     const user = JSON.parse(currentUser);
                     if (user.skipped) {
@@ -100,9 +105,30 @@
                     
                     // If user has name and email, don't show form
                     if (user.name && user.email) {
-                        console.log('❌ User already registered, not showing form');
-                        return false;
+                        hasCompleteData = true;
                     }
+                }
+                
+                if (userData) {
+                    const data = JSON.parse(userData);
+                    if (data.name && data.email) {
+                        hasCompleteData = true;
+                    }
+                }
+                
+                if (userDataAlt) {
+                    const altData = JSON.parse(userDataAlt);
+                    if (Array.isArray(altData) && altData.length > 0) {
+                        const latestUser = altData[altData.length - 1];
+                        if (latestUser.name && latestUser.email) {
+                            hasCompleteData = true;
+                        }
+                    }
+                }
+                
+                if (hasCompleteData) {
+                    console.log('❌ User already registered, not showing form');
+                    return false;
                 }
                 
                 console.log('✅ Incomplete user data, should show form');

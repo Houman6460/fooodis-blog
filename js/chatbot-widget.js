@@ -1738,11 +1738,21 @@
         checkAndShowRegistrationForm: function() {
             console.log('🔍 Checking if registration form should be shown...');
             
-            // Check if user is already registered
+            // Check multiple storage locations for user data
             const currentUser = localStorage.getItem('chatbot-current-user');
             const userData = localStorage.getItem('chatbot-user-data');
+            const users = localStorage.getItem('chatbot-users');
+            const registrations = localStorage.getItem('chatbot-registrations');
             
-            if (!currentUser && !userData) {
+            console.log('📊 User data check:', {
+                currentUser: currentUser ? 'exists' : 'null',
+                userData: userData ? 'exists' : 'null',
+                users: users ? 'exists' : 'null',
+                registrations: registrations ? 'exists' : 'null'
+            });
+            
+            // If no user data at all, show form
+            if (!currentUser && !userData && !users && !registrations) {
                 console.log('🔐 New user detected, showing registration form...');
                 
                 // Ensure registration form system is initialized
@@ -1752,13 +1762,25 @@
                     }
                     // Show the form
                     setTimeout(() => {
-                        window.ChatbotRegistrationForm.showRegistrationForm();
+                        if (window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+                            window.ChatbotRegistrationForm.showRegistrationForm();
+                        }
                     }, 500);
                 } else {
                     console.warn('⚠️ Registration form system not available');
                 }
             } else {
-                console.log('✅ User already registered or skipped');
+                console.log('✅ User data found, checking if registration is needed...');
+                
+                // Still check if we should show the form based on data completeness
+                if (window.ChatbotRegistrationForm && window.ChatbotRegistrationForm.shouldShowRegistrationForm()) {
+                    console.log('🔐 Registration form needed despite existing data');
+                    setTimeout(() => {
+                        window.ChatbotRegistrationForm.showRegistrationForm();
+                    }, 500);
+                } else {
+                    console.log('✅ User already registered or skipped');
+                }
             }
         }
     };
