@@ -1184,14 +1184,138 @@ class NodeFlowBuilder {
                 // Add default data based on type
                 ...(nodeType === 'intent' && { intents: [] }),
                 ...(nodeType === 'handoff' && { department: '', agents: [] }),
-                ...(nodeType === 'message' && { messages: { english: '', swedish: '' } }),
+                ...(nodeType === 'message' && { messages: { english: '', swedish: '' }, aiMode: false }),
                 ...(nodeType === 'condition' && { condition: '' })
             }
         });
 
         this.renderNodes();
         document.querySelector('.node-modal').remove();
-        this.autoSave(); // 🔧 FIX 3: Auto-save when adding node from modal
+        this.autoSave();
+    }
+
+    editNode(node) {
+        if (node.type === 'message') {
+            this.showMessageNodeEditor(node);
+        } else {
+            // Handle other node types...
+            this.showToast('Edit functionality coming soon for ' + node.type + ' nodes', 'info');
+        }
+    }
+
+    showMessageNodeEditor(node) {
+        const assistants = this.getAvailableAIAssistants();
+        
+        const modal = document.createElement('div');
+        modal.className = 'node-modal';
+        modal.innerHTML = `
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Message Node: ${node.data.title}</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Node Title</label>
+                        <input type="text" id="edit-node-title" value="${node.data.title}" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="ai-mode-toggle" ${node.data.aiMode ? 'checked' : ''}> 
+                            Use AI Assistant
+                        </label>
+                    </div>
+                    
+                    <div id="ai-options" style="display: ${node.data.aiMode ? 'block' : 'none'}">
+                        <div class="form-group">
+                            <label>Select AI Assistant</label>
+                            <select id="ai-assistant-select" class="form-control">
+                                ${assistants.map(assistant => 
+                                    `<option value="${assistant.id}" ${node.data.selectedAssistant === assistant.id ? 'selected' : ''}>${assistant.name}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>AI Prompt</label>
+                            <textarea id="ai-prompt" class="form-control" rows="4" placeholder="Enter instructions for the AI assistant...">${node.data.aiPrompt || ''}</textarea>
+                        </div>
+                    </div>
+                    
+                    <div id="manual-message-options" style="display: ${node.data.aiMode ? 'none' : 'block'}">
+                        <div class="form-group">
+                            <label>English Message</label>
+                            <textarea id="english-message" class="form-control" rows="3">${node.data.messages?.english || ''}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Swedish Message</label>
+                            <textarea id="swedish-message" class="form-control" rows="3">${node.data.messages?.swedish || ''}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="this.closest('.node-modal').remove()">Cancel</button>
+                    <button class="btn btn-primary" onclick="nodeFlowBuilder.saveMessageNode('${node.id}')">Save Changes</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Toggle AI options
+        const aiToggle = modal.querySelector('#ai-mode-toggle');
+        const aiOptions = modal.querySelector('#ai-options');
+        const manualOptions = modal.querySelector('#manual-message-options');
+
+        aiToggle.addEventListener('change', () => {
+            if (aiToggle.checked) {
+                aiOptions.style.display = 'block';
+                manualOptions.style.display = 'none';
+            } else {
+                aiOptions.style.display = 'none';
+                manualOptions.style.display = 'block';
+            }
+        });
+
+        // Close modal handlers
+        modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
+        modal.querySelector('.modal-overlay').addEventListener('click', () => modal.remove());
+    }
+
+    saveMessageNode(nodeId) {
+        const node = this.nodes.find(n => n.id === nodeId);
+        if (!node) return;
+
+        const modal = document.querySelector('.node-modal');
+        
+        // Update node data
+        node.data.title = modal.querySelector('#edit-node-title').value;
+        node.data.aiMode = modal.querySelector('#ai-mode-toggle').checked;
+        
+        if (node.data.aiMode) {
+            node.data.selectedAssistant = modal.querySelector('#ai-assistant-select').value;
+            node.data.aiPrompt = modal.querySelector('#ai-prompt').value;
+        } else {
+            node.data.messages = {
+                english: modal.querySelector('#english-message').value,
+                swedish: modal.querySelector('#swedish-message').value
+            };
+        }
+
+        // Re-render nodes
+        this.renderNodes();
+        this.renderConnections();
+        
+        // Close modal
+        modal.remove();
+        
+        // Auto-save
+        this.autoSave();
+        
+        this.showToast('Message node updated successfully', 'success');
     }
 
     saveFlow() {
@@ -1520,6 +1644,22 @@ class NodeFlowBuilder {
             messagesContainer.appendChild(botMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }, 1500);
+    }
+
+    getAvailableAIAssistants() {
+        // Get AI assistants from ChatbotManager if available
+        if (window.chatbotManager && window.chatbotManager.assistants) {
+            return window.chatbotManager.assistants.filter(assistant => 
+                assistant.status === 'active' || assistant.enabled !== false
+            );
+        }
+        
+        // Fallback to default assistants
+        return [
+            { id: 'general', name: 'General Assistant', description: 'General purpose assistant' },
+            { id: 'support', name: 'Support Assistant', description: 'Customer support specialist' },
+            { id: 'sales', name: 'Sales Assistant', description: 'Sales and marketing expert' }
+        ];
     }
 
     processTestMessage(message) {

@@ -1151,6 +1151,17 @@
                     return;
                 }
 
+                // Check if Node Flow Builder has AI-enabled message nodes to process
+                if (window.nodeFlowBuilder && this.shouldUseNodeFlow(message)) {
+                    console.log('Using Node Flow Builder for AI response');
+                    const response = await this.processWithNodeFlow(message);
+                    this.hideTyping();
+                    if (response) {
+                        this.addMessage(response, 'assistant');
+                        return;
+                    }
+                }
+
                 if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
                     console.log('Using chatbot manager for response');
                     const response = await window.chatbotManager.generateAgentResponse({
@@ -1337,6 +1348,61 @@
                 return `Hej${userGreeting}! Jag heter ${agentName} och jag kommer att hjälpa dig idag. Vad kan jag assistera dig med?`;
             } else {
                 return `Hello${userGreeting}${restaurantGreeting}! I'm ${agentName} and I'll be helping you today. What can I assist you with?`;
+            }
+        },
+
+        shouldUseNodeFlow: function(message) {
+            // Check if there are AI-enabled message nodes in the flow
+            if (!window.nodeFlowBuilder || !window.nodeFlowBuilder.nodes) return false;
+            
+            return window.nodeFlowBuilder.nodes.some(node => 
+                node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
+            );
+        },
+
+        processWithNodeFlow: async function(message) {
+            try {
+                if (!window.nodeFlowBuilder) return null;
+                
+                // Find AI-enabled message nodes
+                const aiNodes = window.nodeFlowBuilder.nodes.filter(node => 
+                    node.type === 'message' && node.data.aiMode && node.data.selectedAssistant
+                );
+                
+                if (aiNodes.length === 0) return null;
+                
+                // Use the first AI node for simplicity (could be enhanced with intent matching)
+                const aiNode = aiNodes[0];
+                
+                // Get the assistant from chatbot manager
+                if (window.chatbotManager && window.chatbotManager.assistants) {
+                    const assistant = window.chatbotManager.assistants.find(a => 
+                        a.id === aiNode.data.selectedAssistant
+                    );
+                    
+                    if (assistant && assistant.assistantId) {
+                        const response = await window.chatbotManager.generateAgentResponse({
+                            message: message,
+                            conversationId: this.conversationId,
+                            language: this.currentLanguage || 'en',
+                            agent: this.currentAgent,
+                            userName: this.userName,
+                            userRegistered: this.userRegistered,
+                            recentMessages: this.messages.slice(-5),
+                            assistantId: assistant.assistantId,
+                            customPrompt: aiNode.data.aiPrompt
+                        });
+                        
+                        if (response && response.success) {
+                            return response.message;
+                        }
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error processing with Node Flow:', error);
+                return null;
             }
         },
 
