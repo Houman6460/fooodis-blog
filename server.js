@@ -59,8 +59,10 @@ let chatbotAPI, systemHealthAPI, databaseAPI, recoveryAPI, ticketsAPI, authAPI;
 
 try {
     chatbotAPI = require('./api/chatbot');
+    console.log('✅ Chatbot API loaded successfully');
 } catch (error) {
-    console.warn('Warning: Failed to load chatbot API:', error.message);
+    console.error('❌ Failed to load chatbot API:', error.message);
+    console.error('Full error:', error);
     chatbotAPI = require('express').Router();
 }
 
@@ -101,11 +103,21 @@ try {
 }
 
 // API routes - only mount if they are valid router functions
-if (typeof chatbotAPI === 'function' || (chatbotAPI && typeof chatbotAPI.handle === 'function')) {
+if (chatbotAPI && (typeof chatbotAPI === 'function' || typeof chatbotAPI.handle === 'function' || chatbotAPI.use)) {
     app.use('/api/chatbot', chatbotAPI);
-    console.log('✅ Chatbot API routes mounted successfully');
+    console.log('✅ Chatbot API routes mounted successfully at /api/chatbot');
 } else {
-    console.warn('⚠️ Chatbot API not properly loaded');
+    console.error('❌ Chatbot API not properly loaded - creating fallback routes');
+    // Create basic fallback routes
+    app.get('/api/chatbot/conversations', (req, res) => {
+        res.json({ success: true, conversations: [] });
+    });
+    app.get('/api/chatbot/users', (req, res) => {
+        res.json({ success: true, users: [] });
+    });
+    app.post('/api/chatbot/config', (req, res) => {
+        res.json({ success: true });
+    });
 }
 
 if (typeof systemHealthAPI === 'function' || (systemHealthAPI && typeof systemHealthAPI.handle === 'function')) {
