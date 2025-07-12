@@ -1,0 +1,358 @@
+<!-- Email Builder Tab Content -->
+<div class="email-marketing-tab-content" id="builder-tab">
+    <div class="email-studio-container">
+        <div class="email-studio-header">
+            <h3>Email Designer</h3>
+            <div class="email-studio-actions">
+                <button class="btn btn-secondary"><i class="fas fa-save"></i> Save Template</button>
+                <button class="btn btn-primary"><i class="fas fa-paper-plane"></i> Preview & Test</button>
+                <button class="btn btn-success"><i class="fas fa-check"></i> Save & Continue</button>
+            </div>
+        </div>
+        
+        <div class="email-studio-toolbar">
+            <div class="email-preview-controls">
+                <div class="preview-device active" data-device="desktop"><i class="fas fa-desktop"></i> Desktop</div>
+                <div class="preview-device" data-device="tablet"><i class="fas fa-tablet-alt"></i> Tablet</div>
+                <div class="preview-device" data-device="mobile"><i class="fas fa-mobile-alt"></i> Mobile</div>
+            </div>
+        </div>
+        
+        <div class="email-builder-main">
+            <!-- Left Sidebar - Elements Library -->
+            <div class="email-elements-sidebar">
+                <div class="elements-tabs">
+                    <div class="elements-tab active" data-elements-tab="library">Library</div>
+                    <div class="elements-tab" data-elements-tab="items">Items</div>
+                </div>
+                
+                <!-- Library Tab Content -->
+                <div class="elements-container active" id="library-elements">
+                    <div class="element-group">
+                        <h4 class="element-group-title">Basic Elements</h4>
+                        <div class="element-item" draggable="true" data-element-type="text">
+                            <i class="fas fa-font"></i>
+                            <h4>Text</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="button">
+                            <i class="fas fa-square"></i>
+                            <h4>Button</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="image">
+                            <i class="fas fa-image"></i>
+                            <h4>Image</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="video">
+                            <i class="fas fa-video"></i>
+                            <h4>Video</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Content Blocks</h4>
+                        <div class="element-item" draggable="true" data-element-type="hero">
+                            <i class="far fa-image"></i>
+                            <h4>Hero Image</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="product">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h4>Product Listing</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="social">
+                            <i class="fas fa-share-alt"></i>
+                            <h4>Social Media</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="divider">
+                            <i class="fas fa-minus"></i>
+                            <h4>Divider</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Layouts</h4>
+                        <div class="element-item" draggable="true" data-element-type="single-column">
+                            <div class="element-preview single-column">
+                                <div class="column"></div>
+                            </div>
+                            <h4>One Column</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="two-columns">
+                            <div class="element-preview two-column">
+                                <div class="column"></div>
+                                <div class="column"></div>
+                            </div>
+                            <h4>Two Columns</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="three-columns">
+                            <div class="element-preview three-column">
+                                <div class="column"></div>
+                                <div class="column"></div>
+                                <div class="column"></div>
+                            </div>
+                            <h4>Three Columns</h4>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Items Tab Content -->
+                <div class="elements-container" id="items-elements">
+                    <div class="element-group">
+                        <h4 class="element-group-title">Titles</h4>
+                        <div class="element-item" draggable="true" data-element-type="title1">
+                            <div class="title-element-headline">A choice case for every taste</div>
+                            <div class="title-element-subheadline">Supporting text for headline</div>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="title2">
+                            <div class="title-element-headline">Don't miss out on savings</div>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="title3">
+                            <div class="title-element-headline">Make your Monday count</div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Hero Images</h4>
+                        <div class="element-item" draggable="true" data-element-type="hero1">
+                            <img src="https://via.placeholder.com/200x100/333/fff?text=Hero+1" alt="Hero 1">
+                            <h4>The Noir collection</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="hero2">
+                            <img src="https://via.placeholder.com/200x100/666/fff?text=Hero+2" alt="Hero 2">
+                            <h4>20% OFF</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Product Listings</h4>
+                        <div class="element-item" draggable="true" data-element-type="product-grid">
+                            <img src="https://via.placeholder.com/200x100/eee/333?text=Product+Grid" alt="Product Grid">
+                            <h4>Product Grid</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Footers</h4>
+                        <div class="element-item" draggable="true" data-element-type="footer1">
+                            <img src="https://via.placeholder.com/200x50/eee/333?text=Footer+1" alt="Footer 1">
+                            <h4>Simple Footer</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="footer2">
+                            <img src="https://via.placeholder.com/200x50/eee/333?text=Footer+2" alt="Footer 2">
+                            <h4>Footer with Menu</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Email Canvas -->
+            <div class="email-canvas">
+                <div class="email-document">
+                    <!-- Sample content for illustration -->
+                    <div class="email-content-block" data-block-type="header">
+                        <div class="email-header-block">
+                            <h2>FOOODIS BLOG</h2>
+                        </div>
+                        <div class="block-actions">
+                            <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                            <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                            <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="email-content-block" data-block-type="hero">
+                        <div class="email-hero-block">
+                            <h1>Happy Cooking Day!</h1>
+                            <p>Celebrate with our exclusive recipes and cooking tips</p>
+                            <a href="#" class="btn-cta">View Recipes</a>
+                        </div>
+                        <div class="block-actions">
+                            <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                            <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                            <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="email-dropzone">
+                        <p><i class="fas fa-plus-circle"></i> Drag elements here</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar - Settings Panel -->
+            <div class="email-settings-sidebar">
+                <div class="settings-tabs">
+                    <div class="settings-tab active" data-settings-tab="text">Text</div>
+                    <div class="settings-tab" data-settings-tab="layout">Layout</div>
+                </div>
+                
+                <!-- Text Settings Panel -->
+                <div class="settings-panel active" id="text-settings-panel">
+                    <div class="settings-group">
+                        <h4>Text Style</h4>
+                        <div class="form-group">
+                            <label for="text-style">Type</label>
+                            <select id="text-style" class="form-control">
+                                <option value="paragraph">Paragraph</option>
+                                <option value="heading1">Heading 1</option>
+                                <option value="heading2">Heading 2</option>
+                                <option value="heading3">Heading 3</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="font-family">Font</label>
+                                <select id="font-family" class="form-control">
+                                    <option value="arial">Arial</option>
+                                    <option value="times">Times New Roman</option>
+                                    <option value="verdana">Verdana</option>
+                                    <option value="georgia">Georgia</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="font-size">Size</label>
+                                <select id="font-size" class="form-control">
+                                    <option value="12">12px</option>
+                                    <option value="14">14px</option>
+                                    <option value="16">16px</option>
+                                    <option value="18">18px</option>
+                                    <option value="20">20px</option>
+                                    <option value="24">24px</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="line-height">Line Height</label>
+                                <select id="line-height" class="form-control">
+                                    <option value="1">Single</option>
+                                    <option value="1.5">1.5</option>
+                                    <option value="2">Double</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="letter-spacing">Letter Spacing</label>
+                                <select id="letter-spacing" class="form-control">
+                                    <option value="normal">Normal</option>
+                                    <option value="1">Wide</option>
+                                    <option value="2">Wider</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Formatting</h4>
+                        <div class="text-formatting-toolbar">
+                            <button class="format-button" data-format="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                            <button class="format-button" data-format="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                            <button class="format-button" data-format="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                            <button class="format-button" data-format="strikethrough" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+                            <button class="format-button" data-format="align-left" title="Align Left"><i class="fas fa-align-left"></i></button>
+                            <button class="format-button" data-format="align-center" title="Align Center"><i class="fas fa-align-center"></i></button>
+                            <button class="format-button" data-format="align-right" title="Align Right"><i class="fas fa-align-right"></i></button>
+                            <button class="format-button" data-format="list-ul" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                            <button class="format-button" data-format="list-ol" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                            <button class="format-button" data-format="link" title="Insert Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Colors</h4>
+                        <div class="form-group">
+                            <label for="text-color">Text Color</label>
+                            <div class="color-picker">
+                                <input type="text" id="text-color" class="form-control color-input" value="#333333">
+                                <div class="color-preview" id="text-color-preview"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="background-color">Background Color</label>
+                            <div class="color-picker">
+                                <input type="text" id="background-color" class="form-control color-input" value="#ffffff">
+                                <div class="color-preview" id="background-color-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Spacing</h4>
+                        <div class="form-group">
+                            <label>Padding</label>
+                            <div class="spacing-controls">
+                                <div class="spacing-control">
+                                    <label for="padding-top">Top</label>
+                                    <input type="number" id="padding-top" class="form-control" value="10" min="0" max="100" title="Top padding value" aria-label="Top padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-right">Right</label>
+                                    <input type="number" id="padding-right" class="form-control" value="10" min="0" max="100" title="Right padding value" aria-label="Right padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-bottom">Bottom</label>
+                                    <input type="number" id="padding-bottom" class="form-control" value="10" min="0" max="100" title="Bottom padding value" aria-label="Bottom padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-left">Left</label>
+                                    <input type="number" id="padding-left" class="form-control" value="10" min="0" max="100" title="Left padding value" aria-label="Left padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-all">All</label>
+                                    <input type="number" id="padding-all" class="form-control" value="10" min="0" max="100" title="All sides padding value" aria-label="All sides padding value">
+                                    <span>px</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block">Update Text</button>
+                </div>
+                
+                <!-- Layout Settings Panel -->
+                <div class="settings-panel" id="layout-settings-panel">
+                    <div class="settings-group">
+                        <h4>Email Settings</h4>
+                        <div class="form-group">
+                            <label for="canvas-width">Canvas Width</label>
+                            <div class="form-row">
+                                <input type="number" id="canvas-width" class="form-control" value="600" min="400" max="800">
+                                <span>px</span>
+                            </div>
+                            <small>We recommend using a 600-700px width</small>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Theme Settings</h4>
+                        <div class="form-group">
+                            <label for="theme-background">Background</label>
+                            <div class="color-picker">
+                                <input type="text" id="theme-background" class="form-control color-input" value="#f0f0f0" title="Theme background color" aria-label="Theme background color">
+                                <div class="color-preview" id="theme-background-preview"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="button-style">Button Style</label>
+                            <select id="button-style" class="form-control" title="Button style" aria-label="Button style">
+                                <option value="rounded">Rounded</option>
+                                <option value="square">Square</option>
+                                <option value="pill">Pill</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

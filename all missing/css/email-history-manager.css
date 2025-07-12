@@ -1,0 +1,113 @@
+/**
+ * Email History Manager Styles
+ * Styling for auto-save, undo/redo functionality visual cues
+ */
+
+/* Status indicator styling */
+.status-indicator {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #666;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  margin-right: 5px;
+  min-width: 100px;
+  text-align: center;
+  position: relative;
+}
+
+/* Visual feedback for status updates */
+.status-updated {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: #198754;
+  animation: fadeStatus 2s ease;
+  font-weight: 500;
+}
+
+/* Different status types */
+.status-indicator.auto-saved {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: #198754;
+}
+
+.status-indicator.manual-saved {
+  background-color: rgba(25, 135, 84, 0.2);
+  color: #198754;
+  font-weight: 500;
+}
+
+.status-indicator.error {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+/* Save indicator dot - pulses subtly to show auto-save functionality */
+.status-indicator::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #28a745;
+  opacity: 0;
+  animation: pulseDot 4s infinite;
+}
+
+.status-indicator.saving::after {
+  opacity: 1;
+  animation: fastPulseDot 1s infinite;
+}
+
+/* Animation for status updates */
+@keyframes fadeStatus {
+  0% { background-color: rgba(25, 135, 84, 0.2); }
+  50% { background-color: rgba(25, 135, 84, 0.1); }
+  100% { background-color: rgba(25, 135, 84, 0.05); }
+}
+
+/* Subtle pulse animation for auto-save indicator */
+@keyframes pulseDot {
+  0% { opacity: 0.2; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.2; }
+}
+
+/* Faster pulse for active saving */
+@keyframes fastPulseDot {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* Disabled state for buttons */
+#undo-btn.disabled,
+#redo-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Active state for undo/redo buttons */
+#undo-btn:not(.disabled):active,
+#redo-btn:not(.disabled):active {
+  transform: scale(0.95);
+}
+
+/* Styling for the save button when unsaved changes exist */
+.has-unsaved-changes .btn-secondary {
+  position: relative;
+}
+
+.has-unsaved-changes .btn-secondary:after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ffc107;
+}

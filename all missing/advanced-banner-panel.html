@@ -1,0 +1,513 @@
+<!-- Advanced Advertising Banner Panel -->
+<div class="advanced-banner-panel">
+    <div class="panel-header">
+        <h3 class="panel-title">Advanced Banner Settings</h3>
+        <button class="panel-toggle" aria-label="Toggle panel"><i class="fas fa-chevron-up"></i></button>
+    </div>
+    
+    <div class="panel-tabs">
+        <div class="panel-tab active" data-tab="frame">Frame</div>
+        <div class="panel-tab" data-tab="animation">Animation</div>
+        <div class="panel-tab" data-tab="countdown">Countdown</div>
+        <div class="panel-tab" data-tab="button">Button</div>
+        <div class="panel-tab" data-tab="content">Content</div>
+    </div>
+    
+    <div class="panel-content">
+        <!-- Frame Settings Tab -->
+        <div class="tab-content active" id="frame-tab">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="banner-layout">Layout</label>
+                    <select id="banner-layout" class="form-control">
+                        <option value="layout-1">Text & Image (Side by Side)</option>
+                        <option value="layout-2">Centered Content</option>
+                        <option value="layout-3">Image & Text (Side by Side)</option>
+                        <option value="layout-4">Full Width Background</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="corner-style">Corner Style</label>
+                    <select id="corner-style" class="form-control">
+                        <option value="rounded">Rounded (All Corners)</option>
+                        <option value="sharp">Sharp (No Rounding)</option>
+                        <option value="custom">Custom (Per Corner)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group" id="border-radius-group">
+                <label for="banner-border-radius">Border Radius</label>
+                <div class="range-with-value">
+                    <input type="range" id="banner-border-radius" min="0" max="30" value="8" title="Banner border radius">
+                    <span class="range-value" id="border-radius-value">8px</span>
+                </div>
+            </div>
+            
+            <div class="form-group hidden" id="custom-corners-group">
+                <label>Custom Corner Radius</label>
+                <div class="corners-control">
+                    <div class="corner-input">
+                        <label for="corner-top-left">Top Left</label>
+                        <input type="number" id="corner-top-left" min="0" max="30" value="8" title="Top left corner radius">
+                    </div>
+                    <div class="corner-input">
+                        <label for="corner-top-right">Top Right</label>
+                        <input type="number" id="corner-top-right" min="0" max="30" value="8" title="Top right corner radius">
+                    </div>
+                    <div class="corner-input">
+                        <label for="corner-bottom-left">Bottom Left</label>
+                        <input type="number" id="corner-bottom-left" min="0" max="30" value="8" title="Bottom left corner radius">
+                    </div>
+                    <div class="corner-input">
+                        <label for="corner-bottom-right">Bottom Right</label>
+                        <input type="number" id="corner-bottom-right" min="0" max="30" value="8" title="Bottom right corner radius">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="border-width">Border Width</label>
+                    <div class="range-with-value">
+                        <input type="range" id="border-width" min="0" max="10" value="1" title="Border width">
+                        <span class="range-value" id="border-width-value">1px</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="border-style">Border Style</label>
+                    <select id="border-style" class="form-control">
+                        <option value="solid">Solid</option>
+                        <option value="dashed">Dashed</option>
+                        <option value="dotted">Dotted</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="border-color">Border Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="border-color-preview"></div>
+                        <input type="color" id="border-color" value="#e8f24c" title="Border color">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="background-color">Background Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="background-color-preview"></div>
+                        <input type="color" id="background-color" value="#1e2127" title="Background color">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Animation Settings Tab -->
+        <div class="tab-content" id="animation-tab">
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle-switch" for="animation-enabled">
+                        <input type="checkbox" id="animation-enabled" checked title="Enable animation" aria-label="Enable animation">
+                        <span class="toggle-slider" title="Toggle switch"></span>
+                    </label>
+                    <span class="toggle-label">Enable Animation</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="animation-type">Animation Type</label>
+                <select id="animation-type" class="form-control">
+                    <option value="fade">Fade In</option>
+                    <option value="slide">Slide Up</option>
+                    <option value="pulse">Pulse</option>
+                    <option value="none">None</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="animation-duration">Duration (seconds)</label>
+                    <div class="range-with-value">
+                        <input type="range" id="animation-duration" min="0.1" max="3" step="0.1" value="0.5" title="Animation duration">
+                        <span class="range-value" id="animation-duration-value">0.5s</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="animation-delay">Delay (seconds)</label>
+                    <div class="range-with-value">
+                        <input type="range" id="animation-delay" min="0" max="2" step="0.1" value="0.2" title="Animation delay">
+                        <span class="range-value" id="animation-delay-value">0.2s</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="toggle-container">
+                        <label class="toggle-switch" for="animation-repeat">
+                            <input type="checkbox" id="animation-repeat" title="Repeat animation" aria-label="Repeat animation">
+                            <span class="toggle-slider" title="Toggle switch"></span>
+                        </label>
+                        <span class="toggle-label">Repeat Animation</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="toggle-container">
+                        <label class="toggle-switch" for="animation-infinite">
+                            <input type="checkbox" id="animation-infinite" title="Infinite animation" aria-label="Infinite animation">
+                            <span class="toggle-slider" title="Toggle switch"></span>
+                        </label>
+                        <span class="toggle-label">Infinite Animation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Countdown Settings Tab -->
+        <div class="tab-content" id="countdown-tab">
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle-switch" for="countdown-enabled">
+                        <input type="checkbox" id="countdown-enabled" title="Enable countdown timer" aria-label="Enable countdown timer">
+                        <span class="toggle-slider" title="Toggle switch"></span>
+                    </label>
+                    <span class="toggle-label">Enable Countdown Timer</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="countdown-end-date">End Date</label>
+                <input type="datetime-local" id="countdown-end-date" class="form-control" title="Countdown end date and time">
+            </div>
+            
+            <div class="form-group">
+                <label for="countdown-style">Countdown Style</label>
+                <select id="countdown-style" class="form-control">
+                    <option value="boxes">Boxes</option>
+                    <option value="simple">Simple</option>
+                    <option value="minimal">Minimal with Progress</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="toggle-container">
+                        <label class="toggle-switch" for="show-days">
+                            <input type="checkbox" id="show-days" checked title="Show days in countdown" aria-label="Show days in countdown">
+                            <span class="toggle-slider" title="Toggle switch"></span>
+                        </label>
+                        <span class="toggle-label">Show Days</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="toggle-container">
+                        <label class="toggle-switch" for="show-hours">
+                            <input type="checkbox" id="show-hours" checked title="Show hours in countdown" aria-label="Show hours in countdown">
+                            <span class="toggle-slider" title="Toggle switch"></span>
+                        </label>
+                        <span class="toggle-label">Show Hours</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="toggle-container">
+                        <label class="toggle-switch" for="show-minutes">
+                            <input type="checkbox" id="show-minutes" checked title="Show minutes in countdown" aria-label="Show minutes in countdown">
+                            <span class="toggle-slider" title="Toggle switch"></span>
+                        </label>
+                        <span class="toggle-label">Show Minutes</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="toggle-container">
+                        <label class="toggle-switch" for="show-seconds">
+                            <input type="checkbox" id="show-seconds" checked title="Show seconds in countdown" aria-label="Show seconds in countdown">
+                            <span class="toggle-slider" title="Toggle switch"></span>
+                        </label>
+                        <span class="toggle-label">Show Seconds</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="countdown-background">Background Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="countdown-background-preview"></div>
+                        <input type="color" id="countdown-background" value="#2a2e36" title="Countdown background color">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="countdown-text-color">Text Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="countdown-text-color-preview"></div>
+                        <input type="color" id="countdown-text-color" value="#ffffff" title="Countdown text color">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="countdown-accent-color">Accent Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="countdown-accent-color-preview"></div>
+                        <input type="color" id="countdown-accent-color" value="#e8f24c" title="Countdown accent color">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="countdown-border-radius">Border Radius</label>
+                    <div class="range-with-value">
+                        <input type="range" id="countdown-border-radius" min="0" max="20" value="5" title="Countdown border radius">
+                        <span class="range-value" id="countdown-border-radius-value">5px</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Button Settings Tab -->
+        <div class="tab-content" id="button-tab">
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle-switch" for="button-enabled">
+                        <input type="checkbox" id="button-enabled" checked title="Show button" aria-label="Show button">
+                        <span class="toggle-slider" title="Toggle switch"></span>
+                    </label>
+                    <span class="toggle-label">Show Button</span>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="button-text">Button Text</label>
+                    <input type="text" id="button-text" class="form-control" value="Learn More" title="Button text">
+                </div>
+                
+                <div class="form-group">
+                    <label for="button-url">Button URL</label>
+                    <input type="text" id="button-url" class="form-control" value="#" placeholder="https://example.com" title="Button URL">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle-switch" for="button-new-tab">
+                        <input type="checkbox" id="button-new-tab" checked title="Open in new tab" aria-label="Open in new tab">
+                        <span class="toggle-slider" title="Toggle switch"></span>
+                    </label>
+                    <span class="toggle-label">Open in New Tab</span>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="button-background">Background Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="button-background-preview"></div>
+                        <input type="color" id="button-background" value="#e8f24c" title="Button background color">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="button-text-color">Text Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="button-text-color-preview"></div>
+                        <input type="color" id="button-text-color" value="#1e2127" title="Button text color">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="button-border-radius">Border Radius</label>
+                    <div class="range-with-value">
+                        <input type="range" id="button-border-radius" min="0" max="50" value="30" title="Button border radius">
+                        <span class="range-value" id="button-border-radius-value">30px</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="button-border-width">Border Width</label>
+                    <div class="range-with-value">
+                        <input type="range" id="button-border-width" min="0" max="5" value="0" title="Button border width">
+                        <span class="range-value" id="button-border-width-value">0px</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="button-border-color">Border Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="button-border-color-preview"></div>
+                        <input type="color" id="button-border-color" value="#e8f24c" title="Button border color">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="button-padding">Padding</label>
+                    <input type="text" id="button-padding" class="form-control" value="12px 25px" title="Button padding">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="button-hover-effect">Hover Effect</label>
+                    <select id="button-hover-effect" class="form-control">
+                        <option value="scale">Scale</option>
+                        <option value="darken">Darken</option>
+                        <option value="glow">Glow</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="button-animation">Animation</label>
+                    <select id="button-animation" class="form-control">
+                        <option value="pulse">Pulse</option>
+                        <option value="bounce">Bounce</option>
+                        <option value="shake">Shake</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="button-font-size">Font Size</label>
+                    <div class="range-with-value">
+                        <input type="range" id="button-font-size" min="12" max="24" value="16" title="Button font size">
+                        <span class="range-value" id="button-font-size-value">16px</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="button-font-weight">Font Weight</label>
+                    <select id="button-font-weight" class="form-control">
+                        <option value="normal">Normal</option>
+                        <option value="bold" selected>Bold</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Settings Tab -->
+        <div class="tab-content" id="content-tab">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="content-title">Title</label>
+                    <input type="text" id="content-title" class="form-control" placeholder="Enter banner title" title="Banner title">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-subtitle">Subtitle</label>
+                    <input type="text" id="content-subtitle" class="form-control" placeholder="Enter banner subtitle" title="Banner subtitle">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="content-text">Text</label>
+                <textarea id="content-text" class="form-control" placeholder="Enter banner text content"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="content-image">Banner Image</label>
+                <div id="content-image-upload" class="ad-image-upload">
+                    <label for="content-image-input" class="sr-only">Upload banner image</label>
+                    <input type="file" id="content-image-input" accept="image/*" class="hidden-file-input" title="Upload content image" aria-label="Upload banner image" placeholder="Upload banner image">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-text">Drag & drop an image here or click to browse</div>
+                    <div class="upload-subtext">Recommended size: 1200 x 400 pixels</div>
+                    <img id="content-image-preview" class="image-preview" alt="Banner image preview">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title-color">Title Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="title-color-preview"></div>
+                        <input type="color" id="title-color" value="#e8f24c" title="Title color">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subtitle-color">Subtitle Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="subtitle-color-preview"></div>
+                        <input type="color" id="subtitle-color" value="#ffffff" title="Subtitle color">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="text-color">Text Color</label>
+                    <div class="input-group">
+                        <div class="color-preview" id="text-color-preview"></div>
+                        <input type="color" id="text-color" value="#cccccc" title="Text color">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-alignment">Text Alignment</label>
+                    <select id="content-alignment" class="form-control">
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title-font-size">Title Font Size</label>
+                    <div class="range-with-value">
+                        <input type="range" id="title-font-size" min="18" max="42" value="28" title="Title font size">
+                        <span class="range-value" id="title-font-size-value">28px</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subtitle-font-size">Subtitle Font Size</label>
+                    <div class="range-with-value">
+                        <input type="range" id="subtitle-font-size" min="14" max="28" value="18" title="Subtitle font size">
+                        <span class="range-value" id="subtitle-font-size-value">18px</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="text-font-size">Text Font Size</label>
+                <div class="range-with-value">
+                    <input type="range" id="text-font-size" min="12" max="24" value="16" title="Text font size">
+                    <span class="range-value" id="text-font-size-value">16px</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="preview-section">
+        <h4 class="preview-title">Live Preview</h4>
+        <div class="banner-preview-container" id="banner-preview-container">
+            <!-- Preview will be inserted here -->
+        </div>
+    </div>
+    
+    <div class="banner-actions">
+        <button id="reset-banner" class="btn-reset">Reset to Default</button>
+        <button id="preview-banner" class="btn-preview">Preview in Modal</button>
+        <button id="apply-banner" class="btn-apply">Apply Changes</button>
+    </div>
+</div>

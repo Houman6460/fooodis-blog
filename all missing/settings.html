@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Fooodis Blog System</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="icon" type="image/png" href="images/New images/favicon.png">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <img src="images/New images/logo.png" alt="Fooodis" height="30">
+                Fooodis Blog System
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown user-nav-item">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <div class="user-avatar"></div>
+                        <span class="user-display-name">User</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blog.html">
+                                <i class="fas fa-blog"></i> Blog Posts
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="settings.html">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Settings</h1>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Authentication Settings -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-shield-alt"></i> Authentication Settings
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="autoLoginToggle">
+                                    <label class="form-check-label" for="autoLoginToggle">
+                                        <strong>Enable Auto-Login</strong>
+                                    </label>
+                                    <div class="form-text">
+                                        When enabled, you will be automatically logged in when visiting the site. 
+                                        This uses the default admin credentials for convenience.
+                                    </div>
+                                </div>
+                                
+                                <div id="settingsStatus" class="alert" style="display: none;"></div>
+                            </div>
+                        </div>
+
+                        <!-- System Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-info-circle"></i> System Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <strong>Version:</strong> 1.0.0
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <strong>Environment:</strong> Development
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-6">
+                                        <strong>Last Login:</strong> <span id="lastLoginTime">-</span>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <strong>Session Status:</strong> <span class="badge bg-success">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/storage-manager.js"></script>
+    <script src="js/auth-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize auto-login toggle
+            const autoLoginToggle = document.getElementById('autoLoginToggle');
+            const settingsStatus = document.getElementById('settingsStatus');
+            
+            // Set initial state
+            if (AuthManager && typeof AuthManager.autoLoginEnabled !== 'undefined') {
+                autoLoginToggle.checked = AuthManager.autoLoginEnabled;
+            }
+            
+            // Handle toggle change
+            autoLoginToggle.addEventListener('change', function() {
+                const enabled = this.checked;
+                
+                if (AuthManager && typeof AuthManager.toggleAutoLogin === 'function') {
+                    AuthManager.toggleAutoLogin(enabled);
+                    
+                    // Show success message
+                    settingsStatus.textContent = enabled ? 
+                        'Auto-login has been enabled.' : 
+                        'Auto-login has been disabled.';
+                    settingsStatus.className = 'alert alert-success';
+                    settingsStatus.style.display = 'block';
+                    
+                    // Hide message after 3 seconds
+                    setTimeout(() => {
+                        settingsStatus.style.display = 'none';
+                    }, 3000);
+                }
+            });
+            
+            // Update last login time if available
+            const lastLoginTime = document.getElementById('lastLoginTime');
+            if (AuthManager && AuthManager.currentUser) {
+                // You can enhance this to show actual last login time from session data
+                lastLoginTime.textContent = 'Current session';
+            }
+        });
+    </script>
+</body>
+</html>

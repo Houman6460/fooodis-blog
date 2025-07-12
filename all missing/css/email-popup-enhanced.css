@@ -1,0 +1,408 @@
+/* Enhanced Email Popup Styles for Fooodis Blog System */
+
+/* Layout Options & Image Support */
+.email-popup {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Multiple Layout Options */
+.popup-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.layout-option {
+    background-color: var(--dark-card, #252830);
+    border: 1px solid var(--dark-border, #32363f);
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.layout-option:hover {
+    border-color: var(--primary-color, #e8f24c);
+    transform: translateY(-2px);
+}
+
+.layout-option.active {
+    border: 2px solid var(--primary-color, #e8f24c);
+    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.3);
+}
+
+.layout-preview {
+    height: 60px;
+    background-color: #1e2127;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #a0a0a0;
+}
+
+.layout-name {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--dark-text, #e0e0e0);
+}
+
+/* Layout Classes */
+.layout-standard .email-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-image-left .email-popup-content {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 15px;
+    align-items: center;
+}
+
+.layout-image-right .email-popup-content {
+    display: grid;
+    grid-template-columns: 1fr 130px;
+    gap: 15px;
+    align-items: center;
+}
+
+.layout-image-top .email-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-image-top .popup-image-container {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.layout-image-bottom .email-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-image-bottom .popup-image-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.layout-image-background .email-popup-content {
+    position: relative;
+}
+
+.layout-image-background .popup-image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.25;
+}
+
+.layout-image-background .popup-text-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Image Support */
+.popup-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+}
+
+.popup-image {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+.image-upload-preview {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+    margin-top: 10px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.image-upload-preview.has-image {
+    display: block;
+}
+
+/* Countdown Timer */
+.countdown-container {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+    justify-content: center;
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--dark-card, #252830);
+    border-radius: 6px;
+    padding: 8px;
+    min-width: 60px;
+}
+
+.countdown-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary-color, #e8f24c);
+}
+
+.countdown-label {
+    font-size: 12px;
+    color: var(--dark-text-secondary, #a0a0a0);
+    text-transform: uppercase;
+}
+
+/* Settings for Countdown */
+.countdown-settings {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.countdown-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.countdown-input-group label {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: var(--dark-text, #e0e0e0);
+}
+
+.countdown-input {
+    padding: 8px;
+    background-color: var(--dark-input, #2a2e36);
+    border: 1px solid var(--dark-border, #32363f);
+    border-radius: 4px;
+    color: var(--dark-text, #e0e0e0);
+    font-size: 14px;
+}
+
+/* Loading Animations */
+.loading-animation-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.loading-animation-option {
+    background-color: var(--dark-card, #252830);
+    border: 1px solid var(--dark-border, #32363f);
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.loading-animation-option:hover {
+    border-color: var(--primary-color, #e8f24c);
+    transform: translateY(-2px);
+}
+
+.loading-animation-option.active {
+    border: 2px solid var(--primary-color, #e8f24c);
+    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.3);
+}
+
+.animation-preview {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animation Styles */
+@keyframes spinner {
+    to {transform: rotate(360deg);}
+}
+
+@keyframes pulse {
+    0% {transform: scale(0.95); opacity: 0.7;}
+    50% {transform: scale(1.05); opacity: 1;}
+    100% {transform: scale(0.95); opacity: 0.7;}
+}
+
+@keyframes fadeInOut {
+    0% {opacity: 0.4;}
+    50% {opacity: 1;}
+    100% {opacity: 0.4;}
+}
+
+@keyframes bounce {
+    0%, 100% {transform: translateY(0);}
+    50% {transform: translateY(-10px);}
+}
+
+.anim-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(232, 242, 76, 0.3);
+    border-top-color: #e8f24c;
+    border-radius: 50%;
+    animation: spinner 0.8s linear infinite;
+}
+
+.anim-pulse {
+    width: 30px;
+    height: 30px;
+    background-color: #e8f24c;
+    border-radius: 50%;
+    animation: pulse 1.5s ease infinite;
+}
+
+.anim-fade {
+    width: 30px;
+    height: 30px;
+    background-color: #e8f24c;
+    border-radius: 4px;
+    animation: fadeInOut 1.5s ease infinite;
+}
+
+.anim-bounce {
+    width: 30px;
+    height: 30px;
+    background-color: #e8f24c;
+    border-radius: 4px;
+    animation: bounce 1s ease infinite;
+}
+
+/* Template Selection */
+.template-selection {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.template-option {
+    background-color: var(--dark-card, #252830);
+    border: 1px solid var(--dark-border, #32363f);
+    border-radius: 6px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.template-option:hover {
+    border-color: var(--primary-color, #e8f24c);
+    transform: translateY(-2px);
+}
+
+.template-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary-color, #e8f24c);
+    margin-bottom: 8px;
+}
+
+.template-description {
+    font-size: 13px;
+    color: var(--dark-text-secondary, #a0a0a0);
+    line-height: 1.4;
+}
+
+/* Color Controls */
+.color-controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.color-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.color-control-group label {
+    font-size: 14px;
+    color: var(--dark-text, #e0e0e0);
+}
+
+.color-preview {
+    height: 30px;
+    border-radius: 4px;
+    margin-top: 5px;
+    border: 1px solid var(--dark-border, #32363f);
+}
+
+/* Enhancement Tab UI */
+.customization-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--dark-border, #32363f);
+    margin-bottom: 20px;
+}
+
+.customization-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: var(--dark-text-secondary, #a0a0a0);
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.customization-tab:hover {
+    color: var(--dark-text, #e0e0e0);
+}
+
+.customization-tab.active {
+    color: var(--primary-color, #e8f24c);
+    border-bottom-color: var(--primary-color, #e8f24c);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .popup-layout,
+    .loading-animation-options,
+    .template-selection,
+    .color-controls,
+    .countdown-settings {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .layout-image-left .email-popup-content,
+    .layout-image-right .email-popup-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-layout,
+    .loading-animation-options,
+    .template-selection,
+    .color-controls,
+    .countdown-settings {
+        grid-template-columns: 1fr;
+    }
+}

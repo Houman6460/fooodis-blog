@@ -1,0 +1,75 @@
+/* Panel Generate Now Button Styles */
+.generate-now-panel {
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.panel-generate-now-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.panel-generate-now-btn i {
+    margin-right: 8px;
+}
+
+.panel-generate-now-btn:hover {
+    background-color: #45a049;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+.panel-generate-now-btn:active {
+    transform: translateY(1px);
+}
+
+.panel-generate-now-btn.loading {
+    background-color: #388e3c;
+    pointer-events: none;
+}
+
+.panel-generate-now-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+.generate-now-panel .help-text {
+    color: #4caf50;
+    font-size: 12px;
+    margin: 0;
+}
+
+/* Dark theme adjustments */
+.dashboard-body .generate-now-panel {
+    background-color: rgba(67, 160, 71, 0.1);
+    border: 1px solid rgba(67, 160, 71, 0.3);
+}
+
+.dashboard-body .panel-generate-now-btn {
+    background-color: #43a047;
+    color: #ffffff;
+}
+
+.dashboard-body .panel-generate-now-btn:hover {
+    background-color: #388e3c;
+}
+
+.dashboard-body .generate-now-panel .help-text {
+    color: #81c784;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

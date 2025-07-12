@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fooodis Blog System</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="icon" type="image/png" href="images/New images/favicon.png">
+</head>
+<body class="auth-page">
+    <!-- Animated background elements -->
+    <div class="auth-background">
+        <div class="auth-circle circle-1"></div>
+        <div class="auth-circle circle-2"></div>
+        <div class="auth-circle circle-3"></div>
+    </div>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <img src="images/New images/logo.png" alt="Fooodis Blog System" class="auth-logo">
+                <h1>Login to Dashboard</h1>
+                <p class="auth-subtitle">Enter your credentials to access the admin panel</p>
+            </div>
+            
+            <div class="auth-body">
+                <div id="login-error" class="alert alert-danger login-error"></div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Email</label>
+                        <input type="email" id="username" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-input-container">
+                            <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password" tabindex="-1" title="Toggle password visibility" aria-label="Toggle password visibility">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="#" id="showRegisterLink">Register</a></p>
+                <p><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/storage-manager.js"></script>
+    <script src="js/auth-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            const togglePassword = document.querySelector('.toggle-password');
+            const passwordInput = document.querySelector('#password');
+            
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            }
+            
+            // Add animation classes to form elements
+            const formElements = document.querySelectorAll('.form-group, .form-check, button');
+            formElements.forEach((element, index) => {
+                element.classList.add('fade-in-up');
+                element.style.animationDelay = (index * 0.1) + 's';
+            });
+        });
+    </script>
+</body>
+</html>
