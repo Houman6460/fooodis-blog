@@ -1,3 +1,89 @@
+/* AI Configuration Dark Theme Styles */
+
+.ai-config-section {
+    background: rgba(30, 33, 39, 0.95);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.ai-config-form .form-label {
+    color: #e8f24c;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.ai-config-form .form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 10px 12px;
+}
+
+.ai-config-form .form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(232, 242, 76, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(232, 242, 76, 0.25);
+    color: #ffffff;
+}
+
+.ai-config-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.status {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+}
+
+.status.success {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status.error {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.status.testing {
+    background: rgba(23, 162, 184, 0.2);
+    color: #17a2b8;
+    border: 1px solid rgba(23, 162, 184, 0.3);
+}
+
+.btn-outline-primary {
+    color: #e8f24c;
+    border-color: #e8f24c;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: #e8f24c;
+    color: #1e2127;
+    border-color: #e8f24c;
+}
+
+.btn-primary {
+    background: #e8f24c;
+    border-color: #e8f24c;
+    color: #1e2127;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background: #d4dc42;
+    border-color: #d4dc42;
+    color: #1e2127;
+}
+
 /* AI Configuration Dark Theme */
 :root {
     --primary-color: #e8f24c; /* Yellow accent color */
@@ -21,7 +107,6 @@
 
 /* AI Configuration Section */
 #ai-config-section {
-    background-color: var(--dark-card);
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
@@ -389,78 +474,4 @@
 
 .password-toggle .toggle-btn:hover {
     color: var(--dark-text);
-}
-
-.status {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    display: none;
-    transition: all 0.3s ease;
-}
-
-.status.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.status.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.status.testing {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
-
-.ai-config-form {
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 15px 0;
-}
-
-.ai-config-form label {
-    color: #fff;
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-.ai-config-form input[type="text"],
-.ai-config-form input[type="password"],
-.ai-config-form textarea {
-    background: rgba(40, 40, 40, 0.9);
-    border: 1px solid #555;
-    color: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.ai-config-form button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.ai-config-form button:hover {
-    background: #0056b3;
-}
-
-.ai-config-form button:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
 }

@@ -23,7 +23,109 @@ function initializeAIConfig() {
     // Setup event listeners
     setupAIConfigEventListeners();
 
+    // Setup UI elements
+    setupAIConfigUI();
+
     console.log('AI Config: Initialized successfully');
+}
+
+/**
+ * Setup AI Config UI elements
+ */
+function setupAIConfigUI() {
+    // Find or create the test connection button
+    let testBtn = document.getElementById('test-connection-btn') || 
+                  document.getElementById('testConnection');
+
+    if (!testBtn) {
+        // Look for existing button or create one
+        const configSection = document.getElementById('ai-config-section') || 
+                             document.querySelector('[data-section="ai-config"]') ||
+                             document.querySelector('.ai-config-form');
+
+        if (configSection) {
+            testBtn = document.createElement('button');
+            testBtn.id = 'test-connection-btn';
+            testBtn.type = 'button';
+            testBtn.className = 'btn btn-outline-primary me-2';
+            testBtn.textContent = 'Test Connection';
+            testBtn.style.cssText = `
+                background: transparent;
+                color: var(--primary-color, #e8f24c);
+                border: 1px solid var(--primary-color, #e8f24c);
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 10px;
+                font-size: 14px;
+                transition: all 0.2s;
+            `;
+
+            // Find a good place to insert the button
+            const apiKeyInput = document.getElementById('openai-api-key') || 
+                               document.getElementById('openaiApiKey') ||
+                               document.querySelector('input[placeholder*="API"]');
+
+            if (apiKeyInput && apiKeyInput.parentNode) {
+                // Insert after the input's parent container
+                const container = apiKeyInput.closest('.form-group') || 
+                                 apiKeyInput.closest('.mb-3') || 
+                                 apiKeyInput.parentNode;
+                container.appendChild(testBtn);
+            } else {
+                configSection.appendChild(testBtn);
+            }
+        }
+    }
+
+    if (testBtn) {
+        testBtn.onclick = (e) => {
+            e.preventDefault();
+            testConnection();
+        };
+    }
+
+    // Find or create the save button
+    let saveBtn = document.getElementById('save-ai-config') || 
+                  document.getElementById('saveAIConfig');
+
+    if (!saveBtn) {
+        const configSection = document.getElementById('ai-config-section') || 
+                             document.querySelector('[data-section="ai-config"]') ||
+                             document.querySelector('.ai-config-form');
+
+        if (configSection) {
+            saveBtn = document.createElement('button');
+            saveBtn.id = 'save-ai-config';
+            saveBtn.type = 'button';
+            saveBtn.className = 'btn btn-primary';
+            saveBtn.textContent = 'Save Configuration';
+            saveBtn.style.cssText = `
+                background: var(--primary-color, #e8f24c);
+                color: var(--secondary-color, #1e2127);
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all 0.2s;
+            `;
+
+            if (testBtn && testBtn.parentNode) {
+                testBtn.parentNode.appendChild(saveBtn);
+            } else {
+                configSection.appendChild(saveBtn);
+            }
+        }
+    }
+
+    if (saveBtn) {
+        saveBtn.onclick = (e) => {
+            e.preventDefault();
+            saveConfiguration();
+        };
+    }
 }
 
 /**
@@ -74,7 +176,12 @@ function loadSavedConfig() {
  * Save AI configuration
  */
 async function saveConfiguration() {
-    const apiKey = document.getElementById('openai-api-key')?.value;
+    const apiKeyInput = document.getElementById('openai-api-key') || 
+                       document.getElementById('openaiApiKey') ||
+                       document.querySelector('input[placeholder*="API"]') ||
+                       document.querySelector('input[type="password"]');
+
+    const apiKey = apiKeyInput?.value?.trim();
 
     if (!apiKey) {
         showConnectionStatus('error', 'Please enter an API key');
@@ -93,11 +200,17 @@ async function saveConfiguration() {
     // Save to multiple storage locations for redundancy
     const config = {
         apiKey: apiKey,
+        model: window.aiConfig.model || 'gpt-3.5-turbo',
+        maxTokens: window.aiConfig.maxTokens || 1000,
+        temperature: window.aiConfig.temperature || 0.7,
         timestamp: Date.now(),
         validated: true
     };
 
     try {
+        // Update global config
+        window.aiConfig = { ...window.aiConfig, ...config };
+
         // Save to localStorage with multiple keys
         localStorage.setItem('aiConfig', JSON.stringify(config));
         localStorage.setItem('fooodis-aiConfig', JSON.stringify(config));
@@ -112,6 +225,9 @@ async function saveConfiguration() {
         sessionStorage.setItem('aiConfig-backup', JSON.stringify(config));
 
         showConnectionStatus('success', 'Configuration saved and validated successfully!');
+
+        // Show save confirmation message
+        showConfigSavedMessage();
 
         // Verify the save worked
         const verification = localStorage.getItem('aiConfig');
@@ -266,7 +382,8 @@ function isAIConfigured() {
 async function testConnection() {
     const apiKeyInput = document.getElementById('openai-api-key') || 
                        document.getElementById('openaiApiKey') ||
-                       document.querySelector('input[placeholder*="API"]');
+                       document.querySelector('input[placeholder*="API"]') ||
+                       document.querySelector('input[type="password"]');
 
     if (!apiKeyInput) {
         showConnectionStatus('error', 'API key input not found');
@@ -301,6 +418,10 @@ async function testConnection() {
             const data = await response.json();
             if (data.data && data.data.length > 0) {
                 showConnectionStatus('success', `Connection successful! Found ${data.data.length} models available.`);
+                
+                // Update global config
+                window.aiConfig.apiKey = apiKey;
+                
                 return true;
             } else {
                 showConnectionStatus('error', 'API key is invalid or has no access to models');

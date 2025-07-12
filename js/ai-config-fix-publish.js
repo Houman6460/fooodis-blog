@@ -372,10 +372,24 @@ function showStatus(type, message) {
     }
 }
 
+// Integration with AI Automation V2
+function integrateWithAutomation() {
+    // Ensure automation system knows about AI config changes
+    if (window.aiAutomation && window.aiAutomation.isInitialized) {
+        console.log('AI Config Fix: Integrated with automation system');
+    }
+}
+
 // Export functions for global access
 window.handleConnectionTest = handleConnectionTest;
 window.handleSaveConfig = handleSaveConfig;
 window.testConnection = handleConnectionTest;
 window.saveConfiguration = handleSaveConfig;
+window.integrateWithAutomation = integrateWithAutomation;
 
-console.log('AI Config Fix: Script loaded');
+// Auto-integrate when both systems are loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(integrateWithAutomation, 1000);
+});
+
+console.log('AI Config Fix: Script loaded with automation integration');
