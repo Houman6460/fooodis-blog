@@ -234,18 +234,20 @@
 
     <!-- Email Popup Display - Shows the configured email popup on the blog -->
     <script src="js/email-popup-display.js"></script>
-
-    <!-- Force Popup Display - Guarantees popup shows up on the page -->
     <script src="js/force-popup-display.js"></script>
 
-    <!-- Unified Chatbot Avatar Fix - Single optimized solution -->
-    <script src="js/chatbot-avatar-unified-fix.js"></script>
-
-    <!-- Registration Form System -->
-    <script src="js/chatbot-registration-form.js"></script>
-    <script src="js/chatbot-registration-data.js"></script>
-
-    <!-- Blog enhancement scripts removed to prevent 404 errors -->
+    <!-- Test popup trigger -->
+    <script>
+        // Force popup to show for testing
+        setTimeout(() => {
+            if (typeof forceShowEmailPopup === 'function') {
+                console.log('🧪 Blog: Testing popup trigger...');
+                // Don't reload, just force show
+                localStorage.setItem('popup-enabled', 'true');
+                sessionStorage.removeItem('popup-shown');
+            }
+        }, 3000);
+    </script>
 </head>
 
 <body class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-home-page="https://sweedtaset.nicepage.io/Fooodis.html?version=487c2819-ec2d-4d07-3d04-c9739ff0c4c2" data-home-page-title="Fooodis" data-include-products="true" data-lang="en" data-path-to-root="./">

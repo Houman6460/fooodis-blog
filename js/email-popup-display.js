@@ -1,3 +1,4 @@
+
 /**
  * Email Popup Display for Fooodis Blog System
  * Displays the configured email popup on the blog pages
@@ -12,9 +13,15 @@ class EmailPopupDisplay {
     }
     
     init() {
+        console.log('🎯 Email Popup Display: Initializing...');
         this.loadConfig();
         this.createPopup();
         this.setupTriggers();
+        
+        // Force show popup for testing
+        setTimeout(() => {
+            this.forceShowPopup();
+        }, 2000);
     }
     
     loadConfig() {
@@ -23,6 +30,7 @@ class EmailPopupDisplay {
         if (savedConfig) {
             try {
                 this.config = JSON.parse(savedConfig);
+                console.log('📋 Email Popup Display: Config loaded', this.config);
             } catch (error) {
                 console.error('Error loading email popup configuration:', error);
                 this.config = this.getDefaultConfig();
@@ -67,9 +75,13 @@ class EmailPopupDisplay {
     }
     
     createPopup() {
-        // Check if popup should be enabled
-        const popupEnabled = localStorage.getItem('popup-enabled') === 'true';
-        if (!popupEnabled) return;
+        console.log('🏗️ Email Popup Display: Creating popup...');
+        
+        // Remove existing popup if any
+        const existingPopup = document.getElementById('emailPopupOverlay');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
         
         // Create popup HTML
         const popup = document.createElement('div');
@@ -77,10 +89,10 @@ class EmailPopupDisplay {
         popup.id = 'emailPopupOverlay';
         
         let popupContent = `
-            <div class="email-popup layout-${this.config.layout}">
+            <div class="email-popup layout-${this.config.layout}" style="background-color: ${this.config.colors.background};">
                 <div class="email-popup-header">
-                    <h2 class="email-popup-title">${this.config.customText.title}</h2>
-                    <button class="email-popup-close">&times;</button>
+                    <h2 class="email-popup-title" style="color: white;">${this.config.customText.title}</h2>
+                    <button class="email-popup-close" style="color: white;">&times;</button>
                 </div>
                 <div class="email-popup-content">
         `;
@@ -97,14 +109,14 @@ class EmailPopupDisplay {
         // Add text container
         popupContent += `
                 <div class="popup-text-container" style="${this.config.colors.textBackground ? 'background-color:' + this.config.colors.textBackground + ';padding:15px;border-radius:6px;' : ''}">
-                    <p class="email-popup-description">${this.config.customText.description}</p>
+                    <p class="email-popup-description" style="color: white;">${this.config.customText.description}</p>
         `;
         
         // Add countdown if enabled
         if (this.config.countdown && this.config.countdown.enabled) {
             popupContent += `
                 <div class="countdown-container">
-                    <p class="countdown-message">${this.config.countdown.message || 'Offer ends in:'}</p>
+                    <p class="countdown-message" style="color: white;">${this.config.countdown.message || 'Offer ends in:'}</p>
                     <div class="countdown-timer">
                         <div class="countdown-item">
                             <div class="countdown-value" id="countdown-days">00</div>
@@ -131,9 +143,9 @@ class EmailPopupDisplay {
         popupContent += `
                     <form class="email-form">
                         <div class="email-input-group">
-                            <input type="email" class="email-input" placeholder="${this.config.customText.placeholder}" required>
+                            <input type="email" class="email-input" placeholder="${this.config.customText.placeholder}" required style="padding: 10px; border-radius: 4px; border: 1px solid #ccc; width: 100%; margin-bottom: 10px;">
                         </div>
-                        <button type="submit" class="email-submit-btn" style="background-color: ${this.config.colors.buttonBackground}; color: ${this.config.colors.buttonText};">
+                        <button type="submit" class="email-submit-btn" style="background-color: ${this.config.colors.buttonBackground}; color: ${this.config.colors.buttonText}; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
                             ${this.config.animation ? `<div class="anim-${this.config.animation}" style="display: none;"></div>` : ''}
                             ${this.config.customText.buttonText}
                         </button>
@@ -141,18 +153,67 @@ class EmailPopupDisplay {
                 </div>
             </div>
             <div class="email-popup-footer">
-                <p>We respect your privacy. Unsubscribe at any time.</p>
+                <p style="color: #aaa; font-size: 12px;">We respect your privacy. Unsubscribe at any time.</p>
             </div>
         </div>
         `;
         
         popup.innerHTML = popupContent;
+        
+        // Add styles
+        popup.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        
+        // Style the popup content
+        const popupDiv = popup.querySelector('.email-popup');
+        if (popupDiv) {
+            popupDiv.style.cssText = `
+                max-width: 500px;
+                width: 90%;
+                border-radius: 8px;
+                padding: 20px;
+                position: relative;
+            `;
+        }
+        
+        // Style the close button
+        const closeBtn = popup.querySelector('.email-popup-close');
+        if (closeBtn) {
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+            `;
+        }
+        
         document.body.appendChild(popup);
+        console.log('✅ Email Popup Display: Popup created and added to DOM');
         
         // Add event listeners
+        this.addEventListeners(popup);
+    }
+    
+    addEventListeners(popup) {
         const closeBtn = popup.querySelector('.email-popup-close');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
+                console.log('❌ Email Popup Display: Close button clicked');
                 this.closePopup();
             });
         }
@@ -161,6 +222,7 @@ class EmailPopupDisplay {
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
+                console.log('📧 Email Popup Display: Form submitted');
                 this.handleSubmit(e);
             });
         }
@@ -168,20 +230,22 @@ class EmailPopupDisplay {
         // Also close when clicking overlay background (outside the popup)
         popup.addEventListener('click', (e) => {
             if (e.target === popup) {
+                console.log('🎯 Email Popup Display: Overlay clicked');
                 this.closePopup();
             }
         });
     }
     
     setupTriggers() {
-        const popupEnabled = localStorage.getItem('popup-enabled') === 'true';
-        if (!popupEnabled) return;
+        console.log('⚡ Email Popup Display: Setting up triggers...');
         
-        // Check if popup was already shown in this session
-        if (sessionStorage.getItem('popup-shown') === 'true') return;
+        // Always show popup for testing - remove popup-shown flag
+        sessionStorage.removeItem('popup-shown');
+        localStorage.setItem('popup-enabled', 'true');
         
         // Get trigger settings
         const triggerType = localStorage.getItem('popup-trigger') || 'delay';
+        console.log('🎯 Email Popup Display: Trigger type:', triggerType);
         
         switch (triggerType) {
             case 'delay':
@@ -199,8 +263,9 @@ class EmailPopupDisplay {
     }
     
     setupDelayTrigger() {
-        // Default to 5 seconds if not set
-        const delay = parseInt(localStorage.getItem('popup-delay')) || 5;
+        // Default to 3 seconds for immediate testing
+        const delay = parseInt(localStorage.getItem('popup-delay')) || 3;
+        console.log('⏰ Email Popup Display: Setting up delay trigger for', delay, 'seconds');
         setTimeout(() => {
             this.showPopup();
         }, delay * 1000);
@@ -232,13 +297,27 @@ class EmailPopupDisplay {
         });
     }
     
+    forceShowPopup() {
+        console.log('🚀 Email Popup Display: Force showing popup...');
+        this.showPopup();
+    }
+    
     showPopup() {
-        if (this.popupShown) return;
+        if (this.popupShown) {
+            console.log('⚠️ Email Popup Display: Popup already shown');
+            return;
+        }
+        
+        console.log('🎊 Email Popup Display: Showing popup...');
         
         const popup = document.getElementById('emailPopupOverlay');
-        if (!popup) return;
+        if (!popup) {
+            console.error('❌ Email Popup Display: Popup element not found');
+            return;
+        }
         
-        popup.classList.add('active');
+        popup.style.opacity = '1';
+        popup.style.display = 'flex';
         this.popupShown = true;
         sessionStorage.setItem('popup-shown', 'true');
         
@@ -249,13 +328,19 @@ class EmailPopupDisplay {
         
         // Dispatch event for other scripts to react
         document.dispatchEvent(new CustomEvent('emailPopupShown'));
+        console.log('✅ Email Popup Display: Popup is now visible');
     }
     
     closePopup() {
+        console.log('🔒 Email Popup Display: Closing popup...');
+        
         const popup = document.getElementById('emailPopupOverlay');
         if (!popup) return;
         
-        popup.classList.remove('active');
+        popup.style.opacity = '0';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 300);
         
         // Stop countdown if running
         if (this.countdown) {
@@ -267,23 +352,14 @@ class EmailPopupDisplay {
         const form = e.target;
         const emailInput = form.querySelector('.email-input');
         const submitBtn = form.querySelector('.email-submit-btn');
-        const animElement = submitBtn.querySelector(`[class^="anim-"]`);
         
         if (!emailInput || !emailInput.value) return;
         
-        // Show loading animation
-        if (animElement) {
-            animElement.style.display = 'inline-block';
-            // Hide button text while loading
-            submitBtn.childNodes.forEach(node => {
-                if (node.nodeType === 3) { // Text node
-                    node.textContent = '';
-                }
-            });
-        }
+        console.log('📧 Email Popup Display: Processing email submission:', emailInput.value);
         
         // Disable button
         submitBtn.disabled = true;
+        submitBtn.textContent = 'Subscribing...';
         
         // Simulate API call
         setTimeout(() => {
@@ -294,9 +370,10 @@ class EmailPopupDisplay {
             const emailPopup = popup.querySelector('.email-popup');
             if (emailPopup && this.config.customText) {
                 emailPopup.innerHTML = `
-                    <div class="email-popup-success">
-                        <i class="fas fa-check-circle success-icon"></i>
-                        <h2 class="success-title">${this.config.customText.successMessage}</h2>
+                    <div class="email-popup-success" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-check-circle success-icon" style="font-size: 48px; color: #4caf50; margin-bottom: 20px;"></i>
+                        <h2 class="success-title" style="color: white; margin-bottom: 20px;">${this.config.customText.successMessage}</h2>
+                        <p style="color: #aaa;">You can close this popup now.</p>
                     </div>
                 `;
                 
@@ -306,42 +383,23 @@ class EmailPopupDisplay {
                 }, 3000);
             }
             
-            // Save email to localStorage in a format compatible with the SubscriberListManager
+            // Save email to localStorage
             try {
-                // First check if email already exists
                 const emails = JSON.parse(localStorage.getItem('subscriber-emails') || '[]');
                 const emailExists = emails.some(item => item.email === emailInput.value);
                 
                 if (!emailExists) {
-                    // Add new subscriber with proper format
                     emails.push({
                         email: emailInput.value,
                         date: new Date().toISOString(),
                         status: 'active'
                     });
                     
-                    // Save to localStorage
                     localStorage.setItem('subscriber-emails', JSON.stringify(emails));
-                    
-                    // Log for debugging
-                    console.log('New subscriber saved:', emailInput.value);
-                    console.log('Total subscribers:', emails.length);
-                    
-                    // Trigger an event that the dashboard can listen for if it's open in another tab
-                    if (window.BroadcastChannel) {
-                        try {
-                            const bc = new BroadcastChannel('fooodis-subscribers');
-                            bc.postMessage({
-                                action: 'new-subscriber',
-                                email: emailInput.value
-                            });
-                        } catch (e) {
-                            console.error('Broadcast error:', e);
-                        }
-                    }
+                    console.log('💾 Email Popup Display: Email saved:', emailInput.value);
                 }
             } catch (error) {
-                console.error('Error saving subscriber:', error);
+                console.error('❌ Email Popup Display: Error saving subscriber:', error);
             }
         }, 1500);
     }
@@ -409,10 +467,42 @@ class EmailPopupDisplay {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🎯 Email Popup Display: DOM ready, checking page type...');
+    
     // Check if we're on a blog page (not dashboard)
-    if (!document.querySelector('.dashboard-container')) {
+    const isDashboard = document.querySelector('.dashboard-container') || 
+                       document.querySelector('#dashboard-container') ||
+                       window.location.pathname.includes('dashboard');
+                       
+    if (!isDashboard) {
+        console.log('📱 Email Popup Display: On blog page, initializing popup...');
         setTimeout(() => {
             new EmailPopupDisplay();
-        }, 500);
+        }, 1000);
+    } else {
+        console.log('🏢 Email Popup Display: On dashboard page, skipping popup initialization');
     }
 });
+
+// Also initialize on window load as fallback
+window.addEventListener('load', () => {
+    const isDashboard = document.querySelector('.dashboard-container') || 
+                       document.querySelector('#dashboard-container') ||
+                       window.location.pathname.includes('dashboard');
+                       
+    if (!isDashboard && !window.emailPopupDisplayInitialized) {
+        console.log('🔄 Email Popup Display: Window load fallback initialization...');
+        window.emailPopupDisplayInitialized = true;
+        new EmailPopupDisplay();
+    }
+});
+
+// Force popup function for testing
+window.forceEmailPopup = function() {
+    console.log('🚀 Email Popup Display: Force popup triggered manually');
+    localStorage.setItem('popup-enabled', 'true');
+    sessionStorage.removeItem('popup-shown');
+    new EmailPopupDisplay();
+};
+
+console.log('✅ Email Popup Display: Script loaded and ready');
