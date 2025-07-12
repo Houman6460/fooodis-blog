@@ -8,29 +8,21 @@
  * 4. JavaScript initialization errors
  */
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('AI Automation Comprehensive Fix: Initializing...');
-    
-    // Apply fixes with delay to ensure other scripts load
-    setTimeout(() => {
-        initializeComprehensiveFix();
-    }, 1000);
-});
-
+// PASSIVE MODE - No automatic initialization
 let isInitialized = false;
 
+// Manual initialization function - only call when needed
 function initializeComprehensiveFix() {
     if (isInitialized) return;
     isInitialized = true;
     
-    console.log('AI Automation Comprehensive Fix: Starting comprehensive fixes...');
+    console.log('AI Automation Comprehensive Fix: Manual initialization started...');
     
     // Fix 1: Schedule path persistence
     fixSchedulePathPersistence();
     
-    // Fix 2: Automatic popup closing
-    fixAutomaticPopupClosing();
+    // Fix 2: Setup button handlers (but don't show popup)
+    setupButtonHandlers();
     
     // Fix 3: Time display format
     fixTimeDisplayFormat();
@@ -41,8 +33,11 @@ function initializeComprehensiveFix() {
     // Fix 5: Restore saved paths on page load
     restoreSavedPaths();
     
-    console.log('AI Automation Comprehensive Fix: All fixes applied successfully');
+    console.log('AI Automation Comprehensive Fix: Manual initialization completed');
 }
+
+// Expose manual initialization
+window.initializeAutomationFix = initializeComprehensiveFix;
 
 /**
  * Fix 1: Schedule path persistence
@@ -120,53 +115,78 @@ function fixSchedulePathPersistence() {
 /**
  * Fix 2: Automatic popup closing and proper show/hide behavior
  */
-function fixAutomaticPopupClosing() {
-    console.log('AI Automation Comprehensive Fix: Fixing automatic popup closing...');
+function setupButtonHandlers() {
+    console.log('AI Automation Comprehensive Fix: Setting up passive button handlers...');
     
-    // First, ensure the modal exists in the DOM but keep it hidden
+    // Ensure modal exists but stays hidden
     ensureModalExists();
     
-    // Ensure modal starts hidden and stays hidden until explicitly shown
+    // Ensure modal is completely hidden
     const modal = document.querySelector('.automation-path-modal');
     if (modal) {
         modal.style.display = 'none';
         modal.style.visibility = 'hidden';
         modal.style.opacity = '0';
-        
-        // Remove any existing classes that might show it
         modal.classList.remove('show', 'active', 'visible');
     }
+}
 
-    // Only add event listener to specific add automation buttons - no automatic modal showing
-    setTimeout(() => {
-        const addButtons = document.querySelectorAll('.add-automation-path, #createNewAutomation, [data-action="create-automation"]');
-        addButtons.forEach(button => {
-            if (!button.hasAttribute('data-popup-listener')) {
-                button.setAttribute('data-popup-listener', 'true');
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('AI Automation Comprehensive Fix: Add automation button clicked');
-                    showAutomationModal();
-                });
-            }
-        });
-    }, 2000);
+// Separate function for manual popup triggering
+function fixAutomaticPopupClosing() {
+    console.log('AI Automation Comprehensive Fix: Setting up modal close handlers only...');
     
-    // Handle specific automation creation clicks only - be very selective
+    // Only handle modal close events - no automatic opening
     document.addEventListener('click', function(event) {
-        // Only handle very specific button clicks and not if already inside a modal
-        if (!event.target.closest('.automation-path-modal') &&
-            (event.target.matches('.add-automation-path') || 
-             event.target.matches('#createNewAutomation') ||
-             event.target.matches('[data-action="create-automation"]') ||
-             event.target.closest('.add-automation-path') ||
-             event.target.closest('#createNewAutomation') ||
-             (event.target.textContent && event.target.textContent.trim() === 'Create New Automation') ||
-             (event.target.textContent && event.target.textContent.trim() === 'Add New Automation Path'))) {
-            
+        // Handle Save Automation Path button
+        if (event.target.matches('.save-automation-path, .automation-path-form .save-btn')) {
             event.preventDefault();
             event.stopPropagation();
+            
+            console.log('AI Automation Comprehensive Fix: Save button clicked');
+            
+            // Get the form data
+            const formData = getAutomationFormData();
+            if (!formData) {
+                console.error('AI Automation Comprehensive Fix: Failed to get form data');
+                return;
+            }
+            
+            // Save the automation path
+            const success = saveAutomationPath(formData);
+            if (success) {
+                // Close the popup automatically
+                const modal = document.querySelector('.automation-path-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    console.log('AI Automation Comprehensive Fix: Popup closed automatically');
+                }
+                
+                // Refresh the automation paths display
+                if (typeof window.renderAutomationPaths === 'function') {
+                    window.renderAutomationPaths();
+                } else if (typeof window.aiAutomationV2?.renderAutomationPaths === 'function') {
+                    window.aiAutomationV2.renderAutomationPaths();
+                }
+                
+                // Show success message
+                showSuccessMessage('Automation path saved successfully!');
+            }
+            return;
+        }
+        
+        // Handle Close Modal button
+        if (event.target.matches('.close-automation-modal')) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const modal = document.querySelector('.automation-path-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log('AI Automation Comprehensive Fix: Popup closed by close button');
+            }
+            return;
+        }
+    });
             
             console.log('AI Automation Comprehensive Fix: Add automation button clicked');
             showAutomationModal();

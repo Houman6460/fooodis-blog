@@ -7,36 +7,41 @@
 console.log('AI Automation Force Popup: Loading...');
 
 // Wait for page to load
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        initForcePopup();
-    }, 1000);
-});
+// Completely passive - no automatic initialization
+// Only respond to explicit function calls
 
 function initForcePopup() {
-    console.log('AI Automation Force Popup: Initializing...');
+    console.log('AI Automation Force Popup: Passive mode - waiting for explicit calls...');
     
-    // Only listen for very specific button clicks - no automatic popup
-    document.addEventListener('click', function(event) {
-        const clickedElement = event.target;
+    // Only add click listener when explicitly called
+    if (!document.hasAttribute('data-force-popup-listener')) {
+        document.setAttribute('data-force-popup-listener', 'true');
         
-        // Only trigger for exact button matches - be very specific
-        if ((clickedElement.classList.contains('add-automation-path') ||
-             clickedElement.closest('.add-automation-path') ||
-             (clickedElement.textContent && clickedElement.textContent.trim() === 'Create New Automation') ||
-             (clickedElement.textContent && clickedElement.textContent.trim() === 'Add New Automation Path')) &&
-            !clickedElement.closest('.automation-path-modal')) { // Don't trigger if clicking inside existing modal
+        document.addEventListener('click', function(event) {
+            const clickedElement = event.target;
             
-            console.log('AI Automation Force Popup: Add automation button clicked');
-            
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // Force show the popup
-            forceShowPopup();
-        }
-    }, true);
+            // Very specific button detection - only exact matches
+            if (clickedElement.matches('button[data-action="create-automation"]') ||
+                clickedElement.matches('.create-automation-btn') ||
+                (clickedElement.textContent && clickedElement.textContent.trim() === 'Create New Automation' && clickedElement.tagName === 'BUTTON')) {
+                
+                console.log('AI Automation Force Popup: Explicit automation button clicked');
+                
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Force show the popup
+                forceShowPopup();
+            }
+        }, true);
+    }
 }
+
+// Manual trigger function for specific buttons
+window.triggerAutomationPopup = function() {
+    console.log('AI Automation Force Popup: Manual trigger called');
+    forceShowPopup();
+};
 
 function forceShowPopup() {
     console.log('AI Automation Force Popup: Force showing popup...');
