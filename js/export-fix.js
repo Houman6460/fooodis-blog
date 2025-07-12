@@ -136,14 +136,47 @@ class ExportManager {
                 return true;
             }
 
-            // Method 3: Force download with user interaction
+            // Method 3: Copy to clipboard as fallback
+            const clipboardResult = await this.tryCopyToClipboard(csvContent, filename);
+            if (clipboardResult) {
+                console.log('✅ Content copied to clipboard');
+                return true;
+            }
+
+            // Method 4: Force download with user interaction
             if (this.tryForceDownload(csvContent, filename)) {
+                console.log('✅ Force download initiated');
                 return true;
             }
 
             throw new Error('All download methods failed');
         } catch (error) {
-            console.error('Download failed:', error);
+            console.error('❌ Download failed:', error);
+            this.showErrorNotification(`Download failed: ${error.message}`);
+            return false;
+        }
+    }
+
+    /**
+     * Try copying content to clipboard as fallback
+     */
+    async tryCopyToClipboard(csvContent, filename) {
+        try {
+            console.log('Attempting clipboard copy...');
+
+            if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                console.warn('Clipboard API not available');
+                return false;
+            }
+
+            const BOM = '\uFEFF';
+            await navigator.clipboard.writeText(BOM + csvContent);
+
+            this.showSuccessNotification(`CSV content copied to clipboard! You can paste it into a text editor and save as ${filename}`);
+            return true;
+
+        } catch (error) {
+            console.error('Clipboard copy failed:', error);
             return false;
         }
     }
