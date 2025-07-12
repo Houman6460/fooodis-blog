@@ -10,21 +10,22 @@ console.log('AI Automation Force Popup: Loading...');
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         initForcePopup();
-    }, 3000);
+    }, 1000);
 });
 
 function initForcePopup() {
     console.log('AI Automation Force Popup: Initializing...');
     
-    // Only listen for specific automation creation buttons
+    // Only listen for very specific button clicks - no automatic popup
     document.addEventListener('click', function(event) {
         const clickedElement = event.target;
         
-        // Check if it's specifically the add automation button or similar
-        if (clickedElement.classList.contains('add-automation-path') ||
-            clickedElement.closest('.add-automation-path') ||
-            (clickedElement.textContent && clickedElement.textContent.includes('Add New Automation')) ||
-            (clickedElement.textContent && clickedElement.textContent.includes('Create New Automation'))) {
+        // Only trigger for exact button matches - be very specific
+        if ((clickedElement.classList.contains('add-automation-path') ||
+             clickedElement.closest('.add-automation-path') ||
+             (clickedElement.textContent && clickedElement.textContent.trim() === 'Create New Automation') ||
+             (clickedElement.textContent && clickedElement.textContent.trim() === 'Add New Automation Path')) &&
+            !clickedElement.closest('.automation-path-modal')) { // Don't trigger if clicking inside existing modal
             
             console.log('AI Automation Force Popup: Add automation button clicked');
             

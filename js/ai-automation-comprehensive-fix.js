@@ -123,37 +123,47 @@ function fixSchedulePathPersistence() {
 function fixAutomaticPopupClosing() {
     console.log('AI Automation Comprehensive Fix: Fixing automatic popup closing...');
     
-    // First, ensure the modal exists in the DOM
+    // First, ensure the modal exists in the DOM but keep it hidden
     ensureModalExists();
     
-    // Ensure modal starts hidden
+    // Ensure modal starts hidden and stays hidden until explicitly shown
     const modal = document.querySelector('.automation-path-modal');
     if (modal) {
         modal.style.display = 'none';
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
+        
+        // Remove any existing classes that might show it
+        modal.classList.remove('show', 'active', 'visible');
     }
 
-    // Only add event listener to specific add automation buttons
+    // Only add event listener to specific add automation buttons - no automatic modal showing
     setTimeout(() => {
         const addButtons = document.querySelectorAll('.add-automation-path, #createNewAutomation, [data-action="create-automation"]');
         addButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('AI Automation Comprehensive Fix: Add automation button clicked');
-                showAutomationModal();
-            });
+            if (!button.hasAttribute('data-popup-listener')) {
+                button.setAttribute('data-popup-listener', 'true');
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('AI Automation Comprehensive Fix: Add automation button clicked');
+                    showAutomationModal();
+                });
+            }
         });
     }, 2000);
     
-    // Handle specific automation creation clicks only
+    // Handle specific automation creation clicks only - be very selective
     document.addEventListener('click', function(event) {
-        // Handle only specific selectors for Add New Automation Path button
-        if (event.target.matches('.add-automation-path') || 
-            event.target.matches('#createNewAutomation') ||
-            event.target.matches('[data-action="create-automation"]') ||
-            event.target.closest('.add-automation-path') ||
-            event.target.closest('#createNewAutomation') ||
-            (event.target.textContent && event.target.textContent.trim() === 'Add New Automation Path')) {
+        // Only handle very specific button clicks and not if already inside a modal
+        if (!event.target.closest('.automation-path-modal') &&
+            (event.target.matches('.add-automation-path') || 
+             event.target.matches('#createNewAutomation') ||
+             event.target.matches('[data-action="create-automation"]') ||
+             event.target.closest('.add-automation-path') ||
+             event.target.closest('#createNewAutomation') ||
+             (event.target.textContent && event.target.textContent.trim() === 'Create New Automation') ||
+             (event.target.textContent && event.target.textContent.trim() === 'Add New Automation Path'))) {
             
             event.preventDefault();
             event.stopPropagation();
