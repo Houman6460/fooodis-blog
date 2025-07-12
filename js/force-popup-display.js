@@ -1,4 +1,3 @@
-
 /**
  * Force Email Popup Display - Guarantees popup shows up
  * This script ensures the email popup displays no matter what
@@ -6,384 +5,217 @@
 
 console.log('🚀 Force Popup Display: Script loading...');
 
-// Configuration
-const POPUP_CONFIG = {
+// Configuration for the popup
+const FORCE_POPUP_CONFIG = {
+    enabled: true,
+    delay: 3000, // 3 seconds
+    trigger: 'delay',
     title: 'Subscribe to Our Newsletter',
     description: 'Stay updated with our latest news and offers.',
-    placeholder: 'Enter your email address',
     buttonText: 'Subscribe',
-    successMessage: 'Thank you for subscribing!',
-    backgroundColor: '#252830',
-    buttonBackground: '#e8f24c',
-    buttonColor: '#1e2127'
+    placeholder: 'Enter your email address',
+    successMessage: 'Thank you for subscribing!'
 };
 
-// Global popup manager
-window.ForcePopupManager = {
-    popupShown: false,
-    popupElement: null,
-    
-    // Force create and show popup
+class ForcePopupDisplay {
+    constructor() {
+        this.popupShown = false;
+        this.init();
+    }
+
+    init() {
+        console.log('🔧 Force Popup Display: Initializing...');
+
+        // Force enable popup in localStorage
+        localStorage.setItem('popup-enabled', 'true');
+        localStorage.setItem('popup-trigger', 'delay');
+        localStorage.setItem('popup-delay', '3');
+
+        // Clear any existing popup-shown flag
+        sessionStorage.removeItem('popup-shown');
+
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.createAndShowPopup());
+        } else {
+            setTimeout(() => this.createAndShowPopup(), 1000);
+        }
+    }
+
     createAndShowPopup() {
-        console.log('🔨 Force Popup: Creating popup element...');
-        
+        console.log('🎯 Force Popup Display: Creating popup...');
+
         // Remove any existing popup
         const existingPopup = document.getElementById('emailPopupOverlay');
         if (existingPopup) {
             existingPopup.remove();
-            console.log('🗑️ Force Popup: Removed existing popup');
         }
-        
-        // Create popup container
-        const popup = document.createElement('div');
-        popup.id = 'emailPopupOverlay';
-        popup.className = 'email-overlay active force-popup';
-        popup.style.cssText = `
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            background-color: rgba(0, 0, 0, 0.8) !important;
-            z-index: 999999 !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-        `;
-        
-        popup.innerHTML = `
-            <div class="email-popup layout-standard" style="
-                background-color: ${POPUP_CONFIG.backgroundColor};
-                max-width: 500px;
-                width: 90%;
-                border-radius: 8px;
-                padding: 30px;
-                position: relative;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-                animation: popupFadeIn 0.3s ease-out;
-            ">
+
+        // Create popup overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'email-overlay active';
+        overlay.id = 'emailPopupOverlay';
+
+        overlay.innerHTML = `
+            <div class="email-popup layout-standard">
                 <div class="email-popup-header">
-                    <h2 class="email-popup-title" style="
-                        color: white; 
-                        margin: 0 0 15px 0;
-                        font-size: 24px;
-                        font-weight: bold;
-                    ">${POPUP_CONFIG.title}</h2>
-                    <button class="email-popup-close" style="
-                        position: absolute;
-                        top: 15px;
-                        right: 20px;
-                        background: none;
-                        border: none;
-                        font-size: 28px;
-                        cursor: pointer;
-                        color: white;
-                        line-height: 1;
-                        padding: 5px;
-                    ">&times;</button>
+                    <h2 class="email-popup-title">${FORCE_POPUP_CONFIG.title}</h2>
+                    <button class="email-popup-close">&times;</button>
                 </div>
                 <div class="email-popup-content">
                     <div class="popup-text-container">
-                        <p class="email-popup-description" style="
-                            color: #ccc; 
-                            margin-bottom: 25px;
-                            font-size: 16px;
-                            line-height: 1.5;
-                        ">${POPUP_CONFIG.description}</p>
+                        <p class="email-popup-description">${FORCE_POPUP_CONFIG.description}</p>
                         <form class="email-form">
                             <div class="email-input-group">
-                                <input type="email" class="email-input" placeholder="${POPUP_CONFIG.placeholder}" required style="
-                                    padding: 15px;
-                                    border-radius: 6px;
-                                    border: 1px solid #555;
-                                    width: 100%;
-                                    margin-bottom: 15px;
-                                    box-sizing: border-box;
-                                    font-size: 16px;
-                                    background-color: #333;
-                                    color: white;
-                                ">
+                                <input type="email" class="email-input" placeholder="${FORCE_POPUP_CONFIG.placeholder}" required>
                             </div>
-                            <button type="submit" class="email-submit-btn" style="
-                                background-color: ${POPUP_CONFIG.buttonBackground};
-                                color: ${POPUP_CONFIG.buttonColor};
-                                padding: 15px 25px;
-                                border: none;
-                                border-radius: 6px;
-                                cursor: pointer;
-                                width: 100%;
-                                font-weight: bold;
-                                font-size: 16px;
-                                transition: all 0.3s ease;
-                            ">${POPUP_CONFIG.buttonText}</button>
+                            <button type="submit" class="email-submit-btn">
+                                ${FORCE_POPUP_CONFIG.buttonText}
+                            </button>
                         </form>
                     </div>
                 </div>
                 <div class="email-popup-footer">
-                    <p style="
-                        color: #888; 
-                        font-size: 12px; 
-                        text-align: center; 
-                        margin: 20px 0 0 0;
-                    ">We respect your privacy. Unsubscribe at any time.</p>
+                    <p>We respect your privacy. Unsubscribe at any time.</p>
                 </div>
             </div>
         `;
-        
-        // Add animation styles
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes popupFadeIn {
-                from {
-                    opacity: 0;
-                    transform: scale(0.9) translateY(-20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: scale(1) translateY(0);
-                }
-            }
-            
-            .email-submit-btn:hover {
-                transform: translateY(-2px) !important;
-                box-shadow: 0 5px 15px rgba(232, 242, 76, 0.3) !important;
-            }
-            
-            .email-input:focus {
-                outline: none !important;
-                border-color: ${POPUP_CONFIG.buttonBackground} !important;
-                box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.2) !important;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Add to DOM
-        document.body.appendChild(popup);
-        this.popupElement = popup;
-        
-        console.log('✅ Force Popup: Popup created and added to DOM');
-        
+
+        // Add to document
+        document.body.appendChild(overlay);
+
         // Add event listeners
-        this.addEventListeners(popup);
-        
+        this.attachEventListeners(overlay);
+
         // Mark as shown
         this.popupShown = true;
         sessionStorage.setItem('popup-shown', 'true');
-        
+
+        console.log('✅ Force Popup Display: Popup created and shown!');
+
         // Dispatch event
-        document.dispatchEvent(new CustomEvent('emailPopupShown', {
-            detail: { source: 'force-popup-display' }
-        }));
-        
-        return popup;
-    },
-    
-    addEventListeners(popup) {
+        document.dispatchEvent(new CustomEvent('emailPopupShown'));
+    }
+
+    attachEventListeners(overlay) {
         // Close button
-        const closeBtn = popup.querySelector('.email-popup-close');
+        const closeBtn = overlay.querySelector('.email-popup-close');
         if (closeBtn) {
-            closeBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('❌ Force Popup: Close button clicked');
-                this.closePopup();
-            });
+            closeBtn.addEventListener('click', () => this.closePopup());
         }
-        
-        // Form submission
-        const form = popup.querySelector('.email-form');
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                console.log('📧 Force Popup: Form submitted');
-                this.handleSubmit(e);
-            });
-        }
-        
+
         // Click outside to close
-        popup.addEventListener('click', (e) => {
-            if (e.target === popup) {
-                console.log('🎯 Force Popup: Background clicked');
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
                 this.closePopup();
             }
         });
-        
-        // ESC key to close
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.popupShown) {
-                console.log('⌨️ Force Popup: ESC key pressed');
-                this.closePopup();
-            }
-        });
-    },
-    
+
+        // Form submission
+        const form = overlay.querySelector('.email-form');
+        if (form) {
+            form.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
+    }
+
+    closePopup() {
+        const overlay = document.getElementById('emailPopupOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.remove();
+            }, 300);
+        }
+    }
+
     handleSubmit(e) {
+        e.preventDefault();
+
         const form = e.target;
         const emailInput = form.querySelector('.email-input');
         const submitBtn = form.querySelector('.email-submit-btn');
-        
+
         if (!emailInput || !emailInput.value) return;
-        
-        const email = emailInput.value.trim();
-        console.log('📧 Force Popup: Processing email:', email);
-        
-        // Validate email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert('Please enter a valid email address.');
-            return;
-        }
-        
+
         // Show loading state
         submitBtn.disabled = true;
         submitBtn.textContent = 'Subscribing...';
-        submitBtn.style.opacity = '0.7';
-        
-        // Save email
+
+        // Simulate API call
+        setTimeout(() => {
+            // Save email to localStorage
+            this.saveEmail(emailInput.value);
+
+            // Show success message
+            this.showSuccess();
+
+            // Close popup after delay
+            setTimeout(() => {
+                this.closePopup();
+            }, 2000);
+        }, 1000);
+    }
+
+    saveEmail(email) {
         try {
             const emails = JSON.parse(localStorage.getItem('subscriber-emails') || '[]');
-            
-            // Check if email already exists
             const emailExists = emails.some(item => item.email === email);
-            
+
             if (!emailExists) {
                 emails.push({
                     email: email,
                     date: new Date().toISOString(),
-                    status: 'active',
-                    source: 'force-popup'
+                    status: 'active'
                 });
-                
+
                 localStorage.setItem('subscriber-emails', JSON.stringify(emails));
-                console.log('💾 Force Popup: Email saved successfully');
+                console.log('💾 Force Popup Display: Email saved:', email);
             }
         } catch (error) {
-            console.error('❌ Force Popup: Error saving email:', error);
+            console.error('❌ Force Popup Display: Error saving email:', error);
         }
-        
-        // Show success
-        setTimeout(() => {
-            this.showSuccess();
-        }, 1500);
-    },
-    
+    }
+
     showSuccess() {
-        if (!this.popupElement) return;
-        
-        const popupContent = this.popupElement.querySelector('.email-popup');
-        if (popupContent) {
-            popupContent.innerHTML = `
-                <div class="email-popup-success" style="
-                    text-align: center; 
-                    padding: 50px 30px;
-                ">
-                    <div style="
-                        font-size: 64px; 
-                        color: #4caf50; 
-                        margin-bottom: 25px;
-                        animation: successPulse 1s ease-out;
-                    ">✓</div>
-                    <h2 style="
-                        color: white; 
-                        margin-bottom: 20px;
-                        font-size: 24px;
-                    ">${POPUP_CONFIG.successMessage}</h2>
-                    <p style="
-                        color: #aaa;
-                        font-size: 16px;
-                    ">This popup will close automatically.</p>
+        const overlay = document.getElementById('emailPopupOverlay');
+        if (!overlay) return;
+
+        const popup = overlay.querySelector('.email-popup');
+        if (popup) {
+            popup.innerHTML = `
+                <div class="email-popup-success">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h2 class="success-title">${FORCE_POPUP_CONFIG.successMessage}</h2>
                 </div>
             `;
-            
-            // Add success animation
-            const successStyle = document.createElement('style');
-            successStyle.textContent = `
-                @keyframes successPulse {
-                    0% { transform: scale(0); opacity: 0; }
-                    50% { transform: scale(1.2); opacity: 1; }
-                    100% { transform: scale(1); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(successStyle);
-            
-            // Auto-close after success
-            setTimeout(() => {
-                this.closePopup();
-            }, 3000);
         }
-    },
-    
-    closePopup() {
-        if (!this.popupElement) return;
-        
-        console.log('🔒 Force Popup: Closing popup');
-        
-        this.popupElement.style.opacity = '0';
-        this.popupElement.style.transform = 'scale(0.9)';
-        
-        setTimeout(() => {
-            if (this.popupElement && this.popupElement.parentNode) {
-                this.popupElement.remove();
-            }
-            this.popupElement = null;
-            this.popupShown = false;
-        }, 300);
-    },
-    
-    // Public method to show popup
-    show() {
-        if (this.popupShown) {
-            console.log('⚠️ Force Popup: Already shown');
-            return;
-        }
-        
-        console.log('🎊 Force Popup: Showing popup...');
-        return this.createAndShowPopup();
     }
-};
+}
 
-// Auto-initialize
-function initForcePopup() {
-    console.log('🎯 Force Popup: Initializing...');
-    
-    // Check if we're on dashboard (skip popup on dashboard)
-    const isDashboard = document.querySelector('.dashboard-container') || 
-                       document.querySelector('#dashboard-container') ||
-                       window.location.pathname.includes('dashboard');
-    
-    if (isDashboard) {
-        console.log('🏢 Force Popup: On dashboard page, skipping popup');
-        return;
-    }
-    
-    // Force enable popup
-    localStorage.setItem('popup-enabled', 'true');
-    localStorage.setItem('popup-initialized', 'true');
-    
-    // Clear any "already shown" flags for testing
-    sessionStorage.removeItem('popup-shown');
-    
-    console.log('⏰ Force Popup: Will show popup in 2 seconds...');
-    
-    // Show popup after delay
+// Initialize immediately
+console.log('🎬 Force Popup Display: Starting initialization...');
+
+// Check if we're on the blog page (not dashboard)
+const isDashboard = document.querySelector('.dashboard-container') || 
+                   document.querySelector('#dashboard-container') ||
+                   window.location.pathname.includes('dashboard');
+
+if (!isDashboard) {
+    // Initialize after a short delay
     setTimeout(() => {
-        window.ForcePopupManager.show();
+        new ForcePopupDisplay();
     }, 2000);
-}
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initForcePopup);
+    console.log('✅ Force Popup Display: Scheduled for blog page');
 } else {
-    initForcePopup();
+    console.log('🚫 Force Popup Display: Skipped for dashboard page');
 }
 
-// Global function for manual trigger
+// Global function for manual testing
 window.forceShowEmailPopup = function() {
-    console.log('🎯 Force Popup: Manual trigger activated');
+    console.log('🧪 Force Popup Display: Manual trigger activated');
     sessionStorage.removeItem('popup-shown');
-    window.ForcePopupManager.show();
+    new ForcePopupDisplay();
 };
 
 console.log('✅ Force Popup Display: Script loaded and ready');
