@@ -131,6 +131,27 @@ function fixAutomaticPopupClosing() {
     if (modal) {
         modal.style.display = 'none';
     }
+
+    // Add direct event listener to any button with "Create" in the AI Automation section
+    setTimeout(() => {
+        const aiAutomationSection = document.querySelector('#ai-automation-section, [data-section="ai-automation"], .ai-automation-section');
+        if (aiAutomationSection) {
+            const buttons = aiAutomationSection.querySelectorAll('button, .btn');
+            buttons.forEach(button => {
+                if (button.textContent?.toLowerCase().includes('create') || 
+                    button.textContent?.toLowerCase().includes('automation') ||
+                    button.textContent?.toLowerCase().includes('new')) {
+                    
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('AI Automation Comprehensive Fix: Direct button clicked:', button.textContent);
+                        showAutomationModal();
+                    });
+                }
+            });
+        }
+    }, 2000);
     
     // Handle all automation-related clicks
     document.addEventListener('click', function(event) {
@@ -139,36 +160,15 @@ function fixAutomaticPopupClosing() {
             event.target.matches('#createNewAutomation') ||
             event.target.matches('[data-action="create-automation"]') ||
             event.target.closest('.add-automation-path') ||
-            event.target.closest('#createNewAutomation')) {
+            event.target.closest('#createNewAutomation') ||
+            event.target.textContent?.includes('Create New Automation') ||
+            (event.target.tagName === 'BUTTON' && event.target.textContent?.includes('automation'))) {
             
             event.preventDefault();
             event.stopPropagation();
             
             console.log('AI Automation Comprehensive Fix: Add automation button clicked');
-            
-            // Ensure modal exists
-            ensureModalExists();
-            
-            const modal = document.querySelector('.automation-path-modal');
-            if (modal) {
-                // Clear the form first
-                clearFormData();
-                // Show the modal with proper styling
-                modal.style.display = 'flex';
-                modal.style.position = 'fixed';
-                modal.style.top = '0';
-                modal.style.left = '0';
-                modal.style.width = '100%';
-                modal.style.height = '100%';
-                modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-                modal.style.zIndex = '10000';
-                modal.style.alignItems = 'center';
-                modal.style.justifyContent = 'center';
-                
-                console.log('AI Automation Comprehensive Fix: Popup shown');
-            } else {
-                console.error('AI Automation Comprehensive Fix: Modal not found after creation attempt');
-            }
+            showAutomationModal();
             return;
         }
         
@@ -434,6 +434,36 @@ function fixAutomaticPopupClosing() {
             console.log('AI Automation Comprehensive Fix: Modal created and added to DOM');
         }
         return modal;
+    }
+
+    // Helper function to show automation modal
+    function showAutomationModal() {
+        console.log('AI Automation Comprehensive Fix: Showing automation modal...');
+        
+        // Ensure modal exists
+        ensureModalExists();
+        
+        const modal = document.querySelector('.automation-path-modal');
+        if (modal) {
+            // Clear the form first
+            clearFormData();
+            
+            // Show the modal with proper styling
+            modal.style.display = 'flex';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            modal.style.zIndex = '10000';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            
+            console.log('AI Automation Comprehensive Fix: Modal displayed successfully');
+        } else {
+            console.error('AI Automation Comprehensive Fix: Modal not found');
+        }
     }
 
     // Helper function to show success message
