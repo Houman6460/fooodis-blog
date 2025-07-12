@@ -1,4 +1,3 @@
-
 /* AI Configuration Dark Theme */
 :root {
     --primary-color: #e8f24c; /* Yellow accent color */
@@ -346,22 +345,22 @@
     .ai-config-actions {
         flex-direction: column;
     }
-    
+
     .ai-config-actions button {
         width: 100%;
         justify-content: center;
     }
-    
+
     .ai-config-form .input-group {
         flex-direction: column;
     }
-    
+
     .ai-config-form .input-group input,
     .ai-config-form .input-group button {
         border-radius: 4px;
         width: 100%;
     }
-    
+
     .ai-config-form .input-group button {
         margin-top: 5px;
     }
@@ -390,4 +389,78 @@
 
 .password-toggle .toggle-btn:hover {
     color: var(--dark-text);
+}
+
+.status {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.status.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status.testing {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.ai-config-form {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.ai-config-form label {
+    color: #fff;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.ai-config-form input[type="text"],
+.ai-config-form input[type="password"],
+.ai-config-form textarea {
+    background: rgba(40, 40, 40, 0.9);
+    border: 1px solid #555;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.ai-config-form button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.ai-config-form button:hover {
+    background: #0056b3;
+}
+
+.ai-config-form button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
 }

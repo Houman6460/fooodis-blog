@@ -922,6 +922,50 @@ router.delete('/users/clear-all', (req, res) => {
     }
 });
 
+// Test OpenAI API connection endpoint
+router.post('/test-connection', async (req, res) => {
+    try {
+        const { apiKey } = req.body;
+        
+        if (!apiKey) {
+            return res.status(400).json({
+                success: false,
+                message: 'API key is required'
+            });
+        }
+        
+        // Test the API key by making a simple request to OpenAI
+        const testResponse = await fetch('https://api.openai.com/v1/models', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (testResponse.ok) {
+            const data = await testResponse.json();
+            res.json({
+                success: true,
+                message: 'Connection successful',
+                modelsCount: data.data ? data.data.length : 0
+            });
+        } else {
+            const errorData = await testResponse.json().catch(() => ({}));
+            res.status(400).json({
+                success: false,
+                message: errorData.error?.message || 'Invalid API key'
+            });
+        }
+    } catch (error) {
+        console.error('Test connection error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Connection test failed: ' + error.message
+        });
+    }
+});
+
 // Save a new user lead
 router.post('/register', async (req, res) => {
     try {
