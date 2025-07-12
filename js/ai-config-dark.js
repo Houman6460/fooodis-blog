@@ -264,11 +264,25 @@ function isAIConfigured() {
  * Connection test
  */
 async function testConnection() {
-    const apiKey = document.getElementById('openai-api-key')?.value;
+    const apiKeyInput = document.getElementById('openai-api-key') || 
+                       document.getElementById('openaiApiKey') ||
+                       document.querySelector('input[placeholder*="API"]');
+
+    if (!apiKeyInput) {
+        showConnectionStatus('error', 'API key input not found');
+        return false;
+    }
+
+    const apiKey = apiKeyInput.value?.trim();
 
     if (!apiKey) {
         showConnectionStatus('error', 'Please enter an API key first');
-        return;
+        return false;
+    }
+
+    if (!apiKey.startsWith('sk-')) {
+        showConnectionStatus('error', 'Invalid API key format. OpenAI keys start with "sk-"');
+        return false;
     }
 
     showConnectionStatus('testing', 'Testing connection...');
@@ -286,7 +300,7 @@ async function testConnection() {
         if (response.ok) {
             const data = await response.json();
             if (data.data && data.data.length > 0) {
-                showConnectionStatus('success', 'Connection successful! API key is valid.');
+                showConnectionStatus('success', `Connection successful! Found ${data.data.length} models available.`);
                 return true;
             } else {
                 showConnectionStatus('error', 'API key is invalid or has no access to models');
@@ -294,7 +308,8 @@ async function testConnection() {
             }
         } else {
             const errorData = await response.json().catch(() => ({}));
-            showConnectionStatus('error', `Connection failed: ${errorData.error?.message || response.statusText}`);
+            const errorMessage = errorData.error?.message || response.statusText;
+            showConnectionStatus('error', `Connection failed: ${errorMessage}`);
             return false;
         }
     } catch (error) {
