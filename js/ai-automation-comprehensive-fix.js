@@ -132,37 +132,28 @@ function fixAutomaticPopupClosing() {
         modal.style.display = 'none';
     }
 
-    // Add direct event listener to any button with "Create" in the AI Automation section
+    // Only add event listener to specific add automation buttons
     setTimeout(() => {
-        const aiAutomationSection = document.querySelector('#ai-automation-section, [data-section="ai-automation"], .ai-automation-section');
-        if (aiAutomationSection) {
-            const buttons = aiAutomationSection.querySelectorAll('button, .btn');
-            buttons.forEach(button => {
-                if (button.textContent?.toLowerCase().includes('create') || 
-                    button.textContent?.toLowerCase().includes('automation') ||
-                    button.textContent?.toLowerCase().includes('new')) {
-                    
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('AI Automation Comprehensive Fix: Direct button clicked:', button.textContent);
-                        showAutomationModal();
-                    });
-                }
+        const addButtons = document.querySelectorAll('.add-automation-path, #createNewAutomation, [data-action="create-automation"]');
+        addButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('AI Automation Comprehensive Fix: Add automation button clicked');
+                showAutomationModal();
             });
-        }
+        });
     }, 2000);
     
-    // Handle all automation-related clicks
+    // Handle specific automation creation clicks only
     document.addEventListener('click', function(event) {
-        // Handle multiple selectors for Add New Automation Path button
+        // Handle only specific selectors for Add New Automation Path button
         if (event.target.matches('.add-automation-path') || 
             event.target.matches('#createNewAutomation') ||
             event.target.matches('[data-action="create-automation"]') ||
             event.target.closest('.add-automation-path') ||
             event.target.closest('#createNewAutomation') ||
-            event.target.textContent?.includes('Create New Automation') ||
-            (event.target.tagName === 'BUTTON' && event.target.textContent?.includes('automation'))) {
+            (event.target.textContent && event.target.textContent.trim() === 'Add New Automation Path')) {
             
             event.preventDefault();
             event.stopPropagation();

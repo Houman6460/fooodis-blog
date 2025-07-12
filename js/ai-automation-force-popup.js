@@ -16,35 +16,25 @@ document.addEventListener('DOMContentLoaded', function() {
 function initForcePopup() {
     console.log('AI Automation Force Popup: Initializing...');
     
-    // Listen for ANY click in the AI automation section
+    // Only listen for specific automation creation buttons
     document.addEventListener('click', function(event) {
-        // Check if we're in the AI automation section
-        const aiSection = event.target.closest('#ai-automation-section, [data-section="ai-automation"], .ai-automation-section, .ai-automation');
+        const clickedElement = event.target;
         
-        if (aiSection) {
-            const clickedElement = event.target;
+        // Check if it's specifically the add automation button or similar
+        if (clickedElement.classList.contains('add-automation-path') ||
+            clickedElement.closest('.add-automation-path') ||
+            (clickedElement.textContent && clickedElement.textContent.includes('Add New Automation')) ||
+            (clickedElement.textContent && clickedElement.textContent.includes('Create New Automation'))) {
             
-            // Check if it's any kind of button or clickable element
-            if (clickedElement.tagName === 'BUTTON' || 
-                clickedElement.classList.contains('btn') ||
-                clickedElement.classList.contains('button') ||
-                clickedElement.getAttribute('role') === 'button') {
-                
-                const text = clickedElement.textContent?.toLowerCase() || '';
-                
-                // If it contains automation-related keywords
-                if (text.includes('create') || text.includes('automation') || text.includes('new') || text.includes('add')) {
-                    console.log('AI Automation Force Popup: Automation button detected:', text);
-                    
-                    event.preventDefault();
-                    event.stopPropagation();
-                    
-                    // Force show the popup
-                    forceShowPopup();
-                }
-            }
+            console.log('AI Automation Force Popup: Add automation button clicked');
+            
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Force show the popup
+            forceShowPopup();
         }
-    }, true); // Use capture phase
+    }, true);
 }
 
 function forceShowPopup() {
