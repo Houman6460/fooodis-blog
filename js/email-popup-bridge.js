@@ -4,10 +4,20 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Enable popup by default for testing
+    if (localStorage.getItem('popup-enabled') === null) {
+        localStorage.setItem('popup-enabled', 'true');
+        localStorage.setItem('popup-trigger', 'delay');
+        localStorage.setItem('popup-delay', '3');
+    }
+    
     // Fix the popup trigger issue by properly saving the toggle state
     const fixPopupTrigger = function() {
         const popupEnabledCheckbox = document.getElementById('popupEnabled');
         if (popupEnabledCheckbox) {
+            // Set checkbox to match localStorage state
+            popupEnabledCheckbox.checked = localStorage.getItem('popup-enabled') === 'true';
+            
             // When the checkbox is clicked, save the state for the display script
             popupEnabledCheckbox.addEventListener('change', function() {
                 localStorage.setItem('popup-enabled', this.checked ? 'true' : 'false');
@@ -28,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Save delay value
                     const delayInput = document.getElementById('popupDelay');
                     if (delayInput) {
-                        localStorage.setItem('popup-delay', delayInput.value || '5');
+                        localStorage.setItem('popup-delay', delayInput.value || '3');
                     }
                     
                     // Save scroll percentage
