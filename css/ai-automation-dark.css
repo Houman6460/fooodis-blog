@@ -1,557 +1,444 @@
-/* AI Automation Dark Theme */
-:root {
-    --primary-color: #e8f24c; /* Yellow accent color */
-    --secondary-color: #1e2127; /* Dark background */
-    --text-color: #ffffff; /* White text */
-    --accent-color: #c7d037; /* Darker yellow for hover states */
-    --dark-accent: #1d2029; /* Slightly darker background for cards */
-    --border-color: rgba(232, 242, 76, 0.3); /* Semi-transparent yellow for borders */
-    --dark-bg: #1e2127; /* Main dark background */
-    --darker-bg: #171a1f; /* Darker background for contrast */
-    --dark-card: #252830; /* Dark card background */
-    --dark-input: #2a2e36; /* Dark input background */
-    --dark-border: #32363f; /* Dark border color */
-    --dark-text: #e0e0e0; /* Main text color on dark background */
-    --dark-text-secondary: #a0a0a0; /* Secondary text color on dark background */
+/* AI Automation Dark Theme Styles */
+
+.ai-automation-section {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
 }
 
-/* AI Automation Section */
-#ai-automation-section {
-    background-color: var(--dark-card);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid var(--dark-border);
+.automation-section-header h2 {
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: 600;
 }
 
-#ai-automation-section .section-header {
-    margin-bottom: 20px;
+.automation-section-header p {
+    color: #b0b0b0;
+    margin-bottom: 24px;
 }
 
-#ai-automation-section .section-title {
-    color: var(--dark-text);
-    margin-top: 0;
-    margin-bottom: 5px;
-    font-size: 1.5rem;
+/* Automation Paths Container */
+.automation-paths-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 24px;
 }
 
-#ai-automation-section .section-description {
-    color: var(--dark-text-secondary);
-    margin-top: 0;
-    font-size: 0.9rem;
-}
-
-/* Automation Paths */
-.automation-paths {
-    margin-bottom: 20px;
-}
-
+/* Individual Automation Path */
 .automation-path {
-    background-color: var(--dark-bg);
-    border: 1px solid var(--dark-border);
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    position: relative;
+    background: #2a2a2a;
+    border: 1px solid #404040;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
 }
 
+.automation-path:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.automation-path.add-new {
+    border: 2px dashed #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.automation-path.add-new:hover {
+    border-color: #007bff;
+    background: #2a2a2a;
+}
+
+.add-automation-content {
+    text-align: center;
+    color: #b0b0b0;
+}
+
+.add-automation-content i {
+    font-size: 32px;
+    color: #007bff;
+    margin-bottom: 12px;
+}
+
+.add-automation-content h3 {
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.add-automation-content p {
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+/* Automation Path Header */
 .automation-path-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--dark-border);
+    align-items: flex-start;
+    margin-bottom: 16px;
 }
 
-.automation-path-title {
-    display: flex;
-    align-items: center;
-}
-
-.automation-path-title h3 {
-    color: var(--dark-text);
+.automation-path-header h3 {
+    color: #ffffff;
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 18px;
+    font-weight: 600;
+    flex: 1;
 }
 
-.automation-path-title i {
-    color: var(--primary-color);
-    margin-right: 10px;
-}
-
-.automation-path-status {
+.automation-path-controls {
     display: flex;
-    align-items: center;
+    gap: 8px;
 }
 
-.status-toggle {
-    display: flex;
-    align-items: center;
-    margin-right: 15px;
-}
-
-.status-toggle .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-    margin-right: 8px;
-}
-
-.status-toggle .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.status-toggle .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--dark-border);
-    transition: .4s;
-    border-radius: 24px;
-}
-
-.status-toggle .slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: var(--dark-text);
-    transition: .4s;
-    border-radius: 50%;
-}
-
-.status-toggle input:checked + .slider {
-    background-color: var(--primary-color);
-}
-
-.status-toggle input:checked + .slider:before {
-    background-color: var(--secondary-color);
-    transform: translateX(26px);
-}
-
-.status-toggle span {
-    color: var(--dark-text);
-    font-size: 0.9rem;
-}
-
-.automation-path-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.automation-path-actions button {
-    background: none;
-    border: none;
-    color: var(--dark-text-secondary);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 5px;
-    transition: color 0.2s;
-}
-
-.automation-path-actions button:hover {
-    color: var(--dark-text);
-}
-
-.automation-path-actions .edit-btn:hover {
-    color: var(--primary-color);
-}
-
-.automation-path-actions .delete-btn:hover {
-    color: #e74c3c;
-}
-
-/* Automation Path Content */
-.automation-path-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-}
-
-.automation-path-detail {
-    background-color: var(--dark-card);
+.automation-path-controls .btn {
+    padding: 6px 8px;
+    min-width: auto;
     border-radius: 6px;
-    padding: 12px;
 }
 
-.automation-path-detail h4 {
-    color: var(--primary-color);
-    margin: 0 0 8px 0;
-    font-size: 0.9rem;
+/* Automation Path Details */
+.automation-path-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.path-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.info-label {
+    color: #b0b0b0;
+    font-size: 14px;
     font-weight: 500;
 }
 
-.automation-path-detail p {
-    color: var(--dark-text);
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
+.info-value {
+    color: #ffffff;
+    font-size: 14px;
 }
 
-.automation-path-detail .tag {
-    display: inline-block;
-    background-color: rgba(232, 242, 76, 0.1);
-    color: var(--primary-color);
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    font-size: 0.8rem;
-}
-
-.automation-path-detail .next-run {
+.path-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
     margin-top: 8px;
-    font-style: italic;
-    color: var(--dark-text-secondary);
-    font-size: 0.8rem;
 }
 
-/* Add New Path Button */
-.add-automation-path {
-    background-color: rgba(232, 242, 76, 0.1);
-    border: 1px dashed var(--border-color);
-    border-radius: 8px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
+.path-status.active {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
 }
 
-.add-automation-path:hover {
-    background-color: rgba(232, 242, 76, 0.15);
+.path-status.inactive {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid #dc3545;
 }
 
-.add-automation-path i {
-    color: var(--primary-color);
-    font-size: 2rem;
-    margin-bottom: 10px;
-}
-
-.add-automation-path p {
-    color: var(--dark-text);
-    margin: 0;
-    font-size: 1rem;
-}
-
-/* Automation Path Form Modal */
+/* Automation Modal */
 .automation-path-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
 }
 
-.automation-path-modal.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.automation-path-form {
-    background-color: var(--dark-card);
-    border-radius: 8px;
+.automation-modal-content {
+    background: #2a2a2a;
+    border-radius: 12px;
     width: 90%;
-    max-width: 800px;
+    max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
+}
+
+.automation-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px;
-    position: relative;
+    border-bottom: 1px solid #404040;
 }
 
-.automation-path-form h2 {
-    color: var(--dark-text);
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.3rem;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--dark-border);
+.automation-modal-header h2 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
 }
 
-.automation-path-form .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
+.close-automation-modal {
+    color: #b0b0b0;
+    font-size: 24px;
+    cursor: pointer;
     background: none;
     border: none;
-    color: var(--dark-text-secondary);
-    font-size: 1.2rem;
-    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.automation-path-form .close-btn:hover {
-    color: var(--dark-text);
+.close-automation-modal:hover {
+    color: #ffffff;
 }
 
-/* Form Group */
+.automation-modal-body {
+    padding: 20px;
+}
+
+.automation-modal-footer {
+    padding: 20px;
+    border-top: 1px solid #404040;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Form Groups */
 .form-group {
     margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    color: var(--dark-text);
-    margin-bottom: 8px;
+    color: #ffffff;
     font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 14px;
 }
 
-.form-group.assistant-id-group {
-    display: none;
-}
-
-.form-group.assistant-id-group.visible {
-    display: block;
-}
-
-.form-group .help-text {
-    font-size: 0.8rem;
-    color: var(--dark-text-secondary);
-    margin-top: 4px;
-    font-style: italic;
-}
-
-.form-group input[type="text"],
-.form-group input[type="number"],
+.form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--dark-border);
-    background-color: var(--dark-input);
-    color: var(--dark-text);
+    padding: 12px;
+    background: #1a1a1a;
+    border: 1px solid #404040;
+    border-radius: 6px;
+    color: #ffffff;
     font-size: 14px;
+    transition: border-color 0.3s ease;
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus,
+.form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.2);
-}
-
-.form-group select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e0e0e0' d='M6 9L0 3h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 30px;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
 .form-group textarea {
-    min-height: 100px;
     resize: vertical;
-}
-
-.form-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.form-row .form-group {
-    flex: 1;
-    margin-bottom: 0;
-}
-
-.form-check {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.form-check input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-.form-check label {
-    margin-bottom: 0;
-    font-weight: normal;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--dark-border);
-}
-
-.form-actions button {
-    padding: 10px 15px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.form-actions .save-btn {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    border: none;
-    font-weight: 500;
-}
-
-.form-actions .save-btn:hover {
-    background-color: var(--accent-color);
-}
-
-.form-actions .cancel-btn {
-    background-color: transparent;
-    color: var(--dark-text);
-    border: 1px solid var(--dark-border);
-}
-
-.form-actions .cancel-btn:hover {
-    background-color: var(--dark-input);
+    min-height: 80px;
 }
 
 /* Schedule Options */
 .schedule-options {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 8px;
 }
 
 .schedule-option {
-    background-color: var(--dark-input);
-    border: 1px solid var(--dark-border);
-    border-radius: 4px;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: #1a1a1a;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 16px 12px;
     text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #b0b0b0;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .schedule-option:hover {
-    background-color: var(--dark-accent);
-    border-color: var(--primary-color);
+    border-color: #007bff;
+    color: #ffffff;
 }
 
 .schedule-option.selected {
-    background-color: rgba(232, 242, 76, 0.1);
-    border-color: var(--primary-color);
-    position: relative;
+    border-color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+    color: #007bff;
 }
 
-.schedule-option.selected::after {
-    content: "✓";
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    color: var(--primary-color);
-    font-weight: bold;
+.schedule-option i {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 8px;
 }
 
-.schedule-option h4 {
-    margin: 0 0 5px 0;
-    color: var(--dark-text);
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
     font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.schedule-option p {
-    margin: 0;
-    color: var(--dark-text-secondary);
+.btn-primary {
+    background: #007bff;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #ffffff;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-small {
+    padding: 6px 12px;
     font-size: 12px;
 }
 
-/* Custom Schedule */
-.custom-schedule {
-    margin-top: 15px;
-    padding: 15px;
-    background-color: var(--dark-input);
-    border-radius: 4px;
-    border: 1px solid var(--dark-border);
-    display: none;
-}
-
-.custom-schedule.visible {
-    display: block;
-}
-
-.custom-schedule h4 {
-    margin: 0 0 15px 0;
-    color: var(--dark-text);
-    font-size: 14px;
-}
-
-/* Prompt Template */
-.prompt-template {
-    margin-top: 10px;
-}
-
-.prompt-template textarea {
-    min-height: 150px;
-}
-
-.prompt-variables {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: var(--dark-input);
-    border-radius: 4px;
-    border: 1px solid var(--dark-border);
-}
-
-.prompt-variables h4 {
-    margin: 0 0 10px 0;
-    color: var(--dark-text);
-    font-size: 14px;
-}
-
-.prompt-variables ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.prompt-variables li {
-    color: var(--dark-text-secondary);
-    font-size: 13px;
-    margin-bottom: 5px;
-}
-
-.prompt-variables code {
-    background-color: rgba(232, 242, 76, 0.1);
-    color: var(--primary-color);
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-family: monospace;
-}
-
-/* Responsive Adjustments */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .automation-path-content {
+    .automation-paths-container {
         grid-template-columns: 1fr;
     }
-    
-    .form-row {
-        flex-direction: column;
-        gap: 20px;
+
+    .automation-modal-content {
+        width: 95%;
+        margin: 10px;
     }
-    
+
     .schedule-options {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
+
+    .automation-path-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .automation-path-controls {
+        align-self: flex-end;
+    }
+}
+
+/* Loading and Status States */
+.automation-path.generating {
+    border-color: #ffc107;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+}
+
+.automation-path.generating::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffc107, transparent);
+    animation: loading 2s infinite;
+}
+
+@keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Execution Status Cards */
+.execution-status-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    max-width: 350px;
+}
+
+.execution-status-card {
+    background: #2a2a2a;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.execution-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.execution-status-header h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #ffc107;
+}
+
+.execution-status-progress {
+    height: 4px;
+    background: #404040;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.execution-status-bar {
+    height: 100%;
+    background: #ffc107;
+    animation: progress 2s infinite;
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
 }

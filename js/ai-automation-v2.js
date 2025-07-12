@@ -39,49 +39,13 @@ function initializeAIAutomationV2() {
  */
 function loadAutomationPaths() {
     try {
-        // Try multiple storage locations
-        let paths = [];
-
-        // Check localStorage
-        const savedPaths = localStorage.getItem('aiAutomationPaths');
-        if (savedPaths) {
-            paths = JSON.parse(savedPaths);
+        const saved = localStorage.getItem('aiAutomationPaths');
+        if (saved) {
+            window.aiAutomation.automationPaths = JSON.parse(saved);
+            console.log('AI Automation V2: Loaded', window.aiAutomation.automationPaths.length, 'automation paths');
         }
-
-        // Check StorageManager
-        if (!paths.length && typeof StorageManager !== 'undefined') {
-            const storagePaths = StorageManager.get('ai-automation-paths');
-            if (storagePaths && Array.isArray(storagePaths)) {
-                paths = storagePaths;
-            }
-        }
-
-        // Check alternative storage key
-        if (!paths.length) {
-            const altPaths = localStorage.getItem('fooodis-ai-automation-paths');
-            if (altPaths) {
-                paths = JSON.parse(altPaths);
-            }
-        }
-
-        // Ensure each path has an ID
-        paths = paths.map(path => ({
-            ...path,
-            id: path.id || generateAutomationId()
-        }));
-
-        window.aiAutomation.automationPaths = paths;
-        
-        // Save back to ensure consistency
-        saveAutomationPathsToStorage();
-
-        console.log(`AI Automation V2: Loaded ${paths.length} automation paths`);
-        
-        // Update UI
-        displayAutomationPaths();
-
     } catch (error) {
-        console.error('Error loading automation paths:', error);
+        console.error('AI Automation V2: Error loading automation paths:', error);
         window.aiAutomation.automationPaths = [];
     }
 }
@@ -89,71 +53,55 @@ function loadAutomationPaths() {
 /**
  * Save automation paths to storage
  */
-function saveAutomationPathsToStorage() {
+function saveAutomationPaths() {
     try {
-        const paths = window.aiAutomation.automationPaths.map(path => ({
-            ...path,
-            id: path.id || generateAutomationId()
-        }));
-
-        // Save to multiple locations for redundancy
-        localStorage.setItem('aiAutomationPaths', JSON.stringify(paths));
-        localStorage.setItem('fooodis-ai-automation-paths', JSON.stringify(paths));
-
-        // Save via StorageManager if available
-        if (typeof StorageManager !== 'undefined') {
-            StorageManager.save('ai-automation-paths', paths);
-        }
-
-        // Save to sessionStorage as backup
-        sessionStorage.setItem('aiAutomationPaths-backup', JSON.stringify(paths));
-
-        console.log('AI Automation V2: Paths saved successfully');
-
+        localStorage.setItem('aiAutomationPaths', JSON.stringify(window.aiAutomation.automationPaths));
+        console.log('AI Automation V2: Saved automation paths');
+        return true;
     } catch (error) {
-        console.error('Error saving automation paths:', error);
+        console.error('AI Automation V2: Error saving automation paths:', error);
+        return false;
     }
-}
-
-/**
- * Generate unique automation ID
- */
-function generateAutomationId() {
-    return 'automation_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
 }
 
 /**
  * Setup automation event listeners
  */
 function setupAutomationEventListeners() {
-    // Add automation path button
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.add-automation-path') || 
-            e.target.closest('[data-automation="add"]') ||
-            e.target.closest('.automation-path-btn') ||
-            e.target.classList.contains('add-automation-btn')) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🔄 Add automation path clicked');
+    console.log('AI Automation V2: Setting up event listeners...');
+
+    // Add new automation path
+    document.addEventListener('click', function(event) {
+        if (event.target.matches('.add-automation-path')) {
             showAutomationModal();
         }
-    });
 
-    // Delete automation path
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-automation-path')) {
-            e.preventDefault();
-            const pathId = e.target.closest('.automation-path-item').dataset.pathId;
+        if (event.target.matches('.save-automation-path')) {
+            saveNewAutomationPath();
+        }
+
+        if (event.target.matches('.close-automation-modal')) {
+            hideAutomationModal();
+        }
+
+        if (event.target.matches('.delete-automation-path')) {
+            const pathId = event.target.dataset.pathId;
             deleteAutomationPath(pathId);
+        }
+
+        if (event.target.matches('.toggle-automation-path')) {
+            const pathId = event.target.dataset.pathId;
+            toggleAutomationPath(pathId);
         }
     });
 
-    // Execute automation path
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.execute-automation-path')) {
-            e.preventDefault();
-            const pathId = e.target.closest('.automation-path-item').dataset.pathId;
-            executeAutomationPath(pathId);
+    // Schedule option selection
+    document.addEventListener('click', function(event) {
+        if (event.target.matches('.schedule-option')) {
+            document.querySelectorAll('.schedule-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
         }
     });
 }
@@ -179,270 +127,293 @@ function setupAutomationUI() {
     // Ensure the section has the proper structure
     ensureAutomationSectionStructure(automationSection);
 
-    // Add styles
-    if (!document.getElementById('ai-automation-v2-styles')) {
-        const styles = document.createElement('style');
-        styles.id = 'ai-automation-v2-styles';
-        styles.textContent = `
-            .automation-path-item {
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                padding: 15px;
-                margin-bottom: 10px;
-                transition: all 0.2s;
-            }
-            .automation-path-item:hover {
-                background: rgba(255, 255, 255, 0.08);
-                border-color: rgba(232, 242, 76, 0.3);
-            }
-            .automation-path-title {
-                color: #e8f24c;
-                font-weight: 600;
-                margin-bottom: 5px;
-            }
-            .automation-path-description {
-                color: #a0a0a0;
-                font-size: 14px;
-                margin-bottom: 10px;
-            }
-            .automation-path-actions {
-                display: flex;
-                gap: 10px;
-                align-items: center;
-            }
-            .automation-status {
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 12px;
-                font-weight: 500;
-            }
-            .automation-status.pending {
-                background: rgba(255, 193, 7, 0.2);
-                color: #ffc107;
-            }
-            .automation-status.running {
-                background: rgba(23, 162, 184, 0.2);
-                color: #17a2b8;
-            }
-            .automation-status.completed {
-                background: rgba(40, 167, 69, 0.2);
-                color: #28a745;
-            }
-            .automation-status.failed {
-                background: rgba(220, 53, 69, 0.2);
-                color: #dc3545;
-            }
-            .add-automation-btn {
-                background: #e8f24c;
-                color: #1e2127;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 500;
-                margin: 10px 0;
-                transition: all 0.2s;
-            }
-            .add-automation-btn:hover {
-                background: #d4dc42;
-                transform: translateY(-1px);
-            }
-        `;
-        document.head.appendChild(styles);
-    }
+    // Render existing automation paths
+    renderAutomationPaths();
 }
 
 /**
  * Ensure automation section has proper structure
  */
 function ensureAutomationSectionStructure(section) {
-    // Check if containers exist
-    let pathsContainer = section.querySelector('#automation-paths-container') || 
-                        section.querySelector('.automation-paths-list');
-
+    // Check if automation paths container exists
+    let pathsContainer = section.querySelector('.automation-paths-container');
     if (!pathsContainer) {
         pathsContainer = document.createElement('div');
-        pathsContainer.id = 'automation-paths-container';
-        pathsContainer.className = 'automation-paths-list';
+        pathsContainer.className = 'automation-paths-container';
         section.appendChild(pathsContainer);
     }
 
-    // Add a button if it doesn't exist
-    if (!section.querySelector('.add-automation-btn') && 
-        !section.querySelector('.add-automation-path')) {
-        const addButton = document.createElement('button');
-        addButton.className = 'add-automation-btn add-automation-path';
-        addButton.innerHTML = '<i class="fas fa-plus"></i> Add Automation Path';
-        section.insertBefore(addButton, pathsContainer);
+    // Check if add button exists
+    let addButton = pathsContainer.querySelector('.add-automation-path');
+    if (!addButton) {
+        const addButtonContainer = document.createElement('div');
+        addButtonContainer.className = 'automation-path add-new';
+        addButtonContainer.innerHTML = `
+            <div class="add-automation-content">
+                <i class="fas fa-plus"></i>
+                <h3>Add New Automation Path</h3>
+                <p>Create automated content generation schedule</p>
+                <button class="btn btn-primary add-automation-path">Add Automation Path</button>
+            </div>
+        `;
+        pathsContainer.appendChild(addButtonContainer);
     }
+
+    // Ensure modal exists
+    ensureAutomationModal();
 }
 
 /**
- * Display automation paths
+ * Ensure automation modal exists
  */
-function displayAutomationPaths() {
-    const container = document.getElementById('automation-paths-container') || 
-                     document.querySelector('.automation-paths-list');
+function ensureAutomationModal() {
+    let modal = document.querySelector('.automation-path-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.className = 'automation-path-modal';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="automation-modal-content">
+                <div class="automation-modal-header">
+                    <h2>Create Automation Path</h2>
+                    <span class="close-automation-modal">&times;</span>
+                </div>
+                <div class="automation-modal-body">
+                    <div class="form-group">
+                        <label for="path-name">Path Name</label>
+                        <input type="text" id="path-name" placeholder="Enter automation path name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content-type">Content Type</label>
+                        <select id="content-type">
+                            <option value="blog-post">Blog Post</option>
+                            <option value="social-media">Social Media</option>
+                            <option value="newsletter">Newsletter</option>
+                            <option value="product-description">Product Description</option>
+                        </select>
+                    </div>
 
-    if (!container) {
-        console.warn('Automation paths container not found');
-        return;
-    }
+                    <div class="form-group">
+                        <label for="assistant-type">Assistant Type</label>
+                        <select id="assistant-type">
+                            <option value="creative">Creative Writer</option>
+                            <option value="technical">Technical Writer</option>
+                            <option value="marketing">Marketing Specialist</option>
+                            <option value="general">General Assistant</option>
+                        </select>
+                    </div>
 
-    const paths = window.aiAutomation.automationPaths;
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="Recipes">Recipes</option>
+                            <option value="Restaurants">Restaurants</option>
+                            <option value="Health">Health</option>
+                            <option value="Cooking Tips">Cooking Tips</option>
+                        </select>
+                    </div>
 
-    if (paths.length === 0) {
-        container.innerHTML = `
-            <div class="text-center py-4 text-muted">
-                <p>No automation paths configured.</p>
-                <button class="btn btn-primary add-automation-path">
-                    <i class="fas fa-plus"></i> Add Automation Path
-                </button>
+                    <div class="form-group">
+                        <label for="topics">Topics (comma-separated)</label>
+                        <textarea id="topics" placeholder="Enter topics separated by commas"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Schedule</label>
+                        <div class="schedule-options">
+                            <div class="schedule-option selected" data-schedule="daily">
+                                <i class="fas fa-calendar-day"></i>
+                                Daily
+                            </div>
+                            <div class="schedule-option" data-schedule="weekly">
+                                <i class="fas fa-calendar-week"></i>
+                                Weekly
+                            </div>
+                            <div class="schedule-option" data-schedule="monthly">
+                                <i class="fas fa-calendar"></i>
+                                Monthly
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="schedule-time">Time</label>
+                        <input type="time" id="schedule-time" value="14:00">
+                    </div>
+                </div>
+                <div class="automation-modal-footer">
+                    <button class="btn btn-secondary close-automation-modal">Cancel</button>
+                    <button class="btn btn-primary save-automation-path">Save Automation Path</button>
+                </div>
             </div>
         `;
-        return;
+        document.body.appendChild(modal);
     }
-
-    container.innerHTML = paths.map(path => `
-        <div class="automation-path-item" data-path-id="${path.id}">
-            <div class="automation-path-title">${path.title || 'Untitled Automation'}</div>
-            <div class="automation-path-description">${path.description || 'No description'}</div>
-            <div class="automation-path-schedule">
-                <small class="text-muted">
-                    <i class="fas fa-clock"></i> 
-                    ${path.schedule ? formatSchedule(path.schedule) : 'No schedule'}
-                </small>
-            </div>
-            <div class="automation-path-actions mt-2">
-                <span class="automation-status ${getAutomationStatus(path.id)}">${getAutomationStatus(path.id)}</span>
-                <button class="btn btn-sm btn-outline-primary execute-automation-path">
-                    <i class="fas fa-play"></i> Execute
-                </button>
-                <button class="btn btn-sm btn-outline-danger delete-automation-path">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
-            </div>
-        </div>
-    `).join('');
 }
 
 /**
  * Show automation modal
  */
 function showAutomationModal() {
-    console.log('📝 Showing automation modal...');
-    
-    // Remove existing modal
-    const existingModal = document.getElementById('automationModal');
-    if (existingModal) {
-        existingModal.remove();
+    const modal = document.querySelector('.automation-path-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Reset form
+        modal.querySelector('#path-name').value = '';
+        modal.querySelector('#topics').value = '';
+        modal.querySelector('#schedule-time').value = '14:00';
+        
+        // Reset schedule selection
+        modal.querySelectorAll('.schedule-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        modal.querySelector('.schedule-option[data-schedule="daily"]').classList.add('selected');
+    }
+}
+
+/**
+ * Hide automation modal
+ */
+function hideAutomationModal() {
+    const modal = document.querySelector('.automation-path-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+/**
+ * Save new automation path
+ */
+function saveNewAutomationPath() {
+    const modal = document.querySelector('.automation-path-modal');
+    if (!modal) return;
+
+    const pathName = modal.querySelector('#path-name').value;
+    const contentType = modal.querySelector('#content-type').value;
+    const assistantType = modal.querySelector('#assistant-type').value;
+    const category = modal.querySelector('#category').value;
+    const topics = modal.querySelector('#topics').value;
+    const scheduleType = modal.querySelector('.schedule-option.selected').dataset.schedule;
+    const scheduleTime = modal.querySelector('#schedule-time').value;
+
+    if (!pathName || !contentType || !scheduleType || !scheduleTime) {
+        alert('Please fill in all required fields');
+        return;
     }
 
-    // Create modal HTML
-    const modalHtml = `
-        <div class="modal fade" id="automationModal" tabindex="-1" style="z-index: 99999;">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content bg-dark">
-                    <div class="modal-header border-secondary">
-                        <h5 class="modal-title text-light">Add Automation Path</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="automationForm">
-                            <div class="mb-3">
-                                <label class="form-label text-light">Title</label>
-                                <input type="text" class="form-control bg-dark text-light border-secondary" 
-                                       id="automationTitle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label text-light">Description</label>
-                                <textarea class="form-control bg-dark text-light border-secondary" 
-                                          id="automationDescription" rows="3"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label text-light">AI Prompt</label>
-                                <textarea class="form-control bg-dark text-light border-secondary" 
-                                          id="automationPrompt" rows="4" 
-                                          placeholder="Enter your AI prompt for content generation..." required></textarea>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label class="form-label text-light">Schedule Date</label>
-                                    <input type="date" class="form-control bg-dark text-light border-secondary" 
-                                           id="automationDate" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label text-light">Schedule Time</label>
-                                    <input type="time" class="form-control bg-dark text-light border-secondary" 
-                                           id="automationTime" required>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer border-secondary">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="saveAutomationPath()">Save Automation</button>
-                    </div>
-                </div>
+    const newPath = {
+        id: Date.now().toString(),
+        name: pathName,
+        contentType: contentType,
+        assistantType: assistantType,
+        category: category,
+        topics: topics,
+        schedule: {
+            type: scheduleType,
+            time: scheduleTime
+        },
+        active: true,
+        lastRun: null,
+        createdAt: new Date().toISOString()
+    };
+
+    window.aiAutomation.automationPaths.push(newPath);
+    saveAutomationPaths();
+    renderAutomationPaths();
+    hideAutomationModal();
+
+    console.log('AI Automation V2: Created new automation path:', newPath.name);
+}
+
+/**
+ * Render automation paths
+ */
+function renderAutomationPaths() {
+    const container = document.querySelector('.automation-paths-container');
+    if (!container) return;
+
+    // Clear existing paths (except add button)
+    const existingPaths = container.querySelectorAll('.automation-path:not(.add-new)');
+    existingPaths.forEach(path => path.remove());
+
+    // Render each automation path
+    window.aiAutomation.automationPaths.forEach(path => {
+        const pathElement = createAutomationPathElement(path);
+        container.insertBefore(pathElement, container.lastElementChild);
+    });
+}
+
+/**
+ * Create automation path element
+ */
+function createAutomationPathElement(path) {
+    const pathDiv = document.createElement('div');
+    pathDiv.className = 'automation-path';
+    pathDiv.dataset.pathId = path.id;
+
+    const nextRun = calculateNextRun(path);
+    
+    pathDiv.innerHTML = `
+        <div class="automation-path-header">
+            <h3>${path.name}</h3>
+            <div class="automation-path-controls">
+                <button class="btn btn-small toggle-automation-path" 
+                        data-path-id="${path.id}" 
+                        title="${path.active ? 'Pause' : 'Resume'}">
+                    <i class="fas fa-${path.active ? 'pause' : 'play'}"></i>
+                </button>
+                <button class="btn btn-small btn-danger delete-automation-path" 
+                        data-path-id="${path.id}" 
+                        title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        <div class="automation-path-details">
+            <div class="path-info">
+                <span class="info-label">Type:</span>
+                <span class="info-value">${path.contentType}</span>
+            </div>
+            <div class="path-info">
+                <span class="info-label">Category:</span>
+                <span class="info-value">${path.category}</span>
+            </div>
+            <div class="path-info">
+                <span class="info-label">Schedule:</span>
+                <span class="info-value">${path.schedule.type} at ${path.schedule.time}</span>
+            </div>
+            <div class="path-info">
+                <span class="info-label">Next Run:</span>
+                <span class="info-value">${nextRun}</span>
+            </div>
+            <div class="path-status ${path.active ? 'active' : 'inactive'}">
+                ${path.active ? 'Active' : 'Inactive'}
             </div>
         </div>
     `;
 
-    // Add modal to page
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('automationModal'));
-    modal.show();
-    
-    console.log('✅ Automation modal displayed');
+    return pathDiv;
 }
 
 /**
- * Save automation path
+ * Calculate next run time
  */
-function saveAutomationPath() {
-    console.log('💾 Saving automation path...');
+function calculateNextRun(path) {
+    if (!path.active) return 'Inactive';
+
+    const now = new Date();
+    const [hours, minutes] = path.schedule.time.split(':').map(Number);
     
-    const form = document.getElementById('automationForm');
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+    let nextRun = new Date();
+    nextRun.setHours(hours, minutes, 0, 0);
+
+    // If time has passed today, move to next day
+    if (nextRun <= now) {
+        nextRun.setDate(nextRun.getDate() + 1);
     }
 
-    const automation = {
-        id: generateAutomationId(),
-        title: document.getElementById('automationTitle').value,
-        description: document.getElementById('automationDescription').value,
-        prompt: document.getElementById('automationPrompt').value,
-        schedule: {
-            date: document.getElementById('automationDate').value,
-            time: document.getElementById('automationTime').value
-        },
-        status: 'pending',
-        createdAt: new Date().toISOString()
-    };
-
-    // Add to automation paths
-    window.aiAutomation.automationPaths.push(automation);
-
-    // Save to storage
-    saveAutomationPathsToStorage();
-
-    // Update display
-    displayAutomationPaths();
-
-    // Close modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('automationModal'));
-    if (modal) {
-        modal.hide();
-    }
-
-    // Show success message
-    showNotification('Automation path saved successfully!', 'success');
-    
-    console.log('✅ Automation path saved:', automation);
+    return nextRun.toLocaleDateString() + ' ' + path.schedule.time;
 }
 
 /**
@@ -453,170 +424,38 @@ function deleteAutomationPath(pathId) {
         return;
     }
 
-    // Remove from array
-    window.aiAutomation.automationPaths = window.aiAutomation.automationPaths.filter(
-        path => path.id !== pathId
-    );
-
-    // Save to storage
-    saveAutomationPathsToStorage();
-
-    // Update display
-    displayAutomationPaths();
-
-    showNotification('Automation path deleted successfully!', 'success');
+    const index = window.aiAutomation.automationPaths.findIndex(path => path.id === pathId);
+    if (index !== -1) {
+        window.aiAutomation.automationPaths.splice(index, 1);
+        saveAutomationPaths();
+        renderAutomationPaths();
+        console.log('AI Automation V2: Deleted automation path');
+    }
 }
 
 /**
- * Execute automation path
+ * Toggle automation path active state
  */
-async function executeAutomationPath(pathId) {
+function toggleAutomationPath(pathId) {
     const path = window.aiAutomation.automationPaths.find(p => p.id === pathId);
-    if (!path) {
-        showNotification('Automation path not found!', 'error');
-        return;
+    if (path) {
+        path.active = !path.active;
+        saveAutomationPaths();
+        renderAutomationPaths();
+        console.log('AI Automation V2: Toggled automation path:', path.name, 'Active:', path.active);
     }
-
-    // Check if AI is configured
-    if (!window.aiConfig || !window.aiConfig.apiKey) {
-        showNotification('Please configure AI settings first!', 'error');
-        return;
-    }
-
-    // Update status
-    window.aiAutomation.executionStatus.set(pathId, 'running');
-    displayAutomationPaths();
-
-    try {
-        showNotification('Executing automation...', 'info');
-
-        // Generate content using AI
-        const content = await generateAIContent(path.prompt);
-
-        if (content) {
-            // Create blog post
-            const post = {
-                title: content.title || `AI Generated Post - ${new Date().toLocaleDateString()}`,
-                content: content.body || content.content || content,
-                category: 'AI Generated',
-                tags: content.tags || ['ai-generated'],
-                author: 'AI Assistant',
-                publishDate: new Date().toISOString(),
-                status: 'published'
-            };
-
-            // Save post (implement your blog post saving logic here)
-            if (typeof saveBlogPost === 'function') {
-                await saveBlogPost(post);
-            }
-
-            // Update status
-            window.aiAutomation.executionStatus.set(pathId, 'completed');
-            showNotification('Automation executed successfully!', 'success');
-
-        } else {
-            throw new Error('Failed to generate content');
-        }
-
-    } catch (error) {
-        console.error('Automation execution error:', error);
-        window.aiAutomation.executionStatus.set(pathId, 'failed');
-        showNotification(`Automation failed: ${error.message}`, 'error');
-    }
-
-    displayAutomationPaths();
-}
-
-/**
- * Generate AI content
- */
-async function generateAIContent(prompt) {
-    if (!window.aiConfig || !window.aiConfig.apiKey) {
-        throw new Error('AI configuration not found');
-    }
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${window.aiConfig.apiKey}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            model: window.aiConfig.model || 'gpt-3.5-turbo',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a content creation assistant. Generate engaging blog content based on the user prompt. Return the response as a JSON object with title, content, and tags fields.'
-                },
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            max_tokens: window.aiConfig.maxTokens || 1000,
-            temperature: window.aiConfig.temperature || 0.7
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`AI API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const content = data.choices[0].message.content;
-
-    try {
-        return JSON.parse(content);
-    } catch {
-        return { content: content };
-    }
-}
-
-/**
- * Helper functions
- */
-function formatSchedule(schedule) {
-    if (!schedule.date || !schedule.time) return 'No schedule';
-    return `${schedule.date} at ${schedule.time}`;
-}
-
-function getAutomationStatus(pathId) {
-    return window.aiAutomation.executionStatus.get(pathId) || 'pending';
-}
-
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 99999;
-        min-width: 300px;
-    `;
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
-    `;
-
-    document.body.appendChild(notification);
-
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 5000);
 }
 
 /**
  * Start background scheduler
  */
 function startBackgroundScheduler() {
+    console.log('AI Automation V2: Starting background scheduler...');
+    
+    // Check every minute for scheduled tasks
     setInterval(() => {
         checkScheduledTasks();
-    }, 60000); // Check every minute
+    }, 60000);
 }
 
 /**
@@ -624,53 +463,101 @@ function startBackgroundScheduler() {
  */
 function checkScheduledTasks() {
     const now = new Date();
-    
+    const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
+                       now.getMinutes().toString().padStart(2, '0');
+
     window.aiAutomation.automationPaths.forEach(path => {
-        if (path.schedule && getAutomationStatus(path.id) === 'pending') {
-            const scheduleDateTime = new Date(`${path.schedule.date}T${path.schedule.time}`);
+        if (path.active && path.schedule.time === currentTime) {
+            // Check if already ran today
+            const lastRun = path.lastRun ? new Date(path.lastRun) : null;
+            const today = new Date().toDateString();
             
-            if (now >= scheduleDateTime) {
-                console.log(`Executing scheduled automation: ${path.title}`);
-                executeAutomationPath(path.id);
+            if (!lastRun || lastRun.toDateString() !== today) {
+                executeAutomationPath(path);
             }
         }
     });
 }
 
+/**
+ * Execute automation path
+ */
+function executeAutomationPath(path) {
+    console.log('AI Automation V2: Executing automation path:', path.name);
+    
+    // Update last run time
+    path.lastRun = new Date().toISOString();
+    saveAutomationPaths();
+    
+    // Create execution status
+    createExecutionStatus(path);
+    
+    // Simulate content generation (replace with actual AI integration)
+    setTimeout(() => {
+        completeExecution(path);
+    }, 5000);
+}
+
+/**
+ * Create execution status
+ */
+function createExecutionStatus(path) {
+    window.aiAutomation.executionStatus.set(path.id, {
+        pathId: path.id,
+        pathName: path.name,
+        startTime: new Date(),
+        status: 'generating'
+    });
+    
+    // Show status notification
+    showExecutionNotification(path);
+}
+
+/**
+ * Complete execution
+ */
+function completeExecution(path) {
+    window.aiAutomation.executionStatus.delete(path.id);
+    
+    console.log('AI Automation V2: Completed execution for:', path.name);
+    
+    // Show completion notification
+    showCompletionNotification(path);
+}
+
+/**
+ * Show execution notification
+ */
+function showExecutionNotification(path) {
+    console.log('AI Automation V2: Starting content generation for:', path.name);
+    // Implement toast notification here
+}
+
+/**
+ * Show completion notification
+ */
+function showCompletionNotification(path) {
+    console.log('AI Automation V2: Content generation completed for:', path.name);
+    // Implement toast notification here
+}
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Wait a bit for other scripts to load
+    // Wait a bit to ensure other systems are loaded
     setTimeout(() => {
-        if (document.getElementById('ai-automation-section') || 
-            document.querySelector('[data-section="ai-automation"]') ||
-            document.querySelector('.ai-automation-section') ||
-            document.querySelector('#ai-content-automation')) {
+        if (document.querySelector('#ai-automation-section, [data-section="ai-automation"], .ai-automation-section, #ai-content-automation')) {
             initializeAIAutomationV2();
         }
     }, 1000);
 });
 
-// Also try to initialize when the window loads
-window.addEventListener('load', function() {
-    if (!window.aiAutomation.isInitialized) {
-        setTimeout(() => {
-            if (document.getElementById('ai-automation-section') || 
-                document.querySelector('[data-section="ai-automation"]') ||
-                document.querySelector('.ai-automation-section') ||
-                document.querySelector('#ai-content-automation')) {
-                initializeAIAutomationV2();
-            }
-        }, 500);
-    }
-});
+// Make functions globally available
+window.aiAutomationV2 = {
+    initializeAIAutomationV2,
+    loadAutomationPaths,
+    saveAutomationPaths,
+    renderAutomationPaths,
+    executeAutomationPath
+};
 
-// Export functions for global access
-window.initializeAIAutomationV2 = initializeAIAutomationV2;
-window.loadAutomationPaths = loadAutomationPaths;
-window.saveAutomationPathsToStorage = saveAutomationPathsToStorage;
-window.saveAutomationPath = saveAutomationPath;
-window.executeAutomationPath = executeAutomationPath;
-window.generateAIContent = generateAIContent;
-window.showAutomationModal = showAutomationModal;
-
-console.log('✅ AI Automation V2: Script loaded and ready');
+console.log('AI Automation V2: Module loaded');
