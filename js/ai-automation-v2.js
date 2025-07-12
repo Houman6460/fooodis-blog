@@ -129,8 +129,12 @@ function setupAutomationEventListeners() {
     // Add automation path button
     document.addEventListener('click', function(e) {
         if (e.target.closest('.add-automation-path') || 
-            e.target.closest('[data-automation="add"]')) {
+            e.target.closest('[data-automation="add"]') ||
+            e.target.closest('.automation-path-btn') ||
+            e.target.classList.contains('add-automation-btn')) {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('🔄 Add automation path clicked');
             showAutomationModal();
         }
     });
@@ -159,11 +163,21 @@ function setupAutomationEventListeners() {
  */
 function setupAutomationUI() {
     // Create automation section if it doesn't exist
-    const automationSection = document.getElementById('ai-automation-section');
+    let automationSection = document.getElementById('ai-automation-section');
+    if (!automationSection) {
+        // Try alternative selectors
+        automationSection = document.querySelector('[data-section="ai-automation"]') ||
+                          document.querySelector('.ai-automation-section') ||
+                          document.querySelector('#ai-content-automation');
+    }
+
     if (!automationSection) {
         console.warn('AI Automation section not found in DOM');
         return;
     }
+
+    // Ensure the section has the proper structure
+    ensureAutomationSectionStructure(automationSection);
 
     // Add styles
     if (!document.getElementById('ai-automation-v2-styles')) {
@@ -219,8 +233,48 @@ function setupAutomationUI() {
                 background: rgba(220, 53, 69, 0.2);
                 color: #dc3545;
             }
+            .add-automation-btn {
+                background: #e8f24c;
+                color: #1e2127;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+                margin: 10px 0;
+                transition: all 0.2s;
+            }
+            .add-automation-btn:hover {
+                background: #d4dc42;
+                transform: translateY(-1px);
+            }
         `;
         document.head.appendChild(styles);
+    }
+}
+
+/**
+ * Ensure automation section has proper structure
+ */
+function ensureAutomationSectionStructure(section) {
+    // Check if containers exist
+    let pathsContainer = section.querySelector('#automation-paths-container') || 
+                        section.querySelector('.automation-paths-list');
+
+    if (!pathsContainer) {
+        pathsContainer = document.createElement('div');
+        pathsContainer.id = 'automation-paths-container';
+        pathsContainer.className = 'automation-paths-list';
+        section.appendChild(pathsContainer);
+    }
+
+    // Add a button if it doesn't exist
+    if (!section.querySelector('.add-automation-btn') && 
+        !section.querySelector('.add-automation-path')) {
+        const addButton = document.createElement('button');
+        addButton.className = 'add-automation-btn add-automation-path';
+        addButton.innerHTML = '<i class="fas fa-plus"></i> Add Automation Path';
+        section.insertBefore(addButton, pathsContainer);
     }
 }
 
@@ -277,9 +331,17 @@ function displayAutomationPaths() {
  * Show automation modal
  */
 function showAutomationModal() {
+    console.log('📝 Showing automation modal...');
+    
+    // Remove existing modal
+    const existingModal = document.getElementById('automationModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
     // Create modal HTML
     const modalHtml = `
-        <div class="modal fade" id="automationModal" tabindex="-1">
+        <div class="modal fade" id="automationModal" tabindex="-1" style="z-index: 99999;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-dark">
                     <div class="modal-header border-secondary">
@@ -327,24 +389,22 @@ function showAutomationModal() {
         </div>
     `;
 
-    // Remove existing modal
-    const existingModal = document.getElementById('automationModal');
-    if (existingModal) {
-        existingModal.remove();
-    }
-
     // Add modal to page
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('automationModal'));
     modal.show();
+    
+    console.log('✅ Automation modal displayed');
 }
 
 /**
  * Save automation path
  */
 function saveAutomationPath() {
+    console.log('💾 Saving automation path...');
+    
     const form = document.getElementById('automationForm');
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -375,10 +435,14 @@ function saveAutomationPath() {
 
     // Close modal
     const modal = bootstrap.Modal.getInstance(document.getElementById('automationModal'));
-    modal.hide();
+    if (modal) {
+        modal.hide();
+    }
 
     // Show success message
     showNotification('Automation path saved successfully!', 'success');
+    
+    console.log('✅ Automation path saved:', automation);
 }
 
 /**
@@ -528,7 +592,7 @@ function showNotification(message, type = 'info') {
         position: fixed;
         top: 20px;
         right: 20px;
-        z-index: 9999;
+        z-index: 99999;
         min-width: 300px;
     `;
     notification.innerHTML = `
@@ -575,8 +639,28 @@ function checkScheduledTasks() {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('ai-automation-section')) {
-        initializeAIAutomationV2();
+    // Wait a bit for other scripts to load
+    setTimeout(() => {
+        if (document.getElementById('ai-automation-section') || 
+            document.querySelector('[data-section="ai-automation"]') ||
+            document.querySelector('.ai-automation-section') ||
+            document.querySelector('#ai-content-automation')) {
+            initializeAIAutomationV2();
+        }
+    }, 1000);
+});
+
+// Also try to initialize when the window loads
+window.addEventListener('load', function() {
+    if (!window.aiAutomation.isInitialized) {
+        setTimeout(() => {
+            if (document.getElementById('ai-automation-section') || 
+                document.querySelector('[data-section="ai-automation"]') ||
+                document.querySelector('.ai-automation-section') ||
+                document.querySelector('#ai-content-automation')) {
+                initializeAIAutomationV2();
+            }
+        }, 500);
     }
 });
 
@@ -587,5 +671,6 @@ window.saveAutomationPathsToStorage = saveAutomationPathsToStorage;
 window.saveAutomationPath = saveAutomationPath;
 window.executeAutomationPath = executeAutomationPath;
 window.generateAIContent = generateAIContent;
+window.showAutomationModal = showAutomationModal;
 
-console.log('AI Automation V2: Script loaded');
+console.log('✅ AI Automation V2: Script loaded and ready');
