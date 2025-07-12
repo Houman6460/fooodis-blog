@@ -1,0 +1,42 @@
+
+FOOODIS BLOG SYSTEM - QUICK START
+==================================
+
+1. INSTALL NODE.JS
+   - Download from: https://nodejs.org/
+   - Install and restart your computer
+
+2. OPEN TERMINAL/COMMAND PROMPT
+   - Navigate to this folder
+   - Type: npm install
+   - Wait for installation to complete
+
+3. START THE APPLICATION
+   - Type: npm start
+   - Wait for "server running" message
+
+4. OPEN YOUR BROWSER
+   - Go to: http://localhost:5000
+   - Dashboard: http://localhost:5000/dashboard.html
+   - Login: http://localhost:5000/login.html
+
+5. CONFIGURE AI FEATURES
+   - Go to Dashboard → AI Config
+   - Enter your OpenAI API key
+   - Save settings
+
+NEED HELP?
+- Read README.md for detailed instructions
+- Read INSTALLATION_GUIDE.md for troubleshooting
+- Check console for error messages
+
+FEATURES INCLUDED:
+✓ Complete Dashboard System
+✓ AI Content Automation
+✓ Email Marketing Builder
+✓ Blog Management
+✓ Chatbot Integration
+✓ User Authentication
+✓ Analytics & Statistics
+
+The system is self-contained and ready to run!
