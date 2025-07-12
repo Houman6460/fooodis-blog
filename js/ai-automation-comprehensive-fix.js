@@ -118,13 +118,38 @@ function fixSchedulePathPersistence() {
 }
 
 /**
- * Fix 2: Automatic popup closing
+ * Fix 2: Automatic popup closing and proper show/hide behavior
  */
 function fixAutomaticPopupClosing() {
     console.log('AI Automation Comprehensive Fix: Fixing automatic popup closing...');
     
-    // Override the save button click handler
+    // Ensure modal starts hidden
+    const modal = document.querySelector('.automation-path-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    // Handle all automation-related clicks
     document.addEventListener('click', function(event) {
+        // Handle Add New Automation Path button
+        if (event.target.matches('.add-automation-path')) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            console.log('AI Automation Comprehensive Fix: Add automation button clicked');
+            
+            const modal = document.querySelector('.automation-path-modal');
+            if (modal) {
+                // Clear the form first
+                clearFormData();
+                // Show the modal
+                modal.style.display = 'flex';
+                console.log('AI Automation Comprehensive Fix: Popup shown');
+            }
+            return;
+        }
+        
+        // Handle Save Automation Path button
         if (event.target.matches('.save-automation-path, .automation-path-form .save-btn')) {
             event.preventDefault();
             event.stopPropagation();
@@ -158,6 +183,20 @@ function fixAutomaticPopupClosing() {
                 // Show success message
                 showSuccessMessage('Automation path saved successfully!');
             }
+            return;
+        }
+        
+        // Handle Close Modal button
+        if (event.target.matches('.close-automation-modal')) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const modal = document.querySelector('.automation-path-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log('AI Automation Comprehensive Fix: Popup closed by close button');
+            }
+            return;
         }
     });
     
@@ -229,6 +268,45 @@ function fixAutomaticPopupClosing() {
         }
     }
     
+    // Helper function to clear form data
+    function clearFormData() {
+        try {
+            const modal = document.querySelector('.automation-path-modal');
+            if (!modal) return;
+            
+            // Clear all form inputs
+            const pathName = modal.querySelector('#path-name');
+            const topics = modal.querySelector('#topics');
+            const scheduleTime = modal.querySelector('#schedule-time');
+            
+            if (pathName) pathName.value = '';
+            if (topics) topics.value = '';
+            if (scheduleTime) scheduleTime.value = '14:00';
+            
+            // Reset selects to first option
+            const selects = modal.querySelectorAll('select');
+            selects.forEach(select => {
+                if (select.options.length > 0) {
+                    select.selectedIndex = 0;
+                }
+            });
+            
+            // Reset schedule selection
+            const scheduleOptions = modal.querySelectorAll('.schedule-option');
+            scheduleOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+            const firstScheduleOption = modal.querySelector('.schedule-option[data-schedule="daily"]');
+            if (firstScheduleOption) {
+                firstScheduleOption.classList.add('selected');
+            }
+            
+            console.log('AI Automation Comprehensive Fix: Form cleared');
+        } catch (error) {
+            console.error('AI Automation Comprehensive Fix: Error clearing form:', error);
+        }
+    }
+
     // Helper function to show success message
     function showSuccessMessage(message) {
         const toast = document.querySelector('#toastNotification');

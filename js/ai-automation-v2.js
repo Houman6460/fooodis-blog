@@ -73,23 +73,33 @@ function setupAutomationEventListeners() {
     // Add new automation path
     document.addEventListener('click', function(event) {
         if (event.target.matches('.add-automation-path')) {
+            event.preventDefault();
+            event.stopPropagation();
             showAutomationModal();
         }
 
         if (event.target.matches('.save-automation-path')) {
+            event.preventDefault();
+            event.stopPropagation();
             saveNewAutomationPath();
         }
 
         if (event.target.matches('.close-automation-modal')) {
+            event.preventDefault();
+            event.stopPropagation();
             hideAutomationModal();
         }
 
         if (event.target.matches('.delete-automation-path')) {
+            event.preventDefault();
+            event.stopPropagation();
             const pathId = event.target.dataset.pathId;
             deleteAutomationPath(pathId);
         }
 
         if (event.target.matches('.toggle-automation-path')) {
+            event.preventDefault();
+            event.stopPropagation();
             const pathId = event.target.dataset.pathId;
             toggleAutomationPath(pathId);
         }
@@ -260,15 +270,22 @@ function showAutomationModal() {
     if (modal) {
         modal.style.display = 'flex';
         // Reset form
-        modal.querySelector('#path-name').value = '';
-        modal.querySelector('#topics').value = '';
-        modal.querySelector('#schedule-time').value = '14:00';
+        const pathNameInput = modal.querySelector('#path-name');
+        const topicsInput = modal.querySelector('#topics');
+        const scheduleTimeInput = modal.querySelector('#schedule-time');
+        
+        if (pathNameInput) pathNameInput.value = '';
+        if (topicsInput) topicsInput.value = '';
+        if (scheduleTimeInput) scheduleTimeInput.value = '14:00';
         
         // Reset schedule selection
         modal.querySelectorAll('.schedule-option').forEach(option => {
             option.classList.remove('selected');
         });
-        modal.querySelector('.schedule-option[data-schedule="daily"]').classList.add('selected');
+        const dailyOption = modal.querySelector('.schedule-option[data-schedule="daily"]');
+        if (dailyOption) {
+            dailyOption.classList.add('selected');
+        }
     }
 }
 
