@@ -126,17 +126,29 @@ class ExportManager {
      */
     async downloadCSV(csvContent, filename) {
         try {
+            console.log(`Attempting to download ${filename} (${csvContent.length} characters)`);
+            
+            // Validate CSV content
+            if (!csvContent || csvContent.trim().length === 0) {
+                throw new Error('CSV content is empty');
+            }
+
             // Method 1: Standard blob download
+            console.log('Trying blob download...');
             if (this.tryBlobDownload(csvContent, filename)) {
+                console.log('✅ Blob download successful');
                 return true;
             }
 
             // Method 2: Data URL fallback
+            console.log('Trying data URL download...');
             if (this.tryDataURLDownload(csvContent, filename)) {
+                console.log('✅ Data URL download successful');
                 return true;
             }
 
             // Method 3: Copy to clipboard as fallback
+            console.log('Trying clipboard copy...');
             const clipboardResult = await this.tryCopyToClipboard(csvContent, filename);
             if (clipboardResult) {
                 console.log('✅ Content copied to clipboard');
@@ -144,15 +156,16 @@ class ExportManager {
             }
 
             // Method 4: Force download with user interaction
+            console.log('Trying force download...');
             if (this.tryForceDownload(csvContent, filename)) {
                 console.log('✅ Force download initiated');
                 return true;
             }
 
-            throw new Error('All download methods failed');
+            throw new Error('All download methods failed - please check browser permissions');
         } catch (error) {
             console.error('❌ Download failed:', error);
-            this.showErrorNotification(`Download failed: ${error.message}`);
+            this.showErrorNotification(`Download failed: ${error.message}. Try allowing downloads in your browser settings.`);
             return false;
         }
     }
@@ -426,6 +439,132 @@ window.exportChatbotData = async function() {
     }
 };
 
+// Export leads function - specifically for leads/prospects
+window.exportLeads = async function() {
+    try {
+        console.log('Starting leads export...');
+        
+        // Get all possible lead sources
+        const conversations = JSON.parse(localStorage.getItem('chatbot-conversations') || '[]');
+        const users = JSON.parse(localStorage.getItem('chatbot-users') || '[]');
+        const registrations = JSON.parse(localStorage.getItem('chatbot-registration-data') || '[]');
+        const subscribers = JSON.parse(localStorage.getItem('email-subscribers') || '[]');
+        
+        console.log('Found data sources:', {
+            conversations: conversations.length,
+            users: users.length,
+            registrations: registrations.length,
+            subscribers: subscribers.length
+        });
+
+        const leadsData = [];
+        const processedEmails = new Set();
+
+        // Process email subscribers
+        subscribers.forEach(subscriber => {
+            if (subscriber.email && !processedEmails.has(subscriber.email)) {
+                leadsData.push({
+                    email: subscriber.email,
+                    name: subscriber.name || 'Unknown',
+                    source: 'Email Subscription',
+                    date_captured: subscriber.timestamp || subscriber.date || new Date().toISOString(),
+                    status: 'Subscribed',
+                    phone: subscriber.phone || '',
+                    company: subscriber.company || '',
+                    notes: subscriber.interests || ''
+                });
+                processedEmails.add(subscriber.email);
+            }
+        });
+
+        // Process chatbot registrations
+        registrations.forEach(reg => {
+            if (reg.email && !processedEmails.has(reg.email)) {
+                leadsData.push({
+                    email: reg.email,
+                    name: reg.name || reg.fullName || 'Unknown',
+                    source: 'Chatbot Registration',
+                    date_captured: reg.timestamp || new Date().toISOString(),
+                    status: 'Registered',
+                    phone: reg.phone || '',
+                    company: reg.company || '',
+                    notes: reg.preferences || reg.message || ''
+                });
+                processedEmails.add(reg.email);
+            }
+        });
+
+        // Process chatbot users
+        users.forEach(user => {
+            if (user.email && !processedEmails.has(user.email)) {
+                leadsData.push({
+                    email: user.email,
+                    name: user.name || 'Unknown',
+                    source: 'Chatbot Interaction',
+                    date_captured: user.timestamp || user.createdAt || new Date().toISOString(),
+                    status: 'Active',
+                    phone: user.phone || '',
+                    company: user.company || '',
+                    notes: user.lastMessage || ''
+                });
+                processedEmails.add(user.email);
+            }
+        });
+
+        // Process conversations for potential leads (users who provided contact info)
+        conversations.forEach(conv => {
+            const userMessages = conv.messages.filter(msg => msg.role === 'user');
+            let email = null;
+            let name = null;
+            let phone = null;
+
+            // Extract contact information from messages
+            userMessages.forEach(msg => {
+                const emailMatch = msg.content.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+                const phoneMatch = msg.content.match(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/);
+                const nameMatch = msg.content.match(/(?:my name is|i'm|i am)\s+([a-zA-Z\s]+)/i);
+
+                if (emailMatch) email = emailMatch[0];
+                if (phoneMatch) phone = phoneMatch[0];
+                if (nameMatch) name = nameMatch[1].trim();
+            });
+
+            if (email && !processedEmails.has(email)) {
+                leadsData.push({
+                    email: email,
+                    name: name || conv.userName || 'Unknown',
+                    source: 'Conversation',
+                    date_captured: conv.timestamp || conv.createdAt || new Date().toISOString(),
+                    status: 'Prospect',
+                    phone: phone || '',
+                    company: '',
+                    notes: `From conversation ${conv.id}`
+                });
+                processedEmails.add(email);
+            }
+        });
+
+        console.log('Processed leads data:', leadsData.length);
+
+        if (leadsData.length === 0) {
+            window.ExportManager.showErrorNotification('No leads found to export. Leads are contacts who have provided email addresses through chatbot interactions, subscriptions, or registrations.');
+            return;
+        }
+
+        // Sort by date captured (newest first)
+        leadsData.sort((a, b) => new Date(b.date_captured) - new Date(a.date_captured));
+
+        await window.ExportManager.exportToCSV(leadsData, 'leads-export.csv', {
+            customHeaders: ['email', 'name', 'source', 'date_captured', 'status', 'phone', 'company', 'notes']
+        });
+
+        console.log('✅ Leads export completed successfully');
+    } catch (error) {
+        console.error('❌ Failed to export leads:', error);
+        window.ExportManager.showErrorNotification(`Failed to export leads: ${error.message}`);
+    }
+};
+
 window.exportBlogData = async function() {
     try {
         const posts = JSON.parse(localStorage.getItem('fooodis-blog-posts') || '[]');
@@ -496,9 +635,15 @@ function addExportButtons() {
     const chatbotSection = document.getElementById('chatbot-management-section');
     if (chatbotSection && !chatbotSection.querySelector('.export-btn')) {
         const exportBtn = createExportButton('Export Chatbot Data', 'exportChatbotData');
+        const leadsBtn = createExportButton('Export Leads', 'exportLeads');
+        leadsBtn.style.marginLeft = '5px';
+        leadsBtn.style.backgroundColor = '#28a745';
+        leadsBtn.style.borderColor = '#28a745';
+        
         const header = chatbotSection.querySelector('.section-header, h2, h3');
         if (header) {
             header.appendChild(exportBtn);
+            header.appendChild(leadsBtn);
         }
     }
 
@@ -519,6 +664,20 @@ function addExportButtons() {
         const header = automationSection.querySelector('.section-header, h2, h3');
         if (header) {
             header.appendChild(exportBtn);
+        }
+    }
+
+    // Add export button to email subscribers section if it exists
+    const emailSection = document.getElementById('email-management-section') || document.querySelector('[data-section="email-management"]');
+    if (emailSection && !emailSection.querySelector('.export-leads-btn')) {
+        const leadsBtn = createExportButton('Export Leads', 'exportLeads');
+        leadsBtn.className += ' export-leads-btn';
+        leadsBtn.style.backgroundColor = '#28a745';
+        leadsBtn.style.borderColor = '#28a745';
+        
+        const header = emailSection.querySelector('.section-header, h2, h3');
+        if (header) {
+            header.appendChild(leadsBtn);
         }
     }
 }
