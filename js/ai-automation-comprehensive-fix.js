@@ -123,6 +123,9 @@ function fixSchedulePathPersistence() {
 function fixAutomaticPopupClosing() {
     console.log('AI Automation Comprehensive Fix: Fixing automatic popup closing...');
     
+    // First, ensure the modal exists in the DOM
+    ensureModalExists();
+    
     // Ensure modal starts hidden
     const modal = document.querySelector('.automation-path-modal');
     if (modal) {
@@ -131,20 +134,40 @@ function fixAutomaticPopupClosing() {
     
     // Handle all automation-related clicks
     document.addEventListener('click', function(event) {
-        // Handle Add New Automation Path button
-        if (event.target.matches('.add-automation-path')) {
+        // Handle multiple selectors for Add New Automation Path button
+        if (event.target.matches('.add-automation-path') || 
+            event.target.matches('#createNewAutomation') ||
+            event.target.matches('[data-action="create-automation"]') ||
+            event.target.closest('.add-automation-path') ||
+            event.target.closest('#createNewAutomation')) {
+            
             event.preventDefault();
             event.stopPropagation();
             
             console.log('AI Automation Comprehensive Fix: Add automation button clicked');
             
+            // Ensure modal exists
+            ensureModalExists();
+            
             const modal = document.querySelector('.automation-path-modal');
             if (modal) {
                 // Clear the form first
                 clearFormData();
-                // Show the modal
+                // Show the modal with proper styling
                 modal.style.display = 'flex';
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                modal.style.zIndex = '10000';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                
                 console.log('AI Automation Comprehensive Fix: Popup shown');
+            } else {
+                console.error('AI Automation Comprehensive Fix: Modal not found after creation attempt');
             }
             return;
         }
@@ -307,8 +330,117 @@ function fixAutomaticPopupClosing() {
         }
     }
 
+    // Helper function to ensure modal exists
+    function ensureModalExists() {
+        let modal = document.querySelector('.automation-path-modal');
+        if (!modal) {
+            console.log('AI Automation Comprehensive Fix: Creating automation modal...');
+            
+            modal = document.createElement('div');
+            modal.className = 'automation-path-modal';
+            modal.style.display = 'none';
+            modal.innerHTML = `
+                <div class="automation-modal-content" style="background: #252830; padding: 30px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid #32363f;">
+                    <div class="automation-modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #32363f; padding-bottom: 15px;">
+                        <h2 style="color: #e0e0e0; margin: 0; font-size: 1.5rem;">Create Automation Path</h2>
+                        <span class="close-automation-modal" style="color: #a0a0a0; font-size: 24px; cursor: pointer; padding: 5px;">&times;</span>
+                    </div>
+                    <div class="automation-modal-body">
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="path-name" style="display: block; color: #e0e0e0; margin-bottom: 8px; font-weight: 500;">Path Name</label>
+                            <input type="text" id="path-name" placeholder="Enter automation path name" style="width: 100%; padding: 12px; background: #2a2e36; border: 1px solid #32363f; border-radius: 6px; color: #e0e0e0; font-size: 14px;">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="content-type" style="display: block; color: #e0e0e0; margin-bottom: 8px; font-weight: 500;">Content Type</label>
+                            <select id="content-type" style="width: 100%; padding: 12px; background: #2a2e36; border: 1px solid #32363f; border-radius: 6px; color: #e0e0e0; font-size: 14px;">
+                                <option value="blog-post">Blog Post</option>
+                                <option value="social-media">Social Media</option>
+                                <option value="newsletter">Newsletter</option>
+                                <option value="product-description">Product Description</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="assistant-type" style="display: block; color: #e0e0e0; margin-bottom: 8px; font-weight: 500;">Assistant Type</label>
+                            <select id="assistant-type" style="width: 100%; padding: 12px; background: #2a2e36; border: 1px solid #32363f; border-radius: 6px; color: #e0e0e0; font-size: 14px;">
+                                <option value="creative">Creative Writer</option>
+                                <option value="technical">Technical Writer</option>
+                                <option value="marketing">Marketing Specialist</option>
+                                <option value="general">General Assistant</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="category" style="display: block; color: #e0e0e0; margin-bottom: 8px; font-weight: 500;">Category</label>
+                            <select id="category" style="width: 100%; padding: 12px; background: #2a2e36; border: 1px solid #32363f; border-radius: 6px; color: #e0e0e0; font-size: 14px;">
+                                <option value="Recipes">Recipes</option>
+                                <option value="Restaurants">Restaurants</option>
+                                <option value="Health">Health</option>
+                                <option value="Cooking Tips">Cooking Tips</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="topics" style="display: block; color: #e0e0e0; margin-bottom: 8px; font-weight: 500;">Topics (comma-separated)</label>
+                            <textarea id="topics" placeholder="Enter topics separated by commas" style="width: 100%; padding: 12px; background: #2a2e36; border: 1px solid #32363f; border-radius: 6px; color: #e0e0e0; font-size: 14px; min-height: 80px; resize: vertical;"></textarea>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="display: block; color: #e0e0e0; margin-bottom: 8px; font-weight: 500;">Schedule</label>
+                            <div class="schedule-options" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <div class="schedule-option selected" data-schedule="daily" style="padding: 12px 20px; background: #e8f24c; color: #1e2127; border-radius: 6px; cursor: pointer; text-align: center; font-weight: 500; min-width: 80px;">
+                                    <i class="fas fa-calendar-day" style="margin-right: 5px;"></i>
+                                    Daily
+                                </div>
+                                <div class="schedule-option" data-schedule="weekly" style="padding: 12px 20px; background: #32363f; color: #e0e0e0; border-radius: 6px; cursor: pointer; text-align: center; font-weight: 500; min-width: 80px;">
+                                    <i class="fas fa-calendar-week" style="margin-right: 5px;"></i>
+                                    Weekly
+                                </div>
+                                <div class="schedule-option" data-schedule="monthly" style="padding: 12px 20px; background: #32363f; color: #e0e0e0; border-radius: 6px; cursor: pointer; text-align: center; font-weight: 500; min-width: 80px;">
+                                    <i class="fas fa-calendar" style="margin-right: 5px;"></i>
+                                    Monthly
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="schedule-time" style="display: block; color: #e0e0e0; margin-bottom: 8px; font-weight: 500;">Time</label>
+                            <input type="time" id="schedule-time" value="14:00" style="width: 100%; padding: 12px; background: #2a2e36; border: 1px solid #32363f; border-radius: 6px; color: #e0e0e0; font-size: 14px;">
+                        </div>
+                    </div>
+                    <div class="automation-modal-footer" style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px; padding-top: 15px; border-top: 1px solid #32363f;">
+                        <button class="btn btn-secondary close-automation-modal" style="padding: 12px 24px; background: #32363f; color: #e0e0e0; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">Cancel</button>
+                        <button class="btn btn-primary save-automation-path" style="padding: 12px 24px; background: #e8f24c; color: #1e2127; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">Save Automation Path</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners for schedule options
+            modal.addEventListener('click', function(e) {
+                if (e.target.matches('.schedule-option')) {
+                    modal.querySelectorAll('.schedule-option').forEach(option => {
+                        option.style.background = '#32363f';
+                        option.style.color = '#e0e0e0';
+                        option.classList.remove('selected');
+                    });
+                    e.target.style.background = '#e8f24c';
+                    e.target.style.color = '#1e2127';
+                    e.target.classList.add('selected');
+                }
+            });
+            
+            document.body.appendChild(modal);
+            console.log('AI Automation Comprehensive Fix: Modal created and added to DOM');
+        }
+        return modal;
+    }
+
     // Helper function to show success message
     function showSuccessMessage(message) {
+        console.log('AI Automation Comprehensive Fix: Success -', message);
+        
+        // Try to find existing toast notification
         const toast = document.querySelector('#toastNotification');
         if (toast) {
             const messageEl = toast.querySelector('#toastMessage');
@@ -319,6 +451,9 @@ function fixAutomaticPopupClosing() {
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        } else {
+            // Create a simple alert if no toast system exists
+            alert(message);
         }
     }
 }
