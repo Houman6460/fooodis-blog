@@ -1,20 +1,33 @@
 
 /**
  * AI Automation Manual Trigger System
- * Only shows popup when explicitly requested
+ * Completely manual - no automatic initialization
  */
 
-console.log('AI Automation Manual Trigger: Loading...');
+console.log('AI Automation Manual Trigger: Loading in passive mode...');
 
-// Wait for page to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        setupManualTriggers();
-    }, 2000);
-});
+// Completely passive - no automatic DOM ready listeners
+// Only manual trigger functions
 
-function setupManualTriggers() {
-    console.log('AI Automation Manual Trigger: Setting up manual triggers...');
+window.manuallyTriggerAutomationPopup = function() {
+    console.log('AI Automation Manual Trigger: Manual trigger called');
+    
+    // Try multiple trigger methods
+    if (typeof window.triggerAutomationPopup === 'function') {
+        window.triggerAutomationPopup();
+    } else if (typeof window.manuallyShowAutomationPopup === 'function') {
+        window.manuallyShowAutomationPopup();
+    } else if (typeof forceShowPopup === 'function') {
+        forceShowPopup();
+    } else {
+        console.error('AI Automation Manual Trigger: No popup function available');
+        alert('Popup system not available. Please refresh the page.');
+    }
+};
+
+// Expose additional manual setup function
+window.setupAutomationTriggers = function() {
+    console.log('AI Automation Manual Trigger: Manual setup called');
     
     // Look for specific "Create New Automation" buttons and add explicit handlers
     const automationButtons = document.querySelectorAll('button, a, .btn');
@@ -37,24 +50,13 @@ function setupManualTriggers() {
                     e.stopPropagation();
                     
                     console.log('AI Automation Manual Trigger: Manual button clicked:', text);
-                    
-                    // Trigger the popup manually
-                    if (typeof window.triggerAutomationPopup === 'function') {
-                        window.triggerAutomationPopup();
-                    } else if (typeof forceShowPopup === 'function') {
-                        forceShowPopup();
-                    } else {
-                        console.error('AI Automation Manual Trigger: No popup function available');
-                    }
+                    window.manuallyTriggerAutomationPopup();
                 });
                 
                 console.log('AI Automation Manual Trigger: Added handler to button:', text);
             }
         }
     });
-}
+};
 
-// Expose manual setup function
-window.setupAutomationTriggers = setupManualTriggers;
-
-console.log('AI Automation Manual Trigger: Script loaded');
+console.log('AI Automation Manual Trigger: Passive system loaded - awaiting manual calls');

@@ -1,57 +1,33 @@
-
 /**
  * AI Automation Force Popup Display
- * This script aggressively ensures the automation popup shows up
+ * Completely passive - only responds to explicit manual calls
  */
 
-console.log('AI Automation Force Popup: Loading...');
+console.log('AI Automation Force Popup: Loading in passive mode...');
 
-// Wait for page to load
 // Completely passive - no automatic initialization
-// Only respond to explicit function calls
+// Only expose manual trigger functions
 
-function initForcePopup() {
-    console.log('AI Automation Force Popup: Passive mode - waiting for explicit calls...');
-    
-    // Only add click listener when explicitly called
-    if (!document.hasAttribute('data-force-popup-listener')) {
-        document.setAttribute('data-force-popup-listener', 'true');
-        
-        document.addEventListener('click', function(event) {
-            const clickedElement = event.target;
-            
-            // Very specific button detection - only exact matches
-            if (clickedElement.matches('button[data-action="create-automation"]') ||
-                clickedElement.matches('.create-automation-btn') ||
-                (clickedElement.textContent && clickedElement.textContent.trim() === 'Create New Automation' && clickedElement.tagName === 'BUTTON')) {
-                
-                console.log('AI Automation Force Popup: Explicit automation button clicked');
-                
-                event.preventDefault();
-                event.stopPropagation();
-                
-                // Force show the popup
-                forceShowPopup();
-            }
-        }, true);
-    }
-}
-
-// Manual trigger function for specific buttons
 window.triggerAutomationPopup = function() {
     console.log('AI Automation Force Popup: Manual trigger called');
     forceShowPopup();
 };
 
 function forceShowPopup() {
-    console.log('AI Automation Force Popup: Force showing popup...');
-    
-    // Remove any existing modal
+    console.log('AI Automation Force Popup: Manually force showing popup...');
+
+    // Call the main comprehensive fix popup function if available
+    if (typeof window.manuallyShowAutomationPopup === 'function') {
+        window.manuallyShowAutomationPopup();
+        return;
+    }
+
+    // Fallback: Remove any existing modal
     const existingModal = document.querySelector('.automation-path-modal');
     if (existingModal) {
         existingModal.remove();
     }
-    
+
     // Create new modal
     const modal = document.createElement('div');
     modal.className = 'automation-path-modal';
@@ -67,7 +43,7 @@ function forceShowPopup() {
         align-items: center !important;
         justify-content: center !important;
     `;
-    
+
     modal.innerHTML = `
         <div class="automation-modal-content" style="background: #252830 !important; padding: 30px !important; border-radius: 12px !important; max-width: 600px !important; width: 90% !important; max-height: 80vh !important; overflow-y: auto !important; border: 1px solid #32363f !important;">
             <div class="automation-modal-header" style="display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 25px !important; border-bottom: 1px solid #32363f !important; padding-bottom: 15px !important;">
@@ -79,7 +55,7 @@ function forceShowPopup() {
                     <label for="force-path-name" style="display: block !important; color: #e0e0e0 !important; margin-bottom: 8px !important; font-weight: 500 !important;">Path Name</label>
                     <input type="text" id="force-path-name" placeholder="Enter automation path name" style="width: 100% !important; padding: 12px !important; background: #2a2e36 !important; border: 1px solid #32363f !important; border-radius: 6px !important; color: #e0e0e0 !important; font-size: 14px !important; box-sizing: border-box !important;">
                 </div>
-                
+
                 <div class="form-group" style="margin-bottom: 20px !important;">
                     <label for="force-content-type" style="display: block !important; color: #e0e0e0 !important; margin-bottom: 8px !important; font-weight: 500 !important;">Content Type</label>
                     <select id="force-content-type" style="width: 100% !important; padding: 12px !important; background: #2a2e36 !important; border: 1px solid #32363f !important; border-radius: 6px !important; color: #e0e0e0 !important; font-size: 14px !important; box-sizing: border-box !important;">
@@ -141,7 +117,7 @@ function forceShowPopup() {
             </div>
         </div>
     `;
-    
+
     // Add event listeners
     modal.addEventListener('click', function(e) {
         if (e.target.matches('.schedule-option')) {
@@ -154,11 +130,11 @@ function forceShowPopup() {
             e.target.style.color = '#1e2127';
             e.target.classList.add('selected');
         }
-        
+
         if (e.target.matches('.close-automation-modal')) {
             modal.remove();
         }
-        
+
         if (e.target.matches('.save-automation-path')) {
             // Save the automation path
             const pathData = {
@@ -176,14 +152,14 @@ function forceShowPopup() {
                 lastRun: null,
                 createdAt: new Date().toISOString()
             };
-            
+
             if (pathData.name && pathData.contentType) {
                 // Save to storage
                 const automationPaths = JSON.parse(localStorage.getItem('aiAutomationPaths') || '[]');
                 automationPaths.push(pathData);
                 localStorage.setItem('aiAutomationPaths', JSON.stringify(automationPaths));
                 localStorage.setItem('fooodis-ai-automation-paths', JSON.stringify(automationPaths));
-                
+
                 console.log('AI Automation Force Popup: Saved automation path:', pathData.name);
                 modal.remove();
                 alert('Automation path created successfully!');
@@ -191,16 +167,16 @@ function forceShowPopup() {
                 alert('Please fill in all required fields');
             }
         }
-        
+
         // Close modal if clicking outside
         if (e.target === modal) {
             modal.remove();
         }
     });
-    
+
     document.body.appendChild(modal);
-    
-    console.log('AI Automation Force Popup: Modal created and displayed');
+
+    console.log('AI Automation Force Popup: Modal created and displayed manually');
 }
 
-console.log('AI Automation Force Popup: Script loaded');
+console.log('AI Automation Force Popup: Passive system loaded - awaiting manual triggers');
