@@ -1,73 +1,19 @@
 /**
  * AI Automation Comprehensive Fix
- * Completely passive system - only responds to manual triggers
+ * Completely manual trigger system - no automatic initialization
  */
 
-console.log('AI Automation Comprehensive Fix: Loading in passive mode...');
+console.log('AI Automation Comprehensive Fix: Loading manual trigger system...');
 
-// Completely passive - no automatic initialization
-let isManuallyInitialized = false;
-
-// Only expose manual trigger functions
-window.manuallyShowAutomationPopup = function() {
-    console.log('AI Automation Comprehensive Fix: Manual popup trigger called');
-    showAutomationModal();
+// Global function to manually show popup - only triggered by button clicks
+window.showAutomationPopup = function() {
+    console.log('AI Automation Comprehensive Fix: Manual popup trigger activated');
+    createAndShowModal();
 };
 
-// Manual initialization function - must be called explicitly
-window.initializeAutomationSystem = function() {
-    if (isManuallyInitialized) return;
-    isManuallyInitialized = true;
-
-    console.log('AI Automation Comprehensive Fix: Manual system initialization');
-
-    // Only setup save/close handlers - no automatic popup display
-    setupModalHandlers();
-};
-
-function setupModalHandlers() {
-    console.log('AI Automation Comprehensive Fix: Setting up modal handlers only');
-
-    // Only handle modal interactions - no automatic display
-    document.addEventListener('click', function(event) {
-        // Only handle save and close actions within existing modals
-        if (event.target.closest('.automation-path-modal')) {
-
-            if (event.target.matches('.save-automation-path')) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                console.log('AI Automation Comprehensive Fix: Save button clicked');
-
-                const formData = getAutomationFormData();
-                if (formData && saveAutomationPath(formData)) {
-                    const modal = document.querySelector('.automation-path-modal');
-                    if (modal) {
-                        modal.remove();
-                        console.log('AI Automation Comprehensive Fix: Popup closed after save');
-                    }
-                    alert('Automation path saved successfully!');
-                }
-                return;
-            }
-
-            if (event.target.matches('.close-automation-modal')) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                const modal = document.querySelector('.automation-path-modal');
-                if (modal) {
-                    modal.remove();
-                    console.log('AI Automation Comprehensive Fix: Popup closed by close button');
-                }
-                return;
-            }
-        }
-    });
-}
-
-function showAutomationModal() {
-    console.log('AI Automation Comprehensive Fix: Manually showing modal');
+// No automatic DOM ready listeners - completely manual
+function createAndShowModal() {
+    console.log('AI Automation Comprehensive Fix: Creating modal manually');
 
     // Remove any existing modal first
     const existingModal = document.querySelector('.automation-path-modal');
@@ -85,7 +31,7 @@ function showAutomationModal() {
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        background-color: rgba(0, 0, 0, 0.7) !important;
+        background-color: rgba(0, 0, 0, 0.8) !important;
         z-index: 99999 !important;
         align-items: center !important;
         justify-content: center !important;
@@ -95,7 +41,7 @@ function showAutomationModal() {
         <div class="automation-modal-content" style="background: #252830 !important; padding: 30px !important; border-radius: 12px !important; max-width: 600px !important; width: 90% !important; max-height: 80vh !important; overflow-y: auto !important; border: 1px solid #32363f !important;">
             <div class="automation-modal-header" style="display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 25px !important; border-bottom: 1px solid #32363f !important; padding-bottom: 15px !important;">
                 <h2 style="color: #e0e0e0 !important; margin: 0 !important; font-size: 1.5rem !important;">Create Automation Path</h2>
-                <span class="close-automation-modal" style="color: #a0a0a0 !important; font-size: 24px !important; cursor: pointer !important; padding: 5px !important;">&times;</span>
+                <span class="close-automation-modal" style="color: #a0a0a0 !important; font-size: 24px !important; cursor: pointer !important; padding: 5px !important; hover: color: #fff !important;">&times;</span>
             </div>
             <div class="automation-modal-body">
                 <div class="form-group" style="margin-bottom: 20px !important;">
@@ -165,8 +111,9 @@ function showAutomationModal() {
         </div>
     `;
 
-    // Add schedule option click handlers
+    // Add event listeners to the modal
     modal.addEventListener('click', function(e) {
+        // Schedule option selection
         if (e.target.matches('.schedule-option')) {
             modal.querySelectorAll('.schedule-option').forEach(option => {
                 option.style.background = '#32363f';
@@ -178,21 +125,35 @@ function showAutomationModal() {
             e.target.classList.add('selected');
         }
 
-        // Close modal if clicking outside
+        // Close button
+        if (e.target.matches('.close-automation-modal')) {
+            modal.remove();
+            console.log('AI Automation Comprehensive Fix: Modal closed');
+        }
+
+        // Save button
+        if (e.target.matches('.save-automation-path')) {
+            const formData = getFormData(modal);
+            if (formData && saveAutomationPath(formData)) {
+                modal.remove();
+                console.log('AI Automation Comprehensive Fix: Automation path saved and modal closed');
+                alert('Automation path saved successfully!');
+            }
+        }
+
+        // Close if clicking outside modal content
         if (e.target === modal) {
             modal.remove();
+            console.log('AI Automation Comprehensive Fix: Modal closed by clicking outside');
         }
     });
 
     document.body.appendChild(modal);
-    console.log('AI Automation Comprehensive Fix: Modal created and displayed manually');
+    console.log('AI Automation Comprehensive Fix: Modal displayed');
 }
 
-function getAutomationFormData() {
+function getFormData(modal) {
     try {
-        const modal = document.querySelector('.automation-path-modal');
-        if (!modal) return null;
-
         const pathName = modal.querySelector('#path-name')?.value;
         const contentType = modal.querySelector('#content-type')?.value;
         const assistantType = modal.querySelector('#assistant-type')?.value;
@@ -229,16 +190,10 @@ function getAutomationFormData() {
 
 function saveAutomationPath(pathData) {
     try {
-        // Get existing paths
         const automationPaths = JSON.parse(localStorage.getItem('aiAutomationPaths') || '[]');
-
-        // Add new path
         automationPaths.push(pathData);
-
-        // Save to multiple storage locations
         localStorage.setItem('aiAutomationPaths', JSON.stringify(automationPaths));
         localStorage.setItem('fooodis-ai-automation-paths', JSON.stringify(automationPaths));
-
         console.log('AI Automation Comprehensive Fix: Automation path saved:', pathData.name);
         return true;
     } catch (error) {
@@ -247,4 +202,4 @@ function saveAutomationPath(pathData) {
     }
 }
 
-console.log('AI Automation Comprehensive Fix: Passive system loaded - awaiting manual triggers');
+console.log('AI Automation Comprehensive Fix: Manual trigger system loaded');
