@@ -1,68 +1,37 @@
-/* Fooodis Email Collection Popup Styles */
-
-/* Popup Animations */
-@keyframes fadeSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(232, 242, 76, 0.4);
-    }
-    70% {
-        transform: scale(1.01);
-        box-shadow: 0 0 0 10px rgba(232, 242, 76, 0);
-    }
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(232, 242, 76, 0);
-    }
-}
-
+/* Email Collection Popup - Complete CSS Fix */
 .email-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(30, 33, 39, 0.85); /* Using Fooodis dark bg with higher opacity */
-    display: flex;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: none;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
-    -webkit-backdrop-filter: blur(5px); /* Safari support */
-    backdrop-filter: blur(5px); /* Adding blur effect for modern look */
+    transition: opacity 0.3s ease;
 }
 
 .email-overlay.active {
-    opacity: 1;
-    visibility: visible;
+    display: flex !important;
+    opacity: 1 !important;
 }
 
 .email-popup {
-    background-color: var(--dark-card, #252830); /* Using Fooodis dark card color */
-    color: var(--dark-text, #e0e0e0); /* Using Fooodis dark text color */
+    background-color: var(--dark-card, #252830);
+    color: var(--dark-text, #e0e0e0);
     width: 95%;
-    max-width: 420px; /* Reduced max-width for more compact appearance */
-    border-radius: 8px; /* More compact border radius */
-    padding: 25px; /* Reduced padding for compact look */
+    max-width: 420px;
+    border-radius: 8px;
+    padding: 25px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     position: relative;
     transform: translateY(-20px);
     opacity: 0;
-    transition: transform 0.4s ease, opacity 0.4s ease; /* Simplified easing */
-    border: 1px solid var(--border-color, rgba(232, 242, 76, 0.3)); /* Fooodis border color */
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    border: 1px solid var(--border-color, rgba(232, 242, 76, 0.3));
 }
 
 .email-overlay.active .email-popup {
@@ -71,697 +40,165 @@
     animation: fadeSlideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
+@keyframes fadeSlideUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .email-popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px; /* Reduced margin for more compact look */
-    border-bottom: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-    padding-bottom: 10px; /* Reduced padding for more compact look */
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--dark-border, #32363f);
+    padding-bottom: 10px;
 }
 
 .email-popup-title {
-    font-size: 22px; /* Smaller font size for compact design */
+    font-size: 22px;
     font-weight: 700;
     margin: 0;
-    color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
+    color: var(--primary-color, #e8f24c);
     letter-spacing: 0.3px;
 }
 
 .email-popup-close {
     background: none;
     border: none;
-    color: var(--dark-text-secondary, #a0a0a0); /* Using Fooodis secondary text color */
     font-size: 24px;
+    color: var(--dark-text, #e0e0e0);
     cursor: pointer;
     padding: 0;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
-    width: 36px;
-    height: 36px;
     border-radius: 50%;
+    transition: background-color 0.2s ease;
 }
 
 .email-popup-close:hover {
-    color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    background-color: rgba(232, 242, 76, 0.1); /* Semi-transparent yellow background */
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .email-popup-content {
-    margin-bottom: 20px; /* Reduced margin for more compact design */
-    line-height: 1.5; /* Slightly tighter line height */
-    color: var(--dark-text, #e0e0e0);
-    font-size: 15px; /* Slightly smaller font size */
+    margin-bottom: 20px;
 }
 
 .email-popup-description {
     font-size: 16px;
     line-height: 1.6;
-    color: var(--dark-text, #e0e0e0); /* Using Fooodis dark text */
-    margin-bottom: 25px;
+    margin: 0 0 20px 0;
+    color: var(--dark-text, #e0e0e0);
 }
 
 .email-form {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Reduced gap for more compact form */
+    gap: 15px;
 }
 
 .email-input-group {
     position: relative;
-    margin-bottom: 15px; /* Reduced margin */
 }
 
 .email-input {
     width: 100%;
-    padding: 12px 15px; /* Reduced padding for more compact look */
-    font-size: 15px; /* Slightly smaller font */
-    background-color: var(--dark-input, #2a2e36); /* Using Fooodis dark input */
-    color: var(--dark-text, #e0e0e0); /* Using Fooodis dark text */
-    border: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-    border-radius: 6px; /* Smaller border radius */
-    transition: all 0.3s ease;
+    padding: 12px 15px;
+    border: 2px solid var(--dark-border, #32363f);
+    border-radius: 6px;
+    background-color: var(--dark-bg, #1a1d23);
+    color: var(--dark-text, #e0e0e0);
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .email-input:focus {
     outline: none;
-    border-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    box-shadow: 0 0 0 3px rgba(232, 242, 76, 0.2); /* Yellow shadow */
-}
-
-.email-input::placeholder {
-    color: var(--dark-text-secondary, #a0a0a0); /* Using Fooodis secondary text */
+    border-color: var(--primary-color, #e8f24c);
 }
 
 .email-submit-btn {
-    padding: 12px 20px; /* Reduced padding for more compact look */
-    background-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    color: var(--secondary-color, #1e2127); /* Dark text on yellow button */
+    padding: 12px 24px;
+    background-color: var(--primary-color, #e8f24c);
+    color: var(--dark-bg, #1a1d23);
     border: none;
-    border-radius: 6px; /* Smaller border radius */
-    font-size: 15px; /* Slightly smaller font */
-    font-weight: 700;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: uppercase;
-    letter-spacing: 0.3px; /* Reduced letter spacing */
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .email-submit-btn:hover {
-    background-color: var(--accent-color, #c7d037); /* Using Fooodis darker yellow */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(232, 242, 76, 0.3);
+    background-color: var(--primary-hover, #d4dd43);
+    transform: translateY(-1px);
 }
 
-.email-submit-btn:active {
-    transform: translateY(0);
-}
-
-.email-submit-btn i {
-    margin-right: 10px;
-    font-size: 18px;
+.email-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .email-popup-footer {
-    margin-top: 18px; /* Reduced margin */
-    font-size: 13px; /* Smaller font size */
-    color: var(--dark-text-secondary, #a0a0a0); /* Using Fooodis secondary text */
     text-align: center;
-    padding-top: 12px; /* Reduced padding */
-    border-top: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-}
-
-.email-popup-response {
-    margin-top: 15px; /* Reduced margin */
-    padding: 10px 12px; /* Reduced padding */
-    border-radius: 6px; /* Smaller border radius */
-    display: none;
-    animation: fadeSlideUp 0.3s ease forwards; /* Faster animation */
-    font-size: 14px; /* Smaller font size for compact design */
-    line-height: 1.4; /* Tighter line height */
-}
-
-.email-popup-response.success {
-    background-color: rgba(76, 175, 80, 0.1); /* Using Fooodis success color */
-    color: var(--success-color, #4caf50); /* Using Fooodis success color */
-    border: 1px solid rgba(76, 175, 80, 0.2);
-    display: block;
-}
-
-.email-popup-response.error {
-    background-color: rgba(255, 77, 77, 0.1); /* Using Fooodis danger color */
-    color: var(--danger-color, #ff4d4d); /* Using Fooodis danger color */
-    border: 1px solid rgba(255, 77, 77, 0.2);
-    display: block;
-}
-
-/* Dashboard Email Management Styles */
-.email-management-container {
-    background-color: var(--dark-card, #252830); /* Using Fooodis dark card color */
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 35px;
-    border: 1px solid var(--border-color, rgba(232, 242, 76, 0.3)); /* Fooodis border color */
-    box-shadow: var(--card-shadow, 0 4px 20px rgba(0, 0, 0, 0.15)); /* Fooodis card shadow */
-}
-
-.email-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-}
-
-.email-management-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0;
-    color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    letter-spacing: 0.5px;
-}
-
-.email-subscriber-count {
-    background-color: var(--accent-color, #c7d037); /* Using Fooodis darker yellow */
-    color: var(--secondary-color, #1e2127); /* Dark text on yellow background */
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(232, 242, 76, 0.2);
-}
-
-.email-list-container {
-    background-color: var(--darker-bg, #171a1f); /* Using Fooodis darker background */
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.email-list-header {
-    background-color: var(--secondary-color, #1e2127); /* Using Fooodis secondary color */
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 100px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-}
-
-.email-list-header span {
-    color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.email-list {
-    max-height: 400px;
-    overflow-y: auto;
-    /* Using only well-supported scrollbar styling for cross-browser compatibility */
-}
-
-.email-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.email-list::-webkit-scrollbar-track {
-    background: var(--darker-bg, #171a1f);
-}
-
-.email-list::-webkit-scrollbar-thumb {
-    background-color: var(--dark-border, #32363f);
-    border-radius: 8px;
-    border: 2px solid var(--darker-bg, #171a1f);
-}
-
-.email-list-item {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 100px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--dark-border, #32363f);
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.email-list-item:hover {
-    background-color: var(--secondary-color, #1e2127);
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.email-list-item:last-child {
-    border-bottom: none;
-}
-
-.email-address {
-    color: var(--dark-text, #e0e0e0);
-    font-size: 15px;
-    font-weight: 500;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.signup-date {
+    font-size: 12px;
     color: var(--dark-text-secondary, #a0a0a0);
-    font-size: 14px;
-}
-
-.email-status {
-    font-size: 14px;
-    display: inline-block;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-transform: capitalize;
-}
-
-.email-status.active {
-    background-color: rgba(76, 175, 80, 0.15); /* Using Fooodis success color */
-    color: var(--success-color, #4caf50); /* Using Fooodis success color */
-    border: 1px solid rgba(76, 175, 80, 0.2);
-}
-
-.email-status.unsubscribed {
-    background-color: rgba(255, 77, 77, 0.15); /* Using Fooodis danger color */
-    color: var(--danger-color, #ff4d4d); /* Using Fooodis danger color */
-    border: 1px solid rgba(255, 77, 77, 0.2);
-}
-
-.email-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-}
-
-.email-action-btn {
-    background: none;
-    border: none;
-    color: var(--dark-text-secondary, #a0a0a0); /* Using Fooodis secondary text */
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
-}
-
-.email-action-btn:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--primary-color, #e8f24c);
-    opacity: 0;
-    transform: scale(0);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    border-radius: 8px;
-    z-index: -1;
-}
-
-.email-action-btn:hover {
-    color: var(--secondary-color, #1e2127); /* Dark text on yellow hover */
-}
-
-.email-action-btn:hover:before {
-    opacity: 0.9;
-    transform: scale(1);
-}
-
-.email-action-btn.delete:hover {
-    color: var(--danger-color, #ff4d4d); /* Using Fooodis danger color */
-}
-
-.email-action-btn.delete:hover:before {
-    background-color: rgba(255, 77, 77, 0.15);
-}
-
-.email-pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background-color: var(--secondary-color, #1e2127); /* Using Fooodis secondary color */
-    border-top: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-}
-
-.email-pagination span {
-    color: var(--dark-text, #e0e0e0); /* Using Fooodis dark text */
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.pagination-controls {
-    display: flex;
-    gap: 12px;
-}
-
-.pagination-btn {
-    background-color: var(--dark-input, #2a2e36); /* Using Fooodis dark input */
-    border: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
-    color: var(--dark-text, #e0e0e0); /* Using Fooodis dark text */
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.pagination-btn:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    opacity: 0;
-    transform: scale(0);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    border-radius: 6px;
-    z-index: -1;
-}
-
-.pagination-btn:hover {
-    color: var(--secondary-color, #1e2127); /* Dark text on yellow hover */
-    border-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-}
-
-.pagination-btn:hover:before {
-    opacity: 0.9;
-    transform: scale(1);
-}
-
-.pagination-btn.disabled {
-    background-color: var(--darker-bg, #171a1f); /* Using Fooodis darker background */
-    color: var(--dark-text-secondary, #a0a0a0); /* Using Fooodis secondary text */
-    border-color: var(--dark-border, #32363f); /* Using Fooodis dark border */
-    cursor: not-allowed;
-}
-
-.pagination-btn.disabled:hover:before {
-    opacity: 0;
-    transform: scale(0);
-}
-
-.popup-customization {
-    margin-top: 30px;
-    padding: 0; /* Remove padding here to prevent double padding */
-}
-
-.customization-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: var(--dark-text, #e0e0e0); /* Updated from white to gray */
-    padding: 0; /* Remove added padding */
-}
-
-.customization-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: calc(100% - 33px); /* Add 33px reduction to account for margin */
-    max-width: 100%;
-    padding: 0; /* Remove added padding */
-    margin-right: 33px; /* Add 33px right margin as requested */
-}
-
-.customization-option {
-    margin-bottom: 15px;
-    width: 100%;
-}
-
-.email-section-header {
-    border-bottom: 1px solid var(--dark-border, #32363f);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-
-.email-config-section-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--dark-text, #e0e0e0);
-    margin: 0;
-}
-
-.option-label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--dark-text-secondary, #a0a0a0); /* Updated from blue-purple to gray */
-    font-size: 14px;
-}
-
-.option-input {
-    width: 100%;
-    padding: 12px 15px;
-    font-size: 15px;
-    background-color: var(--dark-input, #2a2e36); /* Updated from blue-purple to gray */
-    color: var(--dark-text, #e0e0e0); /* Updated to match dashboard text color */
-    border: 1px solid var(--dark-border, #32363f); /* Updated from blue-purple to gray */
-    border-radius: 6px;
-    transition: border-color 0.2s ease;
-    margin: 0; /* Remove any default margins */
-}
-
-.option-input:focus {
-    outline: none;
-    border-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    box-shadow: 0 0 0 2px rgba(232, 242, 76, 0.2); /* Yellow glow */
-}
-
-.option-input::placeholder {
-    color: var(--dark-text-disabled, #5a5f6d); /* Updated from blue-purple to gray */
-}
-
-/* Additional styles to replace inline CSS */
-.form-group-spaced {
-    margin-bottom: 20px;
-}
-
-.trigger-parameters-container {
-    display: none;
-}
-
-.color-picker-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.color-preview {
-    width: 25px;
-    height: 25px;
-    border-radius: 4px;
-    border: 1px solid #323248;
-}
-
-.email-customization-save {
-    background-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    color: var(--secondary-color, #1e2127); /* Dark text on yellow button */
-    border: none;
-    padding: 12px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    margin: 20px 0 0; /* Remove horizontal margins */
-    transition: background-color 0.2s ease;
-}
-
-.email-customization-save:hover {
-    background-color: var(--accent-color, #c7d037); /* Using Fooodis darker yellow */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(232, 242, 76, 0.2);
-}
-
-.popup-trigger-settings {
-    margin-top: 30px;
-    padding: 0; /* Remove all padding */
-    width: calc(100% - 33px); /* Add 33px reduction to account for margin */
-    margin-right: 33px; /* Add 33px right margin as requested */
-}
-
-.trigger-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
     margin-top: 15px;
-    width: 100%;
 }
 
-.trigger-option {
-    background-color: var(--darker-bg, #21252d); /* Updated from blue-purple to gray */
-    border-radius: 6px;
-    padding: 15px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: border-color 0.2s ease;
+.email-popup-success {
+    text-align: center;
+    padding: 20px;
 }
 
-.trigger-option.active {
-    border-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
+.success-icon {
+    font-size: 48px;
+    color: #4CAF50;
+    margin-bottom: 15px;
 }
 
-.trigger-option-title {
-    font-size: 16px;
+.success-title {
+    font-size: 20px;
     font-weight: 600;
-    color: var(--dark-text, #e0e0e0); /* Updated from white to standard gray text */
-    margin-bottom: 8px;
-}
-
-.trigger-option-description {
-    font-size: 14px;
-    color: var(--dark-text-secondary, #a0a0a0); /* Updated from blue-purple to gray */
-}
-
-.trigger-parameters {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid var(--dark-border, #32363f); /* Updated from blue-purple to gray */
-}
-
-.export-import-container {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-    margin-bottom: 30px;
-}
-
-.export-btn, .import-btn {
-    padding: 12px 20px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.2s ease;
-}
-
-.export-btn {
-    background-color: var(--dark-input, #2a2e36); /* Updated from blue-purple to gray */
-    color: var(--dark-text, #e0e0e0); /* Updated to match dashboard text */
-    border: none;
-}
-
-.export-btn:hover {
-    background-color: var(--darker-bg, #21252d); /* Updated from blue-purple to gray */
-}
-
-.import-btn {
-    background-color: transparent;
-    color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    border: 1px solid var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-}
-
-.import-btn:hover {
-    background-color: rgba(232, 242, 76, 0.1); /* Using Fooodis yellow with transparency */
-}
-
-.import-file {
-    display: none;
-}
-
-/* Toggle Switch */
-.toggle-heading {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--dark-text, #e0e0e0);
-    margin: 0 0 12px 0;
-}
-
-/* Toggle container for proper alignment */
-.toggle-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     margin: 0;
-    padding: 0;
+    color: var(--primary-color, #e8f24c);
 }
 
-/* Simple Toggle Switch - Exact match to reference image */
-.simple-toggle {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
-    margin: 0;
+/* Responsive Design */
+@media (max-width: 480px) {
+    .email-popup {
+        width: 90%;
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .email-popup-title {
+        font-size: 20px;
+    }
+
+    .email-popup-description {
+        font-size: 14px;
+    }
 }
 
-/* Hide default checkbox */
-.simple-toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    position: absolute;
+/* Force visibility for debugging */
+.force-show {
+    display: flex !important;
+    opacity: 1 !important;
+    z-index: 99999 !important;
 }
 
-/* Toggle track */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #d1d1d1; /* Light gray track */
-    border-radius: 30px; /* Fully rounded corners */
-    transition: 0.3s;
-}
-
-/* Toggle circle */
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 4px; /* Position from bottom */
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.3s;
-}
-
-/* Active state - track */
-input:checked + .slider {
-    background-color: #c7d037; /* Yellow-green track */
-}
-
-/* Active state - circle */
-input:checked + .slider:before {
-    transform: translateX(30px);
-    background-color: #ebf15c; /* Yellow circle */
-}
-
-.toggle-text {
-    font-size: 16px;
-    color: var(--dark-text, #e0e0e0);
-    font-weight: 500;
-}
-
-.form-group-spaced {
-    margin-bottom: 25px;
-    padding: 5px 0;
+.force-show .email-popup {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
 }
