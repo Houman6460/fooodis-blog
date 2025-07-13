@@ -1,0 +1,518 @@
+/**
+ * AI Configuration Manager for Fooodis Blog System
+ * Handles OpenAI API key and AI settings
+ */
+
+// Global AI configuration
+window.aiConfig = {
+    apiKey: '',
+    model: 'gpt-3.5-turbo',
+    maxTokens: 1000,
+    temperature: 0.7
+};
+
+/**
+ * Initialize AI Configuration
+ */
+function initializeAIConfig() {
+    console.log('AI Config: Initializing...');
+
+    // Load saved configuration
+    loadSavedConfig();
+
+    // Setup event listeners
+    setupAIConfigEventListeners();
+
+    // Setup UI elements
+    setupAIConfigUI();
+
+    console.log('AI Config: Initialized successfully');
+}
+
+/**
+ * Setup AI Config UI elements
+ */
+function setupAIConfigUI() {
+    // Find or create the test connection button
+    let testBtn = document.getElementById('test-connection-btn') || 
+                  document.getElementById('testConnection');
+
+    if (!testBtn) {
+        // Look for existing button or create one
+        const configSection = document.getElementById('ai-config-section') || 
+                             document.querySelector('[data-section="ai-config"]') ||
+                             document.querySelector('.ai-config-form');
+
+        if (configSection) {
+            testBtn = document.createElement('button');
+            testBtn.id = 'test-connection-btn';
+            testBtn.type = 'button';
+            testBtn.className = 'btn btn-outline-primary me-2';
+            testBtn.textContent = 'Test Connection';
+            testBtn.style.cssText = `
+                background: transparent;
+                color: var(--primary-color, #e8f24c);
+                border: 1px solid var(--primary-color, #e8f24c);
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 10px;
+                font-size: 14px;
+                transition: all 0.2s;
+            `;
+
+            // Find a good place to insert the button
+            const apiKeyInput = document.getElementById('openai-api-key') || 
+                               document.getElementById('openaiApiKey') ||
+                               document.querySelector('input[placeholder*="API"]');
+
+            if (apiKeyInput && apiKeyInput.parentNode) {
+                // Insert after the input's parent container
+                const container = apiKeyInput.closest('.form-group') || 
+                                 apiKeyInput.closest('.mb-3') || 
+                                 apiKeyInput.parentNode;
+                container.appendChild(testBtn);
+            } else {
+                configSection.appendChild(testBtn);
+            }
+        }
+    }
+
+    if (testBtn) {
+        testBtn.onclick = (e) => {
+            e.preventDefault();
+            testConnection();
+        };
+    }
+
+    // Find or create the save button
+    let saveBtn = document.getElementById('save-ai-config') || 
+                  document.getElementById('saveAIConfig');
+
+    if (!saveBtn) {
+        const configSection = document.getElementById('ai-config-section') || 
+                             document.querySelector('[data-section="ai-config"]') ||
+                             document.querySelector('.ai-config-form');
+
+        if (configSection) {
+            saveBtn = document.createElement('button');
+            saveBtn.id = 'save-ai-config';
+            saveBtn.type = 'button';
+            saveBtn.className = 'btn btn-primary';
+            saveBtn.textContent = 'Save Configuration';
+            saveBtn.style.cssText = `
+                background: var(--primary-color, #e8f24c);
+                color: var(--secondary-color, #1e2127);
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all 0.2s;
+            `;
+
+            if (testBtn && testBtn.parentNode) {
+                testBtn.parentNode.appendChild(saveBtn);
+            } else {
+                configSection.appendChild(saveBtn);
+            }
+        }
+    }
+
+    if (saveBtn) {
+        saveBtn.onclick = (e) => {
+            e.preventDefault();
+            saveConfiguration();
+        };
+    }
+}
+
+/**
+ * Load saved AI configuration
+ */
+function loadSavedConfig() {
+    try {
+        let config = null;
+
+        // Try multiple storage locations
+        const savedConfig = localStorage.getItem('aiConfig');
+        if (savedConfig) {
+            config = JSON.parse(savedConfig);
+        }
+
+        // Try StorageManager if available
+        if (!config && window.StorageManager) {
+            config = StorageManager.get('ai-config');
+        }
+
+        // Try alternative key
+        if (!config) {
+            const altConfig = localStorage.getItem('fooodis-aiConfig');
+            if (altConfig) {
+                config = JSON.parse(altConfig);
+            }
+        }
+
+        if (config) {
+            window.aiConfig = { ...window.aiConfig, ...config };
+            console.log('AI Config: Loaded saved configuration');
+
+            // Update UI if elements exist
+            updateConfigUI();
+
+            // Save to all storage locations for consistency
+            saveConfiguration();
+        } else {
+            console.log('AI Config: No saved configuration found');
+        }
+
+    } catch (error) {
+        console.error('AI Config: Error loading saved configuration:', error);
+    }
+}
+
+/**
+ * Save AI configuration
+ */
+async function saveConfiguration() {
+    const apiKeyInput = document.getElementById('openai-api-key') || 
+                       document.getElementById('openaiApiKey') ||
+                       document.querySelector('input[placeholder*="API"]') ||
+                       document.querySelector('input[type="password"]');
+
+    const apiKey = apiKeyInput?.value?.trim();
+
+    if (!apiKey) {
+        showConnectionStatus('error', 'Please enter an API key');
+        return;
+    }
+
+    // Test connection first
+    showConnectionStatus('testing', 'Testing connection before saving...');
+    const connectionValid = await testConnection();
+
+    if (!connectionValid) {
+        showConnectionStatus('error', 'Cannot save invalid API key');
+        return;
+    }
+
+    // Save to multiple storage locations for redundancy
+    const config = {
+        apiKey: apiKey,
+        model: window.aiConfig.model || 'gpt-3.5-turbo',
+        maxTokens: window.aiConfig.maxTokens || 1000,
+        temperature: window.aiConfig.temperature || 0.7,
+        timestamp: Date.now(),
+        validated: true
+    };
+
+    try {
+        // Update global config
+        window.aiConfig = { ...window.aiConfig, ...config };
+
+        // Save to localStorage with multiple keys
+        localStorage.setItem('aiConfig', JSON.stringify(config));
+        localStorage.setItem('fooodis-aiConfig', JSON.stringify(config));
+        localStorage.setItem('openai-api-key', apiKey);
+
+        // Save via StorageManager if available
+        if (typeof StorageManager !== 'undefined') {
+            StorageManager.save('ai-config', config);
+        }
+
+        // Save to sessionStorage as backup
+        sessionStorage.setItem('aiConfig-backup', JSON.stringify(config));
+
+        showConnectionStatus('success', 'Configuration saved and validated successfully!');
+
+        // Show save confirmation message
+        showConfigSavedMessage();
+
+        // Verify the save worked
+        const verification = localStorage.getItem('aiConfig');
+        if (!verification) {
+            console.warn('Configuration save verification failed');
+            showConnectionStatus('error', 'Save verification failed');
+        } else {
+            console.log('✅ AI Configuration saved successfully');
+        }
+
+    } catch (error) {
+        console.error('Error saving configuration:', error);
+        showConnectionStatus('error', 'Failed to save configuration: ' + error.message);
+    }
+}
+
+/**
+ * Setup event listeners for AI config
+ */
+function setupAIConfigEventListeners() {
+    // API Key input
+    const apiKeyInput = document.getElementById('openaiApiKey');
+    if (apiKeyInput) {
+        apiKeyInput.addEventListener('change', (e) => {
+            window.aiConfig.apiKey = e.target.value.trim();
+            saveConfiguration();
+        });
+
+        apiKeyInput.addEventListener('blur', (e) => {
+            window.aiConfig.apiKey = e.target.value.trim();
+            saveConfiguration();
+        });
+    }
+
+    // Model selection
+    const modelSelect = document.getElementById('aiModel');
+    if (modelSelect) {
+        modelSelect.addEventListener('change', (e) => {
+            window.aiConfig.model = e.target.value;
+            saveConfiguration();
+        });
+    }
+
+    // Max tokens
+    const maxTokensInput = document.getElementById('maxTokens');
+    if (maxTokensInput) {
+        maxTokensInput.addEventListener('change', (e) => {
+            window.aiConfig.maxTokens = parseInt(e.target.value) || 1000;
+            saveConfiguration();
+        });
+    }
+
+    // Temperature
+    const temperatureInput = document.getElementById('temperature');
+    if (temperatureInput) {
+        temperatureInput.addEventListener('change', (e) => {
+            window.aiConfig.temperature = parseFloat(e.target.value) || 0.7;
+            saveConfiguration();
+        });
+    }
+
+    // Save button
+    const saveBtn = document.getElementById('saveAIConfig');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            saveConfiguration();
+            showConfigSavedMessage();
+        });
+    }
+}
+
+/**
+ * Update configuration UI
+ */
+function updateConfigUI() {
+    const apiKeyInput = document.getElementById('openaiApiKey');
+    if (apiKeyInput && window.aiConfig.apiKey) {
+        apiKeyInput.value = window.aiConfig.apiKey;
+    }
+
+    const modelSelect = document.getElementById('aiModel');
+    if (modelSelect && window.aiConfig.model) {
+        modelSelect.value = window.aiConfig.model;
+    }
+
+    const maxTokensInput = document.getElementById('maxTokens');
+    if (maxTokensInput && window.aiConfig.maxTokens) {
+        maxTokensInput.value = window.aiConfig.maxTokens;
+    }
+
+    const temperatureInput = document.getElementById('temperature');
+    if (temperatureInput && window.aiConfig.temperature) {
+        temperatureInput.value = window.aiConfig.temperature;
+    }
+}
+
+/**
+ * Show configuration saved message
+ */
+function showConfigSavedMessage() {
+    // Create or update save message
+    let saveMessage = document.getElementById('configSaveMessage');
+    if (!saveMessage) {
+        saveMessage = document.createElement('div');
+        saveMessage.id = 'configSaveMessage';
+        saveMessage.className = 'alert alert-success';
+        saveMessage.style.position = 'fixed';
+        saveMessage.style.top = '20px';
+        saveMessage.style.right = '20px';
+        saveMessage.style.zIndex = '9999';
+        document.body.appendChild(saveMessage);
+    }
+
+    saveMessage.textContent = 'AI Configuration saved successfully!';
+    saveMessage.style.display = 'block';
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        saveMessage.style.display = 'none';
+    }, 3000);
+}
+
+/**
+ * Validate API key
+ */
+function validateAPIKey(apiKey) {
+    if (!apiKey || apiKey.length < 10) {
+        return false;
+    }
+
+    // Basic OpenAI API key format validation
+    return apiKey.startsWith('sk-') || apiKey.includes('openai');
+}
+
+/**
+ * Get AI configuration
+ */
+function getAIConfig() {
+    return window.aiConfig;
+}
+
+/**
+ * Check if AI is configured
+ */
+function isAIConfigured() {
+    return window.aiConfig.apiKey && window.aiConfig.apiKey.length > 0;
+}
+
+/**
+ * Connection test
+ */
+async function testConnection() {
+    const apiKeyInput = document.getElementById('openai-api-key') || 
+                       document.getElementById('openaiApiKey') ||
+                       document.querySelector('input[placeholder*="API"]') ||
+                       document.querySelector('input[type="password"]');
+
+    if (!apiKeyInput) {
+        showConnectionStatus('error', 'API key input not found');
+        return false;
+    }
+
+    const apiKey = apiKeyInput.value?.trim();
+
+    if (!apiKey) {
+        showConnectionStatus('error', 'Please enter an API key first');
+        return false;
+    }
+
+    if (!apiKey.startsWith('sk-')) {
+        showConnectionStatus('error', 'Invalid API key format. OpenAI keys start with "sk-"');
+        return false;
+    }
+
+    showConnectionStatus('testing', 'Testing connection...');
+
+    try {
+        // Test with OpenAI API directly
+        const response = await fetch('https://api.openai.com/v1/models', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.data && data.data.length > 0) {
+                showConnectionStatus('success', `Connection successful! Found ${data.data.length} models available.`);
+                
+                // Update global config
+                window.aiConfig.apiKey = apiKey;
+                
+                return true;
+            } else {
+                showConnectionStatus('error', 'API key is invalid or has no access to models');
+                return false;
+            }
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage = errorData.error?.message || response.statusText;
+            showConnectionStatus('error', `Connection failed: ${errorMessage}`);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error in testConnection:', error);
+        showConnectionStatus('error', `Connection error: ${error.message}`);
+        return false;
+    }
+}
+
+/**
+ * Connection status display
+ */
+function showConnectionStatus(type, message) {
+    let statusElement = document.getElementById('connection-status');
+
+    // Create status element if it doesn't exist
+    if (!statusElement) {
+        statusElement = document.createElement('div');
+        statusElement.id = 'connection-status';
+        statusElement.className = 'status';
+
+        // Find a good place to insert it
+        const configForm = document.querySelector('.ai-config-form');
+        const testButton = document.getElementById('test-connection-btn');
+
+        if (testButton && testButton.parentNode) {
+            testButton.parentNode.insertBefore(statusElement, testButton.nextSibling);
+        } else if (configForm) {
+            configForm.appendChild(statusElement);
+        } else {
+            document.body.appendChild(statusElement);
+        }
+    }
+
+    statusElement.className = `status ${type}`;
+    statusElement.textContent = message;
+    statusElement.style.display = 'block';
+    statusElement.style.padding = '10px';
+    statusElement.style.margin = '10px 0';
+    statusElement.style.borderRadius = '4px';
+    statusElement.style.fontSize = '14px';
+
+    // Style based on type
+    switch(type) {
+        case 'success':
+            statusElement.style.backgroundColor = '#d4edda';
+            statusElement.style.color = '#155724';
+            statusElement.style.border = '1px solid #c3e6cb';
+            break;
+        case 'error':
+            statusElement.style.backgroundColor = '#f8d7da';
+            statusElement.style.color = '#721c24';
+            statusElement.style.border = '1px solid #f5c6cb';
+            break;
+        case 'testing':
+            statusElement.style.backgroundColor = '#d1ecf1';
+            statusElement.style.color = '#0c5460';
+            statusElement.style.border = '1px solid #bee5eb';
+            break;
+        default:
+            statusElement.style.backgroundColor = '#e2e3e5';
+            statusElement.style.color = '#383d41';
+            statusElement.style.border = '1px solid #d6d8db';
+    }
+
+    // Hide status after 5 seconds for success/error
+    if (type !== 'testing') {
+        setTimeout(() => {
+            statusElement.style.display = 'none';
+        }, 5000);
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initializeAIConfig);
+
+// Export functions for global access
+window.initializeAIConfig = initializeAIConfig;
+window.loadSavedConfig = loadSavedConfig;
+window.saveConfiguration = saveConfiguration;
+window.getAIConfig = getAIConfig;
+window.isAIConfigured = isAIConfigured;
+window.validateAPIKey = validateAPIKey;
+window.testConnection = testConnection;
+window.showConnectionStatus = showConnectionStatus;

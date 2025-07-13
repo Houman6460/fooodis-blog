@@ -1,0 +1,43 @@
+
+/* Dashboard Navigation Fix Styles */
+.dashboard-section {
+    display: none !important;
+}
+
+.dashboard-section.active {
+    display: block !important;
+}
+
+.nav-item {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.nav-item:hover {
+    background-color: rgba(232, 242, 76, 0.1);
+}
+
+.nav-item.active {
+    background-color: rgba(232, 242, 76, 0.2);
+    border-left: 3px solid #e8f24c;
+}
+
+/* Ensure sidebar navigation items are clickable */
+.sidebar-nav li {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sidebar-nav li:hover {
+    background-color: rgba(232, 242, 76, 0.1);
+}
+
+.sidebar-nav li.active {
+    background-color: rgba(232, 242, 76, 0.2);
+}
+
+/* Force visibility for debugging */
+.dashboard-section[style*="display: block"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+}

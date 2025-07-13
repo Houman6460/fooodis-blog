@@ -1,0 +1,668 @@
+[
+  {
+    "id": "conv-1751557397775",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-03T15:43:17.848Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information available, fooodis.com is a platform that offers various subscription plans for restaurant operations and provides detailed insights into billing processes, payment methods, available discounts, and local currency pricing. The platform supports multiple currencies, including USD, SEK, and EUR, and offers a 50% discount on all plans, along with additional savings for longer billing cycles. Specific information about accepted payment methods, upgrade processes, and available promotions is also provided.\n\nFor more specific details or if you have any particular questions, feel free to let me know!",
+        "timestamp": "2025-07-03T15:43:26.915Z"
+      },
+      {
+        "role": "user",
+        "content": "Need about pos",
+        "timestamp": "2025-07-03T15:43:40.832Z"
+      },
+      {
+        "role": "assistant",
+        "content": "The documents contain details about Fooodis' pricing and billing information, including the pricing structure, supported currencies, payment processing methods, plan features, example conversations, FAQs, website references and links, localized responses, tone and style guidelines, available promotions and discounts, and complete coupon codes for billing processing. \n\nIf you have specific questions about any of these aspects, I'd be happy to assist further.\n\nAdditionally, is there anything specific you'd like to know about Fooodis' point of sale system, or any particular aspect you need more information on?",
+        "timestamp": "2025-07-03T15:43:47.928Z"
+      }
+    ],
+    "createdAt": "2025-07-03T15:43:17.847Z",
+    "lastMessageAt": "2025-07-03T15:43:40.832Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_wg7ZwxisnDf8wboMIvk08gUH",
+    "agent": {
+      "id": "billing",
+      "name": "Elena Rodriguez",
+      "realName": "Elena Rodriguez",
+      "department": "Billing",
+      "description": "Handles billing, payments, and subscription questions",
+      "color": "#ffc107",
+      "active": true,
+      "assistantId": "",
+      "model": "gpt-4",
+      "systemPrompt": "You are Elena Rodriguez, a detail-oriented billing specialist for Fooodis. Help customers with billing questions, payment issues, and subscription management with precision and care.",
+      "personality": "Detail-oriented and precise",
+      "introduction": {
+        "en": "Hi! I'm Elena from Billing. I can help you with any payment or subscription questions you have.",
+        "sv": "Hej! Jag heter Elena och arbetar med fakturering. Jag kan hjälpa dig med betalningar och prenumerationsfrågor."
+      },
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "assignedAssistantId": "default-1751553703952",
+      "enabled": true
+    },
+    "lastUserMessage": "Need about pos",
+    "messageCount": 4
+  },
+  {
+    "id": "conv-1751558129309",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-03T15:55:29.332Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information provided, here's an overview of Fooodis:\n\n### Pricing & Billing\n\n#### Plan Types\n- Basic\n- Standard\n- Professional\n- Elite\n\n#### Supported Currencies\n- USD ($)\n- SEK (Kr)\n- EUR (€)\n\n#### Additional Discounts by Period\n- 3-Months: 10% additional off\n- 6-Months: 15% additional off\n- Yearly: 20% additional off\n\n#### Payment Processing\n- Accepted Methods: Credit/Debit Cards, PayPal, Bank Transfers, Invoice Billing (for Elite plan upon approval)\n\n#### Promotions & Discounts\n- 50% off all plans (current limited-time promotion)\n- Annual payment discount (2 months free)\n- Multi-location discounts available\n- Referral program credits\n- Loyalty rewards for long-term customers\n\n#### Coupon Codes\n- Various discount codes available for different plans and billing periods\n\n#### Key Website Links\n- [Pricing Page](https://fooodis.com/fooodis/index.html#pricing)\n- Direct billing, account access, payment settings, and support via specific links on the website\n\n#### Example Conversations\n- Covers scenarios related to plan changing, currency and pricing, and payment issues\n\n---\n\nGiven these details, I can assist with:\n- Explaining billing processes and cycles\n- Providing details about specific pricing plans and applicable discounts\n- Assisting with payment method questions\n- Guiding on invoice and receipt generation\n- Handling requests for refunds and escalations when necessary\n\nIs there anything specific you'd like to know about Fooodis' pricing, plans, or billing processes?",
+        "timestamp": "2025-07-03T15:55:49.817Z"
+      }
+    ],
+    "createdAt": "2025-07-03T15:55:29.332Z",
+    "lastMessageAt": "2025-07-03T15:55:29.332Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_OEMJP9p3bOtEbGhXxg3k5NY5",
+    "agent": {
+      "id": "customer-support",
+      "name": "Sarah Johnson",
+      "realName": "Sarah Johnson",
+      "department": "Customer Support",
+      "description": "Handles general customer inquiries and support requests",
+      "color": "#28a745",
+      "active": true,
+      "assistantId": "",
+      "model": "gpt-4",
+      "systemPrompt": "You are Sarah Johnson, a friendly customer support specialist for Fooodis. Help customers with general inquiries, account issues, and provide warm, helpful assistance.",
+      "personality": "Friendly and helpful",
+      "introduction": {
+        "en": "Hi! I'm Sarah from Customer Support. I'm here to help you with any questions or issues you might have.",
+        "sv": "Hej! Jag heter Sarah och arbetar med kundsupport. Jag finns här för att hjälpa dig med frågor eller problem."
+      },
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "assignedAssistantId": "default-1751553703952",
+      "enabled": true
+    },
+    "lastUserMessage": "I need to know about foodis",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751565091985",
+    "conversationId": "conv-1751565091985",
+    "messages": [
+      {
+        "content": "Hi",
+        "sender": "user",
+        "timestamp": "2025-07-03T17:51:09.259Z"
+      },
+      {
+        "content": "Please wait a moment while we connect you to one of our support agents...",
+        "sender": "assistant",
+        "timestamp": "2025-07-03T17:51:10.955Z"
+      },
+      {
+        "content": "Hello! I'm Alex Thompson, and I'll be assisting you today. How can I help you?",
+        "sender": "assistant",
+        "timestamp": "2025-07-03T17:51:17.470Z"
+      },
+      {
+        "content": "Hi, I need to know about foodis",
+        "sender": "user",
+        "timestamp": "2025-07-03T17:51:31.983Z"
+      },
+      {
+        "content": "As Restaurant Assistant, I'd suggest: Our specialties include fresh, local ingredients prepared with care.",
+        "sender": "assistant",
+        "timestamp": "2025-07-03T17:51:31.987Z"
+      },
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-03T17:52:36.756Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information provided from the uploaded files, it seems that fooodis.com offers a range of subscription plans with different pricing, billing cycles, and discounts. The available plans are Basic, Standard, Professional, and Elite. The prices are displayed in USD, SEK, and EUR, with a 50% discount currently applied to all plans. There are also additional discounts based on the subscription period (monthly, 3-months, 6-months, yearly).\n\nIf you have any specific questions about the pricing, billing cycles, discounts, or payment methods for fooodis.com, feel free to ask.",
+        "timestamp": "2025-07-03T17:52:59.033Z"
+      }
+    ],
+    "userInfo": {},
+    "userEmail": "info@lofoland.se",
+    "startTime": "2025-07-03T17:52:23.602Z",
+    "endTime": null,
+    "phase": "agent",
+    "agentName": "David Kim",
+    "status": "completed",
+    "lastUpdated": "2025-07-03T17:52:23.602Z",
+    "lastUserMessage": "I need to know about foodis",
+    "lastMessageAt": "2025-07-03T17:52:36.756Z",
+    "threadId": "thread_41TYkUI6B7YfF2iIR3bUJ3nc",
+    "messageCount": 7
+  },
+  {
+    "id": "conv-1751566459953",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-03T18:14:50.940Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information provided, Fooodis is a platform that offers professional billing assistance to restaurant owners. It provides insights on subscription management, payment optimization, billing inquiries, and financial planning for restaurant operations. The platform supports various currencies (USD, SEK, EUR) and different billing cycles, offering additional savings based on the chosen subscription period.\n\nThe platform also offers a variety of plans, each with specific pricing and billing features. Promotional codes and discounts are available, including a current limited-time 50% off promotion for all plans. Additionally, it provides guidance on payment processing, accepted payment methods, and additional features available based on the selected plan.\n\nUsers have access to account management, payment settings, and billing support directly through the platform. Invoices can be downloaded for Professional and Elite plans, while Basic and Standard plans receive email receipts.\n\nFor specific insights, the provided details can be referenced accordingly. If there are any additional specifics you'd like to know about Fooodis, feel free to let me know!",
+        "timestamp": "2025-07-03T18:14:59.054Z"
+      }
+    ],
+    "createdAt": "2025-07-03T18:14:50.940Z",
+    "lastMessageAt": "2025-07-03T18:14:50.940Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_9gp9KlnbpC1rFDLL1eUiDftB",
+    "agent": {
+      "id": "sales",
+      "name": "Marcus Chen",
+      "realName": "Marcus Chen",
+      "department": "Sales",
+      "description": "Assists with sales inquiries and product information",
+      "color": "#007bff",
+      "active": true,
+      "assistantId": "sales-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Marcus Chen, an enthusiastic sales specialist for Fooodis. Help potential customers understand our products, pricing, and guide them through the sales process with expertise.",
+      "personality": "Enthusiastic and knowledgeable",
+      "introduction": {
+        "en": "Hello! I'm Marcus from Sales. I'd love to help you find the perfect Fooodis solution for your business.",
+        "sv": "Hej! Jag heter Marcus och arbetar med försäljning. Jag hjälper gärna till med ditt företags behov."
+      },
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "enabled": true
+    },
+    "lastUserMessage": "I need to know about foodis",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751566513982",
+    "messages": [
+      {
+        "role": "user",
+        "content": "hllo",
+        "timestamp": "2025-07-03T18:15:28.289Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Hello! How can I assist you today?",
+        "timestamp": "2025-07-03T18:15:33.972Z"
+      }
+    ],
+    "createdAt": "2025-07-03T18:15:28.289Z",
+    "lastMessageAt": "2025-07-03T18:15:28.289Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_PhoVHwDivqt2iCJ2qBX08UKy",
+    "agent": {
+      "id": "sales",
+      "name": "Marcus Chen",
+      "realName": "Marcus Chen",
+      "department": "Sales",
+      "description": "Assists with sales inquiries and product information",
+      "color": "#007bff",
+      "active": true,
+      "assistantId": "sales-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Marcus Chen, an enthusiastic sales specialist for Fooodis. Help potential customers understand our products, pricing, and guide them through the sales process with expertise.",
+      "personality": "Enthusiastic and knowledgeable",
+      "introduction": {
+        "en": "Hello! I'm Marcus from Sales. I'd love to help you find the perfect Fooodis solution for your business.",
+        "sv": "Hej! Jag heter Marcus och arbetar med försäljning. Jag hjälper gärna till med ditt företags behov."
+      },
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "enabled": true
+    },
+    "lastUserMessage": "hllo",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751577764587",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-03T21:22:45.178Z"
+      },
+      {
+        "role": "assistant",
+        "content": "I have found detailed information about Fooodis, including its pricing structure, payment processing methods, supported currencies, discount codes, and frequently asked questions (FAQs). If you have any specific questions about Fooodis or if there's anything in particular you'd like to know, feel free to ask!",
+        "timestamp": "2025-07-03T21:22:51.868Z"
+      }
+    ],
+    "createdAt": "2025-07-03T21:22:45.178Z",
+    "lastMessageAt": "2025-07-03T21:22:45.178Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_FJLNJvyWI66aCBqBuG8DRicy",
+    "agent": {
+      "id": "sales",
+      "name": "Marcus Chen",
+      "realName": "Marcus Chen",
+      "department": "Sales",
+      "description": "Assists with sales inquiries and product information",
+      "color": "#007bff",
+      "active": true,
+      "assistantId": "sales-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Marcus Chen, an enthusiastic sales specialist for Fooodis. Help potential customers understand our products, pricing, and guide them through the sales process with expertise.",
+      "personality": "Enthusiastic and knowledgeable",
+      "introduction": {
+        "en": "Hello! I'm Marcus from Sales. I'd love to help you find the perfect Fooodis solution for your business.",
+        "sv": "Hej! Jag heter Marcus och arbetar med försäljning. Jag hjälper gärna till med ditt företags behov."
+      },
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "enabled": true
+    },
+    "lastUserMessage": "I need to know about foodis",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751624794753",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about fooodis discount code",
+        "timestamp": "2025-07-04T10:26:34.777Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Here are the discount codes for fooodis subscriptions:\n\n### Euro (€) Discount Codes (50% OFF):\n- Basic Plan: FOOODIS-EU-BASIC-M50, FOOODIS-EU-BASIC-3M50, FOOODIS-EU-BASIC-6M50, FOOODIS-EU-BASIC-Y50\n- Standard Plan: FOOODIS-EU-STD-M50, FOOODIS-EU-STD-3M50, FOOODIS-EU-STD-6M50, FOOODIS-EU-STD-Y50\n- Professional Plan: FOOODIS-EU-PRO-M50, FOOODIS-EU-PRO-3M50, FOOODIS-EU-PRO-6M50, FOOODIS-EU-PRO-Y50\n- Elite Plan: FOOODIS-EU-ELITE-M50, FOOODIS-EU-ELITE-3M50, FOOODIS-EU-ELITE-6M50, FOOODIS-EU-ELITE-Y50\n\n### US Dollar (\\$) Discount Codes (50% OFF):\n- Basic Plan: FOOODIS-BASIC-M50, FOOODIS-BASIC-3M50, FOOODIS-BASIC-6M50, FOOODIS-BASIC-Y50\n- Standard Plan: FOOODIS-STD-M50, FOOODIS-STD-3M50, FOOODIS-STD-6M50, FOOODIS-STD-Y50\n- Professional Plan: FOOODIS-PRO-M50, FOOODIS-PRO-3M50, FOOODIS-PRO-6M50, FOOODIS-PRO-Y50\n- Elite Plan: FOOODIS-ELITE-M50, FOOODIS-ELITE-3M50, FOOODIS-ELITE-6M50, FOOODIS-ELITE-Y50\n\n### Swedish Krona (kr) Discount Codes (50% OFF):\n- Basic Plan: FOOODIS-SE-BASIC-M50, FOOODIS-SE-BASIC-3M50, FOOODIS-SE-BASIC-6M50, FOOODIS-SE-BASIC-Y50\n- Standard Plan: FOOODIS-SE-STD-M50, FOOODIS-SE-STD-3M50, FOOODIS-SE-STD-6M50, FOOODIS-SE-STD-Y50\n- Professional Plan: FOOODIS-SE-PRO-M50, FOOODIS-SE-PRO-3M50, FOOODIS-SE-PRO-6M50, FOOODIS-SE-PRO-Y50\n- Elite Plan: FOOODIS-SE-ELITE-M50, FOOODIS-SE-ELITE-3M50, FOOODIS-SE-ELITE-6M50, FOOODIS-SE-ELITE-Y50\n\nAdditionally, there are other promotional codes available:\n- SAVE50: General 50% discount\n- ANNUAL25: 25% off annual subscriptions\n- UPGRADE15: 15% off plan upgrades\n- NEWBIZ: New business discount\n- LOYALTY10: 10% loyalty discount\n\nThese codes can be used during the checkout process or when managing the subscription to apply the relevant discounts.\n\nPlease let me know if there is anything else you need assistance with!",
+        "timestamp": "2025-07-04T10:26:48.622Z"
+      }
+    ],
+    "createdAt": "2025-07-04T10:26:34.777Z",
+    "lastMessageAt": "2025-07-04T10:26:34.777Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_rGPQY7hAMSl3w0i2CcI1Oc3L",
+    "agent": {
+      "id": "delivery",
+      "name": "Lisa Anderson",
+      "realName": "Lisa Anderson",
+      "department": "Delivery",
+      "description": "Handles delivery-related inquiries and issues",
+      "color": "#17a2b8",
+      "active": true,
+      "assistantId": "delivery-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Lisa Anderson, a reliable delivery specialist for Fooodis. Help customers with delivery questions, tracking orders, and resolve delivery-related issues efficiently.",
+      "personality": "Reliable and efficient",
+      "introduction": {
+        "en": "Hi! I'm Lisa from Delivery. I can help you track your orders and resolve any delivery concerns.",
+        "sv": "Hej! Jag heter Lisa och arbetar med leveranser. Jag kan hjälpa dig spåra beställningar och lösa leveransproblem."
+      },
+      "avatar": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgNjQgNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI2U4ZjI0YyIvPgogICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iOCIgZmlsbD0iIzFlMjEyNyIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAzNSAzNSBRIDQwIDM4IDQ1IDM1IiBzdHJva2U9IiMxZTIxMjciIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTSAyOCA1NSBRIDQwIDY1IDUyIDU1IiBmaWxsPSIjZTc0YzNjIi8+CiAgICAgICAgICAgICAgICA8cmVjdCB4PSIzNSIgeT0iNDUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzJDM0U1MCIvPgogICAgICAgICAgICAgICAgPHRleHQgeD0iNDAiIHk9IjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZvbnQtd2VpZ2h0PSJib2xkIj5Kb2U8L3RleHQ+CiAgICAgICAgICAgIDwvc3ZnPgogICAgICAgIA==",
+      "enabled": true
+    },
+    "lastUserMessage": "I need to know about fooodis discount code",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751626590221",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know About discount codes",
+        "timestamp": "2025-07-04T10:56:30.284Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Do you need any further assistance with the discount codes or any other billing-related queries?",
+        "timestamp": "2025-07-04T10:56:43.945Z"
+      },
+      {
+        "role": "user",
+        "content": "How could I register?",
+        "timestamp": "2025-07-04T11:17:06.936Z"
+      },
+      {
+        "role": "assistant",
+        "content": "To register and apply the discount codes, you can follow these steps:\n\n1. Go to the registration page on the Fooodis website.\n2. Choose your preferred plan type (Basic, Standard, Professional, or Elite).\n3. Select the desired subscription period (Monthly, 3-Months, 6-Months, or Yearly).\n4. Enter the relevant discount code in the provided field during the registration process.\n5. Complete the registration by providing the required details and making the payment.\n\nIf you have any specific questions during the registration process or need further assistance, feel free to ask!",
+        "timestamp": "2025-07-04T11:17:12.218Z"
+      }
+    ],
+    "createdAt": "2025-07-04T10:56:30.284Z",
+    "lastMessageAt": "2025-07-04T11:17:06.936Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_6gxvrZGYssZr1DqDLPUqXw0c",
+    "agent": {
+      "id": "delivery",
+      "name": "Lisa Anderson",
+      "realName": "Lisa Anderson",
+      "department": "Delivery",
+      "description": "Handles delivery-related inquiries and issues",
+      "color": "#17a2b8",
+      "active": true,
+      "assistantId": "delivery-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Lisa Anderson, a reliable delivery specialist for Fooodis. Help customers with delivery questions, tracking orders, and resolve delivery-related issues efficiently.",
+      "personality": "Reliable and efficient",
+      "introduction": {
+        "en": "Hi! I'm Lisa from Delivery. I can help you track your orders and resolve any delivery concerns.",
+        "sv": "Hej! Jag heter Lisa och arbetar med leveranser. Jag kan hjälpa dig spåra beställningar och lösa leveransproblem."
+      },
+      "avatar": "data:image/jpeg;base64,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",
+      "enabled": true
+    },
+    "lastUserMessage": "How could I register?",
+    "messageCount": 4
+  },
+  {
+    "id": "conv-1751627817148",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about the discount",
+        "timestamp": "2025-07-04T11:16:57.176Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information from the uploaded files, here are the available promotions and discount details for fooodis.com:\n\n1. Current Promotions:\n   - 50% off all plans (limited-time promotion)\n   - Annual payment discount (equivalent to 2 months free)\n   - Multi-location discounts available\n   - Referral program credits\n   - Loyalty rewards for long-term customers\n\n2. Complete Coupon Codes for Billing Processing:\n   - USD Discount Codes: FOOODIS-XXXX-PLAN_TYPE-XX, where XXXX represents the plan type (e.g., BASIC, STD, PRO, ELITE), PLAN_TYPE represents the billing period (e.g., M for monthly, 3M for 3-month, 6M for 6-month, Y for yearly), and XX represents the specific discount (e.g., 50 for 50% off).\n   - EUR Discount Codes: FOOODIS-EU-XXXX-PLAN_TYPE-XX, following a similar format as the USD discount codes.\n   - SEK Discount Codes: FOOODIS-SE-XXXX-PLAN_TYPE-XX, following a similar format as the USD and EUR discount codes.\n\n3. Additional Promotional Codes:\n   - SAVE50: General 50% discount\n   - ANNUAL25: 25% off annual subscriptions\n   - UPGRADE15: 15% off plan upgrades\n   - NEWBIZ: New business discount\n   - LOYALTY10: 10% loyalty discount\n\nThese codes can be applied during billing processing to avail the specified discounts.\n\nWould you like further information on a specific discount or promotion?",
+        "timestamp": "2025-07-04T11:17:07.903Z"
+      }
+    ],
+    "createdAt": "2025-07-04T11:16:57.176Z",
+    "lastMessageAt": "2025-07-04T11:16:57.176Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_hjj53DoYYY8seRUTMeWv3FK9",
+    "agent": {
+      "id": "sales",
+      "name": "Marcus Chen",
+      "realName": "Marcus Chen",
+      "department": "Sales",
+      "description": "Assists with sales inquiries and product information",
+      "color": "#007bff",
+      "active": true,
+      "assistantId": "sales-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Marcus Chen, an enthusiastic sales specialist for Fooodis. Help potential customers understand our products, pricing, and guide them through the sales process with expertise.",
+      "personality": "Enthusiastic and knowledgeable",
+      "introduction": {
+        "en": "Hello! I'm Marcus from Sales. I'd love to help you find the perfect Fooodis solution for your business.",
+        "sv": "Hej! Jag heter Marcus och arbetar med försäljning. Jag hjälper gärna till med ditt företags behov."
+      },
+      "avatar": "data:image/jpeg;base64,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",
+      "enabled": true
+    },
+    "lastUserMessage": "I need to know about the discount",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751629317765",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-04T11:41:57.864Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information found in the uploaded files, I can provide comprehensive details about fooodis. \n\nFooodis is a subscription-based service offering different plans for restaurant management software. They offer several plans, including Basic, Standard, Professional, and Elite, with each plan having different features and prices. The service supports various payment methods such as credit/debit cards, PayPal, bank transfers, and invoice billing for specific plans. Additionally, they provide significant discounts, including a limited-time 50% off promotion, as well as additional savings for longer subscription periods such as 3-month, 6-month, and yearly plans.\n\nIf you need specific information about pricing, promotions, billing cycles, or supported currencies, feel free to ask!\n",
+        "timestamp": "2025-07-04T11:42:15.336Z"
+      }
+    ],
+    "createdAt": "2025-07-04T11:41:57.864Z",
+    "lastMessageAt": "2025-07-04T11:41:57.864Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_kko1YWe1FXvIfhbKjFtbEHIp",
+    "agent": {
+      "id": "technical-support",
+      "name": "David Kim",
+      "realName": "David Kim",
+      "department": "Technical Support",
+      "description": "Provides technical assistance and troubleshooting",
+      "color": "#dc3545",
+      "active": true,
+      "assistantId": "technical-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are David Kim, an expert technical support specialist for Fooodis. Help customers with technical issues, system problems, and provide detailed troubleshooting guidance with patience.",
+      "personality": "Patient and technical",
+      "introduction": {
+        "en": "Hello! I'm David from Technical Support. I'm here to help you solve any technical challenges you're facing.",
+        "sv": "Hej! Jag heter David och arbetar med teknisk support. Jag hjälper dig gärna att lösa tekniska utmaningar."
+      },
+      "avatar": "data:image/jpeg;base64,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",
+      "enabled": true
+    },
+    "lastUserMessage": "I need to know about foodis",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751630326667",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hi I need to know about how to register on fooodis",
+        "timestamp": "2025-07-04T11:58:46.805Z"
+      },
+      {
+        "role": "assistant",
+        "content": "To register on fooodis, you can visit the following link: [fooodis registration page](https://fooodis.com/fooodis/index.html#pricing). Upon visiting the page, you will be able to select a plan, enter your details, and complete the registration process.\n\nIf you have any specific questions or need further assistance with the registration process, feel free to ask!",
+        "timestamp": "2025-07-04T11:58:53.963Z"
+      }
+    ],
+    "createdAt": "2025-07-04T11:58:46.805Z",
+    "lastMessageAt": "2025-07-04T11:58:46.805Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_8a3zzFENVPStsVRsVgEfvm8S",
+    "agent": {
+      "id": "billing",
+      "name": "Elena Rodriguez",
+      "realName": "Elena Rodriguez",
+      "department": "Billing",
+      "description": "Handles billing, payments, and subscription questions",
+      "color": "#ffc107",
+      "active": true,
+      "assistantId": "billing-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Elena Rodriguez, a detail-oriented billing specialist for Fooodis. Help customers with billing questions, payment issues, and subscription management with precision and care.",
+      "personality": "Detail-oriented and precise",
+      "introduction": {
+        "en": "Hi! I'm Elena from Billing. I can help you with any payment or subscription questions you have.",
+        "sv": "Hej! Jag heter Elena och arbetar med fakturering. Jag kan hjälpa dig med betalningar och prenumerationsfrågor."
+      },
+      "avatar": "data:image/jpeg;base64,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",
+      "enabled": true
+    },
+    "lastUserMessage": "Hi I need to know about how to register on fooodis",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751632956655",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hej Jag vil hjelp",
+        "timestamp": "2025-07-04T12:42:36.860Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Hej! Hur kan jag hjälpa dig med fakturor, prenumerationer eller betalningsrelaterade frågor idag?",
+        "timestamp": "2025-07-04T12:42:45.943Z"
+      }
+    ],
+    "createdAt": "2025-07-04T12:42:36.860Z",
+    "lastMessageAt": "2025-07-04T12:42:36.860Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_I5RDlpEzgUCoe1tgVadp8mHU",
+    "agent": {
+      "id": "sales",
+      "name": "Marcus Chen",
+      "realName": "Marcus Chen",
+      "department": "Sales",
+      "description": "Assists with sales inquiries and product information",
+      "color": "#007bff",
+      "active": true,
+      "assistantId": "sales-assistant",
+      "assignedAssistantId": "default-1751564851416",
+      "model": "gpt-4",
+      "systemPrompt": "You are Marcus Chen, an enthusiastic sales specialist for Fooodis. Help potential customers understand our products, pricing, and guide them through the sales process with expertise.",
+      "personality": "Enthusiastic and knowledgeable",
+      "introduction": {
+        "en": "Hello! I'm Marcus from Sales. I'd love to help you find the perfect Fooodis solution for your business.",
+        "sv": "Hej! Jag heter Marcus och arbetar med försäljning. Jag hjälper gärna till med ditt företags behov."
+      },
+      "avatar": "data:image/jpeg;base64,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",
+      "enabled": true
+    },
+    "lastUserMessage": "Hej Jag vil hjelp",
+    "messageCount": 2
+  },
+  {
+    "id": "conv-1751635145095",
+    "conversationId": "conv-1751635145095",
+    "messages": [
+      {
+        "content": "hi",
+        "sender": "user",
+        "timestamp": "2025-07-04T13:16:35.607Z"
+      },
+      {
+        "content": "Hold on, we're connecting you to one of our team members...",
+        "sender": "assistant",
+        "timestamp": "2025-07-04T13:16:37.099Z"
+      },
+      {
+        "content": "Hello! I'm Lisa Anderson, and I'll be assisting you today. How can I help you?",
+        "sender": "assistant",
+        "timestamp": "2025-07-04T13:16:40.293Z"
+      },
+      {
+        "content": "I need to know How could I register",
+        "sender": "user",
+        "timestamp": "2025-07-04T13:17:02.300Z"
+      },
+      {
+        "content": "Based on the provided documents, it seems that the registration or sign-up process details are not explicitly mentioned. However, the following links may be helpful for registration and account access:<br><br>1. [Account Management](<button class=\"chatbot-link-btn\" onclick=\"window.open('https://fooodis.com/fooodis/index.html#<span class=\"color-pricing\">pricing</span>)', '_blank')\" title=\"https://fooodis.com/fooodis/index.html#<span class=\"color-pricing\">pricing</span>)\"><br>                <span class=\"material-icons-outlined\">link</span> Fooodis.com<br>            </button><br>2. [Payment Settings](<button class=\"chatbot-link-btn\" onclick=\"window.open('https://fooodis.com/fooodis/Payment-setting.html)', '_blank')\" title=\"https://fooodis.com/fooodis/Payment-setting.html)\"><br>                <span class=\"material-icons-outlined\">link</span> 2. Fooodis.com<br>            </button><br>3. [Billing <span class=\"color-support\">Support</span>](<button class=\"chatbot-link-btn\" onclick=\"window.open('https://fooodis.com/fooodis/<span class=\"color-support\">Support</span>.html)', '_blank')\" title=\"https://fooodis.com/fooodis/<span class=\"color-support\">Support</span>.html)\"><br>                <span class=\"material-icons-outlined\">link</span> 3. <span class=\"color-support\">Support<br>            </span></button><br>4. [Plan Comparison](<button class=\"chatbot-link-btn\" onclick=\"window.open('https://fooodis.com/fooodis/index.html#<span class=\"color-pricing\">pricing</span>)', '_blank')\" title=\"https://fooodis.com/fooodis/index.html#<span class=\"color-pricing\">pricing</span>)\"><br>                <span class=\"material-icons-outlined\">link</span> 4. Fooodis.com<br>            </button><br>5. [Tax Configuration](<button class=\"chatbot-link-btn\" onclick=\"window.open('https://fooodis.com/fooodis/Tax.html)', '_blank')\" title=\"https://fooodis.com/fooodis/Tax.html)\"><br>                <span class=\"material-icons-outlined\">link</span> 5. Fooodis.com<br>            </button><br><br>These links should provide the necessary information for registration and account management on fooodis.com.",
+        "sender": "assistant",
+        "timestamp": "2025-07-04T13:19:05.112Z"
+      }
+    ],
+    "userInfo": {},
+    "userEmail": "info@food.com",
+    "startTime": "2025-07-04T13:21:11.540Z",
+    "endTime": null,
+    "phase": "agent",
+    "agentName": "Lisa Anderson",
+    "status": "completed",
+    "lastUpdated": "2025-07-04T13:21:11.540Z"
+  },
+  {
+    "id": "conv-1751636667173",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know how to register",
+        "timestamp": "2025-07-04T13:44:27.231Z"
+      },
+      {
+        "role": "assistant",
+        "content": "To register for Fooodis, you can visit the official website and access the account management section to sign up for a plan. You have the option to choose from different pricing plans and subscription durations. Accepted payment methods include credit/debit cards, PayPal, bank transfers, and invoice billing for the Elite plan. If you encounter any issues during the registration process or have specific questions, don't hesitate to reach out for assistance.\n\nFor more specific details or if you need further assistance, please refer to the provided links and references. If there's anything else you'd like to know, feel free to ask!",
+        "timestamp": "2025-07-04T13:44:37.633Z"
+      },
+      {
+        "role": "user",
+        "content": "register on foodis",
+        "timestamp": "2025-07-04T13:51:16.529Z"
+      },
+      {
+        "role": "assistant",
+        "content": "To register on Fooodis, please visit the official website and navigate to the account creation section. There, you'll be able to select your preferred pricing plan and subscription duration. If you encounter any issues during the registration process or have specific questions, don't hesitate to reach out for assistance.\n\nIf you need further guidance or have any other questions, feel free to ask!",
+        "timestamp": "2025-07-04T13:51:22.570Z"
+      }
+    ],
+    "createdAt": "2025-07-04T13:44:27.231Z",
+    "lastMessageAt": "2025-07-04T13:51:16.529Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_93DNDcXAF7zOBtb9TqJF7yTv",
+    "agent": {
+      "id": "customer-support",
+      "name": "Sarah Johnson",
+      "realName": "Sarah Johnson",
+      "department": "Customer Support",
+      "description": "Handles general customer inquiries and support requests",
+      "color": "#28a745",
+      "active": true,
+      "assistantId": "support-assistant",
+      "assignedAssistantId": "support-assistant",
+      "model": "gpt-4",
+      "systemPrompt": "You are Sarah Johnson, a friendly customer support specialist for Fooodis. Help customers with general inquiries, account issues, and provide warm, helpful assistance.",
+      "personality": "Friendly and helpful",
+      "introduction": {
+        "en": "Hi! I'm Sarah from Customer Support. I'm here to help you with any questions or issues you might have.",
+        "sv": "Hej! Jag heter Sarah och arbetar med kundsupport. Jag finns här för att hjälpa dig med frågor eller problem."
+      }
+    },
+    "lastUserMessage": "register on foodis",
+    "messageCount": 4
+  },
+  {
+    "id": "conv-1751658187491",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I need to know about foodis",
+        "timestamp": "2025-07-04T19:43:07.542Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the information retrieved from the uploaded documents, Fooodis is a platform that offers subscription-based services for restaurant operations, including billing solutions, subscription management, and payment optimization. It supports multiple currencies (USD, SEK, EUR) and offers various payment methods such as credit/debit cards, PayPal, bank transfers, and invoice billing for certain plans.\n\nThe pricing structure includes different plan types (Basic, Standard, Professional, Elite) with varying subscription periods (monthly, 3-months, 6-months, yearly). Additionally, there are ongoing promotions and discounts, such as a current 50% off limited-time promotion, annual payment discounts, multi-location discounts, referral program credits, and loyalty rewards for long-term customers.\n\nThe platform also provides support for resolving billing issues, managing payment methods, handling billing cycles, and addressing various financial queries. For instance, it offers guidelines for resolving payment failures, refund policies, download processes for invoices, and managing the free trial period.\n\nIf you have specific questions about Fooodis or require further details on any particular aspect, feel free to ask!",
+        "timestamp": "2025-07-04T19:43:18.197Z"
+      }
+    ],
+    "createdAt": "2025-07-04T19:43:07.542Z",
+    "lastMessageAt": "2025-07-04T19:43:07.542Z",
+    "language": "en",
+    "status": "active",
+    "threadId": "thread_DA2Ow1KcyiBGR2YR15Lt2u3S",
+    "agent": {
+      "id": "delivery",
+      "name": "Lisa Anderson",
+      "realName": "Lisa Anderson",
+      "department": "Delivery",
+      "description": "Handles delivery-related inquiries and issues",
+      "color": "#17a2b8",
+      "active": true,
+      "assistantId": "delivery-assistant",
+      "assignedAssistantId": "delivery-assistant",
+      "model": "gpt-4",
+      "systemPrompt": "You are Lisa Anderson, a reliable delivery specialist for Fooodis. Help customers with delivery questions, tracking orders, and resolve delivery-related issues efficiently.",
+      "personality": "Reliable and efficient",
+      "introduction": {
+        "en": "Hi! I'm Lisa from Delivery. I can help you track your orders and resolve any delivery concerns.",
+        "sv": "Hej! Jag heter Lisa och arbetar med leveranser. Jag kan hjälpa dig spåra beställningar och lösa leveransproblem."
+      },
+      "enabled": true
+    },
+    "lastUserMessage": "I need to know how to use Pos",
+    "messageCount": 7
+  }
+  ]
+}

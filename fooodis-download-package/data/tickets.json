@@ -1,0 +1,399 @@
+{
+  "tickets": [
+    {
+      "id": "TKT-014",
+      "subject": "dfhdsh",
+      "description": "dgndgn",
+      "status": "open",
+      "priority": "low",
+      "category": "sales",
+      "customer": "Houman",
+      "email": "houman.se@gmail.com",
+      "assignee": null,
+      "created": "2025-07-09T10:17:50.905Z",
+      "updated": "2025-07-09T10:17:50.905Z",
+      "tags": [
+        "authenticated-user"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Houman",
+          "content": "dgndgn",
+          "timestamp": "2025-07-09T10:17:50.905Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-013",
+      "subject": "4twg",
+      "description": "qerherh",
+      "status": "open",
+      "priority": "low",
+      "category": "sales",
+      "customer": "Houman",
+      "email": "houman.se@gmail.com",
+      "assignee": null,
+      "created": "2025-07-09T10:17:12.522Z",
+      "updated": "2025-07-09T10:17:12.522Z",
+      "tags": [
+        "authenticated-user"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Houman",
+          "content": "qerherh",
+          "timestamp": "2025-07-09T10:17:12.522Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-012",
+      "subject": "4twg",
+      "description": "qerherh",
+      "status": "open",
+      "priority": "low",
+      "category": "sales",
+      "customer": "Houman",
+      "email": "houman.se@gmail.com",
+      "assignee": null,
+      "created": "2025-07-09T10:15:56.769Z",
+      "updated": "2025-07-09T10:15:56.769Z",
+      "tags": [
+        "authenticated-user"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Houman",
+          "content": "qerherh",
+          "timestamp": "2025-07-09T10:15:56.769Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-011",
+      "subject": "yrjeryj",
+      "description": "eryjkryj",
+      "status": "open",
+      "priority": "low",
+      "category": "sales",
+      "customer": "Houman",
+      "email": "houman.se@gmail.com",
+      "assignee": null,
+      "created": "2025-07-09T10:14:04.821Z",
+      "updated": "2025-07-09T10:14:04.821Z",
+      "tags": [
+        "authenticated-user"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Houman",
+          "content": "eryjkryj",
+          "timestamp": "2025-07-09T10:14:04.821Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-010",
+      "subject": "gfdhgh",
+      "description": "adfhadhadsh",
+      "status": "open",
+      "priority": "medium",
+      "category": "sales",
+      "customer": "Houman",
+      "email": "houman.se@gmail.com",
+      "assignee": null,
+      "created": "2025-07-09T10:11:07.301Z",
+      "updated": "2025-07-09T10:11:07.301Z",
+      "tags": [
+        "authenticated-user"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Houman",
+          "content": "adfhadhadsh",
+          "timestamp": "2025-07-09T10:11:07.301Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-009",
+      "subject": "QA Test Ticket - Duplicate ID Fix",
+      "description": "Testing ticket submission after fixing duplicate form field IDs",
+      "status": "open",
+      "priority": "medium",
+      "category": "technical-support",
+      "customer": "Test User QA",
+      "email": "testqa@fooodis.com",
+      "assignee": null,
+      "created": "2025-07-09T09:59:47.772Z",
+      "updated": "2025-07-09T09:59:47.772Z",
+      "tags": [
+        "authenticated-user",
+        "qa-test"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Test User QA",
+          "content": "Testing ticket submission after fixing duplicate form field IDs",
+          "timestamp": "2025-07-09T09:59:47.772Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-008",
+      "subject": "ytdyutftyfryutrf",
+      "description": "utfufuifuyf",
+      "status": "open",
+      "priority": "low",
+      "category": "salon",
+      "customer": "Houman",
+      "email": "info@logoland.se",
+      "assignee": null,
+      "created": "2025-07-08T20:49:17.471Z",
+      "updated": "2025-07-09T10:18:15.498Z",
+      "tags": [
+        "customer-portal"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Houman",
+          "content": "utfufuifuyf",
+          "timestamp": "2025-07-08T20:49:17.471Z",
+          "type": "customer"
+        },
+        {
+          "id": 2,
+          "author": "Support Team",
+          "content": "erhwerhwrhqwrh",
+          "timestamp": "2025-07-09T10:18:15.498Z",
+          "type": "admin"
+        }
+      ]
+    },
+    {
+      "id": "TKT-007",
+      "subject": "General Question About Services",
+      "description": "I would like to know more about your premium features and pricing plans",
+      "status": "open",
+      "priority": "low",
+      "category": "general",
+      "customer": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "assignee": null,
+      "created": "2025-07-08T19:11:52.717Z",
+      "updated": "2025-07-08T19:11:52.717Z",
+      "tags": [
+        "general",
+        "pricing"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Alice Johnson",
+          "content": "I would like to know more about your premium features and pricing plans",
+          "timestamp": "2025-07-08T19:11:52.717Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-006",
+      "subject": "Billing Issue - Payment Not Processed",
+      "description": "My monthly subscription payment failed but I was still charged",
+      "status": "open",
+      "priority": "high",
+      "category": "billing",
+      "customer": "John Smith",
+      "email": "john.smith@email.com",
+      "assignee": null,
+      "created": "2025-07-08T19:11:33.017Z",
+      "updated": "2025-07-08T19:11:33.017Z",
+      "tags": [
+        "billing",
+        "payment"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "John Smith",
+          "content": "My monthly subscription payment failed but I was still charged",
+          "timestamp": "2025-07-08T19:11:33.017Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-005",
+      "subject": "Customer Portal Test Ticket",
+      "description": "Testing customer portal ticket creation functionality",
+      "status": "open",
+      "priority": "medium",
+      "category": "technical",
+      "customer": "Jane Customer",
+      "email": "jane.customer@example.com",
+      "assignee": null,
+      "created": "2025-07-08T19:10:27.986Z",
+      "updated": "2025-07-08T19:10:27.986Z",
+      "tags": [
+        "customer-portal",
+        "test"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Jane Customer",
+          "content": "Testing customer portal ticket creation functionality",
+          "timestamp": "2025-07-08T19:10:27.986Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-004",
+      "subject": "Test Ticket Creation",
+      "description": "Testing API ticket creation functionality",
+      "status": "closed",
+      "priority": "medium",
+      "category": "salon",
+      "customer": "Test User",
+      "email": "test@example.com",
+      "assignee": "QA Team",
+      "created": "2025-07-08T18:59:17.311Z",
+      "updated": "2025-07-08T19:00:27.274Z",
+      "tags": [
+        "test",
+        "api",
+        "qa-verified"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Test User",
+          "content": "Testing API ticket creation functionality",
+          "timestamp": "2025-07-08T18:59:17.311Z",
+          "type": "customer"
+        },
+        {
+          "id": 2,
+          "author": "QA Team",
+          "content": "Hi! We have received your test ticket and are working on it. API functionality confirmed working.",
+          "timestamp": "2025-07-08T19:00:06.087Z",
+          "type": "admin"
+        },
+        {
+          "id": 3,
+          "author": "QA Team",
+          "content": "All tests have passed successfully. Marking this ticket as resolved.",
+          "timestamp": "2025-07-08T19:00:27.274Z",
+          "type": "admin"
+        }
+      ]
+    },
+    {
+      "id": "TKT-001",
+      "subject": "Payment Processing Issue",
+      "description": "Customer experiencing issues with payment processing during checkout.",
+      "status": "open",
+      "priority": "high",
+      "category": "salon",
+      "customer": "John Smith",
+      "email": "john.smith@email.com",
+      "assignee": null,
+      "created": "2024-01-15T09:30:00.000Z",
+      "updated": "2024-01-15T09:30:00.000Z",
+      "tags": [
+        "payment",
+        "urgent"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "John Smith",
+          "content": "I cannot complete my booking payment. The system keeps showing an error.",
+          "timestamp": "2024-01-15T09:30:00.000Z",
+          "type": "customer"
+        }
+      ]
+    },
+    {
+      "id": "TKT-002",
+      "subject": "Inventory Management Question",
+      "description": "Need help setting up automated inventory alerts.",
+      "status": "in-progress",
+      "priority": "medium",
+      "category": "supplier",
+      "customer": "Sarah Johnson",
+      "email": "sarah.j@company.com",
+      "assignee": "Admin Team",
+      "created": "2024-01-14T13:20:00.000Z",
+      "updated": "2024-01-15T08:15:00.000Z",
+      "tags": [
+        "inventory",
+        "setup"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Sarah Johnson",
+          "content": "Could someone help me configure the inventory alert system?",
+          "timestamp": "2024-01-14T13:20:00.000Z",
+          "type": "customer"
+        },
+        {
+          "id": 2,
+          "author": "Support Team",
+          "content": "Hi Sarah, I can help you with that. Let me send you the setup guide.",
+          "timestamp": "2024-01-15T08:15:00.000Z",
+          "type": "admin"
+        }
+      ]
+    },
+    {
+      "id": "TKT-003",
+      "subject": "Feature Request: Mobile App",
+      "description": "Request for mobile application development.",
+      "status": "resolved",
+      "priority": "low",
+      "category": "salon",
+      "customer": "Mike Wilson",
+      "email": "mike.w@salon.com",
+      "assignee": "Development Team",
+      "created": "2024-01-10T15:45:00.000Z",
+      "updated": "2024-01-13T10:30:00.000Z",
+      "tags": [
+        "feature-request",
+        "mobile"
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "author": "Mike Wilson",
+          "content": "Would love to see a mobile app for easier booking management.",
+          "timestamp": "2024-01-10T15:45:00.000Z",
+          "type": "customer"
+        },
+        {
+          "id": 2,
+          "author": "Product Team",
+          "content": "Thanks for the suggestion! We've added this to our roadmap.",
+          "timestamp": "2024-01-13T10:30:00.000Z",
+          "type": "admin"
+        }
+      ]
+    }
+  ],
+  "counter": 15
+}

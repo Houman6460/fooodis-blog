@@ -1,0 +1,491 @@
+<!-- Modern Email Builder Tab Content -->
+<link rel="stylesheet" href="../css/email-builder-modern.css">
+
+<div class="email-marketing-tab-content" id="builder-tab">
+    <div class="email-studio-container">
+        <div class="email-studio-header">
+            <div class="email-campaign-title">
+                <input type="text" id="campaign-name" value="Mother's Day Campaign" placeholder="Campaign Name">
+                <span class="edit-label">Edit</span>
+            </div>
+            <div class="email-studio-actions">
+                <div class="status-indicator">Changes saved</div>
+                <button class="btn btn-icon" title="Undo"><i class="fas fa-undo"></i></button>
+                <button class="btn btn-icon" title="Redo"><i class="fas fa-redo"></i></button>
+                <button class="btn btn-icon toggle-theme" title="Toggle theme" id="theme-toggle"><i class="fas fa-adjust"></i></button>
+                <button class="btn btn-secondary"><i class="fas fa-save"></i> Save Draft</button>
+                <div class="action-dropdown">
+                    <button class="btn btn-primary">Preview & test <i class="fas fa-caret-down"></i></button>
+                </div>
+                <button class="btn btn-success">Save & choose recipients</button>
+            </div>
+        </div>
+        
+        <div class="email-studio-toolbar">
+            <div class="tabs-navigation">
+                <div class="tab-item active">Image</div>
+                <div class="tab-item">Layout</div>
+                <div class="tab-item">Buttons</div>
+                <div class="tab-item">Theme settings</div>
+            </div>
+            <div class="email-preview-controls">
+                <div class="canvas-width-label">Canvas width</div>
+                <div class="canvas-width">600</div>
+                <span class="canvas-width-recommendation">We recommend using a 600-700px width</span>
+                <div class="preview-device active" data-device="desktop" title="Desktop view"><i class="fas fa-desktop"></i></div>
+                <div class="preview-device" data-device="tablet" title="Tablet view"><i class="fas fa-tablet-alt"></i></div>
+                <div class="preview-device" data-device="mobile" title="Mobile view"><i class="fas fa-mobile-alt"></i></div>
+            </div>
+        </div>
+        
+        <div class="email-builder-main">
+            <!-- Left Sidebar - Elements Library -->
+            <div class="email-elements-sidebar">
+                <div class="sidebar-header">
+                    <h4>Library</h4>
+                </div>
+                <div class="sidebar-content">
+                
+                <!-- Modern Element Library -->
+                <div class="elements-container active" id="library-elements">
+                    <div class="element-category">
+                        <div class="element-item" draggable="true" data-element-type="text">
+                            <i class="fas fa-font"></i>
+                            <span>Text</span>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="button">
+                            <i class="fas fa-square"></i>
+                            <span>Button</span>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="image">
+                            <i class="fas fa-image"></i>
+                            <span>Image</span>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="video">
+                            <i class="fas fa-video"></i>
+                            <span>Video</span>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="product">
+                            <i class="fas fa-tag"></i>
+                            <span>Product recommender</span>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="product-listing">
+                            <i class="fas fa-list"></i>
+                            <span>Product listing</span>
+                        </div>
+                    </div>
+                    
+                    <div class="element-category">
+                        <h4 class="category-title">Layouts</h4>
+                        <div class="element-group layout-elements">
+                            <div class="element-item" draggable="true" data-element-type="one-column">
+                                <div class="layout-icon one-col"></div>
+                                <span>1 column</span>
+                            </div>
+                            <div class="element-item" draggable="true" data-element-type="two-column">
+                                <div class="layout-icon two-col"></div>
+                                <span>2 column</span>
+                            </div>
+                            <div class="element-item" draggable="true" data-element-type="three-column">
+                                <div class="layout-icon three-col"></div>
+                                <span>3 column</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-category">
+                        <h4 class="category-title">Content Blocks</h4>
+                        <div class="element-group content-blocks">
+                            <div class="element-item" draggable="true" data-element-type="hero">
+                                <div class="block-preview hero-preview"></div>
+                                <span>Hero section</span>
+                            </div>
+                            <div class="element-item" draggable="true" data-element-type="text-image">
+                                <div class="block-preview text-image-preview"></div>
+                                <span>Text with image</span>
+                            </div>
+                            <div class="element-item" draggable="true" data-element-type="product-grid">
+                                <div class="block-preview product-grid-preview"></div>
+                                <span>Product grid</span>
+                            </div>
+                            <div class="element-item" draggable="true" data-element-type="call-to-action">
+                                <div class="block-preview cta-preview"></div>
+                                <span>Call to action</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Layouts</h4>
+                        <div class="element-item" draggable="true" data-element-type="single-column">
+                            <div class="element-preview single-column">
+                                <div class="column"></div>
+                            </div>
+                            <h4>One Column</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="two-columns">
+                            <div class="element-preview two-column">
+                                <div class="column"></div>
+                                <div class="column"></div>
+                            </div>
+                            <h4>Two Columns</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="three-columns">
+                            <div class="element-preview three-column">
+                                <div class="column"></div>
+                                <div class="column"></div>
+                                <div class="column"></div>
+                            </div>
+                            <h4>Three Columns</h4>
+                        </div>
+                    </div>
+                    
+                    <!-- Template section -->
+                    <div class="element-category">
+                        <h4 class="category-title">Templates</h4>
+                        <div class="element-group template-blocks">
+                            <div class="element-item template-item active" data-element-type="mothers-day">
+                                <div class="block-preview mothers-day-preview"></div>
+                                <span>Mother's Day</span>
+                            </div>
+                            <div class="element-item template-item" data-element-type="spring-sale">
+                                <div class="block-preview spring-sale-preview"></div>
+                                <span>Spring Sale</span>
+                            </div>
+                            <div class="element-item template-item" data-element-type="welcome">
+                                <div class="block-preview welcome-preview"></div>
+                                <span>Welcome Email</span>
+                            </div>
+                            <div class="element-item template-item" data-element-type="newsletter">
+                                <div class="block-preview newsletter-preview"></div>
+                                <span>Newsletter</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Items Tab Content -->
+                <div class="elements-container" id="items-elements">
+                    <div class="element-group">
+                        <h4 class="element-group-title">Titles</h4>
+                        <div class="element-item" draggable="true" data-element-type="title1">
+                            <div class="title-element-headline">A choice case for every taste</div>
+                            <div class="title-element-subheadline">Supporting text for headline</div>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="title2">
+                            <div class="title-element-headline">Don't miss out on savings</div>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="title3">
+                            <div class="title-element-headline">Make your Monday count</div>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Hero Images</h4>
+                        <div class="element-item" draggable="true" data-element-type="hero1">
+                            <img src="https://via.placeholder.com/200x100/333/fff?text=Hero+1" alt="Hero 1">
+                            <h4>The Noir collection</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="hero2">
+                            <img src="https://via.placeholder.com/200x100/666/fff?text=Hero+2" alt="Hero 2">
+                            <h4>20% OFF</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Product Listings</h4>
+                        <div class="element-item" draggable="true" data-element-type="product-grid">
+                            <img src="https://via.placeholder.com/200x100/eee/333?text=Product+Grid" alt="Product Grid">
+                            <h4>Product Grid</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="element-group">
+                        <h4 class="element-group-title">Footers</h4>
+                        <div class="element-item" draggable="true" data-element-type="footer1">
+                            <img src="https://via.placeholder.com/200x50/eee/333?text=Footer+1" alt="Footer 1">
+                            <h4>Simple Footer</h4>
+                        </div>
+                        <div class="element-item" draggable="true" data-element-type="footer2">
+                            <img src="https://via.placeholder.com/200x50/eee/333?text=Footer+2" alt="Footer 2">
+                            <h4>Footer with Menu</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Email Canvas -->
+            <div class="email-canvas">
+                <!-- Preview width controls -->
+                <div class="email-preview-controls">
+                    <span class="canvas-width-label">Canvas width: <span class="canvas-width">600px</span></span>
+                    <span class="canvas-width-recommendation">(recommended for most email clients)</span>
+                    <div class="preview-devices">
+                        <div class="preview-device active" title="Desktop view"><i class="fas fa-desktop"></i></div>
+                        <div class="preview-device" title="Tablet view"><i class="fas fa-tablet-alt"></i></div>
+                        <div class="preview-device" title="Mobile view"><i class="fas fa-mobile-alt"></i></div>
+                    </div>
+                </div>
+                
+                <!-- Email document -->
+                <div class="email-document">
+                    <div class="email-content-block" data-block-type="header">
+                        <!-- Template Header -->
+                        <div class="email-template-header blue-background">
+                            <div class="brand-header">FOOODIS</div>
+                        </div>
+                        
+                        <!-- Main content area with hero image -->
+                        <div class="email-content-block image-content-block">
+                            <div class="email-image-content">
+                                <img src="../assets/images/mothers-day-banner.jpg" alt="Mother's Day Special" class="email-hero-image">
+                                <div class="scallop-border"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Text content area -->
+                        <div class="email-content-block text-content-block">
+                            <h1 class="email-heading">A Special Treat for Mom</h1>
+                            <p class="email-text">This Mother's Day, celebrate the most important woman in your life with delicious treats from Fooodis. Our special collection features hand-crafted desserts, premium chocolates, and gourmet gift baskets that say "I love you" in the most delightful way.</p>
+                            
+                            <!-- Action buttons -->
+                            <div class="email-buttons">
+                                <a href="#" class="email-button primary-button">Shop the Mother's Day collection</a>
+                                <a href="#" class="email-button secondary-button">Use code: MOM30 for 30% OFF</a>
+                            </div>
+                        <!-- Product grid section -->
+                        <div class="email-content-block product-grid-block">
+                            <h2 class="section-title">Mom's Favorites</h2>
+                            <div class="product-grid">
+                                <div class="product-item">
+                                    <div class="product-image">
+                                        <img src="../assets/images/product-1.jpg" alt="Chocolate Gift Box">
+                                    </div>
+                                    <h3 class="product-name">Artisan Chocolates</h3>
+                                    <p class="product-price">$29.99</p>
+                                    <a href="#" class="product-button">Add to Cart</a>
+                                </div>
+                                <div class="product-item">
+                                    <div class="product-image">
+                                        <img src="../assets/images/product-2.jpg" alt="Cake Special">
+                                    </div>
+                                    <h3 class="product-name">Celebration Cake</h3>
+                                    <p class="product-price">$35.99</p>
+                                    <a href="#" class="product-button">Add to Cart</a>
+                                </div>
+                                <div class="product-item">
+                                    <div class="product-image">
+                                        <img src="../assets/images/product-3.jpg" alt="Gift Basket">
+                                    </div>
+                                    <h3 class="product-name">Gourmet Gift Basket</h3>
+                                    <p class="product-price">$49.99</p>
+                                    <a href="#" class="product-button">Add to Cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Call to action section -->
+                        <div class="email-content-block cta-block blue-background">
+                            <h2 class="cta-title">Limited Time Offer</h2>
+                            <p class="cta-text">Order by May 10th to ensure delivery before Mother's Day!</p>
+                            <a href="#" class="cta-button">Shop Now</a>
+                        </div>
+                        
+                        <!-- Footer navigation -->
+                        <div class="email-content-block footer-block">
+                            <div class="email-footer-nav pink-background">
+                                <a href="#" class="footer-link">Shop</a>
+                                <a href="#" class="footer-link">About Us</a>
+                                <a href="#" class="footer-link">Contact</a>
+                                <a href="#" class="footer-link">Unsubscribe</a>
+                            </div>
+                            
+                            <div class="email-footer-info">
+                                <p class="footer-company">© 2025 Fooodis. All rights reserved.</p>
+                                <p class="footer-address">123 Bakery Street, Sweet City, CA 90210</p>
+                                <div class="footer-social">
+                                    <a href="#" class="social-link" title="Visit Fooodis on Facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                                    <a href="#" class="social-link" title="Visit Fooodis on Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                    <a href="#" class="social-link" title="Visit Fooodis on Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar - Settings Panel -->
+            <div class="email-settings-sidebar">
+                <div class="settings-tabs">
+                    <div class="settings-tab active" data-settings-tab="text">Text</div>
+                    <div class="settings-tab" data-settings-tab="layout">Layout</div>
+                </div>
+                
+                <!-- Text Settings Panel -->
+                <div class="settings-panel active" id="text-settings-panel">
+                    <div class="settings-group">
+                        <h4>Text Style</h4>
+                        <div class="form-group">
+                            <label for="text-style">Type</label>
+                            <select id="text-style" class="form-control">
+                                <option value="paragraph">Paragraph</option>
+                                <option value="heading1">Heading 1</option>
+                                <option value="heading2">Heading 2</option>
+                                <option value="heading3">Heading 3</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="font-family">Font</label>
+                                <select id="font-family" class="form-control">
+                                    <option value="arial">Arial</option>
+                                    <option value="times">Times New Roman</option>
+                                    <option value="verdana">Verdana</option>
+                                    <option value="georgia">Georgia</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="font-size">Size</label>
+                                <select id="font-size" class="form-control">
+                                    <option value="12">12px</option>
+                                    <option value="14">14px</option>
+                                    <option value="16">16px</option>
+                                    <option value="18">18px</option>
+                                    <option value="20">20px</option>
+                                    <option value="24">24px</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="line-height">Line Height</label>
+                                <select id="line-height" class="form-control">
+                                    <option value="1">Single</option>
+                                    <option value="1.5">1.5</option>
+                                    <option value="2">Double</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="letter-spacing">Letter Spacing</label>
+                                <select id="letter-spacing" class="form-control">
+                                    <option value="normal">Normal</option>
+                                    <option value="1">Wide</option>
+                                    <option value="2">Wider</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Formatting</h4>
+                        <div class="text-formatting-toolbar">
+                            <button class="format-button" data-format="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                            <button class="format-button" data-format="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                            <button class="format-button" data-format="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                            <button class="format-button" data-format="strikethrough" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+                            <button class="format-button" data-format="align-left" title="Align Left"><i class="fas fa-align-left"></i></button>
+                            <button class="format-button" data-format="align-center" title="Align Center"><i class="fas fa-align-center"></i></button>
+                            <button class="format-button" data-format="align-right" title="Align Right"><i class="fas fa-align-right"></i></button>
+                            <button class="format-button" data-format="list-ul" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                            <button class="format-button" data-format="list-ol" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                            <button class="format-button" data-format="link" title="Insert Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Colors</h4>
+                        <div class="form-group">
+                            <label for="text-color">Text Color</label>
+                            <div class="color-picker">
+                                <input type="text" id="text-color" class="form-control color-input" value="#333333">
+                                <div class="color-preview" id="text-color-preview"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="background-color">Background Color</label>
+                            <div class="color-picker">
+                                <input type="text" id="background-color" class="form-control color-input" value="#ffffff">
+                                <div class="color-preview" id="background-color-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Spacing</h4>
+                        <div class="form-group">
+                            <label>Padding</label>
+                            <div class="spacing-controls">
+                                <div class="spacing-control">
+                                    <label for="padding-top">Top</label>
+                                    <input type="number" id="padding-top" class="form-control" value="10" min="0" max="100" title="Top padding value" aria-label="Top padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-right">Right</label>
+                                    <input type="number" id="padding-right" class="form-control" value="10" min="0" max="100" title="Right padding value" aria-label="Right padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-bottom">Bottom</label>
+                                    <input type="number" id="padding-bottom" class="form-control" value="10" min="0" max="100" title="Bottom padding value" aria-label="Bottom padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-left">Left</label>
+                                    <input type="number" id="padding-left" class="form-control" value="10" min="0" max="100" title="Left padding value" aria-label="Left padding value">
+                                    <span>px</span>
+                                </div>
+                                <div class="spacing-control">
+                                    <label for="padding-all">All</label>
+                                    <input type="number" id="padding-all" class="form-control" value="10" min="0" max="100" title="All sides padding value" aria-label="All sides padding value">
+                                    <span>px</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block">Update Text</button>
+                </div>
+                
+                <!-- Layout Settings Panel -->
+                <div class="settings-panel" id="layout-settings-panel">
+                    <div class="settings-group">
+                        <h4>Email Settings</h4>
+                        <div class="form-group">
+                            <label for="canvas-width">Canvas Width</label>
+                            <div class="form-row">
+                                <input type="number" id="canvas-width" class="form-control" value="600" min="400" max="800">
+                                <span>px</span>
+                            </div>
+                            <small>We recommend using a 600-700px width</small>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4>Theme Settings</h4>
+                        <div class="form-group">
+                            <label for="theme-background">Background</label>
+                            <div class="color-picker">
+                                <input type="text" id="theme-background" class="form-control color-input" value="#f0f0f0" title="Theme background color" aria-label="Theme background color">
+                                <div class="color-preview" id="theme-background-preview"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="button-style">Button Style</label>
+                            <select id="button-style" class="form-control" title="Button style" aria-label="Button style">
+                                <option value="rounded">Rounded</option>
+                                <option value="square">Square</option>
+                                <option value="pill">Pill</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
