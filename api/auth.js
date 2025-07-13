@@ -15,6 +15,10 @@ let userIdCounter = 1;
 
 // Initialize with default admin user
 async function initializeDefaultUser() {
+    // Clear existing users to avoid duplicates
+    users = [];
+    userIdCounter = 1;
+    
     const defaultAdmin = {
         id: userIdCounter++,
         name: 'Logoland Admin',
@@ -25,7 +29,8 @@ async function initializeDefaultUser() {
         isAdmin: true
     };
     users.push(defaultAdmin);
-    console.log('Default admin user initialized: info@logoland.se');
+    console.log('✅ Default admin user initialized successfully:', defaultAdmin.email);
+    console.log('✅ Password hash created for authentication');
 }
 
 // Initialize default user on startup
@@ -179,8 +184,12 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
+        console.log('🔐 Login attempt for:', email);
+        console.log('📊 Total users in system:', users.length);
+        
         // Validate input
         if (!email || !password) {
+            console.log('❌ Missing email or password');
             return res.status(400).json({ 
                 message: 'Email and password are required' 
             });
@@ -189,10 +198,14 @@ router.post('/login', async (req, res) => {
         // Find user
         const user = findUserByEmail(email);
         if (!user) {
+            console.log('❌ User not found for email:', email);
+            console.log('📋 Available users:', users.map(u => u.email));
             return res.status(401).json({ 
                 message: 'Invalid email or password' 
             });
         }
+        
+        console.log('✅ User found:', user.email);
         
         // Check if user is active
         if (!user.isActive) {
@@ -202,12 +215,16 @@ router.post('/login', async (req, res) => {
         }
         
         // Verify password
+        console.log('🔍 Verifying password for user:', user.email);
         const isPasswordValid = await verifyPassword(password, user.password);
         if (!isPasswordValid) {
+            console.log('❌ Password verification failed for:', user.email);
             return res.status(401).json({ 
                 message: 'Invalid email or password' 
             });
         }
+        
+        console.log('✅ Password verified successfully for:', user.email);
         
         // Generate token
         const token = generateToken(user);

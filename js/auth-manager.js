@@ -49,6 +49,8 @@ class AuthManager {
         }
 
         try {
+            console.log('🔐 AuthManager: Attempting login for:', username);
+            
             // Show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
@@ -65,10 +67,13 @@ class AuthManager {
                     password: password
                 })
             });
+            
+            console.log('📡 AuthManager: Response status:', response.status);
 
             const data = await response.json();
 
             if (response.ok) {
+                console.log('✅ AuthManager: Login successful');
                 // Store user data and token
                 localStorage.setItem('fooodis-auth-token', data.token);
                 localStorage.setItem('fooodis-auth-user', JSON.stringify(data.user));
@@ -80,9 +85,11 @@ class AuthManager {
 
                 this.currentUser = data.user;
                 
+                console.log('🔄 AuthManager: Redirecting to dashboard');
                 // Redirect to dashboard
                 window.location.href = 'dashboard.html';
             } else {
+                console.log('❌ AuthManager: Login failed:', data.message);
                 this.showError(data.message || 'Login failed. Please check your credentials.');
             }
 
