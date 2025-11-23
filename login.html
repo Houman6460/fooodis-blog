@@ -12,9 +12,6 @@
     <link rel="icon" type="image/png" href="images/New images/favicon.png">
 </head>
 <body class="auth-page">
-    <!-- Reload Prevention Script -->
-    <script src="js/reload-prevention.js"></script>
-    
     <!-- Animated background elements -->
     <div class="auth-background">
         <div class="auth-circle circle-1"></div>
@@ -91,53 +88,6 @@
                 element.classList.add('fade-in-up');
                 element.style.animationDelay = (index * 0.1) + 's';
             });
-        });
-    </script>
-<!-- Authentication Integration -->
-    <script src="js/auth-integration-fix.js"></script>
-    <script src="js/missing-functionality-fix.js"></script>
-    
-    <script>
-        // Additional login form enhancement
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const submitBtn = document.querySelector('button[type="submit"], input[type="submit"]');
-            
-            if (form && !form.dataset.authAttached) {
-                form.dataset.authAttached = 'true';
-                
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    if (submitBtn) {
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = 'Logging in...';
-                    }
-                    
-                    const username = document.querySelector('input[type="text"], input[name="username"]')?.value;
-                    const password = document.querySelector('input[type="password"], input[name="password"]')?.value;
-                    
-                    if (!username || !password) {
-                        alert('Please enter both username and password');
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.textContent = 'Sign In';
-                        }
-                        return;
-                    }
-                    
-                    // Try login
-                    setTimeout(() => {
-                        const success = window.loginUser(username, password);
-                        if (!success && submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.textContent = 'Sign In';
-                        }
-                    }, 500);
-                });
-                
-                console.log('Login form authentication handler attached');
-            }
         });
     </script>
 </body>
