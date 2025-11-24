@@ -154,7 +154,12 @@ class ChatbotManager {
         }
 
         if (savedSettings) {
-            this.settings = JSON.parse(savedSettings);
+            try {
+                this.settings = JSON.parse(savedSettings);
+            } catch (error) {
+                console.error('❌ SETTINGS PARSE ERROR (initial) - ignoring corrupted localStorage settings', error, savedSettings);
+                this.settings = this.getDefaultSettings();
+            }
         } else {
             this.settings = this.getDefaultSettings();
         }
@@ -174,7 +179,12 @@ class ChatbotManager {
         }
 
         if (savedScenarios) {
-            this.scenarios = JSON.parse(savedScenarios);
+            try {
+                this.scenarios = JSON.parse(savedScenarios);
+            } catch (error) {
+                console.error('❌ SCENARIOS PARSE ERROR - ignoring corrupted localStorage scenarios', error, savedScenarios);
+                this.scenarios = [];
+            }
         } else {
             // Create default scenarios
             this.scenarios = [
@@ -221,7 +231,12 @@ class ChatbotManager {
         await this.loadConversationsFromServer();
 
         if (savedSettings) {
-            this.settings = { ...this.settings, ...JSON.parse(savedSettings) };
+            try {
+                const parsedSettings = JSON.parse(savedSettings);
+                this.settings = { ...this.settings, ...parsedSettings };
+            } catch (error) {
+                console.error('❌ SETTINGS PARSE ERROR (merge) - ignoring corrupted localStorage settings', error, savedSettings);
+            }
             // Ensure agents array is properly initialized if it exists in saved settings
             if (this.settings.agents && Array.isArray(this.settings.agents)) {
                 // Agents already loaded from savedSettings
@@ -234,7 +249,12 @@ class ChatbotManager {
         }
 
         if (savedAnalytics) {
-            this.analytics = { ...this.analytics, ...JSON.parse(savedAnalytics) };
+            try {
+                const parsedAnalytics = JSON.parse(savedAnalytics);
+                this.analytics = { ...this.analytics, ...parsedAnalytics };
+            } catch (error) {
+                console.error('❌ ANALYTICS PARSE ERROR - ignoring corrupted localStorage analytics', error, savedAnalytics);
+            }
         }
 
         // Ensure critical settings from config always override any stale localStorage values
