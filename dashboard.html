@@ -90,11 +90,6 @@
     <script src="js/email-management-dashboard.js"></script>
     <script src="js/date-time-picker-dark.js"></script>
     <script src="js/schedule-persistence-fix-v2.js"></script>
-    <script src="js/advertising-banners.js"></script>
-    <script src="js/enhanced-banner.js"></script>
-    <script src="js/advanced-advertising-banners.js"></script>
-    <script src="js/advanced-banner-controls.js"></script>
-    <script src="js/advertising-management.js"></script>
 
     <!-- Chart.js library for statistics dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -180,8 +175,6 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/dashboard-extensions.css">
     <link rel="stylesheet" href="css/dashboard-styles.css">
-    <link rel="stylesheet" href="css/advertising-management.css">
-    <script src="js/enhanced-banner.js" defer></script>
     <link rel="stylesheet" href="css/mode-toggle.css">
 
     <!-- Chatbot Management Script - Main loader moved to end for dependency order -->
@@ -275,9 +268,6 @@
     <link rel="stylesheet" href="css/node-flow-builder.css">
     <!-- Node Flow Builder JavaScript -->
     <script src="js/node-flow-builder.js"></script>
-
-<!-- Advanced Advertising Banner Panel -->
-<link rel="stylesheet" href="css/advanced-advertising-banners.css">
 
     <!-- Agent Cards Styling -->
     <style>
@@ -638,8 +628,6 @@
                     <li class="nav-item" data-section="categories"><i class="fas fa-tags"></i><span>Categories</span></li>
                     <li class="nav-item" data-section="media-library"><i class="fas fa-images"></i><span>Media Library</span></li>
                     <li class="nav-item" data-section="blog-stats"><i class="fas fa-chart-line"></i><span>Blog Statistics</span></li>
-                    <li class="nav-item" data-section="ad-management"><i class="fas fa-ad"></i><span>Advertising Banners</span></li>
-                    <li class="nav-item" data-section="advertising"><i class="fas fa-bullhorn"></i><span>Advertising</span></li>
                     <li class="nav-item" data-section="profile"><i class="fas fa-user-circle"></i><span>Profile</span></li>
                     <li class="nav-item" data-section="email-management"><i class="fas fa-envelope-open-text"></i><span>Email Subscribers</span></li>
                     <li class="nav-item" data-section="chatbot-management"><i class="fas fa-comments"></i><span>AI Chatbot</span></li>
@@ -1543,304 +1531,6 @@
                         <div class="top-posts-list" id="top-posts-list">
                             <!-- Top posts will be dynamically populated here -->
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- New Advertising Section -->
-            <section class="dashboard-section" id="advertising-section">
-                <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-bullhorn"></i> Advertising Management</h2>
-                    <p class="section-description">Create, manage, and customize advertising banners for your website with advanced features</p>
-                </div>
-
-                <div class="advertising-management">
-                    <!-- Status Panel -->
-                    <div class="advertising-status-panel">
-                        <div class="status-card">
-                            <div class="status-icon">
-                                <i class="fas fa-toggle-on" id="adv-status-icon"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3 id="adv-status-text">Banner Disabled</h3>
-                                <p id="adv-status-desc">Click to enable advertising banner</p>
-                            </div>
-                            <div class="status-toggle">
-                                <label class="adv-toggle-switch">
-                                    <input type="checkbox" id="advBannerToggle">
-                                    <span class="adv-toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Main Content Tabs -->
-                    <div class="advertising-tabs">
-                        <div class="adv-tab active" data-tab="content">
-                            <i class="fas fa-edit"></i> Content
-                        </div>
-                        <div class="adv-tab" data-tab="design">
-                            <i class="fas fa-palette"></i> Design
-                        </div>
-                        <div class="adv-tab" data-tab="layout">
-                            <i class="fas fa-layout"></i> Layout
-                        </div>
-                        <div class="adv-tab" data-tab="countdown">
-                            <i class="fas fa-clock"></i> Countdown
-                        </div>
-                        <div class="adv-tab" data-tab="button">
-                            <i class="fas fa-mouse-pointer"></i> Button
-                        </div>
-                        <div class="adv-tab" data-tab="animation">
-                            <i class="fas fa-magic"></i> Animation
-                        </div>
-                    </div>
-
-                    <!-- Tab Content -->
-                    <div class="advertising-tab-content">
-                        <!-- Content Tab -->
-                        <div class="adv-tab-panel active" id="content-panel">
-                            <div class="adv-form-grid">
-                                <div class="adv-form-group">
-                                    <label for="advTitle">Banner Title</label>
-                                    <input type="text" id="advTitle" placeholder="Enter compelling title">
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advSubtitle">Subtitle</label>
-                                    <input type="text" id="advSubtitle" placeholder="Supporting text">
-                                </div>
-                                <div class="adv-form-group adv-full-width">
-                                    <label for="advDescription">Description</label>
-                                    <textarea id="advDescription" placeholder="Detailed description of your offer" rows="3"></textarea>
-                                </div>
-                                <div class="adv-form-group adv-full-width">
-                                    <label>Banner Image</label>
-                                    <div class="adv-image-upload" id="advImageUpload">
-                                        <input type="file" id="advImageInput" accept="image/*" hidden>
-                                        <div class="upload-area">
-                                            <i class="fas fa-cloud-upload-alt"></i>
-                                            <p>Drop image here or click to upload</p>
-                                            <small>Recommended: 1200x400px, JPG/PNG</small>
-                                        </div>
-                                        <img id="advImagePreview" class="image-preview" alt="Preview">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Design Tab -->
-                        <div class="adv-tab-panel" id="design-panel">
-                            <div class="adv-form-grid">
-                                <div class="adv-form-group">
-                                    <label for="advBgColor">Background Color</label>
-                                    <div class="color-input-group">
-                                        <input type="color" id="advBgColor" value="#1e2127">
-                                        <span class="color-display" id="advBgColorDisplay">#1e2127</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advBorderColor">Border Color</label>
-                                    <div class="color-input-group">
-                                        <input type="color" id="advBorderColor" value="#e8f24c">
-                                        <span class="color-display" id="advBorderColorDisplay">#e8f24c</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advBorderRadius">Border Radius</label>
-                                    <div class="range-input-group">
-                                        <input type="range" id="advBorderRadius" min="0" max="30" value="8">
-                                        <span class="range-value" id="advBorderRadiusValue">8px</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advBorderWidth">Border Width</label>
-                                    <div class="range-input-group">
-                                        <input type="range" id="advBorderWidth" min="0" max="10" value="1">
-                                        <span class="range-value" id="advBorderWidthValue">1px</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advTitleColor">Title Color</label>
-                                    <div class="color-input-group">
-                                        <input type="color" id="advTitleColor" value="#e8f24c">
-                                        <span class="color-display" id="advTitleColorDisplay">#e8f24c</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advTextColor">Text Color</label>
-                                    <div class="color-input-group">
-                                        <input type="color" id="advTextColor" value="#ffffff">
-                                        <span class="color-display" id="advTextColorDisplay">#ffffff</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Layout Tab -->
-                        <div class="adv-tab-panel" id="layout-panel">
-                            <div class="layout-selector">
-                                <h4>Choose Layout</h4>
-                                <div class="layout-options">
-                                    <div class="layout-option active" data-layout="horizontal">
-                                        <div class="layout-preview horizontal-preview">
-                                            <div class="preview-text"></div>
-                                            <div class="preview-image"></div>
-                                        </div>
-                                        <span>Horizontal</span>
-                                    </div>
-                                    <div class="layout-option" data-layout="vertical">
-                                        <div class="layout-preview vertical-preview">
-                                            <div class="preview-image"></div>
-                                            <div class="preview-text"></div>
-                                        </div>
-                                        <span>Vertical</span>
-                                    </div>
-                                    <div class="layout-option" data-layout="overlay">
-                                        <div class="layout-preview overlay-preview">
-                                            <div class="preview-overlay"></div>
-                                            <div class="preview-content"></div>
-                                        </div>
-                                        <span>Overlay</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Countdown Tab -->
-                        <div class="adv-tab-panel" id="countdown-panel">
-                            <div class="adv-form-grid">
-                                <div class="adv-form-group adv-full-width">
-                                    <div class="toggle-group">
-                                        <label class="adv-toggle-switch">
-                                            <input type="checkbox" id="advCountdownEnabled">
-                                            <span class="adv-toggle-slider"></span>
-                                        </label>
-                                        <span>Enable Countdown Timer</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advCountdownDate">End Date & Time</label>
-                                    <input type="datetime-local" id="advCountdownDate">
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advCountdownStyle">Countdown Style</label>
-                                    <select id="advCountdownStyle">
-                                        <option value="boxes">Boxes</option>
-                                        <option value="simple">Simple</option>
-                                        <option value="minimal">Minimal</option>
-                                    </select>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advCountdownColor">Countdown Color</label>
-                                    <div class="color-input-group">
-                                        <input type="color" id="advCountdownColor" value="#e8f24c">
-                                        <span class="color-display" id="advCountdownColorDisplay">#e8f24c</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Button Tab -->
-                        <div class="adv-tab-panel" id="button-panel">
-                            <div class="adv-form-grid">
-                                <div class="adv-form-group adv-full-width">
-                                    <div class="toggle-group">
-                                        <label class="adv-toggle-switch">
-                                            <input type="checkbox" id="advButtonEnabled" checked>
-                                            <span class="adv-toggle-slider"></span>
-                                        </label>
-                                        <span>Show Call-to-Action Button</span>
-                                    </div>
-                                <div class="adv-form-group">
-                                    <label for="advButtonText">Button Text</label>
-                                    <input type="text" id="advButtonText" value="Learn More" placeholder="Button text">
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advButtonUrl">Button URL</label>
-                                    <input type="url" id="advButtonUrl" value="#" placeholder="https://example.com">
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advButtonBgColor">Button Background</label>
-                                    <div class="color-input-group">
-                                        <input type="color" id="advButtonBgColor" value="#e8f24c">
-                                        <span class="color-display" id="advButtonBgColorDisplay">#e8f24c</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advButtonTextColor">Button Text Color</label>
-                                    <div class="color-input-group">
-                                        <input type="color" id="advButtonTextColor" value="#1e2127">
-                                        <span class="color-display" id="advButtonTextColorDisplay">#1e2127</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advButtonRadius">Button Radius</label>
-                                    <div class="range-input-group">
-                                        <input type="range" id="advButtonRadius" min="0" max="50" value="25">
-                                        <span class="range-value" id="advButtonRadiusValue">25px</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Animation Tab -->
-                        <div class="adv-tab-panel" id="animation-panel">
-                            <div class="adv-form-grid">
-                                <div class="adv-form-group adv-full-width">
-                                    <div class="toggle-group">
-                                        <label class="adv-toggle-switch">
-                                            <input type="checkbox" id="advAnimationEnabled" checked>
-                                            <span class="adv-toggle-slider"></span>
-                                        </label>
-                                        <span>Enable Animations</span>
-                                    </div>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advAnimationType">Animation Type</label>
-                                    <select id="advAnimationType">
-                                        <option value="fade">Fade In</option>
-                                        <option value="slide">Slide Up</option>
-                                        <option value="zoom">Zoom In</option>
-                                        <option value="bounce">Bounce</option>
-                                    </select>
-                                </div>
-                                <div class="adv-form-group">
-                                    <label for="advAnimationDuration">Duration</label>
-                                    <div class="range-input-group">
-                                        <input type="range" id="advAnimationDuration" min="0.1" max="3" step="0.1" value="0.8">
-                                        <span class="range-value" id="advAnimationDurationValue">0.8s</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Live Preview -->
-                    <div class="advertising-preview">
-                        <div class="preview-header">
-                            <h4><i class="fas fa-eye"></i> Live Preview</h4>
-                            <div class="preview-actions">
-                                <button class="btn-preview-modal" id="advPreviewModal">
-                                    <i class="fas fa-expand"></i> Full Preview
-                                </button>
-                            </div>
-                        </div>
-                        <div class="preview-container" id="advPreviewContainer">
-                            <!-- Live preview will be generated here -->
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="advertising-actions">
-                        <button class="btn-secondary" id="advResetBtn">
-                            <i class="fas fa-undo"></i> Reset to Default
-                        </button>
-                        <button class="btn-primary" id="advSaveBtn">
-                            <i class="fas fa-save"></i> Save & Apply
-                        </button>
-                        <button class="btn-success" id="advPublishBtn">
-                            <i class="fas fa-rocket"></i> Publish Live
-                        </button>
                     </div>
                 </div>
             </section>
