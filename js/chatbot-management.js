@@ -271,6 +271,14 @@ class ChatbotManager {
             });
         }
 
+        // Force update status immediately after loading all data
+        try {
+             console.log('🔄 Force updating status from loadData...');
+             this.updateStatus();
+        } catch (e) {
+             console.warn('Status update deferred - DOM might not be ready yet', e);
+        }
+
         if (savedNodeFlow) {
             try {
                 this.nodeFlow = JSON.parse(savedNodeFlow);
