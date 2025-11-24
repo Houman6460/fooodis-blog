@@ -137,10 +137,19 @@ class ChatbotManager {
         const savedNodeFlow = localStorage.getItem('fooodis-chatbot-nodeflow'); // Load node flow
 
         // Override with localStorage assistants if they exist (user customizations)
+        // BUT if local list is empty and we have config assistants, use config (recovery)
         if (savedAssistants) {
             const localAssistants = JSON.parse(savedAssistants);
-            console.log('💾 OVERRIDE - Using localStorage assistants:', localAssistants.length);
-            this.assistants = localAssistants;
+            console.log('💾 OVERRIDE - Found localStorage assistants:', localAssistants.length);
+            
+            if (localAssistants.length > 0) {
+                this.assistants = localAssistants;
+            } else if (this.config && this.config.assistants && this.config.assistants.length > 0) {
+                console.log('♻️ RECOVERY - Local list empty, using config assistants');
+                this.assistants = this.config.assistants;
+            } else {
+                this.assistants = localAssistants;
+            }
         } else if (!this.assistants || this.assistants.length === 0) {
             // Create default assistant only if no config assistants were loaded
             console.log('🆕 DEFAULT - Creating default assistant (no config or localStorage found)');
