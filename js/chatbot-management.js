@@ -129,18 +129,21 @@ class ChatbotManager {
             console.error('❌ CONFIG ERROR - Error loading chatbot-config.json:', error);
         }
         
-        // Load from localStorage (only for secondary data)
+        // Load from localStorage (fallback or override)
+        const savedAssistants = localStorage.getItem('fooodis-chatbot-assistants');
         const savedScenarios = localStorage.getItem('fooodis-chatbot-scenarios');
         const savedSettings = localStorage.getItem('fooodis-chatbot-settings');
         const savedAnalytics = localStorage.getItem('fooodis-chatbot-analytics');
         const savedNodeFlow = localStorage.getItem('fooodis-chatbot-nodeflow'); // Load node flow
 
-        // IMPORTANT:
-        // Assistants now ALWAYS come from chatbot-config.json on first load.
-        // We do NOT override assistants with localStorage anymore to avoid
-        // situations where an empty saved list hides the configured assistants.
-        if (!this.assistants || this.assistants.length === 0) {
-            console.log('🆕 DEFAULT - No assistants loaded from config, creating fallback assistant');
+        // Override with localStorage assistants if they exist (user customizations)
+        if (savedAssistants) {
+            const localAssistants = JSON.parse(savedAssistants);
+            console.log('💾 OVERRIDE - Using localStorage assistants:', localAssistants.length);
+            this.assistants = localAssistants;
+        } else if (!this.assistants || this.assistants.length === 0) {
+            // Create default assistant only if no config assistants were loaded
+            console.log('🆕 DEFAULT - Creating default assistant (no config or localStorage found)');
             this.assistants = [{
                 id: 'default-' + Date.now(),
                 name: 'Restaurant Assistant',
@@ -154,12 +157,7 @@ class ChatbotManager {
         }
 
         if (savedSettings) {
-            try {
-                this.settings = JSON.parse(savedSettings);
-            } catch (error) {
-                console.error('❌ SETTINGS PARSE ERROR (initial) - ignoring corrupted localStorage settings', error, savedSettings);
-                this.settings = this.getDefaultSettings();
-            }
+            this.settings = JSON.parse(savedSettings);
         } else {
             this.settings = this.getDefaultSettings();
         }
@@ -179,12 +177,7 @@ class ChatbotManager {
         }
 
         if (savedScenarios) {
-            try {
-                this.scenarios = JSON.parse(savedScenarios);
-            } catch (error) {
-                console.error('❌ SCENARIOS PARSE ERROR - ignoring corrupted localStorage scenarios', error, savedScenarios);
-                this.scenarios = [];
-            }
+            this.scenarios = JSON.parse(savedScenarios);
         } else {
             // Create default scenarios
             this.scenarios = [
@@ -231,12 +224,7 @@ class ChatbotManager {
         await this.loadConversationsFromServer();
 
         if (savedSettings) {
-            try {
-                const parsedSettings = JSON.parse(savedSettings);
-                this.settings = { ...this.settings, ...parsedSettings };
-            } catch (error) {
-                console.error('❌ SETTINGS PARSE ERROR (merge) - ignoring corrupted localStorage settings', error, savedSettings);
-            }
+            this.settings = { ...this.settings, ...JSON.parse(savedSettings) };
             // Ensure agents array is properly initialized if it exists in saved settings
             if (this.settings.agents && Array.isArray(this.settings.agents)) {
                 // Agents already loaded from savedSettings
@@ -249,34 +237,7 @@ class ChatbotManager {
         }
 
         if (savedAnalytics) {
-            try {
-                const parsedAnalytics = JSON.parse(savedAnalytics);
-                this.analytics = { ...this.analytics, ...parsedAnalytics };
-            } catch (error) {
-                console.error('❌ ANALYTICS PARSE ERROR - ignoring corrupted localStorage analytics', error, savedAnalytics);
-            }
-        }
-
-        // Ensure critical settings from config always override any stale localStorage values
-        if (this.config) {
-            this.settings.enabled = this.config.enabled !== undefined ? this.config.enabled : this.settings.enabled;
-            this.settings.openaiApiKey = this.config.openaiApiKey || this.settings.openaiApiKey;
-            this.settings.defaultModel = this.config.defaultModel || this.settings.defaultModel;
-            this.settings.chatbotName = this.config.chatbotName || this.settings.chatbotName;
-            this.settings.welcomeMessage = this.config.welcomeMessage || this.settings.welcomeMessage;
-            console.log('⚙️ FINAL SETTINGS MERGED - Config reapplied over localStorage:', {
-                enabled: this.settings.enabled,
-                hasApiKey: !!this.settings.openaiApiKey,
-                model: this.settings.defaultModel
-            });
-        }
-
-        // Force update status immediately after loading all data
-        try {
-             console.log('🔄 Force updating status from loadData...');
-             this.updateStatus();
-        } catch (e) {
-             console.warn('Status update deferred - DOM might not be ready yet', e);
+            this.analytics = { ...this.analytics, ...JSON.parse(savedAnalytics) };
         }
 
         if (savedNodeFlow) {
