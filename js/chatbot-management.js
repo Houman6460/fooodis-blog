@@ -252,9 +252,10 @@ class ChatbotManager {
     }
 
     async loadConversationsFromServer() {
+        let savedConversations = null;
         try {
             // Always check localStorage first for most recent data
-            const savedConversations = localStorage.getItem('fooodis-chatbot-conversations');
+            savedConversations = localStorage.getItem('fooodis-chatbot-conversations');
             if (savedConversations) {
                 const localConversations = JSON.parse(savedConversations);
                 console.log('📦 Found localStorage conversations:', localConversations.length);
