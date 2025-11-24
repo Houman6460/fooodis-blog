@@ -129,21 +129,18 @@ class ChatbotManager {
             console.error('❌ CONFIG ERROR - Error loading chatbot-config.json:', error);
         }
         
-        // Load from localStorage (fallback or override)
-        const savedAssistants = localStorage.getItem('fooodis-chatbot-assistants');
+        // Load from localStorage (only for secondary data)
         const savedScenarios = localStorage.getItem('fooodis-chatbot-scenarios');
         const savedSettings = localStorage.getItem('fooodis-chatbot-settings');
         const savedAnalytics = localStorage.getItem('fooodis-chatbot-analytics');
         const savedNodeFlow = localStorage.getItem('fooodis-chatbot-nodeflow'); // Load node flow
 
-        // Override with localStorage assistants if they exist (user customizations)
-        if (savedAssistants) {
-            const localAssistants = JSON.parse(savedAssistants);
-            console.log('💾 OVERRIDE - Using localStorage assistants:', localAssistants.length);
-            this.assistants = localAssistants;
-        } else if (!this.assistants || this.assistants.length === 0) {
-            // Create default assistant only if no config assistants were loaded
-            console.log('🆕 DEFAULT - Creating default assistant (no config or localStorage found)');
+        // IMPORTANT:
+        // Assistants now ALWAYS come from chatbot-config.json on first load.
+        // We do NOT override assistants with localStorage anymore to avoid
+        // situations where an empty saved list hides the configured assistants.
+        if (!this.assistants || this.assistants.length === 0) {
+            console.log('🆕 DEFAULT - No assistants loaded from config, creating fallback assistant');
             this.assistants = [{
                 id: 'default-' + Date.now(),
                 name: 'Restaurant Assistant',
@@ -238,6 +235,20 @@ class ChatbotManager {
 
         if (savedAnalytics) {
             this.analytics = { ...this.analytics, ...JSON.parse(savedAnalytics) };
+        }
+
+        // Ensure critical settings from config always override any stale localStorage values
+        if (this.config) {
+            this.settings.enabled = this.config.enabled !== undefined ? this.config.enabled : this.settings.enabled;
+            this.settings.openaiApiKey = this.config.openaiApiKey || this.settings.openaiApiKey;
+            this.settings.defaultModel = this.config.defaultModel || this.settings.defaultModel;
+            this.settings.chatbotName = this.config.chatbotName || this.settings.chatbotName;
+            this.settings.welcomeMessage = this.config.welcomeMessage || this.settings.welcomeMessage;
+            console.log('⚙️ FINAL SETTINGS MERGED - Config reapplied over localStorage:', {
+                enabled: this.settings.enabled,
+                hasApiKey: !!this.settings.openaiApiKey,
+                model: this.settings.defaultModel
+            });
         }
 
         if (savedNodeFlow) {
