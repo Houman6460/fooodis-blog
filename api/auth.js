@@ -5,36 +5,13 @@
 
 const express = require('express');
 const crypto = require('crypto');
-// const bcrypt = require('bcrypt'); // bcrypt disabled due to system policy error
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 // In-memory user store (in production, use a proper database)
 let users = [];
 let userIdCounter = 1;
-
-// Initialize with default admin user
-async function initializeDefaultUser() {
-    // Clear existing users to avoid duplicates
-    users = [];
-    userIdCounter = 1;
-    
-    const defaultAdmin = {
-        id: userIdCounter++,
-        name: 'Logoland Admin',
-        email: 'info@logoland.se',
-        password: await hashPassword('Ejimineh1236460'),
-        createdAt: new Date().toISOString(),
-        isActive: true,
-        isAdmin: true
-    };
-    users.push(defaultAdmin);
-    console.log('✅ Default admin user initialized successfully:', defaultAdmin.email);
-    console.log('✅ Password hash created for authentication');
-}
-
-// Initialize default user on startup
-initializeDefaultUser().catch(console.error);
 
 // JWT secret (in production, use environment variable)
 const JWT_SECRET = process.env.JWT_SECRET || 'fooodis-customer-portal-secret-key';
@@ -55,19 +32,18 @@ function generateToken(user) {
 }
 
 /**
- * Hash password (MOCKED)
+ * Hash password using bcrypt
  */
 async function hashPassword(password) {
-    // Simple mock hash for now since bcrypt is broken
-    return `hashed_${password}`;
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
 }
 
 /**
- * Verify password (MOCKED)
+ * Verify password using bcrypt
  */
 async function verifyPassword(password, hashedPassword) {
-    // Simple comparison for mock hash
-    return hashedPassword === `hashed_${password}`;
+    return await bcrypt.compare(password, hashedPassword);
 }
 
 /**
@@ -185,12 +161,8 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        console.log('🔐 Login attempt for:', email);
-        console.log('📊 Total users in system:', users.length);
-        
         // Validate input
         if (!email || !password) {
-            console.log('❌ Missing email or password');
             return res.status(400).json({ 
                 message: 'Email and password are required' 
             });
@@ -199,14 +171,10 @@ router.post('/login', async (req, res) => {
         // Find user
         const user = findUserByEmail(email);
         if (!user) {
-            console.log('❌ User not found for email:', email);
-            console.log('📋 Available users:', users.map(u => u.email));
             return res.status(401).json({ 
                 message: 'Invalid email or password' 
             });
         }
-        
-        console.log('✅ User found:', user.email);
         
         // Check if user is active
         if (!user.isActive) {
@@ -216,16 +184,12 @@ router.post('/login', async (req, res) => {
         }
         
         // Verify password
-        console.log('🔍 Verifying password for user:', user.email);
         const isPasswordValid = await verifyPassword(password, user.password);
         if (!isPasswordValid) {
-            console.log('❌ Password verification failed for:', user.email);
             return res.status(401).json({ 
                 message: 'Invalid email or password' 
             });
         }
-        
-        console.log('✅ Password verified successfully for:', user.email);
         
         // Generate token
         const token = generateToken(user);

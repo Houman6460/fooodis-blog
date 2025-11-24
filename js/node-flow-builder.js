@@ -14,20 +14,19 @@ class NodeFlowBuilder {
         this.currentLanguage = 'en';
         this.zoom = 1;
         this.panOffset = { x: 0, y: 0 };
-        this.isPanning = false;
-        this.lastPanPoint = { x: 0, y: 0 };
+        this.isDragging = false;
         this.isConnecting = false;
         this.connectionStart = null;
         this.tempConnectionStart = null;
         this.masterTemplate = this.getMasterTemplate();
         this.autoSaveTimeout = null;
-
+        
         // Sync with ChatbotManager if available
         this.syncWithChatbotManager();
-
+        
         // Load saved flow data from localStorage
         this.loadFlow();
-
+        
         this.init();
     }
 
@@ -42,8 +41,8 @@ class NodeFlowBuilder {
                     agents: ['general-support']
                 },
                 {
-                    id: 'sales',
-                    name: 'Sales',
+                    id: 'salon',
+                    name: 'Salon',
                     description: 'Plan selection, pricing, feature explanations',
                     color: '#e74c3c',
                     agents: ['sales-agent']
@@ -172,49 +171,21 @@ class NodeFlowBuilder {
                 </button>
             </div>
         `;
-
+        
         flowContainer.appendChild(this.canvas);
-
+        
         // Initialize zoom functionality with mouse wheel
         this.canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
-
-            // Get mouse position relative to canvas
-            const rect = this.canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-
-            // Calculate zoom point in world coordinates
-            const worldX = (mouseX - this.panOffset.x) / this.zoom;
-            const worldY = (mouseY - this.panOffset.y) / this.zoom;
-
             const delta = e.deltaY > 0 ? -0.1 : 0.1;
-            const oldZoom = this.zoom;
-            this.zoom += delta;
-            this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
-
-            // Adjust pan to zoom towards mouse position
-            const zoomChange = this.zoom / oldZoom;
-            this.panOffset.x = mouseX - worldX * this.zoom;
-            this.panOffset.y = mouseY - worldY * this.zoom;
-
-            this.updateCanvasTransform();
+            this.updateZoom(delta);
         });
-
-        // Setup canvas panning functionality
-        this.canvas.addEventListener('mousedown', (e) => {
-            // Handle node dragging first
-            this.handleMouseDown(e);
-            // Then handle canvas interactions
-            this.handleCanvasMouseDown(e);
-        });
-
+        
+        // Setup node dragging functionality
+        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
         document.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
         document.addEventListener('mouseup', (e) => this.handleCanvasMouseUp(e));
         document.addEventListener('click', (e) => this.handleCanvasClick(e));
-
-        // Prevent context menu on right-click for panning
-        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     }
 
     setupToolbar() {
@@ -240,12 +211,9 @@ class NodeFlowBuilder {
                 </button>
             </div>
             <div class="toolbar-section">
-                <button class="toolbar-btn" id="save-flow-btn" title="Manual Save">
+                <button class="toolbar-btn" id="save-flow-btn" title="Save Flow">
                     <i class="fas fa-save"></i> Save
                 </button>
-                <span class="auto-save-status" id="auto-save-status">
-                    <i class="fas fa-check-circle"></i> Auto-Save Active
-                </span>
                 <button class="toolbar-btn" id="test-flow-btn" title="Test Flow">
                     <i class="fas fa-play"></i> Test
                 </button>
@@ -253,7 +221,12 @@ class NodeFlowBuilder {
                     <i class="fas fa-trash"></i> Clear
                 </button>
             </div>
-
+            <div class="toolbar-section">
+                <select id="nodeLanguageSelector" class="form-select">
+                    <option value="en">English Flow</option>
+                    <option value="sv">Swedish Flow</option>
+                </select>
+            </div>
         `;
     }
 
@@ -295,56 +268,48 @@ class NodeFlowBuilder {
 
         // Node interaction events
         document.addEventListener('click', (e) => this.handleClick(e));
-
-        // Remove language selector - workflow is now multilingual
+        
+        // Language selector
+        const languageSelector = document.getElementById('nodeLanguageSelector');
+        if (languageSelector) {
+            languageSelector.addEventListener('change', (e) => {
+                this.currentLanguage = e.target.value;
+                this.renderNodes();
+                this.showToast(`Language switched to ${e.target.value === 'en' ? 'English' : 'Swedish'}`, 'info');
+            });
+        }
     }
 
     handleMouseDown(e) {
-        // Only handle node dragging, not canvas interactions
         const nodeElement = e.target.closest('.flow-node');
-        if (nodeElement && !e.target.closest('.node-controls') && !e.target.closest('.connection-point')) {
+        if (nodeElement && !e.target.closest('.node-controls')) {
             const nodeId = nodeElement.dataset.nodeId;
             const node = this.nodes.find(n => n.id === nodeId);
-            if (node && e.button === 0) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                // Prevent canvas panning when dragging a node
-                this.isPanning = false;
+            if (node) {
                 this.draggedNode = node;
-
+                const rect = nodeElement.getBoundingClientRect();
                 const canvasRect = this.canvas.getBoundingClientRect();
-
-                // Calculate drag offset in world coordinates
-                const worldX = (e.clientX - canvasRect.left - this.panOffset.x) / this.zoom;
-                const worldY = (e.clientY - canvasRect.top - this.panOffset.y) / this.zoom;
-
+                
                 this.draggedNode.dragOffset = {
-                    x: worldX - node.position.x,
-                    y: worldY - node.position.y
+                    x: (e.clientX - canvasRect.left) / this.zoom - node.position.x,
+                    y: (e.clientY - canvasRect.top) / this.zoom - node.position.y
                 };
-
-                // Change cursor to indicate dragging
-                this.canvas.style.cursor = 'move';
-
-                // Mark node as selected
-                document.querySelectorAll('.flow-node.selected').forEach(n => n.classList.remove('selected'));
-                nodeElement.classList.add('selected');
-                this.selectedNode = node;
+                
+                e.preventDefault();
             }
         }
     }
 
     handleClick(e) {
         const target = e.target;
-
+        
         // Handle connection points
         if (target.classList.contains('connection-point')) {
             this.handleConnectionPoint(target, e);
             e.stopPropagation();
             return;
         }
-
+        
         // Handle node edit button
         if (target.classList.contains('node-edit-btn') || target.closest('.node-edit-btn')) {
             const nodeElement = target.closest('.flow-node');
@@ -358,22 +323,7 @@ class NodeFlowBuilder {
             e.stopPropagation();
             return;
         }
-
-        // Handle node duplicate button
-        if (target.classList.contains('node-duplicate-btn') || target.closest('.node-duplicate-btn') || 
-            target.classList.contains('fa-copy') || target.closest('.fa-copy')) {
-            const nodeElement = target.closest('.flow-node');
-            if (nodeElement) {
-                const nodeId = nodeElement.dataset.nodeId;
-                const node = this.nodes.find(n => n.id === nodeId);
-                if (node) {
-                    this.duplicateNode(node);
-                }
-            }
-            e.stopPropagation();
-            return;
-        }
-
+        
         // Handle node delete button
         if (target.classList.contains('node-delete-btn') || target.closest('.node-delete-btn') || 
             target.classList.contains('fa-trash') || target.closest('.fa-trash')) {
@@ -387,12 +337,12 @@ class NodeFlowBuilder {
             e.stopPropagation();
             return;
         }
-
+        
         // Handle toolbar buttons
         if (target.closest('.toolbar-btn')) {
             const btn = target.closest('.toolbar-btn');
             const action = btn.dataset.action;
-
+            
             switch(action) {
                 case 'add-welcome':
                     this.addNode('welcome');
@@ -433,7 +383,7 @@ class NodeFlowBuilder {
         const nodeElement = connectionPoint.closest('.flow-node');
         const nodeId = nodeElement.dataset.nodeId;
         const connectionType = connectionPoint.dataset.type;
-
+        
         if (!this.isConnecting) {
             // Start connection
             this.isConnecting = true;
@@ -444,7 +394,7 @@ class NodeFlowBuilder {
             };
             connectionPoint.classList.add('connecting');
             this.showToast('Drag to target connection point', 'info');
-
+            
             // Create temporary connection line that follows mouse
             this.createTempConnectionLine(connectionPoint);
         } else {
@@ -458,7 +408,7 @@ class NodeFlowBuilder {
                     fromType: this.connectionStart.type,
                     toType: connectionType
                 };
-
+                
                 // Validate connection (output to input only)
                 if (this.connectionStart.type === 'output' && connectionType === 'input') {
                     this.connections.push(connection);
@@ -469,7 +419,7 @@ class NodeFlowBuilder {
                     this.showToast('Invalid connection: connect output to input only', 'error');
                 }
             }
-
+            
             // Reset connection state and remove temp line
             this.clearTempConnectionLine();
             this.isConnecting = false;
@@ -481,10 +431,10 @@ class NodeFlowBuilder {
     createTempConnectionLine(startPoint) {
         // Remove any existing temp line
         this.clearTempConnectionLine();
-
+        
         const connectionsContainer = document.getElementById('flow-connections');
         if (!connectionsContainer) return;
-
+        
         // Create SVG for temp line
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('id', 'temp-connection-line');
@@ -495,7 +445,7 @@ class NodeFlowBuilder {
         svg.style.height = '100%';
         svg.style.pointerEvents = 'none';
         svg.style.zIndex = '10';
-
+        
         // Create path element
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('id', 'temp-connection-path');
@@ -503,15 +453,15 @@ class NodeFlowBuilder {
         path.setAttribute('stroke-width', '3');
         path.setAttribute('fill', 'none');
         path.setAttribute('stroke-dasharray', '8,4');
-
+        
         svg.appendChild(path);
         connectionsContainer.appendChild(svg);
-
+        
         // Store start position for mouse movement
         const nodeElement = startPoint.closest('.flow-node');
         const canvasRect = this.canvas.getBoundingClientRect();
         const nodeRect = nodeElement.getBoundingClientRect();
-
+        
         this.tempConnectionStart = {
             x: nodeRect.left - canvasRect.left + (startPoint.dataset.type === 'output' ? 150 : 0),
             y: nodeRect.top - canvasRect.top + 25
@@ -521,20 +471,20 @@ class NodeFlowBuilder {
     updateTempConnectionLine(mouseX, mouseY) {
         const tempPath = document.getElementById('temp-connection-path');
         if (!tempPath || !this.tempConnectionStart) return;
-
+        
         const canvasRect = this.canvas.getBoundingClientRect();
         const endX = mouseX - canvasRect.left;
         const endY = mouseY - canvasRect.top;
-
+        
         // Create curved path from start to mouse position
         const startX = this.tempConnectionStart.x;
         const startY = this.tempConnectionStart.y;
-
+        
         const controlPoint1X = startX + (endX - startX) * 0.5;
         const controlPoint1Y = startY;
         const controlPoint2X = endX - (endX - startX) * 0.5;
         const controlPoint2Y = endY;
-
+        
         const pathData = `M ${startX} ${startY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${endX} ${endY}`;
         tempPath.setAttribute('d', pathData);
     }
@@ -548,68 +498,43 @@ class NodeFlowBuilder {
     }
 
     createDefaultFlow() {
-        // Only create default flow if no saved flow exists
-        if (this.nodes.length === 0) {
-            // Create welcome node
-            const welcomeNode = this.createNode({
-                type: 'welcome',
-                position: { x: 100, y: 100 },
+        // Create welcome node
+        const welcomeNode = this.createNode({
+            type: 'welcome',
+            position: { x: 100, y: 100 },
+            data: {
+                title: 'Welcome Message',
+                messages: {
+                    english: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?",
+                    swedish: "🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?",
+                    bilingual: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?\n\n🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?"
+                }
+            }
+        });
+
+        // Create intent detection node
+        const intentNode = this.createNode({
+            type: 'intent',
+            position: { x: 400, y: 100 },
+            data: {
+                title: 'Intent Detection',
+                intents: ['menu-help', 'ordering-help', 'technical-support', 'billing-question']
+            }
+        });
+
+        // Create department routing nodes
+        this.masterTemplate.departments.forEach((dept, index) => {
+            const handoffNode = this.createNode({
+                type: 'handoff',
+                position: { x: 700, y: 50 + (index * 120) },
                 data: {
-                    title: 'Welcome Message',
-                    messages: {
-                        english: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?",
-                        swedish: "🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?",
-                        bilingual: "🇬🇧 English: Hello! I'm your Fooodis assistant. How can I help you today?\n\n🇸🇪 Svenska: Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?"
-                    }
+                    title: dept.name,
+                    department: dept.id,
+                    agents: dept.agents,
+                    color: dept.color
                 }
             });
-
-            // Create intent detection node with comprehensive intents
-            const intentNode = this.createNode({
-                type: 'intent',
-                position: { x: 400, y: 100 },
-                data: {
-                    title: 'Intent Detection',
-                    intents: [
-                        'menu-creation', 'qr-codes', 'menu-customization', 'allergens',
-                        'pos-system', 'local-orders', 'whatsapp-ordering', 'payment-processing',
-                        'kitchen-display', 'preparation-time', 'staff-management', 'order-tracking',
-                        'loyalty-programs', 'coupons', 'tips', 'social-profiles', 'reviews',
-                        'themes', 'timezone-settings', 'multi-language', 'customization',
-                        'plan-comparison', 'billing-cycles', 'discounts', 'trials', 'upgrades'
-                    ],
-                    description: 'Detects user intent and routes to appropriate department'
-                }
-            });
-
-            // Create department routing nodes
-            this.masterTemplate.departments.forEach((dept, index) => {
-                const handoffNode = this.createNode({
-                    type: 'handoff',
-                    position: { x: 700, y: 50 + (index * 120) },
-                    data: {
-                        title: dept.name,
-                        department: dept.id,
-                        agents: dept.agents,
-                        color: dept.color,
-                        handoffMessage: `Transferring you to our ${dept.name} team...`
-                    }
-                });
-            });
-
-            // Create condition nodes for language routing
-            const languageCondition = this.createNode({
-                type: 'condition',
-                position: { x: 250, y: 300 },
-                data: {
-                    title: 'Language Detection',
-                    condition: 'user.language === "swedish"',
-                    description: 'Routes based on detected or selected language'
-                }
-            });
-
-            console.log('Created default flow with', this.nodes.length, 'nodes');
-        }
+        });
 
         this.renderNodes();
     }
@@ -669,9 +594,6 @@ class NodeFlowBuilder {
                     <button class="node-btn node-edit-btn" title="Edit">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="node-btn node-duplicate-btn" title="Duplicate">
-                        <i class="fas fa-copy"></i>
-                    </button>
                     <button class="node-btn node-delete-btn" title="Delete">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -681,12 +603,9 @@ class NodeFlowBuilder {
 
         switch (node.type) {
             case 'welcome':
-                // Show bilingual content or auto-detect
-                const welcomeMessage = node.data.messages.bilingual || 
-                    `🇬🇧 ${node.data.messages.english || 'Hello! How can I help you?'}\n🇸🇪 ${node.data.messages.swedish || 'Hej! Hur kan jag hjälpa dig?'}`;
                 return commonHTML + `
                     <div class="node-content">
-                        <div class="node-message multilingual">${welcomeMessage.replace(/\n/g, '<br>')}</div>
+                        <div class="node-message">${node.data.messages.english}</div>
                     </div>
                     <div class="node-connections">
                         <div class="connection-point output" data-type="output"></div>
@@ -731,35 +650,10 @@ class NodeFlowBuilder {
                     </div>
                 `;
 
-            case 'message':
-                let messageContent = '';
-                if (node.data.aiMode && node.data.selectedAssistant) {
-                    // Show AI assistant info
-                    const assistants = this.getAvailableAIAssistants();
-                    const selectedAssistant = assistants.find(a => a.id === node.data.selectedAssistant);
-                    const assistantName = selectedAssistant ? selectedAssistant.name : 'AI Assistant';
-
-                    messageContent = `
-                        <div class="ai-indicator">AI</div>
-                        <div class="ai-assistant-info">${assistantName}</div>
-                        ${node.data.aiPrompt ? `<div class="ai-prompt-preview">${node.data.aiPrompt.substring(0, 50)}...</div>` : ''}
-                    `;
-                } else {
-                    // Show multilingual message preview
-                    const englishMsg = node.data.messages?.english || '';
-                    const swedishMsg = node.data.messages?.swedish || '';
-
-                    if (englishMsg && swedishMsg) {
-                        messageContent = `<div class="node-message multilingual">🇬🇧 ${englishMsg.substring(0, 50)}${englishMsg.length > 50 ? '...' : ''}<br>🇸🇪 ${swedishMsg.substring(0, 50)}${swedishMsg.length > 50 ? '...' : ''}</div>`;
-                    } else {
-                        const message = englishMsg || swedishMsg || 'No message set';
-                        messageContent = `<div class="node-message">${message.substring(0, 100)}${message.length > 100 ? '...' : ''}</div>`;
-                    }
-                }
-
+            default:
                 return commonHTML + `
                     <div class="node-content">
-                        ${messageContent}
+                        <div class="node-data">${JSON.stringify(node.data)}</div>
                     </div>
                     <div class="node-connections">
                         <div class="connection-point input" data-type="input"></div>
@@ -770,143 +664,160 @@ class NodeFlowBuilder {
     }
 
     renderConnections() {
-        const connectionsContainer = document.getElementById('flow-connections');
-        if (!connectionsContainer) return;
-
-        // Clear existing connections and buttons
-        connectionsContainer.innerHTML = '';
+        const svg = document.getElementById('flow-connections');
+        if (!svg) return;
+        
+        svg.innerHTML = ''; // Clear existing connections
+        
+        // Remove ALL existing disconnect buttons from everywhere
         document.querySelectorAll('.disconnect-btn').forEach(btn => btn.remove());
-
-        // Create main SVG container that follows canvas transformations
-        const mainSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        mainSvg.setAttribute('id', 'main-connections-svg');
-        mainSvg.style.position = 'absolute';
-        mainSvg.style.top = '0';
-        mainSvg.style.left = '0';
-        mainSvg.style.width = '100%';
-        mainSvg.style.height = '100%';
-        mainSvg.style.pointerEvents = 'none';
-        mainSvg.style.zIndex = '1';
-        mainSvg.style.overflow = 'visible';
-
-        connectionsContainer.appendChild(mainSvg);
-
-        // Render each connection
+        
         this.connections.forEach(connection => {
-            const pathElement = this.createConnectionPath(connection);
-            if (pathElement) {
-                mainSvg.appendChild(pathElement);
-            }
+            const connectionElement = this.createConnectionElement(connection);
+            svg.appendChild(connectionElement);
         });
-
+        
         // Create disconnect buttons after all connections are rendered
         this.createDisconnectButtons();
     }
 
-    createConnectionPath(connection) {
+    createConnectionElement(connection) {
         const fromNode = this.nodes.find(node => node.id === connection.from);
         const toNode = this.nodes.find(node => node.id === connection.to);
 
-        if (!fromNode || !toNode) return null;
+        if (!fromNode || !toNode) return document.createElement('div');
 
-        // Calculate connection points using node positions directly
-        const fromX = fromNode.position.x + 200; // Node width (output point)
-        const fromY = fromNode.position.y + 50;  // Node height center
-        const toX = toNode.position.x;           // Input point (left side)
-        const toY = toNode.position.y + 50;      // Node height center
+        // Create SVG connection line
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'connection-line');
+        svg.style.position = 'absolute';
+        svg.style.pointerEvents = 'auto'; // 🔧 FIX 1: Enable pointer events on connection lines
+        svg.style.zIndex = '1';
 
-        // Create curved path with proper control points
-        const controlPoint1X = fromX + (toX - fromX) * 0.5;
-        const controlPoint1Y = fromY;
-        const controlPoint2X = toX - (toX - fromX) * 0.5;
-        const controlPoint2Y = toY;
+        // Calculate connection points
+        const fromX = fromNode.position.x + 150; // Node width/2
+        const fromY = fromNode.position.y + 50;  // Node height/2
+        const toX = toNode.position.x;
+        const toY = toNode.position.y + 50;
 
-        const pathData = `M ${fromX} ${fromY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${toX} ${toY}`;
+        // Set SVG dimensions and position
+        const minX = Math.min(fromX, toX);
+        const minY = Math.min(fromY, toY);
+        const width = Math.abs(toX - fromX) + 20;
+        const height = Math.abs(toY - fromY) + 20;
 
-        // Create main visible path
+        svg.style.left = (minX - 10) + 'px';
+        svg.style.top = (minY - 10) + 'px';
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+
+        // Create curved path
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const startX = fromX - minX + 10;
+        const startY = fromY - minY + 10;
+        const endX = toX - minX + 10;
+        const endY = toY - minY + 10;
+
+        const controlPoint1X = startX + (endX - startX) * 0.5;
+        const controlPoint1Y = startY;
+        const controlPoint2X = endX - (endX - startX) * 0.5;
+        const controlPoint2Y = endY;
+
+        const pathData = `M ${startX} ${startY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${endX} ${endY}`;
+        
         path.setAttribute('d', pathData);
         path.setAttribute('stroke', '#6272a4');
         path.setAttribute('stroke-width', '2');
         path.setAttribute('fill', 'none');
-        path.setAttribute('data-connection-id', connection.id);
+        path.classList.add('connection-line');
         path.style.cursor = 'pointer';
-        path.style.pointerEvents = 'stroke';
-
-        // Create invisible wider path for easier clicking
+        path.setAttribute('data-connection-id', connection.id);
+        
+        // Add invisible wider path for easier clicking
         const invisiblePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         invisiblePath.setAttribute('d', pathData);
         invisiblePath.setAttribute('stroke', 'transparent');
         invisiblePath.setAttribute('stroke-width', '12');
         invisiblePath.setAttribute('fill', 'none');
-        invisiblePath.setAttribute('data-connection-id', connection.id);
+        invisiblePath.classList.add('connection-line');
         invisiblePath.style.cursor = 'pointer';
-        invisiblePath.style.pointerEvents = 'stroke';
-
-        // Add hover effects
+        invisiblePath.setAttribute('data-connection-id', connection.id);
+        
+        // Add hover effect and click handler to both paths
         const handleMouseEnter = () => {
             path.setAttribute('stroke', '#ff6b6b');
             path.setAttribute('stroke-width', '3');
         };
-
+        
         const handleMouseLeave = () => {
             path.setAttribute('stroke', '#6272a4');
             path.setAttribute('stroke-width', '2');
         };
-
+        
         const handleConnectionClick = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            this.showConnectionRemovalDialog(connection.id, fromNode, toNode);
+            console.log('Connection clicked! Event target:', e.target);
+            console.log('Connection ID from path:', path.getAttribute('data-connection-id'));
+            console.log('Connection ID from invisible:', invisiblePath.getAttribute('data-connection-id'));
+            
+            const connectionId = connection.id;
+            console.log('Using connection ID:', connectionId, 'from:', fromNode.id, 'to:', toNode.id);
+            
+            if (connectionId) {
+                this.showConnectionRemovalDialog(connectionId, fromNode, toNode);
+            } else {
+                console.error('No connection ID found');
+            }
         };
-
-        // Add event listeners        path.addEventListener('mouseenter', handleMouseEnter);
+        
+        // Add event listeners to both paths
+        path.addEventListener('mouseenter', handleMouseEnter);
         path.addEventListener('mouseleave', handleMouseLeave);
         path.addEventListener('click', handleConnectionClick);
+        
         invisiblePath.addEventListener('mouseenter', handleMouseEnter);
         invisiblePath.addEventListener('mouseleave', handleMouseLeave);
         invisiblePath.addEventListener('click', handleConnectionClick);
 
-        // Create group to contain both paths
-        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        group.appendChild(invisiblePath);
-        group.appendChild(path);
+        svg.appendChild(invisiblePath); // Add invisible clickable area first
+        svg.appendChild(path); // Add visible path on top
 
-        return group;
+        return svg;
     }
 
     // Create all disconnect buttons after connections are rendered
     createDisconnectButtons() {
         console.log('Creating disconnect buttons for', this.connections.length, 'connections');
-
+        
         this.connections.forEach(connection => {
             const fromNode = this.nodes.find(n => n.id === connection.from);
             const toNode = this.nodes.find(n => n.id === connection.to);
-
+            
             if (!fromNode || !toNode) {
                 console.log('Cannot find nodes for connection:', connection.id);
                 return;
             }
-
-            // Calculate precise connection points (same as in createConnectionPath)
-            const startX = fromNode.position.x + 200; // Output connection point
-            const startY = fromNode.position.y + 50;  // Node center height
-            const endX = toNode.position.x;           // Input connection point
-            const endY = toNode.position.y + 50;      // Node center height
-
-            // Calculate the exact midpoint of the connection line
+            
+            // Calculate midpoint of connection relative to canvas
+            const startX = fromNode.position.x + 150; // Node center
+            const startY = fromNode.position.y + 40;
+            const endX = toNode.position.x + 150;
+            const endY = toNode.position.y + 40;
+            
+            // Position relative to canvas container (not viewport)
             const midX = (startX + endX) / 2;
             const midY = (startY + endY) / 2;
-
+            
             console.log(`Connection ${connection.id}: from (${startX}, ${startY}) to (${endX}, ${endY}), mid (${midX}, ${midY})`);
-
-            // Create disconnect button
+            
+            // Create simple red button
             const btn = document.createElement('div');
             btn.className = 'disconnect-btn';
             btn.innerHTML = '×';
             btn.dataset.connectionId = connection.id;
-
-            // Apply styles with proper positioning that follows canvas transformations
+            
+            // Apply styles directly for reliable positioning
             btn.style.position = 'absolute';
             btn.style.left = midX + 'px';
             btn.style.top = midY + 'px';
@@ -921,30 +832,12 @@ class NodeFlowBuilder {
             btn.style.cursor = 'pointer';
             btn.style.fontSize = '14px';
             btn.style.fontWeight = 'bold';
-            btn.style.zIndex = '1000';
+            btn.style.zIndex = '10000';
+            btn.style.transform = 'translate(-50%, -50%)';
             btn.style.border = '2px solid white';
             btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-            btn.style.pointerEvents = 'auto';
-            btn.style.transition = 'all 0.2s ease';
-            btn.style.transformOrigin = 'center';
-
-            // Set initial transform with counter-scaling
-            const counterScale = 1 / this.zoom;
-            btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
-
-            // Add hover effect with proper zoom scaling
-            btn.addEventListener('mouseenter', () => {
-                btn.style.backgroundColor = '#ff3742';
-                const currentCounterScale = 1 / this.zoom;
-                btn.style.transform = `translate(-50%, -50%) scale(${currentCounterScale * 1.2})`;
-            });
-
-            btn.addEventListener('mouseleave', () => {
-                btn.style.backgroundColor = '#ff4757';
-                const currentCounterScale = 1 / this.zoom;
-                btn.style.transform = `translate(-50%, -50%) scale(${currentCounterScale})`;
-            });
-
+            btn.style.pointerEvents = 'auto'; // Ensure clickable
+            
             // Add click handler
             btn.onclick = (e) => {
                 e.preventDefault();
@@ -952,12 +845,19 @@ class NodeFlowBuilder {
                 console.log('Disconnect button clicked for:', connection.id);
                 this.removeConnection(connection.id);
             };
-
-            // Add to the flow-nodes container so it follows canvas transformations
-            const nodesContainer = document.getElementById('flow-nodes');
-            if (nodesContainer) {
-                nodesContainer.appendChild(btn);
-                console.log('Added disconnect button to nodes container for connection:', connection.id);
+            
+            // Add to the actual canvas element (this.canvas with class node-flow-canvas)
+            if (this.canvas) {
+                this.canvas.appendChild(btn);
+                console.log('Added disconnect button to canvas for connection:', connection.id);
+            } else {
+                console.log('Canvas not found! Using fallback container');
+                // Fallback to flow container
+                const container = document.getElementById('node-flow-container');
+                if (container) {
+                    container.appendChild(btn);
+                    console.log('Added disconnect button to container for connection:', connection.id);
+                }
             }
         });
     }
@@ -969,7 +869,7 @@ class NodeFlowBuilder {
             fromNode: fromNode ? fromNode.id : 'null',
             toNode: toNode ? toNode.id : 'null'
         });
-
+        
         const modal = document.createElement('div');
         modal.className = 'node-modal connection-removal-modal';
         modal.innerHTML = `
@@ -1005,7 +905,7 @@ class NodeFlowBuilder {
         modal.querySelector('.modal-close').addEventListener('click', closeModal);
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
-
+        
         // Remove connection handler
         modal.querySelector('.modal-remove').addEventListener('click', (e) => {
             const connectionId = e.target.getAttribute('data-connection-id');
@@ -1018,30 +918,30 @@ class NodeFlowBuilder {
     removeConnection(connectionId) {
         console.log('removeConnection called with ID:', connectionId);
         console.log('Current connections:', this.connections);
-
+        
         const connectionIndex = this.connections.findIndex(c => c.id === connectionId);
         console.log('Found connection index:', connectionIndex);
-
+        
         if (connectionIndex === -1) {
             console.error('Connection not found with ID:', connectionId);
             this.showToast('Connection not found', 'error');
             return;
         }
-
+        
         const connection = this.connections[connectionIndex];
         console.log('Removing connection:', connection);
-
+        
         this.connections.splice(connectionIndex, 1);
-
+        
         // Re-render connections
         this.renderConnections();
-
+        
         // Show success message
         this.showToast('Connection removed successfully', 'success');
-
+        
         // Auto-save the updated flow
         this.autoSave();
-
+        
         console.log(`Connection removed: ${connection.from} -> ${connection.to}`);
         console.log('Remaining connections:', this.connections);
     }
@@ -1055,13 +955,13 @@ class NodeFlowBuilder {
 
         const modal = document.createElement('div');
         modal.className = 'node-modal disconnect-modal';
-
+        
         const connectionsHtml = this.connections.map(conn => {
             const fromNode = this.nodes.find(n => n.id === conn.from);
             const toNode = this.nodes.find(n => n.id === conn.to);
             const fromTitle = fromNode ? fromNode.data.title : 'Unknown';
             const toTitle = toNode ? toNode.data.title : 'Unknown';
-
+            
             return `
                 <div class="connection-item" data-connection-id="${conn.id}">
                     <div class="connection-info">
@@ -1102,13 +1002,13 @@ class NodeFlowBuilder {
         modal.querySelector('.modal-close').addEventListener('click', closeModal);
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
-
+        
         // Disconnect connection handlers
         modal.querySelectorAll('.disconnect-connection').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const connectionId = e.target.closest('.disconnect-connection').getAttribute('data-connection-id');
                 console.log('Disconnect button clicked for connection:', connectionId);
-
+                
                 if (connectionId) {
                     this.removeConnection(connectionId);
                     // Remove the connection item from the dialog
@@ -1116,7 +1016,7 @@ class NodeFlowBuilder {
                     if (connectionItem) {
                         connectionItem.remove();
                     }
-
+                    
                     // Close modal if no more connections
                     if (this.connections.length === 0) {
                         closeModal();
@@ -1184,154 +1084,24 @@ class NodeFlowBuilder {
                 // Add default data based on type
                 ...(nodeType === 'intent' && { intents: [] }),
                 ...(nodeType === 'handoff' && { department: '', agents: [] }),
-                ...(nodeType === 'message' && { messages: { english: '', swedish: '' }, aiMode: false }),
+                ...(nodeType === 'message' && { messages: { english: '', swedish: '' } }),
                 ...(nodeType === 'condition' && { condition: '' })
             }
         });
 
         this.renderNodes();
         document.querySelector('.node-modal').remove();
-        this.autoSave();
-    }
-
-    editNode(node) {
-        if (node.type === 'message') {
-            this.showMessageNodeEditor(node);
-        } else {
-            // Handle other node types...
-            this.showToast('Edit functionality coming soon for ' + node.type + ' nodes', 'info');
-        }
-    }
-
-    showMessageNodeEditor(node) {
-        const assistants = this.getAvailableAIAssistants();
-        
-        const modal = document.createElement('div');
-        modal.className = 'node-modal';
-        modal.innerHTML = `
-            <div class="modal-overlay"></div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Edit Message Node: ${node.data.title}</h3>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Node Title</label>
-                        <input type="text" id="edit-node-title" value="${node.data.title}" class="form-control">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="ai-mode-toggle" ${node.data.aiMode ? 'checked' : ''}> 
-                            Use AI Assistant
-                        </label>
-                    </div>
-                    
-                    <div id="ai-options" style="display: ${node.data.aiMode ? 'block' : 'none'}">
-                        <div class="form-group">
-                            <label>Select AI Assistant</label>
-                            <select id="ai-assistant-select" class="form-control">
-                                ${assistants.map(assistant => 
-                                    `<option value="${assistant.id}" ${node.data.selectedAssistant === assistant.id ? 'selected' : ''}>${assistant.name}</option>`
-                                ).join('')}
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>AI Prompt</label>
-                            <textarea id="ai-prompt" class="form-control" rows="4" placeholder="Enter instructions for the AI assistant...">${node.data.aiPrompt || ''}</textarea>
-                        </div>
-                    </div>
-                    
-                    <div id="manual-message-options" style="display: ${node.data.aiMode ? 'none' : 'block'}">
-                        <div class="form-group">
-                            <label>English Message</label>
-                            <textarea id="english-message" class="form-control" rows="3">${node.data.messages?.english || ''}</textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Swedish Message</label>
-                            <textarea id="swedish-message" class="form-control" rows="3">${node.data.messages?.swedish || ''}</textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" onclick="this.closest('.node-modal').remove()">Cancel</button>
-                    <button class="btn btn-primary" onclick="nodeFlowBuilder.saveMessageNode('${node.id}')">Save Changes</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        // Toggle AI options
-        const aiToggle = modal.querySelector('#ai-mode-toggle');
-        const aiOptions = modal.querySelector('#ai-options');
-        const manualOptions = modal.querySelector('#manual-message-options');
-
-        aiToggle.addEventListener('change', () => {
-            if (aiToggle.checked) {
-                aiOptions.style.display = 'block';
-                manualOptions.style.display = 'none';
-            } else {
-                aiOptions.style.display = 'none';
-                manualOptions.style.display = 'block';
-            }
-        });
-
-        // Close modal handlers
-        modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
-        modal.querySelector('.modal-overlay').addEventListener('click', () => modal.remove());
-    }
-
-    saveMessageNode(nodeId) {
-        const node = this.nodes.find(n => n.id === nodeId);
-        if (!node) return;
-
-        const modal = document.querySelector('.node-modal');
-        
-        // Update node data
-        node.data.title = modal.querySelector('#edit-node-title').value;
-        node.data.aiMode = modal.querySelector('#ai-mode-toggle').checked;
-        
-        if (node.data.aiMode) {
-            node.data.selectedAssistant = modal.querySelector('#ai-assistant-select').value;
-            node.data.aiPrompt = modal.querySelector('#ai-prompt').value;
-        } else {
-            node.data.messages = {
-                english: modal.querySelector('#english-message').value,
-                swedish: modal.querySelector('#swedish-message').value
-            };
-        }
-
-        // Re-render nodes
-        this.renderNodes();
-        this.renderConnections();
-        
-        // Close modal
-        modal.remove();
-        
-        // Auto-save
-        this.autoSave();
-        
-        this.showToast('Message node updated successfully', 'success');
+        this.autoSave(); // 🔧 FIX 3: Auto-save when adding node from modal
     }
 
     saveFlow() {
-        const autoSaveStatus = document.getElementById('auto-save-status');
-        if (autoSaveStatus) {
-            autoSaveStatus.classList.add('saving');
-            autoSaveStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-        }
-
         const flowData = {
             nodes: this.nodes,
             connections: this.connections,
             metadata: {
                 version: '1.0',
                 created: new Date().toISOString(),
-                multilingual: true
+                language: document.getElementById('nodeLanguageSelector').value
             }
         };
 
@@ -1343,14 +1113,6 @@ class NodeFlowBuilder {
             window.chatbotManager.updateNodeFlow(flowData);
         }
 
-        // Reset auto-save status
-        setTimeout(() => {
-            if (autoSaveStatus) {
-                autoSaveStatus.classList.remove('saving');
-                autoSaveStatus.innerHTML = '<i class="fas fa-check-circle"></i> Auto-Save Active';
-            }
-        }, 500);
-
         this.showToast('Flow saved successfully', 'success');
     }
 
@@ -1361,9 +1123,13 @@ class NodeFlowBuilder {
                 const flowData = JSON.parse(savedFlow);
                 this.nodes = flowData.nodes || [];
                 this.connections = flowData.connections || [];
-
-                // Flow is now multilingual by default
-
+                
+                // Set language if language selector exists
+                const languageSelector = document.getElementById('nodeLanguageSelector');
+                if (languageSelector && flowData.metadata && flowData.metadata.language) {
+                    languageSelector.value = flowData.metadata.language;
+                }
+                
                 this.renderNodes();
                 this.renderConnections();
                 this.showToast('Flow loaded from saved state', 'info');
@@ -1381,110 +1147,19 @@ class NodeFlowBuilder {
         // Open a test preview modal
         const modal = document.createElement('div');
         modal.className = 'test-flow-modal';
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
-        modal.style.zIndex = '10000';
-        modal.style.display = 'flex';
-        modal.style.alignItems = 'center';
-        modal.style.justifyContent = 'center';
-
         modal.innerHTML = `
-            <div class="modal-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);"></div>
-            <div class="modal-content large" style="
-                position: relative; 
-                background: #2a2a2a; 
-                border-radius: 8px; 
-                width: 90vw; 
-                max-width: 1000px; 
-                height: 80vh; 
-                max-height: 700px; 
-                min-height: 500px;
-                display: flex; 
-                flex-direction: column;
-                border: 1px solid #444;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-                margin: 0 auto;
-                top: auto;
-                left: auto;
-                right: auto;
-                bottom: auto;
-            ">
-                <div class="modal-header" style="
-                    padding: 20px; 
-                    border-bottom: 1px solid #444; 
-                    display: flex; 
-                    justify-content: space-between; 
-                    align-items: center;
-                    background: #333;
-                    border-radius: 8px 8px 0 0;
-                ">
-                    <h3 style="margin: 0; color: #fff; font-size: 18px;">Test Flow Preview</h3>
-                    <button class="modal-close" style="
-                        background: #555; 
-                        border: none; 
-                        color: #fff; 
-                        font-size: 20px; 
-                        width: 30px; 
-                        height: 30px; 
-                        border-radius: 4px; 
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                    ">&times;</button>
+            <div class="modal-overlay"></div>
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h3>Test Flow Preview</h3>
+                    <button class="modal-close">&times;</button>
                 </div>
-                <div class="modal-body" style="
-                    flex: 1; 
-                    padding: 20px; 
-                    display: flex; 
-                    flex-direction: column;
-                    overflow: hidden;
-                ">
-                    <div class="test-chat-container" style="
-                        display: flex; 
-                        flex-direction: column; 
-                        height: 100%;
-                        background: #1a1a1a;
-                        border-radius: 8px;
-                        border: 1px solid #333;
-                    ">
-                        <div class="test-chat-messages" id="test-chat-messages" style="
-                            flex: 1; 
-                            padding: 20px; 
-                            overflow-y: auto; 
-                            background: #1a1a1a;
-                            border-radius: 8px 8px 0 0;
-                        "></div>
-                        <div class="test-chat-input" style="
-                            padding: 15px; 
-                            border-top: 1px solid #333; 
-                            display: flex; 
-                            gap: 10px;
-                            background: #2a2a2a;
-                            border-radius: 0 0 8px 8px;
-                        ">
-                            <input type="text" id="test-message-input" placeholder="Type a message to test the flow..." style="
-                                flex: 1; 
-                                padding: 10px; 
-                                border: 1px solid #555; 
-                                border-radius: 4px; 
-                                background: #333; 
-                                color: #fff;
-                                outline: none;
-                            ">
-                            <button id="test-send-btn" style="
-                                padding: 10px 20px; 
-                                background: #e8f24c; 
-                                color: #000; 
-                                border: none; 
-                                border-radius: 4px; 
-                                cursor: pointer;
-                                font-weight: 500;
-                            ">Send</button>
+                <div class="modal-body">
+                    <div class="test-chat-container">
+                        <div class="test-chat-messages" id="test-chat-messages"></div>
+                        <div class="test-chat-input">
+                            <input type="text" id="test-message-input" placeholder="Type a message to test the flow...">
+                            <button onclick="nodeFlowBuilder.sendTestMessage()">Send</button>
                         </div>
                     </div>
                 </div>
@@ -1497,67 +1172,19 @@ class NodeFlowBuilder {
         // Close modal handlers
         modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
         modal.querySelector('.modal-overlay').addEventListener('click', () => modal.remove());
-
-        // Send button handler
-        modal.querySelector('#test-send-btn').addEventListener('click', () => this.sendTestMessage());
-
-        // Enter key handler for input
-        modal.querySelector('#test-message-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.sendTestMessage();
-            }
-        });
-
-        // Focus the input
-        setTimeout(() => {
-            modal.querySelector('#test-message-input').focus();
-        }, 100);
     }
 
     initializeTestFlow() {
         const messagesContainer = document.getElementById('test-chat-messages');
         const welcomeNode = this.nodes.find(node => node.type === 'welcome');
-
+        
         if (welcomeNode) {
-            // Use bilingual message or detect language dynamically
-            const message = welcomeNode.data.messages.bilingual || 
-                           welcomeNode.data.messages.english || 
-                           "🇬🇧 Hello! I'm your Fooodis assistant. How can I help you today?\n\n🇸🇪 Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?";
-
+            const language = document.getElementById('nodeLanguageSelector').value;
+            const message = welcomeNode.data.messages[language] || welcomeNode.data.messages.english;
+            
             messagesContainer.innerHTML = `
-                <div class="test-message bot" style="
-                    margin-bottom: 15px; 
-                    display: flex; 
-                    justify-content: flex-start;
-                ">
-                    <div class="message-content" style="
-                        background: #4a4a4a; 
-                        color: white; 
-                        padding: 12px 16px; 
-                        border-radius: 18px 18px 18px 4px; 
-                        max-width: 70%;
-                        word-wrap: break-word;
-                        line-height: 1.4;
-                        white-space: pre-line;
-                    ">${message}</div>
-                </div>
-            `;
-        } else {
-            messagesContainer.innerHTML = `
-                <div class="test-message bot" style="
-                    margin-bottom: 15px; 
-                    display: flex; 
-                    justify-content: flex-start;
-                ">
-                    <div class="message-content" style="
-                        background: #4a4a4a; 
-                        color: white; 
-                        padding: 12px 16px; 
-                        border-radius: 18px 18px 18px 4px; 
-                        max-width: 70%;
-                        word-wrap: break-word;
-                        line-height: 1.4;
-                    ">🇬🇧 Hello! I'm your Fooodis assistant. How can I help you today?<br><br>🇸🇪 Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?</div>
+                <div class="test-message bot">
+                    <div class="message-content">${message}</div>
                 </div>
             `;
         }
@@ -1566,109 +1193,38 @@ class NodeFlowBuilder {
     sendTestMessage() {
         const input = document.getElementById('test-message-input');
         const message = input.value.trim();
-
+        
         if (!message) return;
 
         const messagesContainer = document.getElementById('test-chat-messages');
-
+        
         // Add user message
         const userMessage = document.createElement('div');
         userMessage.className = 'test-message user';
-        userMessage.style.cssText = `
-            margin-bottom: 15px; 
-            display: flex; 
-            justify-content: flex-end;
-        `;
-        userMessage.innerHTML = `
-            <div class="message-content" style="
-                background: #444; 
-                color: white; 
-                padding: 12px 16px; 
-                border-radius: 18px 18px 4px 18px; 
-                max-width: 70%;
-                word-wrap: break-word;
-                line-height: 1.4;
-            ">${message}</div>
-        `;
+        userMessage.innerHTML = `<div class="message-content">${message}</div>`;
         messagesContainer.appendChild(userMessage);
-
-        // Clear input and scroll
-        input.value = '';
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-        // Show typing indicator
-        const typingIndicator = document.createElement('div');
-        typingIndicator.className = 'test-message bot typing';
-        typingIndicator.style.cssText = `
-            margin-bottom: 15px; 
-            display: flex; 
-            justify-content: flex-start;
-        `;
-        typingIndicator.innerHTML = `
-            <div class="message-content" style="
-                background: #4a4a4a; 
-                color: white; 
-                padding: 12px 16px; 
-                border-radius: 18px 18px 18px 4px; 
-                max-width: 70%;
-                word-wrap: break-word;
-                line-height: 1.4;
-                opacity: 0.7;
-            ">Typing...</div>
-        `;
-        messagesContainer.appendChild(typingIndicator);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
         // Simulate bot response based on flow
         setTimeout(() => {
-            typingIndicator.remove();
             const botResponse = this.processTestMessage(message);
             const botMessage = document.createElement('div');
             botMessage.className = 'test-message bot';
-            botMessage.style.cssText = `
-                margin-bottom: 15px; 
-                display: flex; 
-                justify-content: flex-start;
-            `;
-            botMessage.innerHTML = `
-                <div class="message-content" style="
-                    background: #4a4a4a; 
-                    color: white; 
-                    padding: 12px 16px; 
-                    border-radius: 18px 18px 18px 4px; 
-                    max-width: 70%;
-                    word-wrap: break-word;
-                    line-height: 1.4;
-                ">${botResponse}</div>
-            `;
+            botMessage.innerHTML = `<div class="message-content">${botResponse}</div>`;
             messagesContainer.appendChild(botMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 1500);
-    }
+        }, 1000);
 
-    getAvailableAIAssistants() {
-        // Get AI assistants from ChatbotManager if available
-        if (window.chatbotManager && window.chatbotManager.assistants) {
-            return window.chatbotManager.assistants.filter(assistant => 
-                assistant.status === 'active' || assistant.enabled !== false
-            );
-        }
-        
-        // Fallback to default assistants
-        return [
-            { id: 'general', name: 'General Assistant', description: 'General purpose assistant' },
-            { id: 'support', name: 'Support Assistant', description: 'Customer support specialist' },
-            { id: 'sales', name: 'Sales Assistant', description: 'Sales and marketing expert' }
-        ];
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     processTestMessage(message) {
         // Simple intent matching for testing
         const lowerMessage = message.toLowerCase();
-
+        
         // Detect language based on Swedish keywords or previous context
         const isSwedish = this.detectSwedish(message);
-
+        
         const messages = {
             menu: {
                 english: "I'll connect you with our Menu Management specialist to help with your menu questions.",
@@ -1695,9 +1251,9 @@ class NodeFlowBuilder {
                 swedish: "Jag förstår att du behöver hjälp. Låt mig koppla dig till vårt Kundsupportteam för allmän assistans."
             }
         };
-
+        
         const lang = isSwedish ? 'swedish' : 'english';
-
+        
         if (lowerMessage.includes('menu') || lowerMessage.includes('food') || lowerMessage.includes('meny') || lowerMessage.includes('mat')) {
             return messages.menu[lang];
         } else if (lowerMessage.includes('billing') || lowerMessage.includes('payment') || lowerMessage.includes('faktur') || lowerMessage.includes('betalning')) {
@@ -1709,27 +1265,27 @@ class NodeFlowBuilder {
         } else if (lowerMessage.includes('sales') || lowerMessage.includes('plan') || lowerMessage.includes('pricing') || lowerMessage.includes('försäljning') || lowerMessage.includes('pris')) {
             return messages.sales[lang];
         }
-
+        
         return messages.general[lang];
     }
-
+    
     detectSwedish(message) {
         // Check for Swedish keywords and patterns
         const swedishKeywords = ['hej', 'tack', 'ja', 'nej', 'kan', 'vill', 'behöver', 'hjälp', 'hur', 'vad', 'när', 'var', 'varför', 'vilken', 'svenska'];
         const lowerMessage = message.toLowerCase();
-
+        
         // Check for Swedish keywords
         for (const keyword of swedishKeywords) {
             if (lowerMessage.includes(keyword)) {
                 return true;
             }
         }
-
+        
         // Check if window.chatbotCurrentLanguage is set to Swedish
         if (typeof window !== 'undefined' && window.chatbotCurrentLanguage === 'swedish') {
             return true;
         }
-
+        
         return false;
     }
 
@@ -1770,9 +1326,7 @@ class NodeFlowBuilder {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
-                    <button type="button" class="btn btn-primary modal-update" data-node-id="${node.id}">
-                        <i class="fas fa-save"></i> ${node.type === 'intent' ? 'Save Settings' : 'Update Node'}
-                    </button>
+                    <button type="button" class="btn btn-primary modal-update" data-node-id="${node.id}">Update Node</button>
                 </div>
             </div>
         `;
@@ -1784,87 +1338,17 @@ class NodeFlowBuilder {
         modal.querySelector('.modal-close').addEventListener('click', closeModal);
         modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
         modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
-
+        
         // Update node handler
         modal.querySelector('.modal-update').addEventListener('click', (e) => {
             const nodeId = e.target.getAttribute('data-node-id');
             this.updateNodeFromModal(nodeId);
-
-            // Force immediate save after modal update
-            setTimeout(() => {
-                this.saveFlow();
-                this.showToast('Changes saved successfully', 'success');
-            }, 100);
         });
-
-        // AI mode toggle handler
-        const aiModeCheckbox = modal.querySelector('#edit-ai-mode');
-        if (aiModeCheckbox) {
-            aiModeCheckbox.addEventListener('change', (e) => {
-                const isChecked = e.target.checked;
-                const assistantSelector = modal.querySelector('.assistant-selector');
-                const aiPromptGroup = modal.querySelector('.ai-prompt-group');
-                const manualMessageGroup = modal.querySelector('.manual-message-group');
-                const aiPreviewSection = modal.querySelector('.ai-preview-section');
-
-                if (assistantSelector) assistantSelector.style.display = isChecked ? 'block' : 'none';
-                if (aiPromptGroup) aiPromptGroup.style.display = isChecked ? 'block' : 'none';
-                if (manualMessageGroup) manualMessageGroup.style.display = isChecked ? 'none' : 'block';
-                if (aiPreviewSection) aiPreviewSection.style.display = isChecked ? 'block' : 'none';
-            });
-        }
-
-        // AI preview handler
-        const previewBtn = modal.querySelector('#preview-ai-response');
-        if (previewBtn) {
-            previewBtn.addEventListener('click', () => {
-                this.previewAIResponse(node);
-            });
-        }
-
+        
         // Handle department change for handoff nodes
         const departmentSelect = modal.querySelector('#edit-department');
         if (departmentSelect) {
             departmentSelect.addEventListener('change', () => this.updateAgentsList(departmentSelect.value));
-                }
-
-        // Add auto-save functionality for form changes
-        const form = modal.querySelector('#edit-node-form');
-        if (form) {
-            const inputs = form.querySelectorAll('input, textarea, select');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    this.scheduleAutoSave();
-                });
-                input.addEventListener('change', () => {
-                    this.scheduleAutoSave();
-                });
-            });
-
-            // Special handling for checkboxes in intent categories with immediate save
-            const checkboxes = form.querySelectorAll('.intent-checkboxes input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    console.log('Checkbox changed:', checkbox.value, checkbox.checked);
-
-                    // Immediate auto-save for checkbox changes
-                    const nodeId = form.getAttribute('data-node-id');
-                    const node = this.nodes.find(n => n.id === nodeId);
-
-                    if (node && node.type === 'intent') {
-                        // Update intents immediately
-                        const currentCheckedIntents = Array.from(form.querySelectorAll('.intent-checkboxes input[type="checkbox"]:checked'))
-                            .map(input => input.value);
-
-                        node.data.intents = currentCheckedIntents;
-
-                        // Save immediately
-                        this.autoSave();
-
-                        console.log('Immediately saved intent changes:', currentCheckedIntents);
-                    }
-                });
-            });
         }
     }
 
@@ -1872,12 +1356,12 @@ class NodeFlowBuilder {
     updateAgentsList(departmentId) {
         const agentSelect = document.querySelector('#edit-agent');
         if (!agentSelect) return;
-
+        
         const availableAgents = this.getAvailableAgents();
         const departmentAgents = availableAgents.filter(agent => 
             !departmentId || agent.department === departmentId
         );
-
+        
         agentSelect.innerHTML = '<option value="">Any Available Agent</option>' + 
             departmentAgents.map(agent => 
                 `<option value="${agent.id}">${agent.name} (${agent.department})</option>`
@@ -1899,17 +1383,17 @@ class NodeFlowBuilder {
                         <label>English Message</label>
                         <textarea id="edit-message-en" class="form-control" rows="3">${node.data.messages.english}</textarea>
                     </div>
-                    <div classiv class="form-group">
+                    <div class="form-group">
                         <label>Swedish Message</label>
                         <textarea id="edit-message-sv" class="form-control" rows="3">${node.data.messages.swedish || ''}</textarea>
                     </div>
                 `;
                 break;
-
+                
             case 'handoff':
                 const availableAgents = this.getAvailableAgents();
                 const departmentAgents = this.getAgentsByDepartment();
-
+                
                 formHTML += `
                     <div class="form-group">
                         <label>Department</label>
@@ -1935,7 +1419,7 @@ class NodeFlowBuilder {
                     </div>
                 `;
                 break;
-
+                
             case 'intent':
                 formHTML += `
                     <div class="form-group">
@@ -1946,83 +1430,12 @@ class NodeFlowBuilder {
                                     <h5>${category.category}</h5>
                                     ${category.intents.map(intent => `
                                         <label class="checkbox-label">
-                                            <input type="checkbox" value="${intent}" ${node.data.intents && node.data.intents.includes(intent) ? 'checked' : ''}>
-                                            <span class="checkmark"></span>
+                                            <input type="checkbox" value="${intent}" ${node.data.intents.includes(intent) ? 'checked' : ''}>
                                             ${intent}
                                         </label>
                                     `).join('')}
                                 </div>
                             `).join('')}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-intent-description">Description (Optional)</label>
-                        <textarea id="edit-intent-description" class="form-control" rows="3" placeholder="Describe what this intent detection handles...">${node.data.description || ''}</textarea>
-                    </div>
-                `;
-                break;
-
-            case 'condition':
-                formHTML += `
-                    <div class="form-group">
-                        <label for="edit-condition">Condition Expression</label>
-                        <input type="text" id="edit-condition" class="form-control" value="${node.data.condition || ''}" placeholder="e.g., user.language === 'swedish'">
-                        <small class="form-text text-muted">Enter a JavaScript-like condition expression</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-condition-description">Description</label>
-                        <textarea id="edit-condition-description" class="form-control" rows="2" placeholder="Describe when this condition should be true...">${node.data.description || ''}</textarea>
-                    </div>
-                `;
-                break;
-
-            case 'message':
-                 // Determine visibility based on AI mode
-                const aiMode = node.data.aiMode === true;
-                const assistantDisplay = aiMode ? 'block' : 'none';
-                const aiPromptDisplay = aiMode ? 'block' : 'none';
-                const manualMessageDisplay = aiMode ? 'none' : 'block';
-                const aiPreviewDisplay = aiMode ? 'block' : 'none';
-
-                formHTML += `
-                    <div class="form-group">
-                        <label>AI Mode</label>
-                        <div class="ai-mode-toggle">
-                            <input type="checkbox" id="edit-ai-mode" ${aiMode ? 'checked' : ''}>
-                            <label for="edit-ai-mode">Enable AI Assistant</label>
-                        </div>
-                    </div>
-
-                    <div class="assistant-selector" style="display: ${assistantDisplay};">
-                        <div class="form-group">
-                            <label for="edit-assistant">Select Assistant</label>
-                            <select id="edit-assistant" class="form-control">
-                                ${this.getAvailableAIAssistants().map(assistant => `
-                                    <option value="${assistant.id}" ${node.data.selectedAssistant === assistant.id ? 'selected' : ''}>${assistant.name}</option>
-                                `).join('')}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="ai-prompt-group" style="display: ${aiPromptDisplay};">
-                        <div class="form-group">
-                            <label for="edit-ai-prompt">AI Prompt</label>
-                            <textarea id="edit-ai-prompt" class="form-control" rows="4" placeholder="Enter the prompt for the AI assistant...">${node.data.aiPrompt || ''}</textarea>
-                        </div>
-                        <div class="ai-preview-section" style="display: ${aiPreviewDisplay};">
-                            <button type="button" class="btn btn-info btn-sm" id="preview-ai-response">Preview AI Response</button>
-                            <div id="ai-preview-content"></div>
-                        </div>
-                    </div>
-
-                    <div class="manual-message-group" style="display: ${manualMessageDisplay};">
-                        <div class="form-group">
-                            <label for="edit-message-en">English Message</label>
-                            <textarea id="edit-message-en" class="form-control" rows="4" placeholder="Enter the English message to display...">${node.data.messages?.english || ''}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-message-sv">Swedish Message</label>
-                            <textarea id="edit-message-sv" class="form-control" rows="4" placeholder="Enter the Swedish message to display...">${node.data.messages?.swedish || ''}</textarea>
                         </div>
                     </div>
                 `;
@@ -2037,175 +1450,42 @@ class NodeFlowBuilder {
         if (!node) return;
 
         // Update common fields
-        const titleInput = document.getElementById('edit-node-title');
-        if (titleInput) {
-            node.data.title = titleInput.value;
-        }
+        node.data.title = document.getElementById('edit-node-title').value;
 
         // Update type-specific fields
         switch (node.type) {
-            case 'message':
-                const aiModeCheckbox = document.getElementById('edit-ai-mode');
-                const aiMode = aiModeCheckbox ? aiModeCheckbox.checked : false;
-
-                node.data.aiMode = aiMode;
-
-                if (aiMode) {
-                    // AI mode - store assistant and prompt
-                    const assistantSelect = document.getElementById('edit-assistant');
-                    const aiPromptTextarea = document.getElementById('edit-ai-prompt');
-
-                    node.data.selectedAssistant = assistantSelect ? assistantSelect.value : '';
-                    node.data.aiPrompt = aiPromptTextarea ? aiPromptTextarea.value : '';
-                } else {
-                    // Manual mode - store messages
-                    const englishMsg = document.getElementById('edit-message-en');
-                    const swedishMsg = document.getElementById('edit-message-sv');
-
-                    if (!node.data.messages) node.data.messages = {};
-                    node.data.messages.english = englishMsg ? englishMsg.value : '';
-                    node.data.messages.swedish = swedishMsg ? swedishMsg.value : '';
-                }
-                break;
-
             case 'welcome':
-                const messageEn = document.getElementById('edit-message-en');
-                const messageSv = document.getElementById('edit-message-sv');
-                if (messageEn) node.data.messages.english = messageEn.value;
-                if (messageSv) node.data.messages.swedish = messageSv.value;
+                node.data.messages.english = document.getElementById('edit-message-en').value;
+                node.data.messages.swedish = document.getElementById('edit-message-sv').value;
                 break;
-
+                
             case 'handoff':
-                const selectedDept = document.getElementById('edit-department');
-                const selectedAgent = document.getElementById('edit-agent');
-                const handoffMessage = document.getElementById('edit-handoff-message');
-
-                if (selectedDept) {
-                    const dept = this.masterTemplate.departments.find(d => d.id === selectedDept.value);
-                    node.data.department = selectedDept.value;
-                    node.data.agents = dept ? dept.agents : [];
-                    node.data.color = dept ? dept.color : '#34495e';
-                }
-                if (selectedAgent) node.data.selectedAgent = selectedAgent.value;
-                if (handoffMessage) node.data.handoffMessage = handoffMessage.value || 'Transferring you to a human agent...';
-
+                const selectedDept = document.getElementById('edit-department').value;
+                const selectedAgent = document.getElementById('edit-agent').value;
+                const handoffMessage = document.getElementById('edit-handoff-message').value;
+                const dept = this.masterTemplate.departments.find(d => d.id === selectedDept);
+                
+                node.data.department = selectedDept;
+                node.data.selectedAgent = selectedAgent;
+                node.data.handoffMessage = handoffMessage || 'Transferring you to a human agent...';
+                node.data.agents = dept ? dept.agents : [];
+                node.data.color = dept ? dept.color : '#34495e';
+                
                 // Validate and serialize node data properly
                 node.data = this.validateNodeData(node.type, node.data);
                 break;
-
+                
             case 'intent':
-                // Get all checkboxes from the intent categories section
-                const intentModal = document.querySelector('.node-modal');
-                const checkedIntents = [];
-
-                if (intentModal) {
-                    const checkboxes = intentModal.querySelectorAll('.intent-checkboxes input[type="checkbox"]');
-                    checkboxes.forEach(checkbox => {
-                        if (checkbox.checked) {
-                            checkedIntents.push(checkbox.value);
-                        }
-                    });
-                }
-
-                const intentDescription = document.getElementById('edit-intent-description');
-
-                // Update node data
+                const checkedIntents = Array.from(document.querySelectorAll('.intent-checkboxes input:checked'))
+                    .map(input => input.value);
                 node.data.intents = checkedIntents;
-                if (intentDescription) {
-                    node.data.description = intentDescription.value;
-                }
-
-                console.log('Updated intent node with intents:', checkedIntents);
-                console.log('Updated intent node description:', node.data.description);
-
-                // Validate that intents array is properly set
-                if (!Array.isArray(node.data.intents)) {
-                    node.data.intents = [];
-                }
-
-                break;
-
-            case 'condition':
-                const conditionInput = document.getElementById('edit-condition');
-                if (conditionInput) {
-                    node.data.condition = conditionInput.value;
-                }
                 break;
         }
 
         this.renderNodes();
-        this.renderConnections();
-
-        // Close modal
-        const modal = document.querySelector('.node-modal');
-        if (modal) {
-            modal.remove();
-        }
-
+        document.querySelector('.node-modal').remove();
         this.showToast('Node updated successfully', 'success');
-        this.autoSave(); // Auto-save when updating node
-    }
-
-    duplicateNode(originalNode) {
-        // Create a proper deep copy of the node data
-        const duplicatedData = JSON.parse(JSON.stringify(originalNode.data));
-
-        // Modify the title to indicate it's a copy
-        if (duplicatedData.title) {
-            duplicatedData.title = duplicatedData.title + ' (Copy)';
-        }
-
-        // Validate and ensure all node properties are properly copied
-        if (originalNode.type === 'intent' && !Array.isArray(duplicatedData.intents)) {
-            duplicatedData.intents = originalNode.data.intents || [];
-        }
-        if (originalNode.type === 'handoff') {
-            duplicatedData.department = originalNode.data.department || '';
-            duplicatedData.agents = originalNode.data.agents || [];
-            duplicatedData.color = originalNode.data.color || '#34495e';
-        }
-        if (originalNode.type === 'message') {
-            duplicatedData.messages = duplicatedData.messages || { english: '', swedish: '' };
-            duplicatedData.aiMode = originalNode.data.aiMode || false;
-            duplicatedData.selectedAssistant = originalNode.data.selectedAssistant || '';
-            duplicatedData.aiPrompt = originalNode.data.aiPrompt || '';
-        }
-
-        // Generate a truly unique ID for the duplicated node
-        const timestamp = Date.now();
-        const randomId = Math.random().toString(36).substr(2, 9);
-        const uniqueId = `node-${timestamp}-${randomId}`;
-
-        // Create the duplicated node with better positioning offset
-        const duplicatedNode = {
-            id: uniqueId,
-            type: originalNode.type,
-            position: { 
-                x: originalNode.position.x + 30, 
-                y: originalNode.position.y + 30 
-            },
-            data: duplicatedData,
-            connections: {
-                inputs: [],
-                outputs: []
-            }
-        };
-
-        // Add to nodes array
-        this.nodes.push(duplicatedNode);
-
-        // Ensure clean re-render without DOM conflicts
-        setTimeout(() => {
-            this.renderNodes();
-            this.renderConnections();
-        }, 50);
-
-        this.showToast('Node duplicated successfully', 'success');
-
-        // Auto-save with validation
-        this.autoSave();
-
-        console.log('Duplicated node created:', duplicatedNode.id, 'from:', originalNode.id);
+        this.autoSave(); // 🔧 FIX 3: Auto-save when updating node
     }
 
     deleteNode(nodeId) {
@@ -2238,7 +1518,7 @@ class NodeFlowBuilder {
     // Validate and ensure proper serialization of node data
     validateNodeData(nodeType, data) {
         const validatedData = { ...data };
-
+        
         switch (nodeType) {
             case 'message':
                 validatedData.messages = validatedData.messages || { english: '', swedish: '' };
@@ -2254,7 +1534,7 @@ class NodeFlowBuilder {
                 validatedData.intents = validatedData.intents || [];
                 break;
         }
-
+        
         return validatedData;
     }
 
@@ -2262,13 +1542,13 @@ class NodeFlowBuilder {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.textContent = message;
-
+        
         document.body.appendChild(toast);
-
+        
         setTimeout(() => {
             toast.classList.add('show');
         }, 100);
-
+        
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
@@ -2276,65 +1556,51 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseMove(e) {
-        // Handle canvas panning - highest priority when panning is active
-        if (this.isPanning) {
-            e.preventDefault();
-            const deltaX = e.clientX - this.lastPanPoint.x;
-            const deltaY = e.clientY - this.lastPanPoint.y;
-
-            this.panOffset.x += deltaX;
-            this.panOffset.y += deltaY;
-
-            this.lastPanPoint.x = e.clientX;
-            this.lastPanPoint.y = e.clientY;
-
-            this.updateCanvasTransform();
-            return; // Exit early when panning
+        if (this.isDragging) {
+            this.panOffset.x = e.clientX;
+            this.panOffset.y = e.clientY;
+            this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
         }
-
-        // Handle individual node dragging - only when not panning
-        if (this.draggedNode && !this.isPanning) {
-            e.preventDefault();
+        
+        // Handle node dragging
+        if (this.draggedNode) {
             const rect = this.canvas.getBoundingClientRect();
-
-            // Calculate world coordinates accounting for zoom and pan
-            const worldX = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
-            const worldY = (e.clientY - rect.top - this.panOffset.y) / this.zoom;
-
-            // Update node position
-            this.draggedNode.position.x = worldX - this.draggedNode.dragOffset.x;
-            this.draggedNode.position.y = worldY - this.draggedNode.dragOffset.y;
-
-            // Update visual position immediately
+            const x = (e.clientX - rect.left) / this.zoom;
+            const y = (e.clientY - rect.top) / this.zoom;
+            
+            this.draggedNode.position.x = x - this.draggedNode.dragOffset.x;
+            this.draggedNode.position.y = y - this.draggedNode.dragOffset.y;
+            
+            // Clear any duplicate node elements before updating position
+            const allNodeElements = document.querySelectorAll(`[data-node-id="${this.draggedNode.id}"]`);
+            if (allNodeElements.length > 1) {
+                // Remove all but the first element
+                for (let i = 1; i < allNodeElements.length; i++) {
+                    allNodeElements[i].remove();
+                }
+            }
+            
+            // Update only the dragged node's position
             const nodeElement = document.querySelector(`[data-node-id="${this.draggedNode.id}"]`);
             if (nodeElement) {
                 nodeElement.style.left = this.draggedNode.position.x + 'px';
                 nodeElement.style.top = this.draggedNode.position.y + 'px';
             }
-
-            // Update connections when nodes move
-            this.renderConnections();
-            return; // Exit early when dragging
+            
+            this.renderConnections(); // Update connections when nodes move
         }
-
+        
         // Update temp connection line
-        if (this.isConnecting && this.tempConnectionStart) {
+        if (this.isConnecting) {
             this.updateTempConnectionLine(e.clientX, e.clientY);
         }
     }
 
     handleCanvasMouseUp(e) {
-        // Reset panning state
-        if (this.isPanning) {
-            this.isPanning = false;
-            this.canvas.style.cursor = 'default';
-        }
-
-        // Reset node dragging state
+        this.isDragging = false;
         if (this.draggedNode) {
             this.draggedNode = null;
-            this.canvas.style.cursor = 'default';
-            this.autoSave(); // Auto-save when node moved
+            this.autoSave(); // 🔧 FIX 3: Auto-save when node moved
         }
     }
 
@@ -2349,7 +1615,7 @@ class NodeFlowBuilder {
             }
             this.showToast('Connection cancelled', 'info');
         }
-
+        
         // 🔧 FIX 2: Handle connection deletion by clicking on connection lines
         if (e.target.classList.contains('connection-line') || e.target.closest('.connection-line')) {
             const connectionLine = e.target.classList.contains('connection-line') ? e.target : e.target.closest('.connection-line');
@@ -2359,7 +1625,7 @@ class NodeFlowBuilder {
             }
             return;
         }
-
+        
         // Deselect any selected nodes when clicking empty canvas
         if (e.target === this.canvas || e.target.classList.contains('flow-background')) {
             this.selectedNode = null;
@@ -2377,39 +1643,20 @@ class NodeFlowBuilder {
     }
 
     addNode(type) {
-        // Prevent ghost duplicates by checking if we're already adding a node
-        if (this.isAddingNode) {
-            console.log('Node addition already in progress, preventing duplicate');
-            return;
-        }
-
-        this.isAddingNode = true;
-
-        // Calculate a good position for the new node (center of visible area)
-        const centerX = (-this.panOffset.x / this.zoom) + (window.innerWidth / (2 * this.zoom));
-        const centerY = (-this.panOffset.y / this.zoom) + (window.innerHeight / (2 * this.zoom));
-
-        const randomOffset = Math.random() * 50 - 25; // -25 to +25
         const newNode = this.createNode({
             type,
-            position: { 
-                x: centerX + randomOffset, 
-                y: centerY + randomOffset 
-            },
+            position: { x: 200, y: 200 },
             data: this.getDefaultNodeData(type)
         });
-
-        // Re-render all nodes to ensure clean state
+        
+        this.nodes.push(newNode);
+        
+        // Force a complete re-render to avoid DOM inconsistencies
+        // This ensures header-added nodes behave the same as template nodes
         this.renderNodes();
-        this.renderConnections();
-
+        
         this.autoSave(); // Auto-save when adding node
         this.showToast(`${type} node added`, 'success');
-
-        // Reset the flag after a short delay
-        setTimeout(() => {
-            this.isAddingNode = false;
-        }, 100);
     }
 
     getDefaultNodeData(type) {
@@ -2447,99 +1694,19 @@ class NodeFlowBuilder {
         }
     }
 
-    updateCanvasTransform() {
-        const flowNodes = document.getElementById('flow-nodes');
-        const flowConnections = document.getElementById('flow-connections');
-
-        if (flowNodes) {
-            flowNodes.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
-            flowNodes.style.pointerEvents = 'auto';
-        }
-        if (flowConnections) {
-            flowConnections.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
-            flowConnections.style.pointerEvents = 'none';
-        }
-
-        // Update zoom level display
-        const zoomLevel = document.querySelector('.canvas-zoom-level');
-        if (zoomLevel) {
-            zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
-        }
-
-        // Update disconnect button scaling to counter the canvas transform
-        document.querySelectorAll('.disconnect-btn').forEach(btn => {
-            const counterScale = 1 / this.zoom;
-            btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
-            btn.style.pointerEvents = 'auto';
-        });
-
-        // Ensure all nodes have proper pointer events
-        document.querySelectorAll('.flow-node').forEach(node => {
-            node.style.pointerEvents = 'auto';
-        });
-    }
-
-    handleCanvasMouseDown(e) {
-        // Ignore if clicking on UI elements like buttons or connection points
-        if (e.target.closest('.node-controls') || 
-            e.target.closest('.connection-point') || 
-            e.target.closest('.disconnect-btn') ||
-            e.target.closest('.toolbar-btn') ||
-            e.target.closest('.canvas-zoom-controls')) {
-            return;
-        }
-
-        // Handle canvas panning with middle mouse button or Shift+click
-        if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
-            e.preventDefault();
-            this.isPanning = true;
-            this.lastPanPoint = { x: e.clientX, y: e.clientY };
-            this.canvas.style.cursor = 'grabbing';
-            return;
-        }
-
-        // Handle panning with right mouse button
-        if (e.button === 2) {
-            e.preventDefault();
-            this.isPanning = true;
-            this.lastPanPoint = { x: e.clientX, y: e.clientY };
-            this.canvas.style.cursor = 'grabbing';
-            return;
-        }
-
-        // Click on empty canvas - clear selection and enable panning
-        if (!e.target.closest('.flow-node') && e.button === 0) {
-            this.selectedNode = null;
-            document.querySelectorAll('.flow-node.selected').forEach(node => {
-                node.classList.remove('selected');
-            });
-
-            // Enable panning on left click on empty canvas
-            this.isPanning = true;
-            this.lastPanPoint = { x: e.clientX, y: e.clientY };
-            this.canvas.style.cursor = 'grabbing';
-        }
-    }
-
     updateZoom(delta) {
         this.zoom += delta;
         this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
-        this.updateCanvasTransform();
+        this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
+        document.querySelector('.canvas-zoom-level').textContent = `${Math.round(this.zoom * 100)}%`;
     }
 
-    updateDisconnectButtonScaling() {
-        const disconnectButtons = document.querySelectorAll('.disconnect-btn');
-        disconnectButtons.forEach(btn => {
-            // Counter-scale the buttons to maintain visual size at all zoom levels
-            const counterScale = 1 / this.zoom;
-            btn.style.transform = `translate(-50%, -50%) scale(${counterScale})`;
-
-            // Maintain consistent visual size
-            btn.style.width = '20px';
-            btn.style.height = '20px';
-            btn.style.fontSize = '14px';
-            btn.style.borderWidth = '2px';
-        });
+    handleCanvasMouseDown(e) {
+        if (e.button === 1) {
+            this.isDragging = true;
+            this.panOffset.x = e.clientX;
+            this.panOffset.y = e.clientY;
+        }
     }
 
     zoomIn() {
@@ -2552,8 +1719,7 @@ class NodeFlowBuilder {
 
     resetZoom() {
         this.zoom = 1;
-        this.panOffset = { x: 0, y: 0 };
-        this.updateCanvasTransform();
+        this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
         document.querySelector('.canvas-zoom-level').textContent = `${Math.round(this.zoom * 100)}%`;
     }
 
@@ -2562,280 +1728,12 @@ class NodeFlowBuilder {
         if (this.autoSaveTimeout) {
             clearTimeout(this.autoSaveTimeout);
         }
-
+        
         this.autoSaveTimeout = setTimeout(() => {
             this.saveFlow();
             console.log('Auto-saved flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
         }, 500); // Save after 500ms of inactivity
     }
-
-    scheduleAutoSave() {
-        // Clear existing timeout
-        if (this.autoSaveTimeout) {
-            clearTimeout(this.autoSaveTimeout);
-        }
-
-        // Set new timeout for 2 seconds
-        this.autoSaveTimeout = setTimeout(() => {
-            this.saveFlow();
-        }, 2000);
-    }
-
-    previewAIResponse(node) {
-        const previewContent = document.getElementById('ai-preview-content');
-        const assistantSelect = document.getElementById('edit-assistant');
-        const promptTextarea = document.getElementById('edit-ai-prompt');
-
-        if (!previewContent) return;
-
-        const selectedAssistantId = assistantSelect ? assistantSelect.value : node.data.selectedAssistant;
-        const customPrompt = promptTextarea ? promptTextarea.value : node.data.aiPrompt;
-
-        if (!selectedAssistantId) {
-            previewContent.innerHTML = '<div class="ai-preview-error">Please select an AI assistant first</div>';
-            return;
-        }
-
-        // Show loading state
-        previewContent.innerHTML = '<div class="ai-preview-loading">Generating preview...</div>';
-
-        // Get the selected assistant details
-        const assistants = this.getAvailableAIAssistants();
-        const selectedAssistant = assistants.find(a => a.id === selectedAssistantId);
-
-        // Simulate AI response for preview (in real implementation, this would call the actual AI)
-        setTimeout(() => {
-            const sampleMessage = this.generateSampleAIResponse(selectedAssistant, customPrompt);
-            previewContent.innerHTML = `
-                <div class="ai-preview-success">
-                    <div class="preview-message">
-                        <strong>Sample Response:</strong>
-                        <p>${sampleMessage}</p>
-                    </div>
-                    <div class="preview-note" style="font-size: 11px; color: #666; margin-top: 8px;">
-                        This is a preview. Actual responses will be generated in real-time during conversations.
-                    </div>
-                </div>
-            `;
-        }, 1500);
-    }
-
-    generateSampleAIResponse(assistant, customPrompt) {
-        const assistantName = assistant ? assistant.name : 'AI Assistant';
-        const department = assistant ? assistant.department : 'General';
-
-        const samples = {
-            'Sales': `Hello! I'm ${assistantName} from our Sales team. I'd be happy to help you learn about our pricing plans and features. What specific information are you looking for?`,
-            'Billing': `Hi there! I'm ${assistantName} from Billing support. I can assist you with payment questions, subscription management, and invoicing. How can I help you today?`,
-            'Technical Support': `Hello! I'm ${assistantName} from Technical Support. I can help you with integration issues, API questions, and troubleshooting. What technical challenge can I assist you with?`,
-            'Delivery': `Hi! I'm ${assistantName} from our Delivery team. I can help you track orders, update delivery information, and resolve delivery-related questions. What do you need help with?`,
-            'General': `Hello! I'm ${assistantName}, your Fooodis assistant. I'm here to help you with any questions about our platform. How can I assist you today?`
-        };
-
-        let response = samples[department] || samples['General'];
-
-        if (customPrompt) {
-            response += `\n\nNote: This response will be customized based on your specific prompt: "${customPrompt.substring(0, 100)}${customPrompt.length > 100 ? '...' : ''}"`;
-        }
-
-        return response;
-    }
-
-    // Dummy function for now, replace with actual implementation
-    getAvailableAIAssistants() {
-        return [
-            { id: 'marcus-chen', name: 'Marcus Chen - Sales', department: 'Sales' },
-            { id: 'elena-rodriguez', name: 'Elena Rodriguez - Billing', department: 'Billing' },
-            { id: 'david-kim', name: 'David Kim - Technical Support', department: 'Technical Support' },
-            { id: 'anya-singh', name: 'Anya Singh - Delivery', department: 'Delivery' },
-            { id: 'general-ai', name: 'Fooodis AI Assistant', department: 'General' }
-        ];
-    }
-
-        // New function to execute message nodes with AI or static content
-        async executeNode(node, userMessage, context) {
-            switch (node.type) {
-                case 'message':
-                    return this.executeMessageNode(node, userMessage, context);
-                // Implement other node types as needed (intent, handoff, etc.)
-                default:
-                    console.warn('Node type not implemented:', node.type);
-                    return {
-                        success: false,
-                        message: 'Node type not implemented',
-                        type: 'error',
-                        nodeId: node.id
-                    };
-            }
-        }
-
-        // Core logic for message node execution (AI or static)
-        async executeMessageNode(node, userMessage, context) {
-            console.log('📨 Executing message node:', node.data.title);
-
-            // Check if AI mode is enabled for this node
-            if (node.data.aiMode && node.data.selectedAssistant && node.data.aiPrompt) {
-                console.log('🤖 Generating AI-powered response for node:', node.data.title);
-                return await this.generateAIResponse(node.data, userMessage, context);
-            }
-
-            // Fallback to static content
-            return {
-                success: true,
-                message: node.data.messages?.english || 'Hello! How can I help you?',
-                type: 'message',
-                nodeId: node.id
-            };
-        }
-
-        // Centralized AI response generation
-        async generateAIResponse(node, userMessage, context) {
-            try {
-                // Detect user language from context or message
-                const userLanguage = this.detectUserLanguage(userMessage, context);
-                console.log('🌐 Detected user language:', userLanguage);
-
-                // Enhanced prompt that includes button generation
-                const enhancedPrompt = `${node.aiPrompt}
-
-IMPORTANT INSTRUCTIONS:
-1. Generate a short, helpful message (1-2 sentences) followed by 3-4 relevant clickable button options
-2. Use language: ${userLanguage === 'sv' ? 'Swedish' : 'English'}
-3. Format response as JSON: {"message": "your message", "buttons": [{"text": "button text", "action": "button_action"}]}
-4. Button actions should be platform-relevant like: "pricing", "menu_setup", "contact", "support", "hours", "location"
-5. Keep button text concise (3-5 words max)
-
-Context: User is interacting with Fooodis platform (restaurant management system)`;
-
-                // Get AI response through chatbot manager
-                let aiResponse = null;
-                if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
-                    const response = await window.chatbotManager.generateAgentResponse({
-                        message: enhancedPrompt,
-                        conversationId: context.conversationId || 'node_flow_' + Date.now(),
-                        language: userLanguage,
-                        agent: { assignedAssistantId: node.selectedAssistant },
-                        assistantId: node.selectedAssistant
-                    });
-
-                    if (response && response.success) {
-                        aiResponse = response.message;
-                    }
-                }
-
-                // Parse AI response or use fallback
-                const parsedResponse = this.parseAIResponse(aiResponse, userLanguage);
-
-                console.log('✅ Generated AI response:', parsedResponse);
-
-                return {
-                    success: true,
-                    message: parsedResponse.message,
-                    buttons: parsedResponse.buttons,
-                    type: 'message_with_buttons',
-                    nodeId: node.id,
-                    language: userLanguage
-                };
-
-            } catch (error) {
-                console.error('❌ Error generating AI response:', error);
-                return this.getFallbackResponse(userMessage, context);
-            }
-        }
-
-        // User language detection (context, localStorage, message)
-        detectUserLanguage(userMessage, context) {
-            // Check context for language preference
-            if (context && context.language) {
-                return context.language;
-            }
-
-            // Check localStorage for saved preference
-            const savedLang = localStorage.getItem('fooodis-language');
-            if (savedLang) {
-                return savedLang;
-            }
-
-            // Simple language detection based on message content
-            if (userMessage) {
-                const swedishWords = ['hej', 'hallo', 'tjena', 'vad', 'hur', 'kan', 'jag', 'du', 'är', 'och', 'tack'];
-                const messageLower = userMessage.toLowerCase();
-
-                const swedishScore = swedishWords.filter(word => messageLower.includes(word)).length;
-                if (swedishScore > 0) {
-                    return 'sv';
-                }
-            }
-
-            // Default to browser language or English
-            const browserLang = navigator.language || navigator.userLanguage;
-            return browserLang.startsWith('sv') ? 'sv' : 'en';
-        }
-
-        // JSON parsing with fallback
-        parseAIResponse(aiResponse, userLanguage) {
-            try {
-                // Try to parse JSON response
-                if (aiResponse && aiResponse.includes('{') && aiResponse.includes('}')) {
-                    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        const parsed = JSON.parse(jsonMatch[0]);
-                        if (parsed.message && parsed.buttons) {
-                            return {
-                                message: parsed.message,
-                                buttons: parsed.buttons.slice(0, 4) // Limit to 4 buttons
-                            };
-                        }
-                    }
-                }
-            } catch (error) {
-                console.warn('Failed to parse AI JSON response:', error);
-            }
-
-            // Fallback to predefined localized content
-            return this.getFallbackButtonContent(userLanguage);
-        }
-
-        // Predefined button content for different languages
-        getFallbackButtonContent(userLanguage) {
-            const content = {
-                en: {
-                    message: "Hello! I'm your Fooodis assistant. How can I help you today?",
-                    buttons: [
-                        { text: "Price Plans", action: "pricing" },
-                        { text: "Menu Setup", action: "menu_setup" },
-                        { text: "Contact Support", action: "contact" },
-                        { text: "Platform Features", action: "features" }
-                    ]
-                },
-                sv: {
-                    message: "Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?",
-                    buttons: [
-                        { text: "Prisplaner", action: "pricing" },
-                        { text: "Meny Setup", action: "menu_setup" },
-                        { text: "Kontakta Support", action: "contact" },
-                        { text: "Plattformsfunktioner", action: "features" }
-                    ]
-                }
-            };
-
-            return content[userLanguage] || content.en;
-        }
-
-        // Fallback response in case of AI failure
-        getFallbackResponse(userMessage, context) {
-            const userLanguage = this.detectUserLanguage(userMessage, context);
-            const fallbackContent = this.getFallbackButtonContent(userLanguage);
-
-            return {
-                success: true,
-                message: fallbackContent.message,
-                buttons: fallbackContent.buttons,
-                type: 'message_with_buttons',
-                nodeId: 'fallback',
-                language: userLanguage
-            };
-        }
 }
 
 // Initialize the node flow builder

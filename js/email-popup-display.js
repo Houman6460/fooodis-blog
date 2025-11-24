@@ -10,13 +10,13 @@ class EmailPopupDisplay {
         this.countdown = null;
         this.init();
     }
-
+    
     init() {
         this.loadConfig();
         this.createPopup();
         this.setupTriggers();
     }
-
+    
     loadConfig() {
         // Load saved configuration from localStorage
         const savedConfig = localStorage.getItem('fooodis-email-popup-config');
@@ -31,7 +31,7 @@ class EmailPopupDisplay {
             this.config = this.getDefaultConfig();
         }
     }
-
+    
     getDefaultConfig() {
         return {
             layout: 'standard',
@@ -65,17 +65,17 @@ class EmailPopupDisplay {
             }
         };
     }
-
+    
     createPopup() {
         // Check if popup should be enabled
         const popupEnabled = localStorage.getItem('popup-enabled') === 'true';
         if (!popupEnabled) return;
-
+        
         // Create popup HTML
         const popup = document.createElement('div');
         popup.className = 'email-overlay';
         popup.id = 'emailPopupOverlay';
-
+        
         let popupContent = `
             <div class="email-popup layout-${this.config.layout}">
                 <div class="email-popup-header">
@@ -84,7 +84,7 @@ class EmailPopupDisplay {
                 </div>
                 <div class="email-popup-content">
         `;
-
+        
         // Add image if enabled
         if (this.config.image && this.config.image.enabled && this.config.image.url) {
             popupContent += `
@@ -93,13 +93,13 @@ class EmailPopupDisplay {
                 </div>
             `;
         }
-
+        
         // Add text container
         popupContent += `
                 <div class="popup-text-container" style="${this.config.colors.textBackground ? 'background-color:' + this.config.colors.textBackground + ';padding:15px;border-radius:6px;' : ''}">
                     <p class="email-popup-description">${this.config.customText.description}</p>
         `;
-
+        
         // Add countdown if enabled
         if (this.config.countdown && this.config.countdown.enabled) {
             popupContent += `
@@ -126,7 +126,7 @@ class EmailPopupDisplay {
                 </div>
             `;
         }
-
+        
         // Add email form
         popupContent += `
                     <form class="email-form">
@@ -145,10 +145,10 @@ class EmailPopupDisplay {
             </div>
         </div>
         `;
-
+        
         popup.innerHTML = popupContent;
         document.body.appendChild(popup);
-
+        
         // Add event listeners
         const closeBtn = popup.querySelector('.email-popup-close');
         if (closeBtn) {
@@ -156,7 +156,7 @@ class EmailPopupDisplay {
                 this.closePopup();
             });
         }
-
+        
         const form = popup.querySelector('.email-form');
         if (form) {
             form.addEventListener('submit', (e) => {
@@ -164,7 +164,7 @@ class EmailPopupDisplay {
                 this.handleSubmit(e);
             });
         }
-
+        
         // Also close when clicking overlay background (outside the popup)
         popup.addEventListener('click', (e) => {
             if (e.target === popup) {
@@ -172,17 +172,17 @@ class EmailPopupDisplay {
             }
         });
     }
-
+    
     setupTriggers() {
         const popupEnabled = localStorage.getItem('popup-enabled') === 'true';
         if (!popupEnabled) return;
-
+        
         // Check if popup was already shown in this session
         if (sessionStorage.getItem('popup-shown') === 'true') return;
-
+        
         // Get trigger settings
         const triggerType = localStorage.getItem('popup-trigger') || 'delay';
-
+        
         switch (triggerType) {
             case 'delay':
                 this.setupDelayTrigger();
@@ -197,7 +197,7 @@ class EmailPopupDisplay {
                 this.setupDelayTrigger();
         }
     }
-
+    
     setupDelayTrigger() {
         // Default to 5 seconds if not set
         const delay = parseInt(localStorage.getItem('popup-delay')) || 5;
@@ -205,7 +205,7 @@ class EmailPopupDisplay {
             this.showPopup();
         }, delay * 1000);
     }
-
+    
     setupExitTrigger() {
         document.addEventListener('mouseleave', (e) => {
             // Only trigger when mouse leaves the top of the page
@@ -214,63 +214,63 @@ class EmailPopupDisplay {
             }
         });
     }
-
+    
     setupScrollTrigger() {
         // Default to 50% if not set
         const scrollPercentage = parseInt(localStorage.getItem('scroll-percentage')) || 50;
-
+        
         window.addEventListener('scroll', () => {
             if (this.popupShown) return;
-
+            
             const scrollTop = window.scrollY;
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const scrollPercent = (scrollTop / docHeight) * 100;
-
+            
             if (scrollPercent > scrollPercentage) {
                 this.showPopup();
             }
         });
     }
-
+    
     showPopup() {
         if (this.popupShown) return;
-
+        
         const popup = document.getElementById('emailPopupOverlay');
         if (!popup) return;
-
+        
         popup.classList.add('active');
         this.popupShown = true;
         sessionStorage.setItem('popup-shown', 'true');
-
+        
         // Start countdown if enabled
         if (this.config.countdown && this.config.countdown.enabled) {
             this.startCountdown();
         }
-
+        
         // Dispatch event for other scripts to react
         document.dispatchEvent(new CustomEvent('emailPopupShown'));
     }
-
+    
     closePopup() {
         const popup = document.getElementById('emailPopupOverlay');
         if (!popup) return;
-
+        
         popup.classList.remove('active');
-
+        
         // Stop countdown if running
         if (this.countdown) {
             clearInterval(this.countdown);
         }
     }
-
+    
     handleSubmit(e) {
         const form = e.target;
         const emailInput = form.querySelector('.email-input');
         const submitBtn = form.querySelector('.email-submit-btn');
         const animElement = submitBtn.querySelector(`[class^="anim-"]`);
-
+        
         if (!emailInput || !emailInput.value) return;
-
+        
         // Show loading animation
         if (animElement) {
             animElement.style.display = 'inline-block';
@@ -281,16 +281,16 @@ class EmailPopupDisplay {
                 }
             });
         }
-
+        
         // Disable button
         submitBtn.disabled = true;
-
+        
         // Simulate API call
         setTimeout(() => {
             // Show success message
             const popup = document.getElementById('emailPopupOverlay');
             if (!popup) return;
-
+            
             const emailPopup = popup.querySelector('.email-popup');
             if (emailPopup && this.config.customText) {
                 emailPopup.innerHTML = `
@@ -299,19 +299,19 @@ class EmailPopupDisplay {
                         <h2 class="success-title">${this.config.customText.successMessage}</h2>
                     </div>
                 `;
-
+                
                 // Close popup after delay
                 setTimeout(() => {
                     this.closePopup();
                 }, 3000);
             }
-
+            
             // Save email to localStorage in a format compatible with the SubscriberListManager
             try {
                 // First check if email already exists
                 const emails = JSON.parse(localStorage.getItem('subscriber-emails') || '[]');
                 const emailExists = emails.some(item => item.email === emailInput.value);
-
+                
                 if (!emailExists) {
                     // Add new subscriber with proper format
                     emails.push({
@@ -319,14 +319,14 @@ class EmailPopupDisplay {
                         date: new Date().toISOString(),
                         status: 'active'
                     });
-
+                    
                     // Save to localStorage
                     localStorage.setItem('subscriber-emails', JSON.stringify(emails));
-
+                    
                     // Log for debugging
                     console.log('New subscriber saved:', emailInput.value);
                     console.log('Total subscribers:', emails.length);
-
+                    
                     // Trigger an event that the dashboard can listen for if it's open in another tab
                     if (window.BroadcastChannel) {
                         try {
@@ -345,10 +345,10 @@ class EmailPopupDisplay {
             }
         }, 1500);
     }
-
+    
     startCountdown() {
         if (!this.config.countdown || !this.config.countdown.enabled) return;
-
+        
         // Calculate end time based on provided duration
         const now = new Date();
         const endTime = new Date(now.getTime() + (
@@ -357,28 +357,28 @@ class EmailPopupDisplay {
             (this.config.countdown.minutes * 60 * 1000) +
             (this.config.countdown.seconds * 1000)
         ));
-
+        
         // Update countdown immediately
         this.updateCountdown(endTime);
-
+        
         // Set interval to update countdown
         this.countdown = setInterval(() => {
             this.updateCountdown(endTime);
         }, 1000);
     }
-
+    
     updateCountdown(endTime) {
         const now = new Date();
         const distance = endTime - now;
-
+        
         // Get DOM elements
         const daysEl = document.getElementById('countdown-days');
         const hoursEl = document.getElementById('countdown-hours');
         const minutesEl = document.getElementById('countdown-minutes');
         const secondsEl = document.getElementById('countdown-seconds');
-
+        
         if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
-
+        
         // If countdown finished
         if (distance < 0) {
             clearInterval(this.countdown);
@@ -388,20 +388,20 @@ class EmailPopupDisplay {
             secondsEl.textContent = '00';
             return;
         }
-
+        
         // Calculate time units
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
+        
         // Update HTML elements
         daysEl.textContent = this.padZero(days);
         hoursEl.textContent = this.padZero(hours);
         minutesEl.textContent = this.padZero(minutes);
         secondsEl.textContent = this.padZero(seconds);
     }
-
+    
     padZero(num) {
         return num < 10 ? `0${num}` : num;
     }
@@ -416,26 +416,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     }
 });
-
-// Also initialize on window load as fallback
-window.addEventListener('load', () => {
-    const isDashboard = document.querySelector('.dashboard-container') || 
-                       document.querySelector('#dashboard-container') ||
-                       window.location.pathname.includes('dashboard');
-                       
-    if (!isDashboard && !window.emailPopupDisplayInitialized) {
-        console.log('🔄 Email Popup Display: Window load fallback initialization...');
-        window.emailPopupDisplayInitialized = true;
-        new EmailPopupDisplay();
-    }
-});
-
-// Force popup function for testing
-window.forceEmailPopup = function() {
-    console.log('🚀 Email Popup Display: Force popup triggered manually');
-    localStorage.setItem('popup-enabled', 'true');
-    sessionStorage.removeItem('popup-shown');
-    new EmailPopupDisplay();
-};
-
-console.log('✅ Email Popup Display: Script loaded and ready');

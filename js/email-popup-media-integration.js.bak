@@ -1,0 +1,542 @@
+/**
+ * Email Popup Media Library Integration
+ * 
+ * Integrates the existing media library with the Email Subscribers popup functionality
+ * Replaces the default file upload with a media library selector
+ */
+(function() {
+    // Global state
+    let initialized = false;
+    let buttonAdded = false;
+    
+    // Initialize when DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', initialize);
+    
+    // Also try after window load (for dynamically generated content)
+    window.addEventListener('load', initialize);
+    
+    // Set a timeout to ensure initialization even if other events fail
+    setTimeout(initialize, 2000);
+    
+    // First clean up any existing buttons
+    function removeExistingButtons() {
+        const existingButtons = document.querySelectorAll('.media-library-button');
+        existingButtons.forEach(button => button.remove());
+        console.log(`Removed ${existingButtons.length} existing media library buttons`);
+    }
+    
+    /**
+     * Initialize the media library integration
+     */
+    function initialize() {
+        // Remove any existing buttons first to prevent duplicates
+        removeExistingButtons();
+        
+        // Reset the button added flag
+        buttonAdded = false;
+        
+        // Find the email popup image upload field
+        const popupImageField = document.getElementById('popupImage');
+        
+        if (popupImageField && !buttonAdded) {
+            // We found the field, initialize the integration
+            addMediaLibraryButton(popupImageField);
+            initialized = true;
+            console.log('Email popup media library integration initialized');
+        } else {
+            // Try another approach - look for it in the email management section
+            const emailSection = document.getElementById('email-management-section');
+            if (emailSection) {
+                // Use MutationObserver to detect when the popup image field is added to the DOM
+                setupDOMObserver(emailSection);
+            }
+        }
+        
+        // Set up a periodic check to catch any delayed rendering
+        if (!buttonAdded) {
+            setTimeout(checkForImageField, 1000);
+        }
+    }
+    
+    /**
+     * Set up a DOM observer to detect when elements are added to the page
+     */
+    function setupDOMObserver(targetNode) {
+        const observer = new MutationObserver(function(mutations) {
+            // Skip if we've already added a button
+            if (buttonAdded) return;
+            
+            mutations.forEach(function(mutation) {
+                if (buttonAdded) return; // Exit early if button was added during this loop
+                
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    for (let node of mutation.addedNodes) {
+                        if (buttonAdded) break; // Exit early if button was added
+                        
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            // Check if this is the popup image field or contains it
+                            const popupImageField = node.id === 'popupImage' ? 
+                                node : node.querySelector('#popupImage');
+                            
+                            if (popupImageField && !buttonAdded) {
+                                addMediaLibraryButton(popupImageField);
+                                initialized = true;
+                                console.log('Email popup media library integration initialized via observer');
+                                return; // Exit after adding button
+                            }
+                            
+                            // Also look for any file inputs in layout tab content
+                            if (node.classList && node.classList.contains('tab-content') && !buttonAdded) {
+                                const fileInputs = node.querySelectorAll('input[type="file"]');
+                                for (let input of fileInputs) {
+                                    if ((input.id === 'popupImage' || 
+                                        (input.parentNode && input.parentNode.textContent.includes('Upload Image'))) && 
+                                        !buttonAdded) {
+                                        addMediaLibraryButton(input);
+                                        initialized = true;
+                                        return; // Exit after adding button
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        
+        observer.observe(targetNode, {
+            childList: true,
+            subtree: true
+        });
+        
+        console.log('DOM observer set up for email popup media integration');
+    }
+    
+    /**
+     * Periodically check for the image field in case other methods fail
+     */
+    function checkForImageField() {
+        if (buttonAdded) return;
+        
+        // Find any file inputs in the email management section
+        const emailSection = document.getElementById('email-management-section');
+        if (!emailSection) return;
+        
+        // Check for the popup image field first
+        const popupImageField = document.getElementById('popupImage');
+        if (popupImageField && !buttonAdded) {
+            addMediaLibraryButton(popupImageField);
+            initialized = true;
+            console.log('Email popup media library integration initialized via periodic check');
+            return;
+        }
+        
+        // Look specifically for the customization options section
+        const customizationOptions = emailSection.querySelectorAll('.customization-option');
+        for (let option of customizationOptions) {
+            if (buttonAdded) break;
+            
+            if (option.textContent.includes('Upload Image')) {
+                const fileInput = option.querySelector('input[type="file"]');
+                if (fileInput && !buttonAdded) {
+                    addMediaLibraryButton(fileInput);
+                    initialized = true;
+                    return;
+                }
+            }
+        }
+        
+        // If we haven't found the button yet, look for any file inputs in layout tabs
+        if (!buttonAdded) {
+            const layoutTabs = emailSection.querySelectorAll('[data-tab="layout"]');
+            for (let tab of layoutTabs) {
+                if (buttonAdded) break;
+                
+                const tabContent = document.querySelector(`#${tab.getAttribute('data-target-tab')}`);
+                if (tabContent) {
+                    const fileInputs = tabContent.querySelectorAll('input[type="file"]');
+                    for (let input of fileInputs) {
+                        if (!buttonAdded) {
+                            addMediaLibraryButton(input);
+                            initialized = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // If still not found, schedule another check
+        if (!buttonAdded) {
+            setTimeout(checkForImageField, 1000);
+        }
+    }
+    
+    /**
+     * Add a media library button next to a file input
+     * @param {HTMLElement} fileInput - The file input element
+     */
+    function addMediaLibraryButton(fileInput) {
+        // Prevent adding multiple buttons
+        if (buttonAdded) return;
+        
+        // Check if a button already exists for this input
+        const existingButton = document.querySelector('.media-library-button');
+        if (existingButton) {
+            console.log('Media library button already exists, not adding another');
+            buttonAdded = true;
+            return;
+        }
+        
+        // Ensure the file input has an ID
+        if (!fileInput.id) {
+            fileInput.id = 'popupImage-' + Math.random().toString(36).substring(2);
+        }
+        
+        // Create the media library button
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'media-library-button';
+        button.textContent = 'Choose from Media Library';
+        button.setAttribute('data-target-input', fileInput.id);
+        
+        // Add the button after the file input
+        fileInput.parentNode.insertBefore(button, fileInput.nextSibling);
+        
+        // Style the button to match the site's yellow theme
+        button.style.marginTop = '10px';
+        button.style.backgroundColor = '#e8f24c'; // Yellow color matching platform theme
+        button.style.color = '#1e2127'; // Dark text for contrast
+        button.style.border = 'none';
+        button.style.borderRadius = '4px';
+        button.style.padding = '10px 15px';
+        button.style.cursor = 'pointer';
+        button.style.display = 'block'; // Display as block for better spacing
+        button.style.fontSize = '14px';
+        button.style.fontWeight = 'bold';
+        button.style.width = 'auto';
+        button.style.maxWidth = '250px';
+        
+        // Add hover effect
+        button.addEventListener('mouseover', () => {
+            button.style.backgroundColor = '#d9e547'; // Slightly darker yellow on hover
+        });
+        
+        button.addEventListener('mouseout', () => {
+            button.style.backgroundColor = '#e8f24c';
+        });
+        
+        // Add click handler to open the media library
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            openMediaLibrary(fileInput.id);
+        });
+        
+        // Mark as added to prevent duplicates
+        buttonAdded = true;
+        
+        console.log('Media library button added for', fileInput.id);
+    }
+    
+    /**
+     * Open the media library and handle selection
+     * @param {string} targetInputId - ID of the input to update
+     */
+    function openMediaLibrary(targetInputId) {
+        // First try to get access to the actual media library data
+        let mediaItems = [];
+        
+        // Try to access media items from localStorage or the media library section
+        try {
+            // Check localStorage first
+            const storedItems = localStorage.getItem('mediaLibraryItems');
+            if (storedItems) {
+                mediaItems = JSON.parse(storedItems);
+            }
+            
+            // If no items in localStorage, try to extract from the media grid
+            if (!mediaItems || mediaItems.length === 0) {
+                const mediaGrid = document.querySelector('.media-grid-container');
+                if (mediaGrid) {
+                    const mediaElements = mediaGrid.querySelectorAll('.media-item');
+                    mediaItems = Array.from(mediaElements).map(item => {
+                        const img = item.querySelector('img');
+                        return {
+                            id: item.getAttribute('data-media-id') || Math.random().toString(36).substring(2),
+                            name: item.querySelector('.media-name')?.textContent || 'Media Item',
+                            url: img?.src || '',
+                            type: img?.getAttribute('data-type') || 'image/jpeg'
+                        };
+                    });
+                }
+            }
+            
+            // If still no items, create some sample items for testing
+            if (!mediaItems || mediaItems.length === 0) {
+                // Look for any images on the page to use as samples
+                const allImages = document.querySelectorAll('img');
+                mediaItems = Array.from(allImages)
+                    .filter(img => img.src && img.src.length > 0 && !img.src.includes('data:image')) // Filter out empty or data URLs
+                    .map(img => ({
+                        id: Math.random().toString(36).substring(2),
+                        name: img.alt || 'Image ' + Math.floor(Math.random() * 1000),
+                        url: img.src,
+                        type: 'image/jpeg'
+                    }));
+            }
+        } catch (error) {
+            console.error('Error accessing media library data:', error);
+        }
+        
+        // Create a custom modal for media selection
+        const modal = document.createElement('div');
+        modal.className = 'media-selection-modal';
+        modal.innerHTML = `
+            <div class="media-selection-content">
+                <div class="media-selection-header">
+                    <h3>Select Media</h3>
+                    <button class="close-media-selection">&times;</button>
+                </div>
+                <div class="media-selection-body">
+                    <div class="media-grid" id="mediaSelectionGrid">
+                        <!-- Media items will be loaded here -->
+                        <div class="loading-indicator">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading media...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add the modal to the page
+        document.body.appendChild(modal);
+        
+        // Add styles for the modal
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            .media-selection-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+            
+            .media-selection-content {
+                background-color: #fff;
+                border-radius: 8px;
+                width: 80%;
+                max-width: 900px;
+                max-height: 80vh;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .media-selection-header {
+                padding: 15px 20px;
+                border-bottom: 1px solid #e2e8f0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .media-selection-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+            }
+            
+            .close-media-selection {
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #718096;
+            }
+            
+            .media-selection-body {
+                padding: 20px;
+                overflow-y: auto;
+                max-height: calc(80vh - 70px);
+            }
+            
+            .media-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .media-item {
+                border: 2px solid transparent;
+                border-radius: 6px;
+                overflow: hidden;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            
+            .media-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            
+            .media-item.selected {
+                border-color: #e8f24c;
+            }
+            
+            .media-item img {
+                width: 100%;
+                height: 120px;
+                object-fit: cover;
+                display: block;
+            }
+            
+            .media-item-info {
+                padding: 8px;
+                font-size: 12px;
+                background-color: #f7fafc;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .loading-indicator {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 40px;
+                color: #718096;
+            }
+            
+            .loading-indicator i {
+                margin-right: 8px;
+                font-size: 18px;
+            }
+        `;
+        
+        document.head.appendChild(styleElement);
+        
+        // Handle close button
+        const closeButton = modal.querySelector('.close-media-selection');
+        closeButton.addEventListener('click', () => {
+            modal.remove();
+            styleElement.remove();
+        });
+        
+        // Render media items
+        const mediaGrid = modal.querySelector('#mediaSelectionGrid');
+        if (mediaItems && mediaItems.length > 0) {
+            // Clear loading indicator
+            mediaGrid.innerHTML = '';
+            
+            // Create media items
+            mediaItems.forEach(item => {
+                // Skip items without URLs
+                if (!item.url) return;
+                
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                mediaItem.setAttribute('data-media-id', item.id);
+                mediaItem.innerHTML = `
+                    <img src="${item.url}" alt="${item.name}">
+                    <div class="media-item-info">${item.name}</div>
+                `;
+                
+                // Handle selection
+                mediaItem.addEventListener('click', () => {
+                    // Remove selected class from all items
+                    mediaGrid.querySelectorAll('.media-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to this item
+                    mediaItem.classList.add('selected');
+                    
+                    // Update the file input
+                    updateFileInput(targetInputId, item);
+                    
+                    // Close the modal after a short delay
+                    setTimeout(() => {
+                        modal.remove();
+                        styleElement.remove();
+                    }, 500);
+                });
+                
+                mediaGrid.appendChild(mediaItem);
+            });
+        } else {
+            // Show a message if no media items are found
+            mediaGrid.innerHTML = `
+                <div class="no-media-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #718096;">
+                    <i class="fas fa-image" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                    <p>No media items found. Please upload media in the Media Library section first.</p>
+                </div>
+            `;
+        }
+    }
+    
+    /**
+     * Load media items for selection
+     * @param {HTMLElement} container - Container to load items into
+     * @param {string} targetInputId - ID of input to update with selection
+     */
+    function loadMediaItems(container, targetInputId) {
+        // Get media items from localStorage
+        let mediaItems = getMediaItems();
+        
+        // Clear loading indicator
+        container.innerHTML = '';
+        
+        if (mediaItems.length === 0) {
+            container.innerHTML = `
+                <div class="no-media-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #718096;">
+                    <i class="fas fa-image" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                    <p>No media items found. Please upload media in the Media Library section first.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Create media items
+        mediaItems.forEach(item => {
+            const mediaItem = document.createElement('div');
+            mediaItem.className = 'media-item';
+            mediaItem.innerHTML = `
+                <img src="${item.url}" alt="${item.name}">
+                <div class="media-item-info">${item.name}</div>
+            `;
+            
+            // Handle selection
+            mediaItem.addEventListener('click', () => {
+                // Remove selected class from all items
+                container.querySelectorAll('.media-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Add selected class to this item
+                mediaItem.classList.add('selected');
+                
+                // Update the file input
+                updateFileInput(targetInputId, item);
+                
+                // Close the modal after a short delay
+                setTimeout(() => {
+                    document.querySelector('.media-selection-modal').remove();
+                    document.querySelector('style:last-of-type').remove();
+                }, 500);
+            });
+            
+        while (previewContainer && !previewContainer.classList.contains('image-upload-preview')) {
+            previewContainer = previewContainer.nextElementSibling;
+        }
+            feedbackEl.style.transition = 'opacity 0.5s';
+            setTimeout(() => feedbackEl.remove(), 500);
+        }, 3000);
+    }
+})();

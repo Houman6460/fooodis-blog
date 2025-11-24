@@ -1,0 +1,982 @@
+/**
+ * Email Builder - Drag and Drop Email Designer
+ * A comprehensive email building system for the Fooodis Blog platform
+ */
+
+const EmailBuilder = {
+    // Store for the active element being edited
+    activeElement: null,
+    
+    // Store for drag and drop operations
+    dragData: {
+        source: null,
+        target: null,
+        elementType: null,
+        isDragging: false
+    },
+    
+    // Initialize the Email Builder
+    init() {
+        console.log('Initializing Email Builder...');
+        try {
+            this.setupEmailProviderIntegration();
+            this.setupElementsLibrary();
+            this.setupEmailCanvas();
+            this.setupSettingsPanels();
+            this.setupPreviewControls();
+            this.setupActionButtons();
+            this.setupDragAndDropFunctionality();
+            console.log('Email Builder initialized successfully');
+        } catch (error) {
+            console.error('Error initializing Email Builder:', error);
+        }
+    },
+    
+    // Setup Email Provider Integration
+    setupEmailProviderIntegration() {
+        // Create email provider connection panel if it doesn't exist
+        const settingsTab = document.getElementById('settings-tab');
+        if (!settingsTab) return;
+        
+        const providerSection = document.createElement('div');
+        providerSection.className = 'settings-section email-provider-section';
+        providerSection.innerHTML = `
+            <h4>Email Service Provider</h4>
+            <div class="provider-selection">
+                <div class="form-group">
+                    <label>Select Provider:</label>
+                    <select id="email-provider-select" class="form-control">
+                        <option value="mailchimp">Mailchimp</option>
+                        <option value="sendgrid">SendGrid</option>
+                        <option value="constant-contact">Constant Contact</option>
+                        <option value="campaign-monitor">Campaign Monitor</option>
+                        <option value="custom">Custom SMTP</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>API Key / Token:</label>
+                    <input type="password" id="provider-api-key" class="form-control" placeholder="Enter your API key">
+                </div>
+                
+                <div id="custom-smtp-fields" style="display:none;">
+                    <div class="form-group">
+                        <label>SMTP Server:</label>
+                        <input type="text" id="smtp-server" class="form-control" placeholder="smtp.yourdomain.com">
+                    </div>
+                    <div class="form-group">
+                        <label>SMTP Port:</label>
+                        <input type="number" id="smtp-port" class="form-control" placeholder="587">
+                    </div>
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" id="smtp-username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="smtp-password" class="form-control">
+                    </div>
+                </div>
+                
+                <button id="connect-provider-btn" class="btn btn-primary">Connect Provider</button>
+                <div id="connection-status" class="connection-status">Not connected</div>
+            </div>
+        `;
+        
+        // Find the right place to insert it in the settings tab
+        const settingsContainer = settingsTab.querySelector('.settings-container .settings-content');
+        if (settingsContainer) {
+            settingsContainer.insertBefore(providerSection, settingsContainer.firstChild);
+            
+            // Add event listener for provider selection
+            const providerSelect = document.getElementById('email-provider-select');
+            const customSmtpFields = document.getElementById('custom-smtp-fields');
+            
+            if (providerSelect && customSmtpFields) {
+                providerSelect.addEventListener('change', () => {
+                    if (providerSelect.value === 'custom') {
+                        customSmtpFields.style.display = 'block';
+                    } else {
+                        customSmtpFields.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Add event listener for connect button
+            const connectBtn = document.getElementById('connect-provider-btn');
+            const connectionStatus = document.getElementById('connection-status');
+            
+            if (connectBtn && connectionStatus) {
+                connectBtn.addEventListener('click', () => {
+                    connectionStatus.textContent = 'Connecting...';
+                    connectionStatus.className = 'connection-status connecting';
+                    
+                    // Simulate connection process
+                    setTimeout(() => {
+                        connectionStatus.textContent = 'Connected successfully';
+                        connectionStatus.className = 'connection-status connected';
+                        this.saveProviderSettings();
+                    }, 1500);
+                });
+            }
+        }
+    },
+    
+    // Save provider settings
+    saveProviderSettings() {
+        const provider = document.getElementById('email-provider-select')?.value;
+        const apiKey = document.getElementById('provider-api-key')?.value;
+        
+        if (provider && apiKey) {
+            // Save to localStorage for persistence
+            localStorage.setItem('emailProvider', provider);
+            localStorage.setItem('emailProviderKey', btoa(apiKey)); // Simple encoding, not secure
+            
+            console.log(`Email provider ${provider} connected successfully`);
+            return true;
+        }
+        
+        return false;
+    },
+    
+    // Set up the tab navigation for the email marketing section
+    setupTabNavigation() {
+        const tabs = document.querySelectorAll('.email-marketing-tabs .tab');
+        const tabContents = document.querySelectorAll('.email-marketing-tab-content');
+        
+        // Load previously active tab from localStorage or default to 'campaigns'
+        const activeTab = localStorage.getItem('activeEmailMarketingTab') || 'campaigns';
+        
+        // Set active tab
+        this.setActiveTab(activeTab, tabs, tabContents);
+        
+        // Add click event listeners to tabs
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                this.setActiveTab(tabName, tabs, tabContents);
+                localStorage.setItem('activeEmailMarketingTab', tabName);
+            });
+        });
+    },
+    
+    // Set the active tab
+    setActiveTab(tabName, tabs, tabContents) {
+        // Remove active class from all tabs and contents
+        tabs.forEach(tab => tab.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to selected tab and content
+        const selectedTab = document.querySelector(`.email-marketing-tabs .tab[data-tab="${tabName}"]`);
+        const selectedContent = document.getElementById(`${tabName}-tab`);
+        
+        if (selectedTab && selectedContent) {
+            selectedTab.classList.add('active');
+            selectedContent.classList.add('active');
+        }
+    },
+    
+    // Set up the elements library for drag and drop
+    setupElementsLibrary() {
+        // Tab switching in elements sidebar
+        const elementsTabs = document.querySelectorAll('.elements-tab');
+        const elementsContainers = document.querySelectorAll('.elements-container');
+        
+        elementsTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-elements-tab');
+                
+                // Remove active class from all tabs and containers
+                elementsTabs.forEach(t => t.classList.remove('active'));
+                elementsContainers.forEach(c => c.classList.remove('active'));
+                
+                newItem.addEventListener('dragend', (e) => {
+                    this.handleDragEnd(e);
+                });
+                
+                // Add click handler for better mobile support
+                newItem.addEventListener('click', () => {
+                    const elementType = newItem.getAttribute('data-element-type');
+                    const canvas = document.getElementById('email-canvas');
+                    if (canvas) {
+                        this.createElementInDropzone(elementType, canvas);
+                    }
+                });
+            });
+        } catch (error) {
+            console.error('Error setting up elements library:', error);
+        }
+    },
+    
+    // Set up enhanced drag and drop functionality
+    setupDragAndDropFunctionality() {
+        try {
+            const builderSidebar = document.querySelector('.builder-sidebar');
+            if (!builderSidebar) {
+                console.error('Builder sidebar not found');
+                return;
+            }
+            
+            const panel = builderSidebar.querySelector('.builder-panel');
+            if (!panel) {
+                const newPanel = document.createElement('div');
+                newPanel.className = 'builder-panel';
+                newPanel.innerHTML = '<h3 class="panel-title">Elements</h3>';
+                builderSidebar.appendChild(newPanel);
+            }
+            
+            // Create elements categories based on the reference images
+            this.createItemsCategory();
+            this.createLogosCategory();
+            this.createTitlesCategory();
+            
+            // Set up proper canvas and drop zones
+            this.enhanceEmailCanvas();
+            
+            // Re-initialize element library
+            this.setupElementsLibrary();
+            
+            console.log('Enhanced drag and drop functionality set up successfully');
+        } catch (error) {
+            console.error('Error setting up drag and drop functionality:', error);
+        }
+    },
+    
+    // Create basic elements category (Items)
+    createItemsCategory() {
+        const panel = document.querySelector('.builder-panel');
+        if (!panel) return;
+        
+        if (!panel.querySelector('[data-category="items"]')) {
+            const itemsCategory = document.createElement('div');
+            itemsCategory.className = 'elements-category';
+            itemsCategory.setAttribute('data-category', 'items');
+            itemsCategory.innerHTML = `
+                <h4>Items</h4>
+                <div class="element-grid">
+                    <div class="element-item" draggable="true" data-element-type="text">
+                        <div class="element-icon">T</div>
+                        <span>Text</span>
+                    </div>
+                    
+                    <div class="element-item" draggable="true" data-element-type="button">
+                        <div class="element-icon"><i class="fas fa-square"></i></div>
+                        <span>Button</span>
+                    </div>
+                    
+                    <div class="element-item" draggable="true" data-element-type="image">
+                        <div class="element-icon"><i class="fas fa-image"></i></div>
+                        <span>Image</span>
+                    </div>
+                    
+                    <div class="element-item" draggable="true" data-element-type="video">
+                        <div class="element-icon"><i class="fas fa-video"></i></div>
+                        <span>Video</span>
+                    </div>
+                    
+                    <div class="element-item" draggable="true" data-element-type="product">
+                        <div class="element-icon"><i class="fas fa-tag"></i></div>
+                        <span>Product</span>
+                    </div>
+                    
+                    <div class="element-item" draggable="true" data-element-type="menu">
+                        <div class="element-icon"><i class="fas fa-bars"></i></div>
+                        <span>Menu</span>
+                    </div>
+                </div>
+            `;
+            
+            panel.appendChild(itemsCategory);
+        }
+    },
+    
+    // Create logos category
+    createLogosCategory() {
+        const panel = document.querySelector('.builder-panel');
+        if (!panel) return;
+        
+        if (!panel.querySelector('[data-category="logos"]')) {
+            const logosCategory = document.createElement('div');
+            logosCategory.className = 'elements-category';
+            logosCategory.setAttribute('data-category', 'logos');
+            logosCategory.innerHTML = `
+                <h4>Logo</h4>
+                <div class="element-grid">
+                    <div class="element-item" draggable="true" data-element-type="logo">
+                        <div class="element-preview basic-logo">LOGO</div>
+                        <span>Basic Logo</span>
+                    </div>
+                    
+                    <div class="element-item" draggable="true" data-element-type="logo-menu">
+                        <div class="element-preview logo-menu">
+                            <div class="logo-preview">LOGO</div>
+                            <div class="menu-preview">
+                                <div class="menu-item"></div>
+                                <div class="menu-item"></div>
+                                <div class="menu-item"></div>
+                            </div>
+                        </div>
+                        <span>Logo & Menu</span>
+                    </div>
+                </div>
+            `;
+            
+            panel.appendChild(logosCategory);
+        }
+    },
+    
+    // Create titles category
+    createTitlesCategory() {
+        const panel = document.querySelector('.builder-panel');
+        if (!panel) return;
+        
+        if (!panel.querySelector('[data-category="titles"]')) {
+            const titlesCategory = document.createElement('div');
+            titlesCategory.className = 'elements-category';
+            titlesCategory.setAttribute('data-category', 'titles');
+            titlesCategory.innerHTML = `
+                <h4>Title</h4>
+                <div class="element-grid">
+                    <div class="element-item" draggable="true" data-element-type="title-1">
+                        <div class="element-preview title-preview">
+                            <div class="title-text">A phone case for every taste</div>
+                            <div class="title-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                        </div>
+                        <span>Title 1</span>
+                    </div>
+                    
+                    <div class="element-item" draggable="true" data-element-type="title-2">
+                        <div class="element-preview title-preview">
+                            <div class="title-text">Don't miss out on savings</div>
+                        </div>
+                        <span>Title 2</span>
+                    </div>
+                </div>
+            `;
+            
+            panel.appendChild(titlesCategory);
+        }
+    },
+    
+    // Enhance the email canvas
+    enhanceEmailCanvas() {
+        const canvas = document.getElementById('email-canvas');
+        if (!canvas) {
+            console.error('Email canvas not found');
+            return;
+        }
+        
+        // Make sure canvas is droppable
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            canvas.classList.add('dragover');
+        });
+        
+        canvas.addEventListener('dragleave', () => {
+            canvas.classList.remove('dragover');
+        });
+        
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            canvas.classList.remove('dragover');
+            
+            const elementType = e.dataTransfer.getData('elementType');
+            if (elementType) {
+                this.createElementInDropzone(elementType, canvas);
+            }
+        });
+        
+        // Clear any existing content and add welcome message if empty
+        if (canvas.children.length === 0) {
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.className = 'canvas-message';
+            welcomeMessage.innerHTML = `
+                <i class="fas fa-arrow-left"></i>
+                <h3>Start by dragging elements from the sidebar</h3>
+                <p>Or choose a template below</p>
+            `;
+            canvas.appendChild(welcomeMessage);
+        }
+    },
+    
+    // Set up the email canvas for drag and drop operations
+    setupEmailCanvas() {
+        const canvas = document.querySelector('.email-canvas');
+        const dropzones = document.querySelectorAll('.email-dropzone');
+        
+        if (canvas) {
+            // Set up the dropzones
+            dropzones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => this.handleDragOver(e, zone));
+                zone.addEventListener('dragleave', (e) => this.handleDragLeave(e, zone));
+                zone.addEventListener('drop', (e) => this.handleDrop(e, zone));
+            });
+            
+            // Setup existing content blocks
+            const contentBlocks = document.querySelectorAll('.email-content-block');
+            contentBlocks.forEach(block => {
+                this.setupContentBlockEvents(block);
+            });
+        }
+    },
+    
+    // Set up events for a content block
+    setupContentBlockEvents(block) {
+        // Action buttons
+        const actionButtons = block.querySelectorAll('.block-action');
+        
+        actionButtons.forEach(button => {
+            const action = button.getAttribute('title').toLowerCase();
+            
+            button.addEventListener('click', () => {
+                switch (action) {
+                    case 'move up':
+                        this.moveBlockUp(block);
+                        break;
+                    case 'move down':
+                        this.moveBlockDown(block);
+                        break;
+                    case 'edit':
+                        this.editBlock(block);
+                        break;
+                    case 'delete':
+                        this.deleteBlock(block);
+                        break;
+                }
+            });
+        });
+        
+        // Make the block selectable for editing
+        block.addEventListener('click', () => {
+            this.selectBlock(block);
+        });
+    },
+    
+    // Set up the settings panels
+    setupSettingsPanels() {
+        const settingsTabs = document.querySelectorAll('.settings-tab');
+        const settingsPanels = document.querySelectorAll('.settings-panel');
+        
+        settingsTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-settings-tab');
+                
+                // Remove active class from all tabs and panels
+                settingsTabs.forEach(t => t.classList.remove('active'));
+                settingsPanels.forEach(p => p.classList.remove('active'));
+                
+                // Add active class to selected tab and container
+                tab.classList.add('active');
+                const elementsContainer = document.getElementById(`${tabName}-elements`);
+                if (elementsContainer) {
+                    elementsContainer.classList.add('active');
+                }
+            });
+        },
+        
+        // Set up the elements library for drag and drop
+        this.setupElementsLibrary();
+        
+        // Set up formatting toolbar buttons
+        const formatButtons = document.querySelectorAll('.format-button');
+        formatButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const format = button.getAttribute('data-format');
+                this.applyFormatting(format);
+                button.classList.toggle('active');
+            });
+        });
+        
+        // Setup color pickers
+{{ ... }}
+        const colorInputs = document.querySelectorAll('.color-input');
+        const colorPreviews = document.querySelectorAll('.color-preview');
+        
+        colorInputs.forEach((input, index) => {
+            input.addEventListener('change', () => {
+                const color = input.value;
+                colorPreviews[index].style.backgroundColor = color;
+                this.applyColorSetting(input.id, color);
+            });
+        });
+    },
+    
+    // Set up the preview controls
+    setupPreviewControls() {
+        const previewDevices = document.querySelectorAll('.preview-device');
+        const emailDocument = document.querySelector('.email-document');
+        
+        previewDevices.forEach(device => {
+            device.addEventListener('click', () => {
+                const deviceType = device.getAttribute('data-device');
+                
+                // Remove active class from all preview devices
+                previewDevices.forEach(d => d.classList.remove('active'));
+                
+                // Add active class to selected device
+                device.classList.add('active');
+                
+                // Apply preview mode
+                if (emailDocument) {
+                    // Remove any existing device classes
+                    emailDocument.classList.remove('preview-desktop', 'preview-tablet', 'preview-mobile');
+                    
+                    // Add the appropriate device class
+                    emailDocument.classList.add(`preview-${deviceType}`);
+                    
+                    // Adjust width based on device type
+                    switch (deviceType) {
+                        case 'mobile':
+                            emailDocument.style.width = '320px';
+                            break;
+                        case 'tablet':
+                            emailDocument.style.width = '480px';
+                            break;
+                        case 'desktop':
+                        default:
+                            emailDocument.style.width = '600px';
+                            break;
+                    }
+                }
+            });
+        });
+    },
+    
+    // Set up action buttons (save, preview, etc.)
+    setupActionButtons() {
+        const saveTemplateBtn = document.querySelector('.email-studio-actions .btn-secondary');
+        const previewTestBtn = document.querySelector('.email-studio-actions .btn-primary');
+        const saveContinueBtn = document.querySelector('.email-studio-actions .btn-success');
+        
+        if (saveTemplateBtn) {
+            saveTemplateBtn.addEventListener('click', () => this.saveTemplate());
+        }
+        
+        if (previewTestBtn) {
+            previewTestBtn.addEventListener('click', () => this.previewEmail());
+        }
+        
+        if (saveContinueBtn) {
+            saveContinueBtn.addEventListener('click', () => this.saveAndContinue());
+        }
+    },
+    
+    // Handle drag start event
+    handleDragStart(e, item) {
+        this.dragData.source = item;
+        this.dragData.elementType = item.getAttribute('data-element-type');
+        this.dragData.isDragging = true;
+        
+        // Set dragging class
+        item.classList.add('dragging');
+        
+        // Set drag ghost image (optional)
+        if (e.dataTransfer) {
+            e.dataTransfer.setData('text/plain', this.dragData.elementType);
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+    },
+    
+    // Handle drag over event
+    handleDragOver(e, zone) {
+        e.preventDefault();
+        if (this.dragData.isDragging) {
+            zone.classList.add('drag-hover');
+        }
+        return false;
+    },
+    
+    // Handle drag leave event
+    handleDragLeave(e, zone) {
+        zone.classList.remove('drag-hover');
+    },
+    
+    // Handle drop event
+    handleDrop(e, zone) {
+        e.preventDefault();
+        zone.classList.remove('drag-hover');
+        
+        if (this.dragData.isDragging && this.dragData.elementType) {
+            this.createElementInDropzone(this.dragData.elementType, zone);
+        }
+        
+        this.dragData.isDragging = false;
+        return false;
+    },
+    
+    // Handle drag end event
+    handleDragEnd(e) {
+        if (this.dragData.source) {
+            this.dragData.source.classList.remove('dragging');
+        }
+        
+        this.dragData.source = null;
+        this.dragData.elementType = null;
+        this.dragData.isDragging = false;
+    },
+    
+    // Create a new element in the dropzone
+    createElementInDropzone(elementType, dropzone) {
+        console.log(`Creating ${elementType} element in dropzone`);
+        
+        // Create a new content block
+        const contentBlock = document.createElement('div');
+        contentBlock.className = 'email-content-block';
+        contentBlock.setAttribute('data-block-type', elementType);
+        
+        // Add content based on element type
+        switch (elementType) {
+            case 'text':
+                contentBlock.innerHTML = `
+                    <div style="padding: 20px;">
+                        <p style="margin: 0; color: #333; font-size: 16px;">Double click to edit this text. This is a sample paragraph that demonstrates what your content could look like.</p>
+                    </div>
+                    <div class="block-actions">
+                        <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                break;
+            case 'button':
+                contentBlock.innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <a href="#" style="display: inline-block; padding: 10px 20px; background-color: #4e73df; color: white; text-decoration: none; border-radius: 5px;">Click Here</a>
+                    </div>
+                    <div class="block-actions">
+                        <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                break;
+            case 'image':
+                contentBlock.innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <img src="https://via.placeholder.com/600x300" alt="Placeholder Image" style="max-width: 100%; height: auto;">
+                    </div>
+                    <div class="block-actions">
+                        <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                break;
+            case 'hero':
+                contentBlock.innerHTML = `
+                    <div style="background-color: #f8f9fc; padding: 40px 20px; text-align: center;">
+                        <h1 style="color: #4e73df; margin-bottom: 20px;">Welcome to Our Newsletter</h1>
+                        <p style="color: #5a5c69; margin-bottom: 20px;">Stay updated with our latest news and promotions</p>
+                        <a href="#" style="display: inline-block; padding: 10px 20px; background-color: #4e73df; color: white; text-decoration: none; border-radius: 5px;">Learn More</a>
+                    </div>
+                    <div class="block-actions">
+                        <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                break;
+            case 'product':
+                contentBlock.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h2 style="color: #333; text-align: center; margin-bottom: 20px;">Featured Products</h2>
+                        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                            <div style="flex: 0 0 calc(50% - 10px); max-width: calc(50% - 10px); box-sizing: border-box;">
+                                <img src="https://via.placeholder.com/300x200" alt="Product 1" style="width: 100%; height: auto;">
+                                <h3 style="margin: 10px 0 5px;">Product Name</h3>
+                                <p style="margin: 0 0 10px; color: #666;">$99.99</p>
+                                <a href="#" style="display: inline-block; padding: 5px 10px; background-color: #4e73df; color: white; text-decoration: none; border-radius: 3px; font-size: 14px;">Buy Now</a>
+                            </div>
+                            <div style="flex: 0 0 calc(50% - 10px); max-width: calc(50% - 10px); box-sizing: border-box;">
+                                <img src="https://via.placeholder.com/300x200" alt="Product 2" style="width: 100%; height: auto;">
+                                <h3 style="margin: 10px 0 5px;">Product Name</h3>
+                                <p style="margin: 0 0 10px; color: #666;">$79.99</p>
+                                <a href="#" style="display: inline-block; padding: 5px 10px; background-color: #4e73df; color: white; text-decoration: none; border-radius: 3px; font-size: 14px;">Buy Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="block-actions">
+                        <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                break;
+            default:
+                contentBlock.innerHTML = `
+                    <div style="padding: 20px; border: 1px dashed #ccc; text-align: center;">
+                        <p style="margin: 0; color: #666;">${elementType} element placeholder</p>
+                    </div>
+                    <div class="block-actions">
+                        <button class="block-action" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                        <button class="block-action" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+                        <button class="block-action" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="block-action" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+        }
+        
+        // Replace the dropzone with the new element and a new dropzone
+        const parentElement = dropzone.parentElement;
+        const newDropzone = document.createElement('div');
+        newDropzone.className = 'email-dropzone';
+        newDropzone.innerHTML = '<p><i class="fas fa-plus-circle"></i> Drag elements here</p>';
+        
+        // Add the content block before the dropzone
+        parentElement.insertBefore(contentBlock, dropzone);
+        
+        // Setup events for the new content block
+        this.setupContentBlockEvents(contentBlock);
+        
+        // Add event listeners to the new dropzone
+        newDropzone.addEventListener('dragover', (e) => this.handleDragOver(e, newDropzone));
+        newDropzone.addEventListener('dragleave', (e) => this.handleDragLeave(e, newDropzone));
+        newDropzone.addEventListener('drop', (e) => this.handleDrop(e, newDropzone));
+        
+        // Select the new block for editing
+        this.selectBlock(contentBlock);
+    },
+    
+    // Move a block up
+    moveBlockUp(block) {
+        const previousBlock = block.previousElementSibling;
+        if (previousBlock && !previousBlock.classList.contains('email-dropzone')) {
+            block.parentElement.insertBefore(block, previousBlock);
+        }
+    },
+    
+    // Move a block down
+    moveBlockDown(block) {
+        const nextBlock = block.nextElementSibling;
+        if (nextBlock) {
+            const nextNextBlock = nextBlock.nextElementSibling;
+            if (nextNextBlock) {
+                block.parentElement.insertBefore(block, nextNextBlock);
+            } else {
+                block.parentElement.appendChild(block);
+            }
+        }
+    },
+    
+    // Edit a block
+    editBlock(block) {
+        this.selectBlock(block);
+    },
+    
+    // Delete a block
+    deleteBlock(block) {
+        if (confirm('Are you sure you want to delete this block?')) {
+            block.remove();
+        }
+    },
+    
+    // Select a block for editing
+    selectBlock(block) {
+        // Remove selection from any previously selected block
+        const selectedBlocks = document.querySelectorAll('.email-content-block.selected');
+        selectedBlocks.forEach(b => b.classList.remove('selected'));
+        
+        // Add selection to the clicked block
+        block.classList.add('selected');
+        this.activeElement = block;
+        
+        // Update settings panel with block properties
+        this.updateSettingsPanel(block);
+    },
+    
+    // Update the settings panel based on selected block
+    updateSettingsPanel(block) {
+        const blockType = block.getAttribute('data-block-type');
+        
+        // Select appropriate settings tab based on block type
+        let tabToActivate = 'text';
+        
+        if (blockType === 'image' || blockType === 'hero') {
+            tabToActivate = 'layout';
+        }
+        
+        // Activate the appropriate settings tab
+        const selectedTab = document.querySelector(`.settings-tab[data-settings-tab="${tabToActivate}"]`);
+        if (selectedTab) {
+            selectedTab.click();
+        }
+        
+        // Populate settings fields with block properties
+        // This would need to be customized based on your specific settings structure
+    },
+    
+    // Apply formatting from toolbar
+    applyFormatting(format) {
+        if (!this.activeElement) return;
+        
+        // Get the content element within the active block
+        const contentElement = this.activeElement.querySelector('div:first-child');
+        if (!contentElement) return;
+        
+        // Apply formatting based on format type
+        switch (format) {
+            case 'bold':
+                // Example implementation - would need to be improved for real usage
+                if (contentElement.querySelector('p')) {
+                    const p = contentElement.querySelector('p');
+                    p.style.fontWeight = p.style.fontWeight === 'bold' ? 'normal' : 'bold';
+                }
+                break;
+            case 'italic':
+                if (contentElement.querySelector('p')) {
+                    const p = contentElement.querySelector('p');
+                    p.style.fontStyle = p.style.fontStyle === 'italic' ? 'normal' : 'italic';
+                }
+                break;
+            // Add more formatting options as needed
+        }
+    },
+    
+    // Apply color setting
+    applyColorSetting(settingId, color) {
+        if (!this.activeElement) return;
+        
+        // Get the content element within the active block
+        const contentElement = this.activeElement.querySelector('div:first-child');
+        if (!contentElement) return;
+        
+        switch (settingId) {
+            case 'text-color':
+                contentElement.style.color = color;
+                break;
+            case 'background-color':
+                contentElement.style.backgroundColor = color;
+                break;
+            // Add more color settings as needed
+        }
+    },
+    
+    // Save the email template
+    saveTemplate() {
+        const emailDocument = document.querySelector('.email-document');
+        
+        if (!emailDocument) return;
+        
+        // Create a template object to store
+        const templateData = {
+            name: 'New Template',
+            date: new Date().toISOString(),
+            content: emailDocument.innerHTML
+        };
+        
+        // Save to localStorage for demonstration
+        // In a real system, this would likely be saved to a database via API
+        const templates = JSON.parse(localStorage.getItem('emailTemplates') || '[]');
+        templates.push(templateData);
+        localStorage.setItem('emailTemplates', JSON.stringify(templates));
+        
+        alert('Template saved successfully!');
+    },
+    
+    // Preview the email in a new window
+    previewEmail() {
+        const emailDocument = document.querySelector('.email-document');
+        
+        if (!emailDocument) return;
+        
+        // Create a new window with the email content
+        const previewWindow = window.open('', '_blank');
+        
+        // Generate HTML for preview
+        const previewHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Email Preview</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: Arial, sans-serif;
+                    }
+                    .preview-container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+                    .preview-header {
+                        background-color: #f8f9fc;
+                        padding: 10px;
+                        text-align: center;
+                        border-bottom: 1px solid #eaecf4;
+                    }
+                    .preview-actions {
+                        display: flex;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                    }
+                    .preview-actions button {
+                        margin: 0 5px;
+                        padding: 8px 16px;
+                        border: none;
+                        border-radius: 4px;
+                        background-color: #4e73df;
+                        color: white;
+                        cursor: pointer;
+                    }
+                    .preview-email-content .block-actions {
+                        display: none;
+                    }
+                    .preview-email-content .email-dropzone {
+                        display: none;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="preview-header">
+                    <h2>Email Preview</h2>
+                </div>
+                <div class="preview-actions">
+                    <button onclick="window.print()">Print</button>
+                    <button onclick="window.close()">Close</button>
+                </div>
+                <div class="preview-container">
+                    <div class="preview-email-content">
+                        ${emailDocument.innerHTML}
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+        
+        previewWindow.document.write(previewHTML);
+        previewWindow.document.close();
+    },
+    
+    // Save the template and continue to the next step (sending)
+    saveAndContinue() {
+        this.saveTemplate();
+        
+        // Navigate to the campaigns tab
+        const campaignsTab = document.querySelector('.email-marketing-tabs .tab[data-tab="campaigns"]');
+        if (campaignsTab) {
+            campaignsTab.click();
+        }
+        
+        // Optionally show a modal to configure sending options
+        alert('Template saved! You can now set up your campaign details.');
+    }
+};
+
+// Initialize the Email Builder when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we're on the email marketing page
+    const emailMarketingSection = document.getElementById('email-marketing-section');
+    if (emailMarketingSection) {
+        EmailBuilder.init();
+    }
+});

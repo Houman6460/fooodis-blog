@@ -13,9 +13,8 @@
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/footer-bubbles.css">
     <link rel="stylesheet" href="css/support-portal.css">
-    <link rel="stylesheet" href="css/chatbot-management.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
+    
     <style>
         /* Platform-matching header styles - Exact copy from blog page */
         .fooodis-header *, .mobile-nav * {
@@ -23,7 +22,7 @@
             margin: 0;
             padding: 0;
         }
-
+        
         .fooodis-header {
             background-color: #1e2127;
             color: #fff;
@@ -35,7 +34,7 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
-
+        
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -44,57 +43,57 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-
+        
         .logo-container {
             display: flex;
             align-items: center;
             text-decoration: none;
         }
-
+        
         .fooodis-logo {
             height: 40px;
             width: auto;
         }
-
+        
         .header-right {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-
+        
         .language-selector {
             display: flex;
             gap: 8px;
             align-items: center;
         }
-
+        
         .flag-link {
             display: inline-block;
             transition: transform 0.2s ease;
         }
-
+        
         .flag-link:hover {
             transform: scale(1.1);
         }
-
+        
         .flag-icon {
             width: 24px;
             height: 18px;
             border-radius: 2px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-
+        
         .main-nav {
             display: flex;
         }
-
+        
         .nav-list {
             display: flex;
             list-style: none;
             gap: 25px;
             align-items: center;
         }
-
+        
         .nav-item a {
             color: white;
             text-decoration: none;
@@ -104,12 +103,12 @@
             border-radius: 6px;
             transition: all 0.3s ease;
         }
-
+        
         .nav-item a:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-1px);
         }
-
+        
         .hamburger-menu {
             display: none;
             flex-direction: column;
@@ -118,7 +117,7 @@
             cursor: pointer;
             padding: 5px;
         }
-
+        
         .hamburger-line {
             width: 25px;
             height: 3px;
@@ -127,11 +126,11 @@
             border-radius: 3px;
             transition: all 0.3s ease;
         }
-
+        
         .header-spacer {
             height: 70px;
         }
-
+        
         /* Mobile navigation */
         .mobile-nav {
             position: fixed;
@@ -144,11 +143,11 @@
             z-index: 1001;
             padding: 80px 0 0 0;
         }
-
+        
         .mobile-nav.active {
             left: 0;
         }
-
+        
         .mobile-nav-close {
             position: absolute;
             top: 20px;
@@ -157,16 +156,16 @@
             font-size: 30px;
             cursor: pointer;
         }
-
+        
         .mobile-nav-list {
             list-style: none;
             padding: 0;
         }
-
+        
         .mobile-nav-item {
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        
         .mobile-nav-item a {
             display: block;
             color: white;
@@ -175,11 +174,11 @@
             font-weight: 500;
             transition: background 0.3s ease;
         }
-
+        
         .mobile-nav-item a:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-
+        
         /* Language switching styles */
         .language-tab {
             display: inline-block;
@@ -193,35 +192,35 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
-
+        
         .language-tab.active {
             background: rgba(255, 255, 255, 0.9);
             color: #667eea;
             font-weight: bold;
         }
-
+        
         .language-tab:hover {
             background: rgba(255, 255, 255, 0.2);
         }
-
+        
         /* Support portal specific styles */
         .support-main {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: calc(100vh - 70px);
             padding: 40px 20px;
         }
-
+        
         /* Spacer to prevent content from being hidden under fixed header */
         .header-spacer {
             height: 80px;
         }
-
+        
         /* Main background to match blog page */
         .support-main {
             background-color: #1e2127 !important;
             min-height: 100vh;
         }
-
+        
         /* Ensure all relevant div elements have the same background */
         .support-container,
         .support-header,
@@ -231,12 +230,12 @@
         .ticket-history-section {
             background-color: #1e2127 !important;
         }
-
+        
         .support-container {
             max-width: 1000px;
             margin: 0 auto;
         }
-
+        
         .support-header {
             text-align: center;
             margin-bottom: 40px;
@@ -245,20 +244,20 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-
+        
         .support-header h1 {
             color: #667eea;
             font-size: 2.5rem;
             margin-bottom: 15px;
             font-weight: 700;
         }
-
+        
         .support-header p {
             color: #666;
             font-size: 1.1rem;
             line-height: 1.6;
         }
-
+        
         /* Language toggle */
         .language-toggle {
             display: flex;
@@ -266,25 +265,25 @@
             margin-bottom: 30px;
             gap: 10px;
         }
-
+        
         /* Responsive design */
         @media (max-width: 768px) {
             .main-nav {
                 display: none;
             }
-
+            
             .hamburger-menu {
                 display: flex;
             }
-
+            
             .header-container {
                 padding: 0 15px;
             }
-
+            
             .language-selector {
                 gap: 5px;
             }
-
+            
             .flag-icon {
                 width: 20px;
                 height: 15px;
@@ -327,7 +326,7 @@
             </div>
         </div>
     </header>
-
+    
     <!-- Mobile navigation menu (hidden by default) -->
     <div class="mobile-nav" id="mobileNav">
         <div class="mobile-nav-close" onclick="closeMobileNav()">×</div>
@@ -344,7 +343,7 @@
     </div>
     <!-- Spacer to prevent content from being hidden under fixed header -->
     <div class="header-spacer"></div>
-
+    
     <!-- Main Content -->
     <main class="support-main">
         <div class="support-container">
@@ -352,7 +351,7 @@
             <div class="support-header">
                 <h1><i class="fas fa-headset"></i> <span data-lang-en="Support Center" data-lang-sv="Supportcenter">Support Center</span></h1>
                 <p data-lang-en="Need help? Submit a ticket and our team will get back to you promptly." data-lang-sv="Behöver du hjälp? Skicka in en förfrågan så återkommer vårt team till dig snabbt.">Need help? Submit a ticket and our team will get back to you promptly.</p>
-
+                
                 <!-- Language Toggle -->
                 <div class="language-toggle">
                     <span class="language-tab active" data-lang="en" onclick="switchLanguage('en')">
@@ -435,11 +434,11 @@
                                 <h2><span data-lang-en="Support Tickets" data-lang-sv="Supportärenden">Support Tickets</span></h2>
                                 <p><span data-lang-en="Manage customer support tickets and inquiries" data-lang-sv="Hantera kundsupportärenden och förfrågningar">Manage customer support tickets and inquiries</span></p>
                             </div>
-
+                            
                             <!-- Category Tabs -->
                             <div class="ticket-tabs">
-                                <button class="ticket-tab active" data-category="sales" onclick="filterUserTicketsByCategory('sales')">
-                                    <span data-lang-en="Sales" data-lang-sv="Försäljning">Sales</span> <span class="tab-count">0</span>
+                                <button class="ticket-tab active" data-category="salon" onclick="filterUserTicketsByCategory('salon')">
+                                    <span data-lang-en="Salon" data-lang-sv="Salong">Salon</span> <span class="tab-count">0</span>
                                 </button>
                                 <button class="ticket-tab" data-category="billing" onclick="filterUserTicketsByCategory('billing')">
                                     <span data-lang-en="Billing" data-lang-sv="Fakturering">Billing</span> <span class="tab-count">0</span>
@@ -457,7 +456,7 @@
                                     <span data-lang-en="All Tickets" data-lang-sv="Alla Ärenden">All Tickets</span> <span class="tab-count">0</span>
                                 </button>
                             </div>
-
+                            
                             <!-- Split View Layout -->
                             <div class="ticket-split-view">
                                 <!-- Left Panel: Ticket List -->
@@ -480,7 +479,7 @@
                                         </select>
                                         <input type="text" id="searchTickets" placeholder="Search tickets..." onkeyup="searchUserTickets()">
                                     </div>
-
+                                    
                                     <!-- Tickets Header -->
                                     <div class="tickets-header">
                                         <h3><span data-lang-en="Tickets" data-lang-sv="Ärenden">Tickets</span></h3>
@@ -488,13 +487,13 @@
                                             <i class="fas fa-sync-alt"></i>
                                         </button>
                                     </div>
-
+                                    
                                     <!-- Tickets List -->
                                     <div id="userTicketsList" class="admin-tickets-list">
                                         <!-- Will be populated by JavaScript -->
                                     </div>
                                 </div>
-
+                                
                                 <!-- Right Panel: Ticket Details & Reply -->
                                 <div class="ticket-details-panel">
                                     <div class="ticket-details-header">
@@ -508,7 +507,7 @@
                                             </button>
                                         </div>
                                     </div>
-
+                                    
                                     <!-- Ticket Details Content -->
                                     <div id="userTicketDetails" class="admin-ticket-details">
                                         <div id="noTicketSelected" class="no-ticket-selected">
@@ -516,7 +515,7 @@
                                             <h4><span data-lang-en="Select a ticket to view details" data-lang-sv="Välj ett ärende för att se detaljer">Select a ticket to view details</span></h4>
                                             <p><span data-lang-en="Click on any ticket from the list to see conversation history and details" data-lang-sv="Klicka på ett ärende från listan för att se konversationshistorik och detaljer">Click on any ticket from the list to see conversation history and details</span></p>
                                         </div>
-
+                                        
                                         <!-- Selected Ticket Content -->
                                         <div id="selectedTicketContent" class="selected-ticket-content hidden">
                                             <!-- Ticket Header Info -->
@@ -544,13 +543,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-
+                                            
                                             <!-- Initial Description -->
                                             <div class="ticket-description">
                                                 <h5><span data-lang-en="Description" data-lang-sv="Beskrivning">Description</span></h5>
                                                 <div id="selectedTicketDescription" class="ticket-description-content"></div>
                                             </div>
-
+                                            
                                             <!-- Conversation History -->
                                             <div class="conversation-section">
                                                 <h5><span data-lang-en="Conversation" data-lang-sv="Konversation">Conversation</span></h5>
@@ -558,7 +557,7 @@
                                                     <!-- Messages will be loaded here -->
                                                 </div>
                                             </div>
-
+                                            
                                             <!-- Reply Section -->
                                             <div id="replySection" class="reply-section">
                                                 <h5><span data-lang-en="Add Reply" data-lang-sv="Lägg till svar">Add Reply</span></h5>
@@ -569,7 +568,7 @@
                                                                  data-lang-en-placeholder="Type your reply here..." 
                                                                  data-lang-sv-placeholder="Skriv ditt svar här..."></textarea>
                                                     </div>
-
+                                                    
                                                     <!-- File Attachment Section -->
                                                     <div class="attachment-section">
                                                         <div class="attachment-header">
@@ -590,7 +589,7 @@
                                                         </div>
                                                         <div id="fileList" class="file-list"></div>
                                                     </div>
-
+                                                    
                                                     <div class="reply-actions">
                                                         <button type="button" class="btn-secondary" onclick="closeReplySection()">
                                                             <i class="fas fa-times"></i>
@@ -618,7 +617,7 @@
                     <h2><i class="fas fa-lock"></i> <span data-lang-en="Login Required" data-lang-sv="Inloggning krävs">Login Required</span></h2>
                     <p data-lang-en="Please log in to your account to submit and track support tickets." data-lang-sv="Vänligen logga in på ditt konto för att skicka in och följa supportärenden.">Please log in to your account to submit and track support tickets.</p>
                 </div>
-
+                
                 <div class="auth-buttons">
                     <button type="button" class="btn-primary" onclick="showLoginModal()">
                         <i class="fas fa-sign-in-alt"></i> <span data-lang-en="Login" data-lang-sv="Logga in">Login</span>
@@ -642,31 +641,31 @@
                             <label for="ticketCategory"><span data-lang-en="Category" data-lang-sv="Kategori">Category</span> *</label>
                             <select id="ticketCategory" name="category" required>
                                 <option value="" data-lang-en="Select Category" data-lang-sv="Välj kategori">Select Category</option>
-                                <option value="sales" data-lang-en="Sales" data-lang-sv="Försäljning">Sales</option>
+                                <option value="salon" data-lang-en="Salon" data-lang-sv="Salong">Salon</option>
                                 <option value="billing" data-lang-en="Billing" data-lang-sv="Fakturering">Billing</option>
                                 <option value="technical-support" data-lang-en="Technical Support" data-lang-sv="Teknisk Support">Technical Support</option>
                                 <option value="delivery" data-lang-en="Delivery" data-lang-sv="Leverans">Delivery</option>
                                 <option value="general-inquiries" data-lang-en="General Inquiries" data-lang-sv="Allmänna Förfrågningar">General Inquiries</option>
                             </select>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="ticketPriority"><span data-lang-en="Priority" data-lang-sv="Prioritet">Priority</span> *</label>
                         <select id="ticketPriority" name="priority" required>
                             <option value="" data-lang-en="Select Priority" data-lang-sv="Välj prioritet">Select Priority</option>
-                            <option value="low" data-lang-en="Low - General Question" datalang-sv="Låg - Allmän fråga">Low - General Question</option>
+                            <option value="low" data-lang-en="Low - General Question" data-lang-sv="Låg - Allmän fråga">Low - General Question</option>
                             <option value="medium" data-lang-en="Medium - Standard Issue" data-lang-sv="Medium - Standard problem">Medium - Standard Issue</option>
                             <option value="high" data-lang-en="High - Urgent Problem" data-lang-sv="Hög - Brådskande problem">High - Urgent Problem</option>
                             <option value="urgent" data-lang-en="Urgent - Business Critical" data-lang-sv="Brådskande - Affärskritiskt">Urgent - Business Critical</option>
                         </select>
                     </div>
                 </div>
-
+                
                 <div class="form-group full-width">
                     <label for="ticketSubject"><span data-lang-en="Subject" data-lang-sv="Ämne">Subject</span> *</label>
                     <input type="text" id="ticketSubject" name="subject" data-lang-en-placeholder="Brief description of your issue" data-lang-sv-placeholder="Kort beskrivning av ditt problem" placeholder="Brief description of your issue" required>
                 </div>
-
+                
                 <div class="form-group full-width">
                     <label for="ticketDescription"><span data-lang-en="Description" data-lang-sv="Beskrivning">Description</span> *</label>
                     <textarea id="ticketDescription" name="description" rows="6" 
@@ -674,7 +673,7 @@
                               data-lang-sv-placeholder="Vänligen ge detaljerad information om ditt problem eller din fråga..." 
                               placeholder="Please provide detailed information about your issue or question..." required></textarea>
                 </div>
-
+                
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">
                         <i class="fas fa-paper-plane"></i> <span data-lang-en="Submit Ticket" data-lang-sv="Skicka förfrågan">Submit Ticket</span>
@@ -695,12 +694,12 @@
                     <label for="loginEmail"><span data-lang-en="Email Address" data-lang-sv="E-postadress">Email Address</span></label>
                     <input type="email" id="loginEmail" name="email" required>
                 </div>
-
+                
                 <div class="form-group">
                     <label for="loginPassword"><span data-lang-en="Password" data-lang-sv="Lösenord">Password</span></label>
                     <input type="password" id="loginPassword" name="password" required>
                 </div>
-
+                
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">
                         <i class="fas fa-sign-in-alt"></i> <span data-lang-en="Login" data-lang-sv="Logga in">Login</span>
@@ -811,56 +810,6 @@
 
     <!-- Notification System -->
     <div id="notifications" class="notifications-container"></div>
-
-    <!-- Chatbot Widget -->
-    <div id="chatbot-widget" class="chatbot-widget">
-        <div class="chatbot-header">
-            <div class="chatbot-title">
-                <i class="fas fa-robot"></i>
-                <span data-lang-en="Fooodis Assistant" data-lang-sv="Fooodis Assistent">Fooodis Assistant</span>
-            </div>
-            <div class="chatbot-controls">
-                <button class="chatbot-minimize" title="Minimize">
-                    <i class="fas fa-minus"></i>
-                </button>
-                <button class="chatbot-close" title="Close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="chatbot-messages" id="chatbot-messages">
-            <div class="welcome-message">
-                <div class="message bot-message">
-                    <div class="message-content">
-                        <span data-lang-en="👋 Hello! I'm your Fooodis support assistant. How can I help you today?" 
-                              data-lang-sv="👋 Hej! Jag är din Fooodis supportassistent. Hur kan jag hjälpa dig idag?">
-                            👋 Hello! I'm your Fooodis support assistant. How can I help you today?
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="chatbot-input-area">
-            <div class="chatbot-input-container">
-                <input type="text" 
-                       id="chatbot-input" 
-                       placeholder="Type your message..." 
-                       data-lang-en-placeholder="Type your message..." 
-                       data-lang-sv-placeholder="Skriv ditt meddelande...">
-                <button id="chatbot-send" class="chatbot-send-btn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chatbot Toggle Button -->
-    <div id="chatbot-toggle" class="chatbot-toggle">
-        <i class="fas fa-comments"></i>
-        <span class="chatbot-notification-badge" id="chatbot-notification-badge">0</span>
-    </div>
 
     <!-- Fooodis Footer with Bubble Animation -->
     <footer class="fooodis-footer">
@@ -973,7 +922,7 @@
             // Language switching functionality
             window.switchLanguage = function(lang) {
                 document.documentElement.lang = lang;
-
+                
                 // Update language tabs
                 document.querySelectorAll('.language-tab').forEach(tab => {
                     tab.classList.remove('active');
@@ -981,7 +930,7 @@
                         tab.classList.add('active');
                     }
                 });
-
+                
                 // Update all translatable elements
                 document.querySelectorAll('[data-lang-en]').forEach(element => {
                     const translation = element.getAttribute('data-lang-' + lang);
@@ -989,7 +938,7 @@
                         element.textContent = translation;
                     }
                 });
-
+                
                 // Update placeholders
                 document.querySelectorAll('[data-lang-' + lang + '-placeholder]').forEach(element => {
                     const placeholder = element.getAttribute('data-lang-' + lang + '-placeholder');
@@ -997,7 +946,7 @@
                         element.placeholder = placeholder;
                     }
                 });
-
+                
                 // Update select options
                 document.querySelectorAll('option[data-lang-' + lang + ']').forEach(option => {
                     const translation = option.getAttribute('data-lang-' + lang);
@@ -1029,9 +978,9 @@
         function createBubbles() {
             const bubblesContainer = document.querySelector('.bubbles');
             if (!bubblesContainer) return;
-
+            
             const bubbleCount = 15;
-
+            
             for (let i = 0; i < bubbleCount; i++) {
                 const bubble = document.createElement('div');
                 bubble.className = 'bubble';
@@ -1041,33 +990,10 @@
                 bubblesContainer.appendChild(bubble);
             }
         }
-
+        
         // Initialize bubbles when page loads
         document.addEventListener('DOMContentLoaded', createBubbles);
     </script>
     <script src="js/support-portal.js"></script>
-
-    <!-- Chatbot Integration Scripts -->
-    <script src="js/storage-manager.js"></script>
-    <script src="js/chatbot-widget.js"></script>
-    <script src="js/chatbot-management.js"></script>
-    <script src="js/chatbot-message-enhancer.js"></script>
-    <script src="js/chatbot-integration-fixes.js"></script>
-    <script src="js/node-flow-builder.js"></script>
-
-    <!-- Initialize Chatbot -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize chatbot after page loads
-            setTimeout(() => {
-                if (typeof window.ChatbotWidget !== 'undefined') {
-                    window.chatbotWidget = new ChatbotWidget();
-                    console.log('✅ Chatbot initialized on support page');
-                } else {
-                    console.warn('⚠️ ChatbotWidget not available');
-                }
-            }, 1000);
-        });
-    </script>
 </body>
 </html>

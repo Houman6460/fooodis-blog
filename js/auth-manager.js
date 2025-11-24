@@ -113,13 +113,6 @@ const AuthManager = {
                         // Update UI
                         this.updateAuthUI();
                         
-                        // If on login page, redirect to dashboard
-                        // BUT ONLY if we weren't redirected here (avoids loops)
-                        if (this.isLoginPage() && !this.hasRedirectParam()) {
-                            console.log('AuthManager: Already logged in, redirecting to dashboard');
-                            window.location.href = 'dashboard.html';
-                        }
-                        
                         return true;
                     }
                 } catch (parseError) {
@@ -143,13 +136,6 @@ const AuthManager = {
                     
                     // Update UI
                     this.updateAuthUI();
-                    
-                    // If on login page, redirect to dashboard
-                    // BUT ONLY if we weren't redirected here (avoids loops)
-                    if (this.isLoginPage() && !this.hasRedirectParam()) {
-                        console.log('AuthManager: Already logged in (via StorageManager), redirecting to dashboard');
-                        window.location.href = 'dashboard.html';
-                    }
                     
                     return true;
                 }
@@ -212,13 +198,6 @@ const AuthManager = {
                 
                 // Update UI
                 this.updateAuthUI();
-                
-                // If on login page, redirect to dashboard
-                // BUT ONLY if we weren't redirected here (avoids loops)
-                if (this.isLoginPage() && !this.hasRedirectParam()) {
-                    console.log('AuthManager: Auto-login successful, redirecting to dashboard');
-                    window.location.href = 'dashboard.html';
-                }
                 
                 return true;
             }
@@ -634,46 +613,24 @@ const AuthManager = {
      * Check if current page is a protected page
      */
     isProtectedPage: function() {
-        // List of pages that require authentication (names without extensions to match clean URLs too)
+        // List of pages that require authentication
         const protectedPages = [
-            'dashboard', 'dashboard.html',
-            'profile', 'profile.html',
-            'settings', 'settings.html'
+            'dashboard.html',
+            'profile.html',
+            'settings.html'
         ];
         
         // Get current page filename
-        const pathParts = window.location.pathname.split('/');
-        let currentPage = pathParts.pop();
-        if (currentPage === '') currentPage = 'index'; // Handle root
+        const currentPage = window.location.pathname.split('/').pop();
         
         // Check if current page is in the protected pages list
         return protectedPages.includes(currentPage);
-    },
-
-    /**
-     * Check if current page is the login page
-     */
-    isLoginPage: function() {
-        const pathParts = window.location.pathname.split('/');
-        let currentPage = pathParts.pop();
-        return currentPage === 'login' || currentPage === 'login.html';
-    },
-
-    /**
-     * Check if URL has redirect parameter
-     */
-    hasRedirectParam: function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.has('redirect');
     },
     
     /**
      * Redirect to login page
      */
     redirectToLogin: function() {
-        // Don't redirect if already on login page
-        if (this.isLoginPage()) return;
-
         // Get current page URL
         const currentUrl = window.location.href;
         

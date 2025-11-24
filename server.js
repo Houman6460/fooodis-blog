@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3005;
 
 // Configure express to trust proxy for proper IP detection (more secure setting)
 app.set('trust proxy', 1);
@@ -33,29 +33,10 @@ app.use(cors({
 // Middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
-// Serve static files
-app.use(express.static('.', {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.json')) {
-      res.setHeader('Content-Type', 'application/json');
-    }
-    // Ensure avatar images are served with correct MIME types
-    if (path.includes('/avatars/') && (path.endsWith('.jpg') || path.endsWith('.jpeg'))) {
-      res.setHeader('Content-Type', 'image/jpeg');
-    }
-    if (path.includes('/avatars/') && path.endsWith('.png')) {
-      res.setHeader('Content-Type', 'image/png');
-    }
-  }
-}));
-
-// Explicitly serve images directory for avatar support
-app.use('/images', express.static('images'));
-app.use('/images/avatars', express.static('images/avatars'));
+app.use(express.static('.'));
 
 // Import API routes with error handling
-let chatbotAPI, systemHealthAPI, databaseAPI, recoveryAPI, ticketsAPI, authAPI;
+let chatbotAPI, systemHealthAPI, databaseAPI, recoveryAPI, ticketsAPI;
 
 try {
     chatbotAPI = require('./api/chatbot');
@@ -92,20 +73,9 @@ try {
     ticketsAPI = require('express').Router();
 }
 
-try {
-    authAPI = require('./api/auth').router;
-    console.log('Auth API loaded successfully');
-} catch (error) {
-    console.warn('Warning: Failed to load auth API:', error.message);
-    authAPI = require('express').Router();
-}
-
 // API routes - only mount if they are valid router functions
 if (typeof chatbotAPI === 'function' || (chatbotAPI && typeof chatbotAPI.handle === 'function')) {
     app.use('/api/chatbot', chatbotAPI);
-    console.log('✅ Chatbot API routes mounted successfully');
-} else {
-    console.warn('⚠️ Chatbot API not properly loaded');
 }
 
 if (typeof systemHealthAPI === 'function' || (systemHealthAPI && typeof systemHealthAPI.handle === 'function')) {
@@ -121,21 +91,17 @@ if (typeof recoveryAPI === 'function' || (recoveryAPI && typeof recoveryAPI.hand
 }
 
 if (typeof ticketsAPI === 'function' || (ticketsAPI && typeof ticketsAPI.handle === 'function')) {
-    app.use('/api/tickets', ticketsAPI);
+    app.use('/api', ticketsAPI);
 }
 
-if (typeof authAPI === 'function' || (authAPI && typeof authAPI.handle === 'function')) {
-    app.use('/api/auth', authAPI);
-}
-
-// API Routes
+// Serve static files from the current directory
 // Note: Static serving is now handled by express.static('.') above
 
 // Start the server
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Fooodis Blog System server running on http://0.0.0.0:${PORT}`);
-  console.log(`- Dashboard: http://0.0.0.0:${PORT}/dashboard.html`);
-  console.log(`- Login: http://0.0.0.0:${PORT}/login.html`);
-  console.log(`- Profile: http://0.0.0.0:${PORT}/profile.html`);
-  console.log(`- API Health: http://0.0.0.0:${PORT}/api/system-health`);
+app.listen(PORT, () => {
+  console.log(`Fooodis Blog System server running on http://localhost:${PORT}`);
+  console.log(`- Dashboard: http://localhost:${PORT}/dashboard.html`);
+  console.log(`- Login: http://localhost:${PORT}/login.html`);
+  console.log(`- Profile: http://localhost:${PORT}/profile.html`);
+  console.log(`- API Health: http://localhost:${PORT}/api/system-health`);
 });

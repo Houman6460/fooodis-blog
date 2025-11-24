@@ -143,90 +143,16 @@ function getChatbotSettings() {
     }
 }
 
-// Get conversations
-router.get('/conversations', async (req, res) => {
-    try {
-        const conversationsArray = Array.from(conversations.values());
-        res.json({
-            success: true,
-            conversations: conversationsArray
-        });
-    } catch (error) {
-        console.error('Error getting conversations:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to get conversations'
-        });
-    }
-});
-
-// Get users/leads
-router.get('/users', async (req, res) => {
-    try {
-        const usersArray = Array.from(registeredUsers.values());
-        res.json({
-            success: true,
-            users: usersArray
-        });
-    } catch (error) {
-        console.error('Error getting users:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to get users'
-        });
-    }
-});
-
-// Save configuration
-router.post('/config', async (req, res) => {
-    try {
-        const configData = req.body;
-
-        // Save config to file
-        const fs = require('fs');
-        const path = require('path');
-        const configPath = path.join(__dirname, '../chatbot-config.json');
-
-        fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-
-        res.json({
-            success: true,
-            message: 'Configuration saved successfully'
-        });
-    } catch (error) {
-        console.error('Error saving config:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to save configuration'
-        });
-    }
-});
-
-// Get configuration
-router.get('/config', async (req, res) => {
-    try {
-        const settings = getChatbotSettings();
-        res.json(settings);
-    } catch (error) {
-        console.error('Error getting config:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to get configuration'
-        });
-    }
-});
-
 // Handle chat message
 router.post('/', async (req, res) => {
     try {
         console.log('Received chat request:', { 
             message: req.body.message ? req.body.message.substring(0, 100) + '...' : 'No message',
             conversationId: req.body.conversationId,
-            language: req.body.language,
-            nodeContext: req.body.nodeContext ? 'Present' : 'None'
+            language: req.body.language 
         });
 
-        const { message, conversationId, language = 'en', assistants: requestAssistants, agent, nodeContext } = req.body;
+        const { message, conversationId, language = 'en', assistants: requestAssistants, agent } = req.body;
 
         if (!message || !message.trim()) {
             console.error('No message provided in request');
@@ -288,42 +214,13 @@ router.post('/', async (req, res) => {
         let useAssistant = null;
         let selectedAgent = null;
 
-        // 🎯 PRIORITY: If node context is provided, use the specified assistant
-        if (nodeContext && nodeContext.assistantId) {
-            console.log('🎯 Using node-specified assistant:', nodeContext.assistantId);
-
-            // Find assistant from config
-            useAssistant = settings.assistants.find(a => a.assistantId === nodeContext.assistantId);
-
-            if (useAssistant) {
-                selectedAgent = {
-                    name: useAssistant.name,
-                    personality: useAssistant.systemPrompt || 'helpful assistant',
-                    prompt: nodeContext.aiPrompt || '',
-                    nodeId: nodeContext.nodeId,
-                    nodeTitle: nodeContext.nodeTitle
-                };
-
-                console.log('✅ Found assistant for node:', {
-                    name: selectedAgent.name,
-                    assistantId: nodeContext.assistantId,
-                    nodeTitle: nodeContext.nodeTitle
-                });
-
-                // Override any previous agent selection
-                conversation.currentAgent = selectedAgent;
-            } else {
-                console.warn('⚠️ Assistant not found for node:', nodeContext.assistantId);
-            }
-        }
-
-        // Fallback: Check if multiple agents are enabled and select random agent
-        if (!selectedAgent && settings.enableMultipleAgents && settings.agents && settings.agents.length > 0) {
+        // Check if multiple agents are enabled and select random agent
+        if (settings.enableMultipleAgents && settings.agents && settings.agents.length > 0) {
             // Select a random agent from the available agents
             const randomIndex = Math.floor(Math.random() * settings.agents.length);
             selectedAgent = settings.agents[randomIndex];
             console.log('Selected random agent:', selectedAgent.name, 'with personality:', selectedAgent.personality);
-
+            
             // Store selected agent info in conversation for consistency
             conversation.currentAgent = selectedAgent;
         }
@@ -331,11 +228,11 @@ router.post('/', async (req, res) => {
         // PERFORMANCE FIX: Use fast OpenAI Chat API instead of slow Assistant API
         if (settings.openaiApiKey) {
             console.log('🚀 Using FAST OpenAI Chat API for instant responses');
-
+            
             // Detect language for bilingual support
             const detectedLanguage = detectLanguage(message);
             console.log('🌐 Detected language:', detectedLanguage);
-
+            
             try {
                 aiResponse = await getFastOpenAIResponse(message, conversation, settings, selectedAgent, detectedLanguage);
                 console.log('✅ Fast OpenAI response received');
@@ -378,7 +275,7 @@ router.post('/', async (req, res) => {
     } catch (error) {
         console.error('Chatbot API error:', error);
         console.error('Error stack:', error.stack);
-
+        
         res.status(500).json({
             success: false,
             error: 'Internal server error',
@@ -566,32 +463,31 @@ async function getOpenAIResponse(message, conversation, settings, assistant, sel
 async function getFastOpenAIResponse(message, conversation, settings, selectedAgent, detectedLanguage) {
     console.log('🚀 Starting FAST OpenAI Chat API call...');
     const startTime = Date.now();
-
+    
     // COMPREHENSIVE NULL SAFETY - ensure selectedAgent is never null
     const safeAgent = selectedAgent || {
         name: 'Sarah Johnson',
         personality: 'friendly and knowledgeable customer support representative for Fooodis'
     };
-
+    
     console.log('🔍 Agent check - selectedAgent:', selectedAgent ? 'exists' : 'null', 'safeAgent:', safeAgent.name);
-
+    
     // Build bilingual system prompt based on detected language
     const languageInstruction = detectedLanguage === 'swedish' 
         ? 'Respond in Swedish (svenska). Use natural Swedish language throughout your response.'
         : 'Respond in English unless the user specifically writes in Swedish.';
-
+    
     // Use safe agent with guaranteed non-null values
     const agentName = safeAgent.name;
     const agentPersonality = safeAgent.personality;
     const agentPrompt = safeAgent.prompt || '';
-    const nodeContext = safeAgent.nodeId ? `[Node: ${safeAgent.nodeTitle || safeAgent.nodeId}] ` : '';
-
+    
     const systemPrompt = `You are ${agentName}, a ${agentPersonality} for Fooodis.
 ${languageInstruction}
 
 ${agentPersonality}
 
-${agentPrompt ? `IMPORTANT CONTEXT: ${nodeContext}${agentPrompt}
+${agentPrompt ? `IMPORTANT PROMPT: ${agentPrompt}
 
 ` : ''}Context: Fooodis is a modern food delivery and restaurant platform. Help customers with:
 - Menu questions and recommendations
@@ -606,7 +502,7 @@ Provide helpful, accurate, and friendly responses. If you include URLs, make the
     const messages = [
         { role: 'system', content: systemPrompt }
     ];
-
+    
     // Add recent conversation history (last 6 messages for context)
     if (conversation.messages && conversation.messages.length > 0) {
         const recentMessages = conversation.messages.slice(-6);
@@ -618,12 +514,12 @@ Provide helpful, accurate, and friendly responses. If you include URLs, make the
             }
         }
     }
-
+    
     // Add current user message
     messages.push({ role: 'user', content: message });
-
+    
     console.log('📝 Chat API request - Language:', detectedLanguage, 'Messages:', messages.length);
-
+    
     try {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -639,23 +535,23 @@ Provide helpful, accurate, and friendly responses. If you include URLs, make the
                 stream: false
             })
         });
-
+        
         if (!response.ok) {
             const errorText = await response.text();
             console.error('OpenAI Chat API error:', errorText);
             throw new Error(`OpenAI API error: ${response.status}`);
         }
-
+        
         const data = await response.json();
         const responseTime = Date.now() - startTime;
-
+        
         console.log(`⚡ FAST OpenAI response completed in ${responseTime}ms`);
-
+        
         const aiResponse = data.choices[0].message.content.trim();
         console.log('✅ Fast OpenAI response length:', aiResponse.length, 'chars');
-
+        
         return aiResponse;
-
+        
     } catch (error) {
         const responseTime = Date.now() - startTime;
         console.error(`❌ Fast OpenAI API failed after ${responseTime}ms:`, error);
@@ -691,16 +587,16 @@ function detectLanguage(message) {
 function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     const keywords = message.toLowerCase().trim();
     const detectedLanguage = detectLanguage(message);
-
+    
     // Add agent personality to responses if agent is selected
     let agentIntro = '';
     let agentStyle = '';
-
+    
     if (selectedAgent) {
         // Use agent's introduction based on language
         const intro = selectedAgent.introduction[detectedLanguage] || selectedAgent.introduction['en'];
         agentIntro = intro + '\n\n';
-
+        
         // Adjust response style based on agent personality
         if (selectedAgent.personality.toLowerCase().includes('friendly')) {
             agentStyle = 'friendly';
@@ -735,14 +631,14 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
         keywords.includes('tell me about') || keywords.includes('know about') ||
         keywords.includes('more about fooodis') || keywords.includes('more about foodis') ||
         keywords.includes('om fooodis') || keywords.includes('om foodis') || keywords.includes('berätta om')) {
-
+        
         let response;
         if (detectedLanguage === 'sv') {
             response = "Fooodis är en modern plattform som hjälper restauranger att skapa professionella webbplatser med kraftfulla verktyg. Vi erbjuder allt från kassasystem och lagerstyrning till marknadsföring och kundhantering. Vår plattform inkluderar avancerade funktioner som AI-assistenter, automatiserad innehållsskapande, e-postmarknadsföring och mycket mer. Fooodis hjälper restauranger att digitalisera sin verksamhet och nå fler kunder online. Vilken specifik funktion eller tjänst skulle du vilja veta mer om?";
         } else {
             response = "Fooodis is a modern platform that helps restaurants create professional websites with powerful tools. We offer everything from POS systems and inventory management to marketing and customer management. Our platform includes advanced features like AI assistants, automated content creation, email marketing, and much more. Fooodis helps restaurants digitize their operations and reach more customers online. What specific feature or service would you like to know more about?";
         }
-
+        
         if (selectedAgent) {
             return agentIntro + getStyledResponse(response, agentStyle, detectedLanguage);
         }
@@ -752,14 +648,14 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     // Menu inquiries
     if (keywords.includes('menu') || keywords.includes('food') || keywords.includes('eat') || keywords.includes('dish') ||
         keywords.includes('meny') || keywords.includes('mat') || keywords.includes('äta') || keywords.includes('rätt')) {
-
+        
         let response;
         if (detectedLanguage === 'sv') {
             response = "Jag hjälper gärna till med vår meny! Vi erbjuder ett varierat utbud av läckra rätter tillagade med färska ingredienser. Skulle du vilja veta om våra specialiteter, dagens rätter eller diettillägg?";
         } else {
             response = "I'd love to help you with our menu! We offer a variety of delicious dishes prepared with fresh ingredients. Would you like to know about our specialties, daily specials, or dietary options?";
         }
-
+        
         if (selectedAgent) {
             return agentIntro + getStyledResponse(response, agentStyle, detectedLanguage);
         }
@@ -769,14 +665,14 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     // Reservation inquiries
     if (keywords.includes('reservation') || keywords.includes('book') || keywords.includes('table') ||
         keywords.includes('bokning') || keywords.includes('boka') || keywords.includes('bord')) {
-
+        
         let response;
         if (detectedLanguage === 'sv') {
             response = "Jag hjälper gärna till med bokningar! Du kan boka ett bord genom att ringa oss direkt eller använda vårt online-bokningssystem. Vilken tid och datum tänkte du på?";
         } else {
             response = "I'd be happy to help with reservations! You can book a table by calling us directly or using our online booking system. What time and date were you thinking?";
         }
-
+        
         if (selectedAgent) {
             return agentIntro + getStyledResponse(response, agentStyle, detectedLanguage);
         }
@@ -862,48 +758,448 @@ function getDynamicFallbackResponse(message, conversation, selectedAgent) {
     } else {
         const englishResponses = [
             "I'm here to help with any questions about Fooodis restaurant! Whether you need information about our menu, reservations, hours, or anything else, just let me know how I can assist you.",
-            "Thanks for reaching out! I'd love to help you with information about our restaurant. What would you like to know about our menu, services, or dining experiences?",
-            "I'm your Fooodis assistant and I'm here to help! Feel free to ask about our menu, reservations, hours, location, or anything else related to our restaurant."
+            "Thanks for reaching out! I'd love to help you with information about our restaurant. What would you like to know about our menu, services, or dining options?",
+            "I'm your Fooodis assistant and I'm here to help! Feel free to ask me about our menu, reservations, hours, location, or anything else related to our restaurant."
         ];
         return englishResponses[Math.floor(Math.random() * englishResponses.length)];
     }
 }
 
-// Styled response function
-function getStyledResponse(message, agentStyle, detectedLanguage) {
-    let styledMessage = message;
-
-    // Style the message based on agent personality
-    if (agentStyle === 'friendly') {
-        styledMessage = `${message} 😊`;
-    } else if (agentStyle === 'professional') {
-        styledMessage = `${message}`;
-    } else if (agentStyle === 'enthusiastic') {
-        styledMessage = `${message}! 🎉`;
-    } else if (agentStyle === 'calm') {
-        styledMessage = `${message}`;
-    } else if (agentStyle === 'technical') {
-        styledMessage = `${message}`;
-    } else if (agentStyle === 'warm') {
-        styledMessage = `${message} ❤️`;
-    } else if (agentStyle === 'experienced') {
-        styledMessage = `${message}`;
+// Function to style responses based on agent personality
+function getStyledResponse(response, style, language) {
+    if (style === 'friendly') {
+        if (language === 'sv') {
+            return "Hej! " + response + " Jag är här för att hjälpa!";
+        }
+        return "Hi! " + response + " I'm here to help!";
+    } else if (style === 'professional') {
+        if (language === 'sv') {
+            return "Hej! Jag kan hjälpa dig med " + response + ". Vänligen låt mig veta hur jag kan assistera dig.";
+        }
+        return "Hello! I can help you with " + response + ". Please let me know how I can assist you.";
+    } else if (style === 'enthusiastic') {
+        if (language === 'sv') {
+            return "Hej! Jag är så glad att du frågar om " + response + "! Jag kan inte vänta med att hjälpa dig!";
+        }
+        return "Hi! I'm so excited you're asking about " + response + "! I can't wait to help you!";
+    } else if (style === 'calm') {
+        if (language === 'sv') {
+            return "Hej! Jag förstår att du har frågor om " + response + ". Jag är här för att hjälpa dig på ett lugnt och metodiskt sätt.";
+        }
+        return "Hi! I understand you have questions about " + response + ". I'm here to help you in a calm and methodical way.";
+    } else if (style === 'technical') {
+        if (language === 'sv') {
+            return "Hej! Jag kan ge dig teknisk information om " + response + ". Vänligen låt mig veta hur jag kan assistera dig.";
+        }
+        return "Hello! I can provide you with technical information about " + response + ". Please let me know how I can assist you.";
+    } else if (style === 'warm') {
+        if (language === 'sv') {
+            return "Hej! Jag vill hjälpa dig med " + response + ". Du är välkommen att fråga mig vad som helst!";
+        }
+        return "Hi! I want to help you with " + response + ". You're welcome to ask me anything!";
+    } else if (style === 'experienced') {
+        if (language === 'sv') {
+            return "Hej! Jag har lång erfarenhet av att hjälpa kunder med " + response + ". Jag är här för att ge dig den bästa hjälpen.";
+        }
+        return "Hi! I have extensive experience helping customers with " + response + ". I'm here to provide you with the best assistance.";
+    } else {
+        return response;
     }
-
-    return styledMessage;
 }
 
-// Generate a unique conversation ID
+// Generate unique conversation ID
 function generateConversationId() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
-// Clear all users/leads endpoint
+// Get conversation history
+router.get('/conversations', (req, res) => {
+    try {
+        const conversationList = Array.from(conversations.values()).map(conv => ({
+            id: conv.id,
+            messageCount: conv.messages.length,
+            lastMessage: conv.messages[conv.messages.length - 1]?.content || '',
+            lastMessageAt: conv.lastMessageAt,
+            status: conv.status,
+            language: conv.language
+        }));
+
+        res.json({
+            success: true,
+            conversations: conversationList
+        });
+    } catch (error) {
+        console.error('Error fetching conversations:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch conversations'
+        });
+    }
+});
+
+// Get specific conversation
+router.get('/conversations/:id', (req, res) => {
+    try {
+        const conversation = conversations.get(req.params.id);
+
+        if (!conversation) {
+            return res.status(404).json({
+                success: false,
+                error: 'Conversation not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            conversation: conversation
+        });
+        
+    } catch (error) {
+        console.error('Error fetching conversation:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to register user',
+            error: error.message
+        });
+    }
+});
+
+// POST endpoint for storing conversation data (used by chatbot widget)
+router.post('/conversations', (req, res) => {
+    try {
+        const conversationData = req.body;
+        console.log('Received conversation data via /conversations:', conversationData);
+        
+        // Validate required fields
+        if (!conversationData.conversationId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required field: conversationId'
+            });
+        }
+
+        // Create conversation record
+        const conversationRecord = {
+            id: conversationData.conversationId,
+            conversationId: conversationData.conversationId,
+            messages: conversationData.messages || [],
+            userInfo: conversationData.userInfo || {},
+            userEmail: conversationData.userEmail || null,
+            startTime: conversationData.startTime || new Date().toISOString(),
+            endTime: conversationData.endTime || null,
+            phase: conversationData.phase || 'active',
+            agentName: conversationData.agentName || 'Fooodis Assistant',
+            status: conversationData.status || 'active',
+            lastUpdated: new Date().toISOString()
+        };
+
+        // Store in memory and save to file
+        conversations.set(conversationRecord.id, conversationRecord);
+        saveConversationsToStorage();
+        
+        console.log(' Conversation stored successfully via /conversations:', conversationRecord.id);
+        
+        res.json({
+            success: true,
+            message: 'Conversation stored successfully',
+            conversationId: conversationRecord.id,
+            data: conversationRecord
+        });
+        
+    } catch (error) {
+        console.error('Error storing conversation via /conversations:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to store conversation',
+            error: error.message
+        });
+    }
+});
+
+// User registration endpoint (legacy compatibility)
+router.post('/register-user', (req, res) => {
+    try {
+        const { 
+            name, 
+            email, 
+            phone, 
+            systemUsage, 
+            userType, 
+            userCategory, 
+            restaurantName, 
+            registeredAt, 
+            conversationId 
+        } = req.body;
+
+        if (!name || !email || !phone || !systemUsage) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Missing required fields' 
+            });
+        }
+
+        // Validate restaurant name for current users
+        if (systemUsage === 'current_user' && !restaurantName) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Restaurant name is required for current Fooodis users' 
+            });
+        }
+
+        const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const userData = {
+            id: userId,
+            name,
+            email,
+            phone,
+            systemUsage,
+            userType,
+            userCategory,
+            restaurantName: restaurantName || null,
+            registeredAt: registeredAt || new Date().toISOString(),
+            conversationId,
+            leadScore: systemUsage === 'current_user' ? 90 : systemUsage === 'competitor_user' ? 70 : 50
+        };
+
+        registeredUsers.set(userId, userData);
+        saveUsersToStorage();
+
+        // Update conversation with user info
+        if (conversationId && conversations.has(conversationId)) {
+            const conversation = conversations.get(conversationId);
+            conversation.userEmail = email;
+            conversation.userName = name;
+            conversation.userPhone = phone;
+            saveConversationsToStorage();
+        }
+
+        console.log('New user registered:', { 
+            name, 
+            email, 
+            userCategory, 
+            restaurantName: restaurantName || 'N/A', 
+            userId 
+        });
+
+        res.json({
+            success: true,
+            message: 'User registered successfully',
+            userId: userId,
+            userCategory: userCategory
+        });
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to register user'
+        });
+    }
+});
+
+// Get all registered users
+router.get('/users', (req, res) => {
+    try {
+        const usersArray = Array.from(registeredUsers.values()).map(user => ({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            registeredAt: user.registeredAt,
+            conversationId: user.conversationId
+        }));
+
+        res.json({
+            success: true,
+            users: usersArray
+        });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch users'
+        });
+    }
+});
+
+// Export users as CSV
+router.get('/users/export', (req, res) => {
+    try {
+        const usersArray = Array.from(registeredUsers.values());
+
+        // Create CSV content
+        const headers = ['Name', 'Email', 'Phone', 'Registration Date', 'Conversation ID'];
+        const csvRows = [headers.join(',')];
+
+        usersArray.forEach(user => {
+            const row = [
+                `"${user.name}"`,
+                `"${user.email}"`,
+                `"${user.phone}"`,
+                `"${new Date(user.registeredAt).toLocaleString()}"`,
+                `"${user.conversationId || ''}"`
+            ];
+            csvRows.push(row.join(','));
+        });
+
+        const csvContent = csvRows.join('\n');
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="chatbot-users-' + new Date().toISOString().split('T')[0] + '.csv"');
+        res.send(csvContent);
+    } catch (error) {
+        console.error('Error exporting users:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to export users'
+        });
+    }
+});
+
+// POST endpoint for user registration (used by chatbot widget)
+router.post('/users', (req, res) => {
+    try {
+        const userData = req.body;
+        console.log('🔥 Received user registration via /users:', userData);
+        
+        // Validate required fields
+        if (!userData.name || !userData.email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields: name and email'
+            });
+        }
+
+        // Create user record
+        const userRecord = {
+            id: userData.conversationId || generateConversationId(),
+            name: userData.name,
+            email: userData.email,
+            phone: userData.phone || '',
+            systemUsage: userData.systemUsage || '',
+            conversationId: userData.conversationId || null,
+            registeredAt: new Date().toISOString(),
+            source: 'chatbot-widget'
+        };
+
+        // Store in memory and save to file
+        registeredUsers.set(userRecord.id, userRecord);
+        saveUsersToStorage();
+        
+        console.log('✅ User registered successfully via /users:', userRecord.id);
+        
+        res.json({
+            success: true,
+            message: 'User registered successfully',
+            userId: userRecord.id,
+            data: userRecord
+        });
+        
+    } catch (error) {
+        console.error('❌ Error registering user via /users:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to register user',
+            error: error.message
+        });
+    }
+});
+
+// POST endpoint for storing conversation data (used by chatbot widget)
+router.post('/conversations', (req, res) => {
+    try {
+        const conversationData = req.body;
+        console.log('🔥 Received conversation data via /conversations:', conversationData);
+        
+        // Validate required fields
+        if (!conversationData.conversationId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required field: conversationId'
+            });
+        }
+
+        // Create conversation record
+        const conversationRecord = {
+            id: conversationData.conversationId,
+            conversationId: conversationData.conversationId,
+            messages: conversationData.messages || [],
+            userInfo: conversationData.userInfo || {},
+            userEmail: conversationData.userEmail || null,
+            startTime: conversationData.startTime || new Date().toISOString(),
+            endTime: conversationData.endTime || null,
+            phase: conversationData.phase || 'active',
+            agentName: conversationData.agentName || 'Fooodis Assistant',
+            status: conversationData.status || 'active',
+            lastUpdated: new Date().toISOString()
+        };
+
+        // Store in memory and save to file
+        conversations.set(conversationRecord.id, conversationRecord);
+        saveConversationsToStorage();
+        
+        console.log('✅ Conversation stored successfully via /conversations:', conversationRecord.id);
+        
+        res.json({
+            success: true,
+            message: 'Conversation stored successfully',
+            conversationId: conversationRecord.id,
+            data: conversationRecord
+        });
+        
+    } catch (error) {
+        console.error('❌ Error storing conversation via /conversations:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to store conversation',
+            error: error.message
+        });
+    }
+});
+
+// Get chatbot configuration
+router.get('/config', (req, res) => {
+    try {
+        const settings = getChatbotSettings();
+        res.json(settings);
+    } catch (error) {
+        console.error('Error getting chatbot config:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get configuration'
+        });
+    }
+});
+
+// Save chatbot configuration
+router.post('/config', (req, res) => {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+
+        const configPath = path.join(__dirname, '../chatbot-config.json');
+        const configData = JSON.stringify(req.body, null, 2);
+
+        fs.writeFileSync(configPath, configData);
+
+        res.json({
+            success: true,
+            message: 'Configuration saved successfully'
+        });
+    } catch (error) {
+        console.error('Error saving chatbot config:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to save configuration'
+        });
+    }
+});
+
+// Clear all users/leads (MUST come before parameterized route)
 router.delete('/users/clear-all', (req, res) => {
     try {
-        console.log('🗑️ Clearing all users/leads from server');
+        console.log('🗑️ Clearing all users/leads');
         
-        // Clear all registered users from memory
+        // Clear all registered users
         registeredUsers.clear();
         
         // Save empty users to storage
@@ -922,117 +1218,51 @@ router.delete('/users/clear-all', (req, res) => {
     }
 });
 
-// Test OpenAI API connection endpoint
-router.post('/test-connection', async (req, res) => {
+// Delete individual user/lead
+router.delete('/users/:userId', (req, res) => {
     try {
-        const { apiKey } = req.body;
+        const userId = req.params.userId;
+        console.log('🗑️ Deleting user/lead:', userId);
         
-        if (!apiKey) {
-            return res.status(400).json({
-                success: false,
-                message: 'API key is required'
-            });
+        // Delete from registeredUsers map
+        if (registeredUsers.has(userId)) {
+            registeredUsers.delete(userId);
+            console.log(`✅ Deleted user ${userId} from registeredUsers`);
         }
         
-        // Test the API key by making a simple request to OpenAI
-        const testResponse = await fetch('https://api.openai.com/v1/models', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
+        // Also check by email in case userId is actually an email
+        let deleted = false;
+        for (const [id, user] of registeredUsers.entries()) {
+            if (user.email === userId || id === userId) {
+                registeredUsers.delete(id);
+                deleted = true;
+                console.log(`✅ Deleted user by email/id match: ${id}`);
+                break;
             }
-        });
+        }
         
-        if (testResponse.ok) {
-            const data = await testResponse.json();
-            res.json({
-                success: true,
-                message: 'Connection successful',
-                modelsCount: data.data ? data.data.length : 0
-            });
-        } else {
-            const errorData = await testResponse.json().catch(() => ({}));
-            res.status(400).json({
-                success: false,
-                message: errorData.error?.message || 'Invalid API key'
-            });
-        }
-    } catch (error) {
-        console.error('Test connection error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Connection test failed: ' + error.message
-        });
-    }
-});
-
-// Save a new user lead
-router.post('/register', async (req, res) => {
-    try {
-        const userData = req.body;
-
-        if (!userData.id) {
-            userData.id = generateConversationId();
-        }
-
-        // Basic validation
-        if (!userData.name || !userData.email) {
-            console.error('Invalid user data provided');
-            return res.status(400).json({
-                success: false,
-                error: 'Name and email are required'
-            });
-        }
-
-        // Store user data (in production, store in a database)
-        registeredUsers.set(userData.id, userData);
-
-        // Save users to storage
+        // Save updated users to storage
         saveUsersToStorage();
-
-        console.log('New user registered:', userData.name, userData.email);
+        
         res.json({
             success: true,
-            message: 'User registered successfully',
-            userId: userData.id
+            message: 'User deleted successfully'
         });
     } catch (error) {
-        console.error('User registration error:', error);
+        console.error('Error deleting user:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to register user'
+            error: 'Failed to delete user'
         });
     }
 });
 
-// Get all conversations endpoint
-router.get('/conversations', (req, res) => {
-    try {
-        console.log('📋 Getting all conversations');
-        
-        // Convert Map to Array for response
-        const conversationsArray = Array.from(conversations.values());
-        
-        res.json({
-            success: true,
-            conversations: conversationsArray,
-            total: conversationsArray.length
-        });
-    } catch (error) {
-        console.error('Error getting conversations:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to get conversations'
-        });
-    }
-});
-
-// Clear all conversations endpoint
+// Clear all conversations (MUST come before parameterized route)
 router.delete('/conversations/clear-all', (req, res) => {
     try {
-        console.log('🗑️ Clearing all conversations from server');
+        console.log('🗑️ Clearing all conversations');
         
-        // Clear all conversations from memory
+        // Clear all conversations
         conversations.clear();
         
         // Save empty conversations to storage
@@ -1046,9 +1276,289 @@ router.delete('/conversations/clear-all', (req, res) => {
         console.error('Error clearing all conversations:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to clear conversations'
+            error: 'Failed to clear all conversations'
         });
     }
 });
+
+// Delete individual conversation
+router.delete('/conversations/:conversationId', (req, res) => {
+    try {
+        const conversationId = req.params.conversationId;
+        console.log('🗑️ Deleting conversation:', conversationId);
+        
+        if (conversations.has(conversationId)) {
+            conversations.delete(conversationId);
+            console.log(`✅ Deleted conversation ${conversationId}`);
+        }
+        
+        // Save updated conversations to storage
+        saveConversationsToStorage();
+        
+        res.json({
+            success: true,
+            message: 'Conversation deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting conversation:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete conversation'
+        });
+    }
+});
+
+// ⭐ RATING SYSTEM API ENDPOINTS
+
+// Store for ratings (in production, use a proper database)
+const ratings = new Map();
+
+// Load existing ratings from storage
+function loadRatingsFromStorage() {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const ratingsPath = path.join(__dirname, '../chatbot-ratings.json');
+
+        if (fs.existsSync(ratingsPath)) {
+            const data = fs.readFileSync(ratingsPath, 'utf8');
+            const savedRatings = JSON.parse(data);
+
+            savedRatings.forEach(rating => {
+                ratings.set(rating.id, rating);
+            });
+
+            console.log(`Loaded ${savedRatings.length} ratings from storage`);
+        }
+    } catch (error) {
+        console.error('Error loading ratings from storage:', error);
+    }
+}
+
+// Save ratings to storage
+function saveRatingsToStorage() {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const ratingsPath = path.join(__dirname, '../chatbot-ratings.json');
+        const ratingsArray = Array.from(ratings.values());
+        fs.writeFileSync(ratingsPath, JSON.stringify(ratingsArray, null, 2));
+        console.log(`Saved ${ratingsArray.length} ratings to storage`);
+    } catch (error) {
+        console.error('Error saving ratings to storage:', error);
+    }
+}
+
+// Load ratings on startup
+loadRatingsFromStorage();
+
+// Submit rating endpoint
+router.post('/ratings', (req, res) => {
+    try {
+        const ratingData = req.body;
+        console.log('⭐ Received rating submission:', ratingData);
+        
+        // Validate rating data
+        if (!ratingData.conversationId) {
+            return res.status(400).json({
+                success: false,
+                error: 'conversationId is required'
+            });
+        }
+        
+        // Generate unique rating ID
+        const ratingId = `rating_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Prepare enhanced rating record
+        const rating = {
+            id: ratingId,
+            conversationId: ratingData.conversationId,
+            userId: ratingData.userId,
+            userName: ratingData.userName,
+            language: ratingData.language || 'en',
+            
+            // Enhanced rating fields
+            overallRating: ratingData.rating || null,
+            resolved: ratingData.resolved || null,
+            department: ratingData.department || null,
+            agentName: ratingData.agentName || 'Unknown',
+            agentRole: ratingData.agentRole || 'Unknown',
+            
+            // Legacy support
+            ratings: ratingData.ratings || {
+                overall: ratingData.rating || null,
+                resolved: ratingData.resolved || null
+            },
+            
+            timestamp: ratingData.timestamp || new Date().toISOString(),
+            sessionDuration: ratingData.sessionDuration || 0,
+            createdAt: new Date().toISOString()
+        };
+        
+        // Ensure overallRating is properly set
+        if (!rating.overallRating && ratingData.rating) {
+            rating.overallRating = parseFloat(ratingData.rating).toFixed(1);
+        }
+        
+        // Store rating
+        ratings.set(ratingId, rating);
+        
+        // Update conversation with rating reference
+        if (conversations.has(ratingData.conversationId)) {
+            const conversation = conversations.get(ratingData.conversationId);
+            conversation.ratingId = ratingId;
+            conversation.rated = true;
+            conversation.overallRating = rating.overallRating;
+            conversations.set(ratingData.conversationId, conversation);
+        }
+        
+        // Update user lead with rating information
+        if (ratingData.userId && registeredUsers.has(ratingData.userId)) {
+            const userLead = registeredUsers.get(ratingData.userId);
+            
+            // Initialize ratings array if not exists
+            if (!userLead.ratings) {
+                userLead.ratings = [];
+            }
+            
+            // Add enhanced rating to user lead
+            userLead.ratings.push({
+                ratingId: ratingId,
+                conversationId: ratingData.conversationId,
+                overallRating: rating.overallRating,
+                resolved: rating.resolved,
+                department: rating.department,
+                agentName: rating.agentName,
+                agentRole: rating.agentRole,
+                ratings: rating.ratings,
+                timestamp: rating.timestamp,
+                language: rating.language
+            });
+            
+            // Update user lead statistics
+            const userRatings = userLead.ratings.map(r => parseFloat(r.overallRating)).filter(r => !isNaN(r));
+            if (userRatings.length > 0) {
+                userLead.averageRating = (userRatings.reduce((sum, r) => sum + r, 0) / userRatings.length).toFixed(1);
+                userLead.totalRatings = userRatings.length;
+            }
+            
+            userLead.lastRatedAt = rating.timestamp;
+            registeredUsers.set(ratingData.userId, userLead);
+            
+            console.log('📊 Updated user lead with rating:', { userId: ratingData.userId, averageRating: userLead.averageRating });
+        }
+        
+        // Save to storage
+        saveRatingsToStorage();
+        saveConversationsToStorage();
+        saveUsersToStorage();
+        
+        console.log('✅ Rating saved successfully:', { ratingId, overallRating: rating.overallRating });
+        
+        res.json({
+            success: true,
+            ratingId: ratingId,
+            message: 'Rating submitted successfully',
+            overallRating: rating.overallRating
+        });
+        
+    } catch (error) {
+        console.error('❌ Error submitting rating:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to submit rating'
+        });
+    }
+});
+
+// Get ratings endpoint (for dashboard analytics)
+router.get('/ratings', (req, res) => {
+    try {
+        const ratingsArray = Array.from(ratings.values())
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        // Calculate analytics
+        const analytics = {
+            totalRatings: ratingsArray.length,
+            averageOverallRating: 0,
+            categoryAverages: {},
+            languageBreakdown: {},
+            ratingsOverTime: []
+        };
+        
+        if (ratingsArray.length > 0) {
+            // Calculate average overall rating
+            const overallRatings = ratingsArray
+                .map(r => parseFloat(r.overallRating))
+                .filter(r => !isNaN(r));
+            
+            if (overallRatings.length > 0) {
+                analytics.averageOverallRating = (overallRatings.reduce((sum, r) => sum + r, 0) / overallRatings.length).toFixed(1);
+            }
+            
+            // Calculate category averages
+            const categories = ['helpful', 'accurate', 'speed', 'satisfaction'];
+            categories.forEach(category => {
+                const categoryRatings = ratingsArray
+                    .map(r => r.ratings[category])
+                    .filter(r => typeof r === 'number');
+                
+                if (categoryRatings.length > 0) {
+                    analytics.categoryAverages[category] = (categoryRatings.reduce((sum, r) => sum + r, 0) / categoryRatings.length).toFixed(1);
+                }
+            });
+            
+            // Language breakdown
+            ratingsArray.forEach(rating => {
+                const lang = rating.language || 'en';
+                analytics.languageBreakdown[lang] = (analytics.languageBreakdown[lang] || 0) + 1;
+            });
+        }
+        
+        res.json({
+            success: true,
+            ratings: ratingsArray,
+            analytics: analytics
+        });
+        
+    } catch (error) {
+        console.error('❌ Error fetching ratings:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch ratings'
+        });
+    }
+});
+
+// Get specific rating endpoint
+router.get('/ratings/:ratingId', (req, res) => {
+    try {
+        const { ratingId } = req.params;
+        
+        if (ratings.has(ratingId)) {
+            res.json({
+                success: true,
+                rating: ratings.get(ratingId)
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                error: 'Rating not found'
+            });
+        }
+    } catch (error) {
+        console.error('❌ Error fetching rating:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch rating'
+        });
+    }
+});
+
+// Ensure router is properly configured before export
+if (!router) {
+    console.error('Router is undefined in chatbot.js');
+    router = require('express').Router();
+}
 
 module.exports = router;

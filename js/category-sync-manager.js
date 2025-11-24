@@ -50,12 +50,6 @@ class CategorySyncManager {
     return [...this.categories];
   }
 
-  // Get subcategories for a category
-  getSubcategories(categoryId) {
-    const category = this.categories.find(c => c.id === categoryId);
-    return category ? (category.subcategories || []) : [];
-  }
-
   // Add a new category
   addCategory(category) {
     const newId = this.categories.length > 0 
