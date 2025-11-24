@@ -96,8 +96,8 @@ function applyDirectFixes() {
     // Fix 3: Post publishing
     fixPostPublishing();
     
-    // Add diagnostic controls
-    addDiagnosticControls();
+    // Diagnostic controls removed as per user request
+    // addDiagnosticControls();
 }
 
 /**
