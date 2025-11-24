@@ -157,7 +157,13 @@ class ChatbotManager {
         }
 
         if (savedSettings) {
-            this.settings = JSON.parse(savedSettings);
+            try {
+                const localSettings = JSON.parse(savedSettings);
+                this.settings = { ...this.getDefaultSettings(), ...localSettings };
+            } catch (e) {
+                console.error('Error parsing saved settings:', e);
+                this.settings = this.getDefaultSettings();
+            }
         } else {
             this.settings = this.getDefaultSettings();
         }
@@ -1018,7 +1024,11 @@ class ChatbotManager {
         // Handle language checkboxes
         const languageCheckboxes = document.querySelectorAll('input[type="checkbox"][value="en"], input[type="checkbox"][value="sv"]');
         languageCheckboxes.forEach(checkbox => {
-            checkbox.checked = this.settings.languages.includes(checkbox.value);
+            if (this.settings.languages && Array.isArray(this.settings.languages)) {
+                checkbox.checked = this.settings.languages.includes(checkbox.value);
+            } else {
+                checkbox.checked = false;
+            }
         });
 
         // Load chatbot avatar
