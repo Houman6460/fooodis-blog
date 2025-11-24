@@ -2185,223 +2185,88 @@
             <!-- Support Tickets Management Section -->
             <section class="dashboard-section" id="support-tickets-section">
                 <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-headset"></i> Support Tickets</h2>
+                    <h2 class="section-title">Support Tickets</h2>
                     <p class="section-description">Manage customer support tickets and inquiries</p>
-                    <button class="btn btn-primary" onclick="supportTickets.openNewTicketModal()">
-                        <i class="fas fa-plus"></i> New Ticket
-                    </button>
+                    <div class="section-actions">
+                        <button class="btn btn-primary" id="createTicketBtn">
+                            <i class="fas fa-plus"></i> New Ticket
+                        </button>
+                    </div>
                 </div>
 
-                <div class="support-management-container">
-                    <!-- Status Panel -->
-                    <div class="support-status-panel">
-                        <div class="status-card">
-                            <div class="status-icon">
+                <!-- Ticket Tabs -->
+                <div class="ticket-tabs">
+                    <button class="tab-btn active" data-tab="sales">Sales <span class="ticket-count" id="sales-count">0</span></button>
+                    <button class="tab-btn" data-tab="billing">Billing <span class="ticket-count" id="billing-count">0</span></button>
+                    <button class="tab-btn" data-tab="technical-support">Technical Support <span class="ticket-count" id="technical-support-count">0</span></button>
+                    <button class="tab-btn" data-tab="delivery">Delivery <span class="ticket-count" id="delivery-count">0</span></button>
+                    <button class="tab-btn" data-tab="general-inquiries">General Inquiries <span class="ticket-count" id="general-inquiries-count">0</span></button>
+                    <button class="tab-btn" data-tab="all">All Tickets <span class="ticket-count" id="all-count">0</span></button>
+                </div>
+
+                <!-- Ticket Filters and Search -->
+                <div class="ticket-filters">
+                    <div class="filter-group">
+                        <select id="statusFilter" class="filter-select">
+                            <option value="all">All Status</option>
+                            <option value="open">Open</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        <select id="priorityFilter" class="filter-select">
+                            <option value="all">All Priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                        <input type="text" id="ticketSearch" placeholder="Search tickets..." class="search-input">
+                    </div>
+                </div>
+
+                <!-- Ticket Management Container -->
+                <div class="ticket-management-container">
+                    <!-- Ticket List Panel -->
+                    <div class="ticket-list-panel">
+                        <div class="ticket-list-header">
+                            <h3>Tickets</h3>
+                            <div class="list-controls">
+                                <button class="btn btn-sm" id="refreshTickets" title="Refresh">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ticket-list" id="ticketList">
+                            <!-- Tickets will be dynamically loaded here -->
+                            <div class="no-tickets-message">
                                 <i class="fas fa-ticket-alt"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3 id="totalTickets">0</h3>
-                                <p>Total Tickets</p>
-                            </div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-icon pending">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3 id="openTickets">0</h3>
-                                <p>Open Tickets</p>
-                            </div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-icon success">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3 id="resolvedTickets">0</h3>
-                                <p>Resolved</p>
-                            </div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-icon high">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3 id="highPriorityTickets">0</h3>
-                                <p>High Priority</p>
+                                <p>No tickets found</p>
+                                <p class="sub-text">Create a new ticket or adjust your filters</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tab Navigation -->
-                    <div class="support-tabs">
-                        <button class="tab-btn active" data-tab="salon" onclick="supportTickets.switchTab('salon')">
-                            <i class="fas fa-cut"></i> Salon <span class="tab-count" id="salonCount">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="billing" onclick="supportTickets.switchTab('billing')">
-                            <i class="fas fa-credit-card"></i> Billing <span class="tab-count" id="billingCount">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="technical" onclick="supportTickets.switchTab('technical')">
-                            <i class="fas fa-wrench"></i> Technical <span class="tab-count" id="technicalCount">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="delivery" onclick="supportTickets.switchTab('delivery')">
-                            <i class="fas fa-truck"></i> Delivery <span class="tab-count" id="deliveryCount">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="general" onclick="supportTickets.switchTab('general')">
-                            <i class="fas fa-question-circle"></i> General <span class="tab-count" id="generalCount">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="all" onclick="supportTickets.switchTab('all')">
-                            <i class="fas fa-list"></i> All Tickets <span class="tab-count" id="allCount">0</span>
-                        </button>
-                    </div>
-
-                    <div class="ticket-split-view">
-                        <!-- Left Panel: Ticket List -->
-                        <div class="ticket-list-panel">
-                            <!-- Filters -->
-                            <div class="ticket-controls">
-                                <div class="filter-group">
-                                    <select id="statusFilter" class="form-control">
-                                        <option value="all">All Status</option>
-                                        <option value="open">Open</option>
-                                        <option value="closed">Closed</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="resolved">Resolved</option>
-                                    </select>
-                                    <select id="priorityFilter" class="form-control">
-                                        <option value="all">All Priority</option>
-                                        <option value="high">High</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="low">Low</option>
-                                    </select>
-                                </div>
-                                <div class="search-group">
-                                    <input type="text" id="ticketSearch" placeholder="Search tickets..." class="form-control">
-                                    <i class="fas fa-search"></i>
-                                </div>
-                            </div>
-
-                            <!-- Tickets List -->
-                            <div id="ticketsList" class="tickets-list">
-                                <!-- Tickets will be dynamically loaded here -->
-                                <div class="no-tickets">
-                                    <i class="fas fa-inbox"></i>
-                                    <h4>No tickets found</h4>
-                                    <p>There are no support tickets to display</p>
-                                </div>
+                    <!-- Ticket Preview Panel -->
+                    <div class="ticket-preview-panel">
+                        <div class="ticket-preview-header">
+                            <h3>Ticket Details</h3>
+                            <div class="ticket-actions">
+                                <button class="btn btn-sm btn-secondary" id="assignTicket" title="Assign">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                                <button class="btn btn-sm btn-secondary" id="tagTicket" title="Add Tags">
+                                    <i class="fas fa-tags"></i>
+                                </button>
+                                <button class="btn btn-sm btn-secondary" id="printTicket" title="Print">
+                                    <i class="fas fa-print"></i>
+                                </button>
                             </div>
                         </div>
-
-                        <!-- Right Panel: Ticket Details -->
-                        <div class="ticket-details-panel">
-                            <div class="ticket-details-header">
-                                <h3 id="ticketDetailsTitle">Ticket Details</h3>
-                                <div class="ticket-actions">
-                                    <button class="action-btn" title="Refresh" onclick="supportTickets.loadTickets()">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
-                                    <button class="action-btn" title="Print" onclick="supportTickets.printTicket()">
-                                        <i class="fas fa-print"></i>
-                                    </button>
-                                    <button class="action-btn" title="Export" onclick="supportTickets.exportTicket()">
-                                        <i class="fas fa-download"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div id="ticketDetails" class="ticket-details-content">
-                                <div id="noTicketSelected" class="no-ticket-selected">
-                                    <i class="fas fa-inbox"></i>
-                                    <h4>Select a ticket to view details</h4>
-                                    <p>Click on any ticket from the list to see conversation history and details</p>
-                                </div>
-                                
-                                <div id="selectedTicketContent" class="selected-ticket-content" style="display: none;">
-                                    <!-- Ticket Header Info -->
-                                    <div class="ticket-header-info">
-                                        <div class="ticket-title-row">
-                                            <h4 id="selectedTicketSubject"></h4>
-                                            <div class="ticket-meta">
-                                                <span id="selectedTicketId" class="ticket-id"></span>
-                                                <span id="selectedTicketStatus" class="ticket-status"></span>
-                                                <span id="selectedTicketPriority" class="ticket-priority"></span>
-                                            </div>
-                                        </div>
-                                        <div class="ticket-info-row">
-                                            <div class="customer-info">
-                                                <strong>Customer:</strong> <span id="selectedCustomerName"></span>
-                                                <span class="customer-email" id="selectedCustomerEmail"></span>
-                                            </div>
-                                            <div class="ticket-dates">
-                                                <div>Created: <span id="selectedTicketCreated"></span></div>
-                                                <div>Updated: <span id="selectedTicketUpdated"></span></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Conversation History -->
-                                    <div class="conversation-history">
-                                        <h5>Conversation History</h5>
-                                        <div id="conversationMessages" class="conversation-messages">
-                                            <!-- Messages will be loaded here -->
-                                        </div>
-                                    </div>
-
-                                    <!-- Reply Section Container -->
-                                    <div class="reply-section-container">
-                                        <div id="replySection" class="reply-section">
-                                            <div class="reply-header">
-                                                <h5><i class="fas fa-reply"></i> Add Reply</h5>
-                                            </div>
-                                            <form id="replyForm" class="reply-form">
-                                                <div class="form-group">
-                                                    <label for="replyMessage">Your Reply:</label>
-                                                    <textarea id="replyMessage" name="message" rows="4" required 
-                                                        placeholder="Type your reply here..."></textarea>
-                                                </div>
-                                                
-                                                <div class="form-row">
-                                                    <div class="form-group">
-                                                        <label for="replyStatus">Update Status:</label>
-                                                        <select id="replyStatus" name="status" class="form-control">
-                                                            <option value="">Keep current status</option>
-                                                            <option value="open">Open</option>
-                                                            <option value="pending">Pending</option>
-                                                            <option value="resolved">Resolved</option>
-                                                            <option value="closed">Closed</option>
-                                                        </select>
-                                                    </div>
-                                                    
-                                                    <div class="form-group">
-                                                        <label for="replyPriority">Update Priority:</label>
-                                                        <select id="replyPriority" name="priority" class="form-control">
-                                                            <option value="">Keep current priority</option>
-                                                            <option value="low">Low</option>
-                                                            <option value="medium">Medium</option>
-                                                            <option value="high">High</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                    <label for="replyAttachments">Attachments:</label>
-                                                    <input type="file" id="replyAttachments" name="attachments" multiple 
-                                                        accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt">
-                                                    <small class="form-text">Max 5MB per file. Supported: Images, PDF, Word, Text files</small>
-                                                </div>
-                                                
-                                                <div class="form-actions">
-                                                    <button type="submit" class="btn btn-primary">
-                                                        <i class="fas fa-paper-plane"></i> Send Reply
-                                                    </button>
-                                                    <button type="button" class="btn btn-secondary" onclick="supportTickets.clearReply()">
-                                                        <i class="fas fa-times"></i> Clear
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="ticket-preview-content" id="ticketPreview">
+                            <div class="no-ticket-selected">
+                                <i class="fas fa-mouse-pointer"></i>
+                                <p>Select a ticket to view details</p>
                             </div>
                         </div>
                     </div>
