@@ -107,92 +107,49 @@ function restoreExecutionStatusCards() {
 /**
  * Load saved automation paths from storage
  */
-function loadAutomationPaths() {
+async function loadAutomationPaths() {
     try {
-        console.log('Loading automation paths from all possible storage locations...');
-        let bestPaths = [];
-        let loadedSuccessfully = false;
+        console.log('Loading automation paths from API...');
+        const response = await fetch('/api/automation/paths');
         
-        // Check all possible storage locations and use the one with the most paths
-        
-        // 1. Try StorageManager (primary method)
-        if (window.StorageManager && typeof window.StorageManager.load === 'function') {
-            try {
-                const managerPaths = window.StorageManager.load('ai-automation-paths', {
-                    defaultValue: [],
-                    onSuccess: function(data) {
-                        console.log('Automation paths loaded successfully via StorageManager');
-                    },
-                    onError: function(error) {
-                        console.error('Error loading automation paths via StorageManager:', error);
-                    }
-                });
-                
-                if (managerPaths && Array.isArray(managerPaths) && managerPaths.length > bestPaths.length) {
-                    console.log(`Found ${managerPaths.length} paths via StorageManager`);
-                    bestPaths = managerPaths;
-                    loadedSuccessfully = true;
-                }
-            } catch (storageError) {
-                console.error('Error using StorageManager:', storageError);
-            }
-        }
-        
-        // 2. Try direct localStorage
-        try {
-            const savedPaths = localStorage.getItem('aiAutomationPaths');
-            if (savedPaths) {
-                const parsedPaths = JSON.parse(savedPaths);
-                if (Array.isArray(parsedPaths) && parsedPaths.length > bestPaths.length) {
-                    console.log(`Found ${parsedPaths.length} paths in direct localStorage`);
-                    bestPaths = parsedPaths;
-                    loadedSuccessfully = true;
-                }
-            }
-        } catch (localError) {
-            console.error('Error loading from direct localStorage:', localError);
-        }
-        
-        // 3. Try prefixed localStorage via StorageManager's key
-        try {
-            const prefixedPaths = localStorage.getItem('fooodis-ai-automation-paths');
-            if (prefixedPaths) {
-                const parsedPaths = JSON.parse(prefixedPaths);
-                if (Array.isArray(parsedPaths) && parsedPaths.length > bestPaths.length) {
-                    console.log(`Found ${parsedPaths.length} paths in prefixed localStorage`);
-                    bestPaths = parsedPaths;
-                    loadedSuccessfully = true;
-                }
-            }
-        } catch (prefixError) {
-            console.error('Error loading from prefixed localStorage:', prefixError);
-        }
-        
-        // 4. Try sessionStorage as a last resort
-        try {
-            const sessionPaths = sessionStorage.getItem('aiAutomationPaths');
-            if (sessionPaths) {
-                const parsedPaths = JSON.parse(sessionPaths);
-                if (Array.isArray(parsedPaths) && parsedPaths.length > bestPaths.length) {
-                    console.log(`Found ${parsedPaths.length} paths in sessionStorage`);
-                    bestPaths = parsedPaths;
-                    loadedSuccessfully = true;
-                }
-            }
-        } catch (sessionError) {
-            console.error('Error loading from sessionStorage:', sessionError);
-        }
-        
-        // Process the best paths we found
-        if (loadedSuccessfully && bestPaths.length > 0) {
-            console.log(`Using best source with ${bestPaths.length} automation paths`);
-            processLoadedPaths(bestPaths);
+        if (response.ok) {
+            const apiPaths = await response.json();
             
-            // Save the best paths to all storage locations for consistency
-            automationPaths = bestPaths;
-            saveAutomationPathsToStorage();
+            // Map API paths to UI structure
+            automationPaths = apiPaths.map(apiPath => ({
+                id: apiPath.id,
+                name: apiPath.name,
+                contentType: apiPath.content_type,
+                assistant: {
+                    type: apiPath.assistant_id ? 'custom' : 'default',
+                    id: apiPath.assistant_id || ''
+                },
+                category: apiPath.category || 'Uncategorized',
+                subcategory: apiPath.subcategory || '',
+                topics: (apiPath.topics || []).join(', '),
+                promptTemplate: apiPath.prompt_template || '',
+                schedule: {
+                    type: apiPath.schedule_type,
+                    time: apiPath.schedule_time,
+                    // Map API schedule types to UI logic if needed
+                    interval: '1', // Default
+                    unit: 'days' // Default
+                },
+                languages: {
+                    english: (apiPath.languages || []).includes('en'),
+                    swedish: (apiPath.languages || []).includes('sv')
+                },
+                includeImages: apiPath.include_images,
+                mediaFolder: apiPath.media_folder,
+                active: apiPath.status === 'active',
+                lastRun: apiPath.last_run
+            }));
+            
+            console.log(`Loaded ${automationPaths.length} paths from API`);
+            renderAutomationPaths();
         } else {
-            console.log('No saved automation paths found in any storage location');
+            console.error('Failed to load from API, status:', response.status);
+            // Fallback to empty if API fails
             automationPaths = [];
             renderAutomationPaths();
         }
@@ -819,7 +776,7 @@ function selectScheduleOption(option) {
 /**
  * Save the automation path
  */
-function saveAutomationPath() {
+async function saveAutomationPath() {
     // Get form values
     const nameInput = document.getElementById('path-name');
     const contentTypeSelect = document.getElementById('content-type');
@@ -850,56 +807,70 @@ function saveAutomationPath() {
     // Get media folder selection
     const mediaFolderSelect = document.getElementById('media-folder');
     
-    // Create the path object
     const scheduleType = selectedScheduleOption.dataset.schedule;
-    const path = {
+    
+    // Prepare data for API
+    const pathData = {
         name: nameInput.value.trim(),
-        contentType: contentTypeSelect ? contentTypeSelect.value : 'general',
-        assistant: {
-            type: assistantTypeSelect ? assistantTypeSelect.value : 'default',
-            id: (assistantTypeSelect && assistantTypeSelect.value === 'custom' && assistantIdInput) ? 
-                assistantIdInput.value.trim() : ''
-        },
+        content_type: contentTypeSelect ? contentTypeSelect.value : 'general',
+        assistant_id: (assistantTypeSelect && assistantTypeSelect.value === 'custom') ? (assistantIdInput ? assistantIdInput.value.trim() : '') : '',
         category: categorySelect ? categorySelect.value : 'Uncategorized',
         subcategory: subcategorySelect ? subcategorySelect.value : '',
-        topics: topicsInput ? topicsInput.value.trim() : '',
-        promptTemplate: promptTemplateInput ? promptTemplateInput.value.trim() : '',
-        schedule: {
-            type: scheduleType,
-            interval: customIntervalInput ? customIntervalInput.value : '1',
-            unit: customUnitSelect ? customUnitSelect.value : 'days',
-            time: scheduleTimeInput ? scheduleTimeInput.value : '14:00' // Default to 2:00 PM if not specified
-        },
-        languages: {
-            english: true, // English is always enabled
-            swedish: langSwedishCheckbox ? langSwedishCheckbox.checked : true
-        },
-        includeImages: includeImagesCheckbox ? includeImagesCheckbox.checked : true,
-        mediaFolder: mediaFolderSelect ? mediaFolderSelect.value : '', // Add media folder selection
-        active: true,
-        lastRun: null
+        topics: topicsInput ? topicsInput.value.trim().split(',').map(t => t.trim()).filter(t => t) : [],
+        prompt_template: promptTemplateInput ? promptTemplateInput.value.trim() : '',
+        schedule_type: scheduleType,
+        schedule_time: scheduleTimeInput ? scheduleTimeInput.value : '14:00',
+        include_images: includeImagesCheckbox ? includeImagesCheckbox.checked : true,
+        media_folder: mediaFolderSelect ? mediaFolderSelect.value : '',
+        languages: [
+            'en', // English is always enabled
+            ...(langSwedishCheckbox && langSwedishCheckbox.checked ? ['sv'] : [])
+        ],
+        mode: 'schedule', // Default
+        status: 'active'
     };
-    
-    // Add or update the path
-    if (editingPathIndex >= 0 && editingPathIndex < automationPaths.length) {
-        // Update existing path
-        automationPaths[editingPathIndex] = path;
-    } else {
-        // Add new path
-        automationPaths.push(path);
+
+    try {
+        let response;
+        
+        // Show saving indicator if desired...
+        
+        if (editingPathIndex >= 0 && editingPathIndex < automationPaths.length) {
+            // Update existing path
+            const id = automationPaths[editingPathIndex].id;
+            response = await fetch(`/api/automation/paths/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pathData)
+            });
+        } else {
+            // Create new path
+            response = await fetch('/api/automation/paths', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pathData)
+            });
+        }
+
+        if (response.ok) {
+            console.log('Automation path saved successfully via API');
+            // Reload paths to get fresh data
+            await loadAutomationPaths();
+            
+            // Close the form
+            closeAutomationPathForm();
+            
+            // Reinitialize scheduler
+            initScheduler();
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Failed to save path:', errorData);
+            alert('Failed to save automation path: ' + (errorData.error || response.statusText));
+        }
+    } catch (error) {
+        console.error('Error saving path:', error);
+        alert('Error saving path: ' + error.message);
     }
-    
-    // Save to localStorage
-    saveAutomationPathsToStorage();
-    
-    // Render the paths
-    renderAutomationPaths();
-    
-    // Close the form
-    closeAutomationPathForm();
-    
-    // Reinitialize scheduler
-    initScheduler();
 }
 
 /**
@@ -1064,22 +1035,35 @@ function editAutomationPath(index) {
  * Delete an automation path
  * @param {number} index - The index of the path to delete
  */
-function deleteAutomationPath(index) {
-    if (index < 0 || index >= automationPaths.length) return;
-    
-    // Confirm deletion
-    if (confirm(`Are you sure you want to delete the automation path "${automationPaths[index].name}"?`)) {
-        // Remove the path
-        automationPaths.splice(index, 1);
-        
-        // Save to localStorage
-        saveAutomationPathsToStorage();
-        
-        // Render the paths
-        renderAutomationPaths();
-        
-        // Reinitialize scheduler
-        initScheduler();
+async function deleteAutomationPath(index) {
+    if (confirm('Are you sure you want to delete this automation path?')) {
+        const path = automationPaths[index];
+        if (path && path.id) {
+            try {
+                const response = await fetch(`/api/automation/paths/${path.id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    console.log('Path deleted successfully via API');
+                    await loadAutomationPaths();
+                    // Reinitialize scheduler
+                    initScheduler();
+                } else {
+                    console.error('Failed to delete path via API');
+                    alert('Failed to delete path');
+                }
+            } catch (error) {
+                console.error('Error deleting path:', error);
+                alert('Error deleting path');
+            }
+        } else {
+            // Fallback for paths without ID (legacy?)
+            automationPaths.splice(index, 1);
+            // We can't sync to API easily if no ID, so just update UI
+            renderAutomationPaths();
+            initScheduler();
+        }
     }
 }
 
@@ -1087,20 +1071,53 @@ function deleteAutomationPath(index) {
  * Toggle an automation path's active status
  * @param {number} index - The index of the path to toggle
  */
-function toggleAutomationPath(index) {
+async function toggleAutomationPath(index) {
     if (index < 0 || index >= automationPaths.length) return;
     
-    // Toggle the active status
-    automationPaths[index].active = !automationPaths[index].active;
+    const path = automationPaths[index];
+    if (!path.id) return;
+
+    const newStatus = path.active ? 'paused' : 'active';
     
-    // Save to localStorage
-    saveAutomationPathsToStorage();
-    
-    // Render the paths
-    renderAutomationPaths();
-    
-    // Reinitialize scheduler
-    initScheduler();
+    // Map UI path to API structure for update
+    const apiData = {
+        name: path.name,
+        content_type: path.contentType,
+        assistant_id: path.assistant ? path.assistant.id : '',
+        category: path.category,
+        subcategory: path.subcategory,
+        topics: path.topics ? path.topics.split(',').map(t => t.trim()).filter(t => t) : [],
+        mode: 'schedule',
+        schedule_type: path.schedule.type,
+        schedule_time: path.schedule.time,
+        prompt_template: path.promptTemplate,
+        include_images: path.includeImages,
+        media_folder: path.mediaFolder,
+        languages: [
+            'en',
+            ...(path.languages && path.languages.swedish ? ['sv'] : [])
+        ],
+        status: newStatus,
+        last_run: path.lastRun
+    };
+
+    try {
+        const response = await fetch(`/api/automation/paths/${path.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(apiData)
+        });
+        
+        if (response.ok) {
+            console.log('Path toggled successfully via API');
+            await loadAutomationPaths();
+            initScheduler();
+        } else {
+            console.error('Failed to toggle path via API');
+        }
+    } catch (error) {
+        console.error('Error toggling path:', error);
+    }
 }
 
 /**

@@ -1,0 +1,21 @@
+name = "fooodis-blog"
+compatibility_date = "2023-01-01"
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "fooodis-db"
+database_id = "d106fe5e-fbe0-4942-9a9d-42e6c78515ed" # Replace with your actual D1 Database ID
+
+# KV Namespace Binding (Optional, for caching)
+# [[kv_namespaces]]
+# binding = "KV"
+# id = "PLACEHOLDER_KV_ID"
+
+# R2 Bucket Binding (Optional, for media storage)
+# [[r2_buckets]]
+# binding = "BUCKET"
+# bucket_name = "fooodis-media"
+
+[site]
+bucket = "./"
