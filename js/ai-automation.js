@@ -807,6 +807,10 @@ async function saveAutomationPath() {
     // Get media folder selection
     const mediaFolderSelect = document.getElementById('media-folder');
     
+    // Get mode toggle
+    const modeToggle = document.getElementById('mode-toggle');
+    const mode = (modeToggle && !modeToggle.checked) ? 'generate_now' : 'schedule';
+    
     const scheduleType = selectedScheduleOption.dataset.schedule;
     
     // Prepare data for API
@@ -826,7 +830,7 @@ async function saveAutomationPath() {
             'en', // English is always enabled
             ...(langSwedishCheckbox && langSwedishCheckbox.checked ? ['sv'] : [])
         ],
-        mode: 'schedule', // Default
+        mode: mode,
         status: 'active'
     };
 

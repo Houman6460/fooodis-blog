@@ -13,6 +13,9 @@ class BlogDataManager {
     init() {
         console.log('Blog Data Manager: Initializing');
         
+        // Fetch from backend on init
+        this.fetchFromBackend();
+        
         // Listen for storage changes
         window.addEventListener('storage', (e) => {
             if (e.key === this.storageKey) {
@@ -31,6 +34,22 @@ class BlogDataManager {
             console.log('Blog Data Manager: Blog post deleted event received', e.detail);
             this.handlePostDeletion(e.detail.postId);
         });
+    }
+    
+    async fetchFromBackend() {
+        try {
+            const response = await fetch('/api/blog/posts');
+            if (response.ok) {
+                const posts = await response.json();
+                // Update local storage to keep sync behavior working
+                localStorage.setItem(this.storageKey, JSON.stringify(posts));
+                // Dispatch update
+                document.dispatchEvent(new CustomEvent('blogPostsUpdated', { detail: { posts } }));
+                console.log('Blog Data Manager: Synced with backend');
+                return posts;
+            }
+        } catch (e) { console.error('Blog Data Manager: Error fetching from backend', e); }
+        return this.getAllPosts(); // Fallback
     }
     
     getAllPosts() {
@@ -61,14 +80,12 @@ class BlogDataManager {
         }
     }
     
-    deletePost(postId) {
+    async deletePost(postId) {
         console.log('Blog Data Manager: Deleting post', postId);
         
+        // Optimistic update (local)
         const posts = this.getAllPosts();
         const filteredPosts = posts.filter(post => post.id !== postId && post.id !== parseInt(postId));
-        
-        console.log('Blog Data Manager: Posts before deletion:', posts.length);
-        console.log('Blog Data Manager: Posts after deletion:', filteredPosts.length);
         
         if (this.savePosts(filteredPosts)) {
             // Dispatch deletion event
@@ -78,6 +95,11 @@ class BlogDataManager {
             
             // Force refresh the blog display
             this.refreshBlogDisplay();
+            
+            // Backend delete
+            try {
+                await fetch(`/api/blog/posts/${postId}`, { method: 'DELETE' });
+            } catch (e) { console.error('Blog Data Manager: Error deleting from backend', e); }
             
             return true;
         }
