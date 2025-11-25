@@ -67,7 +67,7 @@ function showNotification(message, type = 'info') {
 
 // Initialize the dashboard
 function initializeDashboard() {
-    // Load blog data
+    // Load blog data (initially from localStorage; will be overwritten by BlogDataManager sync)
     loadBlogData();
     
     // Setup navigation
@@ -87,7 +87,39 @@ function initializeDashboard() {
     
     // Setup rich text editor
     setupRichTextEditor();
+    
+    // Trigger backend sync if BlogDataManager is available
+    if (window.blogDataManager && typeof window.blogDataManager.fetchFromBackend === 'function') {
+        window.blogDataManager.fetchFromBackend();
+    }
 }
+
+// Listen for backend blog post updates and refresh dashboard views
+document.addEventListener('blogPostsUpdated', function(e) {
+    try {
+        const posts = (e.detail && Array.isArray(e.detail.posts))
+            ? e.detail.posts
+            : (window.blogDataManager ? window.blogDataManager.getAllPosts() : []);
+        
+        if (!Array.isArray(posts)) {
+            return;
+        }
+        
+        // Update global blog data
+        blogPosts = posts;
+        categories = extractCategories(blogPosts);
+        subcategories = extractSubcategories(blogPosts);
+        tags = extractTags(blogPosts);
+        
+        // Refresh UI sections that depend on blog data
+        renderPostsTable();
+        renderCategoriesLists();
+        renderTagsCloud();
+        populateCategoryDropdown();
+    } catch (err) {
+        console.error('Dashboard: Error syncing blog posts from backend', err);
+    }
+});
 
 // Load blog data from localStorage
 function loadBlogData() {
@@ -439,6 +471,149 @@ function setupRichTextEditor() {
     }
 }
 
+// Save or update a blog post (dashboard editor)
+async function savePost(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    
+    const titleInput = document.getElementById('postTitle');
+    const excerptInput = document.getElementById('postExcerpt');
+    const contentInput = document.getElementById('postContent');
+    const editor = document.getElementById('postContentEditor');
+    const categorySelect = document.getElementById('postCategory');
+    const subcategorySelect = document.getElementById('postSubcategory');
+    const tagsInput = document.getElementById('postTags');
+    const featuredCheckbox = document.getElementById('postFeatured');
+    
+    const title = titleInput ? titleInput.value.trim() : '';
+    const excerpt = excerptInput ? excerptInput.value.trim() : '';
+    let content = contentInput ? contentInput.value.trim() : '';
+    if (!content && editor) {
+        content = editor.innerHTML.trim();
+    }
+    const category = categorySelect ? (categorySelect.value || null) : null;
+    const subcategory = subcategorySelect ? (subcategorySelect.value || null) : null;
+    const tagsString = tagsInput ? tagsInput.value.trim() : '';
+    const featured = featuredCheckbox ? !!featuredCheckbox.checked : false;
+    
+    if (!title || !content) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    const tagsArray = tagsString
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
+    
+    const updateFeaturedArray = (postId, isFeatured) => {
+        if (!postId) return;
+        if (isFeatured) {
+            if (!featuredPosts.includes(postId)) {
+                featuredPosts.push(postId);
+            }
+        } else {
+            const idx = featuredPosts.indexOf(postId);
+            if (idx !== -1) {
+                featuredPosts.splice(idx, 1);
+            }
+        }
+    };
+    
+    try {
+        if (currentEditingPostId) {
+            const index = blogPosts.findIndex(p => p.id == currentEditingPostId);
+            if (index === -1) {
+                console.error('Dashboard: Post to edit not found', currentEditingPostId);
+            } else {
+                const existing = blogPosts[index];
+                const updatedPost = {
+                    ...existing,
+                    title,
+                    excerpt,
+                    content,
+                    category,
+                    subcategory,
+                    tags: tagsArray,
+                    featured
+                };
+                
+                if (window.blogDataManager) {
+                    await window.blogDataManager.updatePost({
+                        id: updatedPost.id,
+                        title: updatedPost.title,
+                        content: updatedPost.content,
+                        excerpt: updatedPost.excerpt,
+                        category: updatedPost.category,
+                        subcategory: updatedPost.subcategory,
+                        tags: updatedPost.tags,
+                        status: 'published'
+                    });
+                } else {
+                    blogPosts[index] = updatedPost;
+                    localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+                }
+                
+                updateFeaturedArray(updatedPost.id, featured);
+                alert('Post updated successfully!');
+            }
+        } else {
+            const newPostPayload = {
+                title,
+                content,
+                excerpt,
+                category,
+                subcategory,
+                tags: tagsArray,
+                status: 'published'
+            };
+            
+            if (window.blogDataManager) {
+                const createdPost = await window.blogDataManager.createPost(newPostPayload);
+                updateFeaturedArray(createdPost && createdPost.id, featured);
+            } else {
+                const localPost = {
+                    id: Date.now().toString(),
+                    ...newPostPayload,
+                    date: new Date().toISOString(),
+                    imageUrl: 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg',
+                    featured
+                };
+                blogPosts.push(localPost);
+                updateFeaturedArray(localPost.id, featured);
+                localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+            }
+            
+            alert('Post published successfully!');
+            
+            const postForm = document.getElementById('postForm');
+            if (postForm) {
+                postForm.reset();
+            }
+            if (editor) {
+                editor.innerHTML = '';
+            }
+            if (contentInput) {
+                contentInput.value = '';
+            }
+        }
+    } catch (err) {
+        console.error('Dashboard: Error saving post', err);
+        alert('An error occurred while saving the post. Please try again.');
+    } finally {
+        currentEditingPostId = null;
+        const publishBtn = document.getElementById('publishPostBtn');
+        if (publishBtn) {
+            publishBtn.textContent = 'Publish Post';
+        }
+        localStorage.setItem('fooodis-blog-featured', JSON.stringify(featuredPosts));
+        if (typeof renderPostsTable === 'function') {
+            renderPostsTable();
+        }
+    }
+}
+
 // Populate category dropdown
 function populateCategoryDropdown() {
     const categoryDropdown = document.getElementById('postCategory');
@@ -536,7 +711,7 @@ function renderPostsTable() {
             
             tr.innerHTML = `
                 <td>${post.title}</td>
-                <td>${post.category}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
+                <td>${post.category || 'Uncategorized'}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
                 <td>${post.featured ? '<span class="post-featured-badge">Featured</span>' : 'No'}</td>
                 <td>
                     <div class="post-actions">
@@ -1224,7 +1399,7 @@ function filterPosts() {
             
             tr.innerHTML = `
                 <td>${post.title}</td>
-                <td>${post.category}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
+                <td>${post.category || 'Uncategorized'}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
                 <td>${post.featured ? '<span class="post-featured-badge">Featured</span>' : 'No'}</td>
                 <td>
                     <div class="post-actions">

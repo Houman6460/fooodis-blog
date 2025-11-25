@@ -1367,7 +1367,7 @@ function executeAutomationPath(path, index) {
     
     // Generate the post
     generateAutomatedPost(path)
-        .then(result => {
+        .then(async result => {
             if (!result || !result.success) {
                 throw new Error(result?.error || 'Unknown error generating post');
             }
@@ -1388,8 +1388,8 @@ function executeAutomationPath(path, index) {
                     throw new Error('Generated post has no content');
                 }
                 
-                // Publish the post
-                const publishResult = publishAutomatedPost(postToPublish);
+                // Publish the post via backend/D1
+                const publishResult = await publishAutomatedPost(postToPublish);
                 console.log('Post published successfully:', publishResult);
                 
                 // Show a notification
@@ -1961,180 +1961,58 @@ async function generateImage(title, contentType) {
 /**
  * Publish an automated post
  * @param {Object} post - The post to publish
- * @returns {Object} - The result of the publish operation
+ * @returns {Promise<Object>} - The result of the publish operation
  */
-function publishAutomatedPost(post) {
+async function publishAutomatedPost(post) {
     try {
         console.log('Publishing automated post:', post.title);
         
         // Validate post
-        if (!post) {
-            throw new Error('Post is null or undefined');
-        }
+        if (!post) throw new Error('Post is null or undefined');
+        if (!post.title) throw new Error('Post has no title');
+        if (!post.content) throw new Error('Post has no content');
         
-        if (!post.title) {
-            throw new Error('Post has no title');
-        }
-        
-        if (!post.content) {
-            throw new Error('Post has no content');
-        }
-        
-        // Ensure post has an ID
-        if (!post.id) {
-            post.id = Date.now().toString();
-            console.log('Generated new ID for post:', post.id);
-        }
-        
-        // Get existing posts from localStorage
-        let blogPosts = [];
-        const savedPosts = localStorage.getItem('fooodis-blog-posts');
-        if (savedPosts) {
-            try {
-                blogPosts = JSON.parse(savedPosts);
-                console.log('Successfully loaded existing posts, count:', blogPosts.length);
-            } catch (e) {
-                console.error('Error parsing saved posts:', e);
-                // Initialize with empty array if parsing fails
-                blogPosts = [];
+        // Use BlogDataManager if available
+        if (window.blogDataManager) {
+            // Prepare the post for publishing
+            post.date = new Date().toISOString();
+            post.language = 'english'; // Mark the primary language
+            post.status = 'published';
+            post.category = post.category || 'Uncategorized';
+            post.tags = post.tags || [];
+            
+            // Create the post via API/Manager
+            const createdPost = await window.blogDataManager.createPost(post);
+            console.log('Post published via BlogDataManager:', createdPost.id);
+            
+            // If the post has Swedish translation, create a separate post for it
+            if (post.translations && post.translations.swedish) {
+                const swedishPost = {
+                    ...post,
+                    title: post.translations.swedish.title,
+                    content: post.translations.swedish.content,
+                    language: 'swedish',
+                    translationOf: createdPost.id, // Reference to the original post ID
+                    date: new Date().toISOString(),
+                    status: 'published'
+                };
+                
+                // Remove the translations field
+                delete swedishPost.translations;
+                delete swedishPost.id; // Let backend generate ID or use manager logic
+                
+                await window.blogDataManager.createPost(swedishPost);
+                console.log('Swedish translation published via BlogDataManager');
             }
+            
+            return { success: true, post: createdPost };
         } else {
-            console.log('No existing posts found, creating new array');
+            // Fallback to old localStorage method if manager not found
+            console.warn('BlogDataManager not found, falling back to localStorage');
+            throw new Error('BlogDataManager not initialized');
         }
-        
-        // Ensure blogPosts is an array
-        if (!Array.isArray(blogPosts)) {
-            console.warn('blogPosts is not an array, initializing as empty array');
-            blogPosts = [];
-        }
-        
-        // Prepare the post for publishing
-        post.date = new Date().toISOString();
-        post.language = 'english'; // Mark the primary language
-        post.status = 'published';
-        post.category = post.category || 'Uncategorized';
-        post.tags = post.tags || [];
-        
-        // Check if post already exists (by ID)
-        const existingIndex = blogPosts.findIndex(p => p.id === post.id);
-        if (existingIndex !== -1) {
-            // Update existing post
-            console.log('Updating existing post with ID:', post.id);
-            blogPosts[existingIndex] = post;
-        } else {
-            // Add new post to the beginning of the array for newest first
-            console.log('Adding new post with ID:', post.id);
-            blogPosts.unshift(post);
-        }
-        
-        // If the post has Swedish translation, create a separate post for it
-        if (post.translations && post.translations.swedish) {
-            const swedishPostId = post.id + '-sv';
-            const swedishPost = {
-                ...post,
-                id: swedishPostId,
-                title: post.translations.swedish.title,
-                content: post.translations.swedish.content,
-                language: 'swedish',
-                translationOf: post.id, // Reference to the original post
-                date: new Date().toISOString(),
-                status: 'published'
-            };
-            
-            // Remove the translations field from the Swedish post
-            delete swedishPost.translations;
-            
-            // Check if Swedish post already exists
-            const existingSwedishIndex = blogPosts.findIndex(p => p.id === swedishPostId);
-            if (existingSwedishIndex !== -1) {
-                // Update existing Swedish post
-                console.log('Updating existing Swedish post with ID:', swedishPostId);
-                blogPosts[existingSwedishIndex] = swedishPost;
-            } else {
-                // Add the Swedish post to the beginning of the array
-                console.log('Adding new Swedish post with ID:', swedishPostId);
-                blogPosts.unshift(swedishPost);
-            }
-            
-            // Add reference to Swedish translation in the English post
-            post.hasTranslation = {
-                swedish: swedishPostId
-            };
-            
-            console.log('Published Swedish translation:', swedishPost.title);
-        }
-        
-        // Save to localStorage using multiple methods for redundancy
-        try {
-            // Stringify with proper formatting to ensure valid JSON
-            const postsJson = JSON.stringify(blogPosts);
-            
-            // 1. Save to direct localStorage
-            localStorage.setItem('fooodis-blog-posts', postsJson);
-            console.log('Saved posts to direct localStorage, count:', blogPosts.length, 'data size:', postsJson.length, 'bytes');
-            
-            // 2. Save to prefixed localStorage as backup
-            localStorage.setItem('blog-posts', postsJson);
-            console.log('Saved posts to prefixed localStorage as backup');
-            
-            // 3. Save via StorageManager if available
-            if (window.StorageManager && typeof window.StorageManager.save === 'function') {
-                window.StorageManager.save('blog-posts', blogPosts);
-                console.log('Saved posts via StorageManager');
-            }
-            
-            // 4. Save to sessionStorage as additional backup
-            try {
-                sessionStorage.setItem('fooodis-blog-posts', postsJson);
-                console.log('Saved posts to sessionStorage as additional backup');
-            } catch (sessionError) {
-                console.error('Error saving to sessionStorage:', sessionError);
-            }
-            
-            // Verify the save was successful by reading it back
-            const savedData = localStorage.getItem('fooodis-blog-posts');
-            if (savedData) {
-                try {
-                    const parsedData = JSON.parse(savedData);
-                    console.log('Verified saved data, count:', parsedData.length);
-                } catch (parseError) {
-                    console.error('Error verifying saved data:', parseError);
-                }
-            } else {
-                console.error('Failed to verify saved data - localStorage item not found after save');
-            }
-        } catch (e) {
-            console.error('Error saving posts to localStorage:', e);
-            // Try to save with fewer posts if localStorage is full
-            if (blogPosts.length > 50) {
-                try {
-                    const trimmedPosts = blogPosts.slice(0, 50);
-                    localStorage.setItem('fooodis-blog-posts', JSON.stringify(trimmedPosts));
-                    console.log('Saved trimmed posts to localStorage, count:', trimmedPosts.length);
-                } catch (trimError) {
-                    console.error('Error saving trimmed posts:', trimError);
-                }
-            }
-        }
-        
-        console.log('Published automated post:', post.title);
-        
-        // Show notification using our custom function
-        showPublishNotification(post);
-        
-        // Return the post and URL information for the "View Post" link
-        return {
-            success: true,
-            post: post,
-            url: 'blog.html?post=' + post.id
-        };
     } catch (error) {
         console.error('Error publishing automated post:', error);
-        
-        // Show error notification
-        showPublishNotification(null, error);
-        
-        // Return error object instead of throwing
         return {
             success: false,
             error: error.message || 'Unknown error publishing post'

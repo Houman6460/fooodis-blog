@@ -80,6 +80,75 @@ class BlogDataManager {
         }
     }
     
+    async createPost(postData) {
+        console.log('Blog Data Manager: Creating post', postData.title);
+        try {
+            const response = await fetch('/api/blog/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(postData)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                const newPost = result.post;
+                
+                // Update local storage
+                const posts = this.getAllPosts();
+                posts.unshift(newPost);
+                this.savePosts(posts);
+                
+                return newPost;
+            } else {
+                console.error('Failed to create post on backend');
+                throw new Error('Backend creation failed');
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error creating post', e);
+            // Fallback: save locally with temporary ID
+            const newPost = { ...postData, id: postData.id || Date.now().toString() };
+            const posts = this.getAllPosts();
+            posts.unshift(newPost);
+            this.savePosts(posts);
+            return newPost;
+        }
+    }
+    
+    async updatePost(postData) {
+        console.log('Blog Data Manager: Updating post', postData.id);
+        try {
+            const response = await fetch(`/api/blog/posts/${postData.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(postData)
+            });
+            
+            if (response.ok) {
+                // Update local storage
+                const posts = this.getAllPosts();
+                const index = posts.findIndex(p => p.id === postData.id);
+                if (index !== -1) {
+                    posts[index] = postData;
+                    this.savePosts(posts);
+                }
+                return postData;
+            } else {
+                 console.error('Failed to update post on backend');
+                 throw new Error('Backend update failed');
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error updating post', e);
+            // Fallback: save locally
+            const posts = this.getAllPosts();
+            const index = posts.findIndex(p => p.id === postData.id);
+            if (index !== -1) {
+                posts[index] = postData;
+                this.savePosts(posts);
+            }
+            return postData;
+        }
+    }
+    
     async deletePost(postId) {
         console.log('Blog Data Manager: Deleting post', postId);
         
