@@ -207,26 +207,7 @@ VALUES
     ('folder_ai', 'ai-generated', 'AI Generated', 'AI-generated media', 1, 0, 0),
     ('folder_featured', 'featured', 'Featured', 'Featured images', 1, 0, 0);
 
--- ============================================
--- SCHEDULED POSTS TABLE
--- ============================================
-CREATE TABLE IF NOT EXISTS scheduled_posts (
-    id TEXT PRIMARY KEY,
-    post_id TEXT NOT NULL,
-    scheduled_date TEXT NOT NULL,
-    scheduled_time TEXT,
-    timezone TEXT DEFAULT 'UTC',
-    status TEXT DEFAULT 'pending',
-    retry_count INTEGER DEFAULT 0,
-    last_attempt INTEGER,
-    error_message TEXT,
-    created_at INTEGER,
-    updated_at INTEGER,
-    FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_scheduled_status ON scheduled_posts(status);
-CREATE INDEX IF NOT EXISTS idx_scheduled_date ON scheduled_posts(scheduled_date);
+-- Note: scheduled_posts table is defined below with enhanced fields for automation
 
 -- ============================================
 -- FEATURED POSTS TABLE

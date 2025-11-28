@@ -596,7 +596,7 @@
         sendLogToBackend: function(logEntry) {
             if (!this.config.apiEndpoint) return;
             
-            fetch(this.config.apiEndpoint + '/chatbot-activity', {
+            fetch(this.config.apiEndpoint.replace('/chatbot', '/chatbot/analytics'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -665,7 +665,7 @@
 
         async fetchServerConfig() {
             try {
-                const response = await fetch('/api/chatbot/config');
+                const response = await fetch('/api/chatbot');
                 if (response.ok) {
                     const config = await response.json();
                     this.config.enabled = config.enabled !== false;
@@ -3502,7 +3502,7 @@
             console.log('📊 Submitting enhanced rating:', this.ratingFormData);
             
             // Submit enhanced rating via API
-            fetch(this.config.apiEndpoint.replace('/chatbot', '/chatbot/ratings'), {
+            fetch(this.config.apiEndpoint.replace('/chatbot', '/chatbot/rate'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

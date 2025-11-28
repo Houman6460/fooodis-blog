@@ -690,16 +690,17 @@ class SupportPortal {
         }
 
         try {
-            const response = await fetch('/api/tickets/customer-reply', {
+            const response = await fetch(`/api/tickets/${ticketId}/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.getAuthToken()}`
                 },
                 body: JSON.stringify({
-                    ticketId: ticketId,
-                    message: replyMessage.trim(),
-                    customerEmail: this.currentUser.email
+                    content: replyMessage.trim(),
+                    author_type: 'customer',
+                    author_email: this.currentUser.email,
+                    author_name: this.currentUser.name || this.currentUser.email
                 })
             });
 
@@ -1072,15 +1073,16 @@ class SupportPortal {
         replyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
         try {
-            const response = await fetch('/api/tickets/customer-reply', {
+            const response = await fetch(`/api/tickets/${ticketId}/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    ticketId: ticketId,
-                    message: message,
-                    customerEmail: this.currentUser.email
+                    content: message,
+                    author_type: 'customer',
+                    author_email: this.currentUser.email,
+                    author_name: this.currentUser.name || this.currentUser.email
                 })
             });
             
@@ -1158,9 +1160,17 @@ class SupportPortal {
                 formData.append(`attachments`, file);
             });
             
-            const response = await fetch('/api/tickets/customer-reply', {
+            const response = await fetch(`/api/tickets/${ticketId}/messages`, {
                 method: 'POST',
-                body: formData // Don't set Content-Type header for FormData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: replyMessage.value.trim(),
+                    author_type: 'customer',
+                    author_email: this.currentUser.email,
+                    author_name: this.currentUser.name || this.currentUser.email
+                })
             });
             
             if (response.ok) {
@@ -1311,7 +1321,7 @@ async function handleLogin(event) {
     submitBtn.disabled = true;
     
     try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch('/api/customers/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1391,7 +1401,7 @@ async function handleRegister(event) {
     submitBtn.disabled = true;
     
     try {
-        const response = await fetch('/api/auth/register', {
+        const response = await fetch('/api/customers', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
