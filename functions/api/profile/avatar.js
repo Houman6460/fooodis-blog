@@ -107,8 +107,8 @@ export async function onRequestPost(context) {
       }
     });
 
-    // Generate URL
-    const avatarUrl = `/api/media/serve/${encodeURIComponent(r2Key)}`;
+    // Generate URL - don't encode slashes in the path
+    const avatarUrl = `/api/media/serve/${r2Key}`;
 
     // Update profile in D1
     const now = Date.now();
