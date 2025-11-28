@@ -928,8 +928,40 @@ function editPost(postId) {
 }
 
 // Toggle featured status of a post
-function toggleFeaturePost(postId) {
-    // Find the post by ID
+async function toggleFeaturePost(postId) {
+    // Use BlogDataManager for D1 sync
+    if (window.blogDataManager && typeof window.blogDataManager.toggleFeatured === 'function') {
+        try {
+            const result = await window.blogDataManager.toggleFeatured(postId);
+            if (result.success !== false) {
+                // Update local blogPosts array
+                const postIndex = blogPosts.findIndex(p => String(p.id) === String(postId));
+                if (postIndex !== -1) {
+                    blogPosts[postIndex].featured = result.featured;
+                }
+                
+                // Update featured posts array
+                if (result.featured) {
+                    if (!featuredPosts.includes(postId)) {
+                        featuredPosts.push(postId);
+                    }
+                } else {
+                    const index = featuredPosts.indexOf(postId);
+                    if (index !== -1) {
+                        featuredPosts.splice(index, 1);
+                    }
+                }
+                
+                localStorage.setItem('fooodis-blog-featured', JSON.stringify(featuredPosts));
+                renderPostsTable();
+                return;
+            }
+        } catch (err) {
+            console.error('Dashboard: Error toggling featured via BlogDataManager', err);
+        }
+    }
+    
+    // Fallback: local-only toggle
     const postIndex = blogPosts.findIndex(p => p.id == postId);
     if (postIndex === -1) return;
     
@@ -962,7 +994,28 @@ function confirmDeletePost(postId) {
 }
 
 // Delete post
-function deletePost(postId) {
+async function deletePost(postId) {
+    // Prefer BlogDataManager so D1 and local storage stay in sync
+    if (window.blogDataManager && typeof window.blogDataManager.deletePost === 'function') {
+        try {
+            const success = await window.blogDataManager.deletePost(postId);
+            if (!success) {
+                console.warn('Dashboard: BlogDataManager.deletePost reported failure, falling back to local deletion');
+                deletePostLocally(postId);
+            }
+        } catch (err) {
+            console.error('Dashboard: Error deleting post via BlogDataManager', err);
+            deletePostLocally(postId);
+        }
+        return;
+    }
+    
+    // Fallback: local-only deletion
+    deletePostLocally(postId);
+}
+
+// Local deletion logic used as fallback when BlogDataManager is unavailable
+function deletePostLocally(postId) {
     // Remove post from blogPosts array
     blogPosts = blogPosts.filter(p => p.id != postId);
     

@@ -152,9 +152,12 @@ class BlogDataManager {
     async deletePost(postId) {
         console.log('Blog Data Manager: Deleting post', postId);
         
+        // Normalize ID so we handle string/number mismatches consistently
+        const normalizedId = String(postId);
+        
         // Optimistic update (local)
         const posts = this.getAllPosts();
-        const filteredPosts = posts.filter(post => post.id !== postId && post.id !== parseInt(postId));
+        const filteredPosts = posts.filter(post => String(post.id) !== normalizedId);
         
         if (this.savePosts(filteredPosts)) {
             // Dispatch deletion event
@@ -190,6 +193,254 @@ class BlogDataManager {
         }
         
         return false;
+    }
+    
+    /**
+     * Fetch posts with filters for Manage Blog Posts section
+     * @param {Object} options - Filter options
+     * @param {string} options.search - Search term
+     * @param {string} options.category - Category filter
+     * @param {string} options.status - Status filter (published, draft, scheduled)
+     * @param {boolean} options.featured - Featured filter
+     * @param {string} options.sort - Sort field
+     * @param {string} options.order - Sort order (asc, desc)
+     * @param {number} options.limit - Results limit
+     * @param {number} options.offset - Pagination offset
+     */
+    async fetchPostsFiltered(options = {}) {
+        console.log('Blog Data Manager: Fetching posts with filters', options);
+        
+        try {
+            const params = new URLSearchParams();
+            
+            if (options.search) params.append('search', options.search);
+            if (options.category) params.append('category', options.category);
+            if (options.status) params.append('status', options.status);
+            if (options.featured !== undefined) params.append('featured', options.featured);
+            if (options.sort) params.append('sort', options.sort);
+            if (options.order) params.append('order', options.order);
+            if (options.limit) params.append('limit', options.limit);
+            if (options.offset) params.append('offset', options.offset);
+            
+            const url = `/api/blog/posts${params.toString() ? '?' + params.toString() : ''}`;
+            const response = await fetch(url);
+            
+            if (response.ok) {
+                const data = await response.json();
+                // New API returns { posts, pagination }
+                const posts = data.posts || data;
+                
+                // Update local storage
+                if (!options.search && !options.category && !options.status && options.featured === undefined) {
+                    // Only update localStorage if fetching all posts
+                    localStorage.setItem(this.storageKey, JSON.stringify(posts));
+                }
+                
+                return {
+                    posts,
+                    pagination: data.pagination || { total: posts.length }
+                };
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error fetching filtered posts', e);
+        }
+        
+        // Fallback to local filtering
+        let posts = this.getAllPosts();
+        
+        if (options.search) {
+            const term = options.search.toLowerCase();
+            posts = posts.filter(p => 
+                p.title?.toLowerCase().includes(term) || 
+                p.content?.toLowerCase().includes(term) ||
+                p.excerpt?.toLowerCase().includes(term)
+            );
+        }
+        if (options.category) {
+            posts = posts.filter(p => p.category === options.category);
+        }
+        if (options.status) {
+            posts = posts.filter(p => p.status === options.status);
+        }
+        if (options.featured !== undefined) {
+            posts = posts.filter(p => !!p.featured === options.featured);
+        }
+        
+        return { posts, pagination: { total: posts.length } };
+    }
+    
+    /**
+     * Toggle featured status for a post
+     */
+    async toggleFeatured(postId) {
+        console.log('Blog Data Manager: Toggling featured for post', postId);
+        
+        try {
+            const response = await fetch(`/api/blog/posts/${postId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ toggle: 'featured' })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                
+                // Update local storage
+                const posts = this.getAllPosts();
+                const index = posts.findIndex(p => String(p.id) === String(postId));
+                if (index !== -1) {
+                    posts[index].featured = result.featured;
+                    this.savePosts(posts);
+                }
+                
+                return result;
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error toggling featured', e);
+        }
+        
+        // Fallback: toggle locally
+        const posts = this.getAllPosts();
+        const index = posts.findIndex(p => String(p.id) === String(postId));
+        if (index !== -1) {
+            posts[index].featured = !posts[index].featured;
+            this.savePosts(posts);
+            return { success: true, featured: posts[index].featured };
+        }
+        
+        return { success: false };
+    }
+    
+    /**
+     * Bulk delete multiple posts
+     */
+    async bulkDelete(postIds) {
+        console.log('Blog Data Manager: Bulk deleting posts', postIds);
+        
+        if (!postIds || postIds.length === 0) {
+            return { success: false, error: 'No post IDs provided' };
+        }
+        
+        try {
+            const response = await fetch(`/api/blog/posts?ids=${postIds.join(',')}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                
+                // Update local storage
+                const posts = this.getAllPosts();
+                const filteredPosts = posts.filter(p => !postIds.includes(String(p.id)));
+                this.savePosts(filteredPosts);
+                
+                // Dispatch event
+                document.dispatchEvent(new CustomEvent('blogPostsUpdated', {
+                    detail: { posts: filteredPosts }
+                }));
+                
+                return result;
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error bulk deleting', e);
+        }
+        
+        // Fallback: delete locally
+        const posts = this.getAllPosts();
+        const filteredPosts = posts.filter(p => !postIds.includes(String(p.id)));
+        this.savePosts(filteredPosts);
+        
+        return { success: true, deleted: posts.length - filteredPosts.length };
+    }
+    
+    /**
+     * Increment view count for a post
+     */
+    async incrementViews(postId) {
+        try {
+            await fetch(`/api/blog/posts/${postId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ increment: 'views' })
+            });
+        } catch (e) {
+            console.error('Blog Data Manager: Error incrementing views', e);
+        }
+    }
+    
+    /**
+     * Increment like count for a post
+     */
+    async incrementLikes(postId) {
+        try {
+            const response = await fetch(`/api/blog/posts/${postId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ increment: 'likes' })
+            });
+            
+            if (response.ok) {
+                // Update local
+                const posts = this.getAllPosts();
+                const index = posts.findIndex(p => String(p.id) === String(postId));
+                if (index !== -1) {
+                    posts[index].likes = (posts[index].likes || 0) + 1;
+                    this.savePosts(posts);
+                }
+                return true;
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error incrementing likes', e);
+        }
+        return false;
+    }
+    
+    /**
+     * Get categories from backend
+     */
+    async getCategories() {
+        try {
+            const response = await fetch('/api/categories');
+            if (response.ok) {
+                return await response.json();
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error fetching categories', e);
+        }
+        
+        // Fallback: extract from posts
+        const posts = this.getAllPosts();
+        const categoryMap = {};
+        posts.forEach(p => {
+            if (p.category) {
+                categoryMap[p.category] = (categoryMap[p.category] || 0) + 1;
+            }
+        });
+        return Object.keys(categoryMap).map(name => ({ name, post_count: categoryMap[name] }));
+    }
+    
+    /**
+     * Get tags from backend
+     */
+    async getTags() {
+        try {
+            const response = await fetch('/api/tags');
+            if (response.ok) {
+                return await response.json();
+            }
+        } catch (e) {
+            console.error('Blog Data Manager: Error fetching tags', e);
+        }
+        
+        // Fallback: extract from posts
+        const posts = this.getAllPosts();
+        const tagSet = new Set();
+        posts.forEach(p => {
+            if (p.tags && Array.isArray(p.tags)) {
+                p.tags.forEach(t => tagSet.add(t));
+            }
+        });
+        return Array.from(tagSet).map(name => ({ name }));
     }
     
     handlePostDeletion(postId) {
@@ -286,6 +537,14 @@ class BlogDataManager {
     }
     
     forceRefreshManagePosts() {
+        // Prefer the dashboard's own renderer when available to avoid duplicate logic
+        if (typeof window !== 'undefined' && typeof window.renderPostsTable === 'function') {
+            console.log('Blog Data Manager: Delegating manage posts refresh to dashboard.renderPostsTable');
+            window.renderPostsTable();
+            return;
+        }
+
+        // Fallback: legacy direct rendering if dashboard renderer is not available
         const manageGrid = document.getElementById('manage-posts-grid') || 
                           document.querySelector('.manage-posts-grid') ||
                           document.querySelector('.posts-management-section') ||

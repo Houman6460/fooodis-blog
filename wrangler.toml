@@ -1,21 +1,38 @@
 name = "fooodis-blog"
 compatibility_date = "2023-01-01"
 
+# ============================================
 # D1 Database Binding
+# Used for: blog_posts, categories, subcategories, tags, media_library, scheduled_posts, settings
+# ============================================
 [[d1_databases]]
 binding = "DB"
 database_name = "fooodis-db"
-database_id = "d106fe5e-fbe0-4942-9a9d-42e6c78515ed" # Replace with your actual D1 Database ID
+database_id = "d106fe5e-fbe0-4942-9a9d-42e6c78515ed"
 
-# KV Namespace Binding (Optional, for caching)
-# [[kv_namespaces]]
-# binding = "KV"
-# id = "PLACEHOLDER_KV_ID"
+# ============================================
+# KV Namespace Binding
+# Used for: caching settings, session data, rate limiting
+# ============================================
+[[kv_namespaces]]
+binding = "KV"
+id = "PLACEHOLDER_KV_ID"  # Replace with your KV namespace ID from Cloudflare dashboard
 
-# R2 Bucket Binding (Optional, for media storage)
-# [[r2_buckets]]
-# binding = "BUCKET"
-# bucket_name = "fooodis-media"
+# ============================================
+# R2 Bucket Binding
+# Used for: media uploads (images, videos, attachments)
+# ============================================
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "fooodis-media"
+
+# ============================================
+# Environment Variables
+# ============================================
+[vars]
+ENVIRONMENT = "production"
+MAX_UPLOAD_SIZE = "10485760"  # 10MB in bytes
+ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 
 [site]
 bucket = "./"
