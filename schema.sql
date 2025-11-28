@@ -578,6 +578,146 @@ CREATE TABLE IF NOT EXISTS scheduled_post_history (
 CREATE INDEX IF NOT EXISTS idx_history_post ON scheduled_post_history(scheduled_post_id);
 
 -- ============================================
+-- EMAIL SUBSCRIBERS TABLE
+-- Store newsletter subscribers
+-- ============================================
+CREATE TABLE IF NOT EXISTS email_subscribers (
+    id TEXT PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    name TEXT,
+    status TEXT DEFAULT 'active',
+    source TEXT DEFAULT 'popup',
+    ip_address TEXT,
+    country TEXT,
+    subscribed_at INTEGER,
+    confirmed_at INTEGER,
+    unsubscribed_at INTEGER,
+    preferences TEXT,
+    tags TEXT,
+    custom_fields TEXT,
+    bounce_count INTEGER DEFAULT 0,
+    last_email_sent INTEGER,
+    last_email_opened INTEGER,
+    last_email_clicked INTEGER,
+    total_emails_sent INTEGER DEFAULT 0,
+    total_emails_opened INTEGER DEFAULT 0,
+    total_emails_clicked INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON email_subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_subscribers_status ON email_subscribers(status);
+CREATE INDEX IF NOT EXISTS idx_subscribers_source ON email_subscribers(source);
+
+-- ============================================
+-- EMAIL CAMPAIGNS TABLE
+-- Store email campaign data
+-- ============================================
+CREATE TABLE IF NOT EXISTS email_campaigns (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    preview_text TEXT,
+    content TEXT,
+    template_id TEXT,
+    status TEXT DEFAULT 'draft',
+    type TEXT DEFAULT 'newsletter',
+    send_to TEXT DEFAULT 'all',
+    segment_rules TEXT,
+    scheduled_at INTEGER,
+    sent_at INTEGER,
+    total_recipients INTEGER DEFAULT 0,
+    total_sent INTEGER DEFAULT 0,
+    total_delivered INTEGER DEFAULT 0,
+    total_opened INTEGER DEFAULT 0,
+    total_clicked INTEGER DEFAULT 0,
+    total_bounced INTEGER DEFAULT 0,
+    total_unsubscribed INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER,
+    FOREIGN KEY (template_id) REFERENCES email_templates(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaigns_status ON email_campaigns(status);
+CREATE INDEX IF NOT EXISTS idx_campaigns_scheduled ON email_campaigns(scheduled_at);
+
+-- ============================================
+-- EMAIL TEMPLATES TABLE
+-- Store reusable email templates
+-- ============================================
+CREATE TABLE IF NOT EXISTS email_templates (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT DEFAULT 'general',
+    subject_template TEXT,
+    content TEXT NOT NULL,
+    preview_image TEXT,
+    is_default INTEGER DEFAULT 0,
+    usage_count INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_templates_category ON email_templates(category);
+
+-- ============================================
+-- EMAIL SENDS TABLE
+-- Track individual email sends
+-- ============================================
+CREATE TABLE IF NOT EXISTS email_sends (
+    id TEXT PRIMARY KEY,
+    campaign_id TEXT NOT NULL,
+    subscriber_id TEXT NOT NULL,
+    email TEXT NOT NULL,
+    status TEXT DEFAULT 'pending',
+    sent_at INTEGER,
+    delivered_at INTEGER,
+    opened_at INTEGER,
+    clicked_at INTEGER,
+    bounced_at INTEGER,
+    bounce_type TEXT,
+    unsubscribed_at INTEGER,
+    error_message TEXT,
+    created_at INTEGER,
+    FOREIGN KEY (campaign_id) REFERENCES email_campaigns(id) ON DELETE CASCADE,
+    FOREIGN KEY (subscriber_id) REFERENCES email_subscribers(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_sends_campaign ON email_sends(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_sends_subscriber ON email_sends(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_sends_status ON email_sends(status);
+
+-- ============================================
+-- EMAIL POPUP CONFIG TABLE
+-- Store email popup configuration
+-- ============================================
+CREATE TABLE IF NOT EXISTS email_popup_config (
+    id TEXT PRIMARY KEY DEFAULT 'default',
+    enabled INTEGER DEFAULT 1,
+    title TEXT DEFAULT 'Subscribe to Our Newsletter',
+    description TEXT DEFAULT 'Get the latest food news and recipes delivered to your inbox!',
+    button_text TEXT DEFAULT 'Subscribe',
+    placeholder_text TEXT DEFAULT 'Enter your email address',
+    success_message TEXT DEFAULT 'Thank you for subscribing!',
+    trigger_type TEXT DEFAULT 'time',
+    trigger_delay INTEGER DEFAULT 5,
+    trigger_scroll_percent INTEGER DEFAULT 50,
+    show_once INTEGER DEFAULT 1,
+    show_every_days INTEGER DEFAULT 7,
+    background_color TEXT DEFAULT '#1e1e24',
+    text_color TEXT DEFAULT '#e0e0e0',
+    button_color TEXT DEFAULT '#cce62a',
+    popup_image TEXT,
+    custom_css TEXT,
+    updated_at INTEGER
+);
+
+-- Default popup config
+INSERT OR IGNORE INTO email_popup_config (id, updated_at) VALUES ('default', 0);
+
+-- ============================================
 -- CONVERSATIONS TABLE (Chatbot)
 -- ============================================
 CREATE TABLE IF NOT EXISTS conversations (
