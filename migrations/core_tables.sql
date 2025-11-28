@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS media_library (
     width INTEGER,
     height INTEGER,
     r2_key TEXT NOT NULL,
+    r2_url TEXT,
     url TEXT,
     thumbnail_url TEXT,
     folder TEXT DEFAULT 'uploads',
