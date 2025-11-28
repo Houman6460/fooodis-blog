@@ -232,6 +232,67 @@ CREATE TABLE IF NOT EXISTS post_stats (
     FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE CASCADE
 );
 
+CREATE INDEX IF NOT EXISTS idx_post_stats_post ON post_stats(post_id);
+
+-- ============================================
+-- PAGE VIEWS TABLE (Detailed tracking)
+-- ============================================
+CREATE TABLE IF NOT EXISTS page_views (
+    id TEXT PRIMARY KEY,
+    post_id TEXT,
+    visitor_id TEXT,
+    page_url TEXT,
+    referrer TEXT,
+    user_agent TEXT,
+    country TEXT,
+    city TEXT,
+    device_type TEXT,
+    browser TEXT,
+    session_id TEXT,
+    created_at INTEGER,
+    FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_page_views_post ON page_views(post_id);
+CREATE INDEX IF NOT EXISTS idx_page_views_visitor ON page_views(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_page_views_date ON page_views(created_at);
+
+-- ============================================
+-- ANALYTICS EVENTS TABLE (Custom events)
+-- ============================================
+CREATE TABLE IF NOT EXISTS analytics_events (
+    id TEXT PRIMARY KEY,
+    event_type TEXT NOT NULL,
+    event_data TEXT,
+    visitor_id TEXT,
+    post_id TEXT,
+    page_url TEXT,
+    created_at INTEGER,
+    FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_analytics_type ON analytics_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_analytics_date ON analytics_events(created_at);
+
+-- ============================================
+-- DAILY STATS AGGREGATE TABLE (for fast queries)
+-- ============================================
+CREATE TABLE IF NOT EXISTS daily_stats (
+    id TEXT PRIMARY KEY,
+    date TEXT NOT NULL,
+    total_views INTEGER DEFAULT 0,
+    unique_visitors INTEGER DEFAULT 0,
+    total_shares INTEGER DEFAULT 0,
+    total_comments INTEGER DEFAULT 0,
+    posts_published INTEGER DEFAULT 0,
+    top_post_id TEXT,
+    top_category TEXT,
+    created_at INTEGER,
+    UNIQUE(date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_daily_stats_date ON daily_stats(date);
+
 -- ============================================
 -- COMMENTS TABLE
 -- ============================================
