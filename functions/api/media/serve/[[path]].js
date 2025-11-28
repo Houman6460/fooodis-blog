@@ -1,31 +1,44 @@
 /**
  * Media Serve API - Serves files from R2
- * GET /api/media/serve/:path - Serve a file from R2 bucket
+ * GET /api/media/serve/* - Serve a file from R2 bucket
  */
 
 export async function onRequestGet(context) {
-  const { env, params, request } = context;
+  const { env, request } = context;
 
   if (!env.MEDIA_BUCKET) {
-    return new Response("R2 bucket not configured", { status: 500 });
+    return new Response(JSON.stringify({ error: "R2 bucket not configured" }), { 
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 
   try {
     // Get the path from the URL
-    const path = params.path ? params.path.join('/') : '';
+    const url = new URL(request.url);
+    const fullPath = url.pathname;
     
-    if (!path) {
-      return new Response("File path required", { status: 400 });
+    // Remove /api/media/serve/ prefix to get the R2 key
+    const r2Key = decodeURIComponent(fullPath.replace('/api/media/serve/', ''));
+    
+    if (!r2Key) {
+      return new Response(JSON.stringify({ error: "File path required" }), { 
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
     }
 
-    // Decode the path in case it was URL encoded
-    const r2Key = decodeURIComponent(path);
+    console.log('Media serve: Fetching from R2:', r2Key);
 
     // Get object from R2
     const object = await env.MEDIA_BUCKET.get(r2Key);
 
     if (!object) {
-      return new Response("File not found", { status: 404 });
+      console.log('Media serve: File not found:', r2Key);
+      return new Response(JSON.stringify({ error: "File not found", key: r2Key }), { 
+        status: 404,
+        headers: { "Content-Type": "application/json" }
+      });
     }
 
     // Get the content type from object metadata or infer from extension
@@ -34,8 +47,10 @@ export async function onRequestGet(context) {
     // Create response headers
     const headers = new Headers();
     headers.set("Content-Type", contentType);
-    headers.set("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+    headers.set("Cache-Control", "public, max-age=31536000");
     headers.set("ETag", object.httpEtag);
+    headers.set("Access-Control-Allow-Origin", "*");
+    headers.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
     
     // Handle conditional requests
     const ifNoneMatch = request.headers.get("If-None-Match");
@@ -43,15 +58,14 @@ export async function onRequestGet(context) {
       return new Response(null, { status: 304, headers });
     }
 
-    // Add CORS headers
-    headers.set("Access-Control-Allow-Origin", "*");
-    headers.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
-
     return new Response(object.body, { headers });
 
   } catch (error) {
     console.error('Media serve error:', error);
-    return new Response(error.message, { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), { 
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }
 
