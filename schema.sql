@@ -718,6 +718,168 @@ CREATE TABLE IF NOT EXISTS email_popup_config (
 INSERT OR IGNORE INTO email_popup_config (id, updated_at) VALUES ('default', 0);
 
 -- ============================================
+-- SUPPORT CUSTOMERS TABLE
+-- Store customer/user profiles for support portal
+-- ============================================
+CREATE TABLE IF NOT EXISTS support_customers (
+    id TEXT PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    name TEXT,
+    phone TEXT,
+    company TEXT,
+    password_hash TEXT,
+    avatar_url TEXT,
+    status TEXT DEFAULT 'active',
+    email_verified INTEGER DEFAULT 0,
+    verification_token TEXT,
+    reset_token TEXT,
+    reset_token_expires INTEGER,
+    last_login INTEGER,
+    login_count INTEGER DEFAULT 0,
+    total_tickets INTEGER DEFAULT 0,
+    preferences TEXT,
+    metadata TEXT,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_support_customers_email ON support_customers(email);
+CREATE INDEX IF NOT EXISTS idx_support_customers_status ON support_customers(status);
+
+-- ============================================
+-- SUPPORT TICKETS TABLE
+-- Main tickets table
+-- ============================================
+CREATE TABLE IF NOT EXISTS support_tickets (
+    id TEXT PRIMARY KEY,
+    ticket_number TEXT NOT NULL UNIQUE,
+    customer_id TEXT,
+    customer_name TEXT NOT NULL,
+    customer_email TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    description TEXT NOT NULL,
+    category TEXT DEFAULT 'general',
+    priority TEXT DEFAULT 'medium',
+    status TEXT DEFAULT 'open',
+    assignee_id TEXT,
+    assignee_name TEXT,
+    tags TEXT,
+    internal_notes TEXT,
+    resolution TEXT,
+    satisfaction_rating INTEGER,
+    satisfaction_feedback TEXT,
+    first_response_at INTEGER,
+    resolved_at INTEGER,
+    closed_at INTEGER,
+    reopened_count INTEGER DEFAULT 0,
+    message_count INTEGER DEFAULT 0,
+    is_public INTEGER DEFAULT 1,
+    source TEXT DEFAULT 'web',
+    created_at INTEGER,
+    updated_at INTEGER,
+    FOREIGN KEY (customer_id) REFERENCES support_customers(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_tickets_number ON support_tickets(ticket_number);
+CREATE INDEX IF NOT EXISTS idx_tickets_customer ON support_tickets(customer_id);
+CREATE INDEX IF NOT EXISTS idx_tickets_status ON support_tickets(status);
+CREATE INDEX IF NOT EXISTS idx_tickets_priority ON support_tickets(priority);
+CREATE INDEX IF NOT EXISTS idx_tickets_category ON support_tickets(category);
+CREATE INDEX IF NOT EXISTS idx_tickets_assignee ON support_tickets(assignee_id);
+
+-- ============================================
+-- SUPPORT MESSAGES TABLE
+-- Ticket messages and replies
+-- ============================================
+CREATE TABLE IF NOT EXISTS support_messages (
+    id TEXT PRIMARY KEY,
+    ticket_id TEXT NOT NULL,
+    author_type TEXT NOT NULL,
+    author_id TEXT,
+    author_name TEXT NOT NULL,
+    author_email TEXT,
+    content TEXT NOT NULL,
+    is_internal INTEGER DEFAULT 0,
+    attachments TEXT,
+    read_at INTEGER,
+    created_at INTEGER,
+    FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_ticket ON support_messages(ticket_id);
+CREATE INDEX IF NOT EXISTS idx_messages_author ON support_messages(author_type, author_id);
+
+-- ============================================
+-- TICKET ATTACHMENTS TABLE
+-- File attachments for tickets
+-- ============================================
+CREATE TABLE IF NOT EXISTS ticket_attachments (
+    id TEXT PRIMARY KEY,
+    ticket_id TEXT NOT NULL,
+    message_id TEXT,
+    filename TEXT NOT NULL,
+    original_filename TEXT,
+    mime_type TEXT,
+    file_size INTEGER,
+    r2_key TEXT NOT NULL,
+    r2_url TEXT,
+    uploaded_by TEXT,
+    uploaded_by_type TEXT,
+    created_at INTEGER,
+    FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE,
+    FOREIGN KEY (message_id) REFERENCES support_messages(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_attachments_ticket ON ticket_attachments(ticket_id);
+
+-- ============================================
+-- TICKET CATEGORIES TABLE
+-- Predefined ticket categories
+-- ============================================
+CREATE TABLE IF NOT EXISTS ticket_categories (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    description TEXT,
+    color TEXT DEFAULT '#478ac9',
+    icon TEXT DEFAULT 'tag',
+    sort_order INTEGER DEFAULT 0,
+    is_active INTEGER DEFAULT 1,
+    auto_assign_to TEXT,
+    sla_response_hours INTEGER DEFAULT 24,
+    sla_resolution_hours INTEGER DEFAULT 72,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+-- Default categories
+INSERT OR IGNORE INTO ticket_categories (id, name, description, color, icon, sort_order, created_at, updated_at)
+VALUES 
+    ('cat_general', 'General', 'General inquiries', '#478ac9', 'question-circle', 1, 0, 0),
+    ('cat_technical', 'Technical', 'Technical issues and bugs', '#e74c3c', 'bug', 2, 0, 0),
+    ('cat_billing', 'Billing', 'Payment and billing questions', '#27ae60', 'credit-card', 3, 0, 0),
+    ('cat_feature', 'Feature Request', 'New feature suggestions', '#9b59b6', 'lightbulb', 4, 0, 0),
+    ('cat_feedback', 'Feedback', 'General feedback', '#f39c12', 'comment', 5, 0, 0);
+
+-- ============================================
+-- CANNED RESPONSES TABLE
+-- Pre-written response templates
+-- ============================================
+CREATE TABLE IF NOT EXISTS canned_responses (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    category TEXT,
+    shortcut TEXT,
+    usage_count INTEGER DEFAULT 0,
+    created_by TEXT,
+    is_public INTEGER DEFAULT 1,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_canned_category ON canned_responses(category);
+
+-- ============================================
 -- CONVERSATIONS TABLE (Chatbot)
 -- ============================================
 CREATE TABLE IF NOT EXISTS conversations (
