@@ -1,10 +1,22 @@
 /**
- * GET /api/automation/paths - List all automation paths
+ * GET /api/automation/paths - List all automation paths with filtering
  * POST /api/automation/paths - Create a new automation path
+ * 
+ * Query Parameters for GET:
+ * - status: Filter by status (active, inactive, paused)
+ * - category: Filter by category
+ * - content_type: Filter by content type
+ * - include_stats: Include generation statistics (true/false)
  */
 
 export async function onRequestGet(context) {
-  const { env } = context;
+  const { env, request } = context;
+  const url = new URL(request.url);
+  
+  const status = url.searchParams.get('status');
+  const category = url.searchParams.get('category');
+  const contentType = url.searchParams.get('content_type');
+  const includeStats = url.searchParams.get('include_stats') === 'true';
   
   if (!env.DB) {
     return new Response(JSON.stringify({ error: "Database not configured" }), {
@@ -14,17 +26,68 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const { results } = await env.DB.prepare(
-      "SELECT * FROM automation_paths ORDER BY created_at DESC"
-    ).all();
+    let query = "SELECT * FROM automation_paths";
+    const conditions = [];
+    const params = [];
+
+    if (status) {
+      conditions.push("status = ?");
+      params.push(status);
+    }
+    if (category) {
+      conditions.push("category = ?");
+      params.push(category);
+    }
+    if (contentType) {
+      conditions.push("content_type = ?");
+      params.push(contentType);
+    }
+
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
+    }
+    query += " ORDER BY created_at DESC";
+
+    const stmt = env.DB.prepare(query);
+    const { results } = params.length > 0 
+      ? await stmt.bind(...params).all()
+      : await stmt.all();
 
     // Parse JSON fields
-    const paths = results.map(path => ({
+    let paths = results.map(path => ({
       ...path,
       topics: path.topics ? JSON.parse(path.topics) : [],
       languages: path.languages ? JSON.parse(path.languages) : [],
       include_images: !!path.include_images
     }));
+
+    // Include generation stats if requested
+    if (includeStats && paths.length > 0) {
+      const pathIds = paths.map(p => p.id);
+      
+      // Get stats for each path
+      for (const path of paths) {
+        const statsResult = await env.DB.prepare(`
+          SELECT 
+            COUNT(*) as total_generations,
+            SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as successful,
+            SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed,
+            SUM(tokens_used) as total_tokens
+          FROM ai_generation_logs
+          WHERE automation_path_id = ?
+        `).bind(path.id).first();
+
+        path.stats = {
+          total_generations: statsResult?.total_generations || 0,
+          successful: statsResult?.successful || 0,
+          failed: statsResult?.failed || 0,
+          total_tokens: statsResult?.total_tokens || 0,
+          success_rate: statsResult?.total_generations > 0 
+            ? ((statsResult.successful / statsResult.total_generations) * 100).toFixed(1)
+            : 0
+        };
+      }
+    }
 
     return new Response(JSON.stringify(paths), {
       headers: { "Content-Type": "application/json" }

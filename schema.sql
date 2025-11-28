@@ -249,6 +249,145 @@ CREATE TABLE IF NOT EXISTS automation_paths (
 CREATE INDEX IF NOT EXISTS idx_automation_paths_status ON automation_paths(status);
 
 -- ============================================
+-- AI GENERATION LOGS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS ai_generation_logs (
+    id TEXT PRIMARY KEY,
+    automation_path_id TEXT,
+    path_name TEXT,
+    status TEXT DEFAULT 'pending',
+    prompt_used TEXT,
+    model_used TEXT,
+    assistant_id TEXT,
+    content_type TEXT,
+    category TEXT,
+    topic TEXT,
+    language TEXT DEFAULT 'en',
+    generated_title TEXT,
+    generated_content TEXT,
+    generated_excerpt TEXT,
+    tokens_used INTEGER DEFAULT 0,
+    generation_time_ms INTEGER,
+    published_post_id TEXT,
+    published_at INTEGER,
+    error_message TEXT,
+    error_code TEXT,
+    retry_count INTEGER DEFAULT 0,
+    started_at INTEGER,
+    completed_at INTEGER,
+    created_at INTEGER,
+    FOREIGN KEY (automation_path_id) REFERENCES automation_paths(id) ON DELETE SET NULL,
+    FOREIGN KEY (published_post_id) REFERENCES blog_posts(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_generation_logs_path ON ai_generation_logs(automation_path_id);
+CREATE INDEX IF NOT EXISTS idx_generation_logs_status ON ai_generation_logs(status);
+
+-- ============================================
+-- AI ASSISTANTS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS ai_assistants (
+    id TEXT PRIMARY KEY,
+    openai_assistant_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    type TEXT DEFAULT 'custom',
+    model TEXT DEFAULT 'gpt-4',
+    instructions TEXT,
+    temperature REAL DEFAULT 0.7,
+    max_tokens INTEGER DEFAULT 2000,
+    top_p REAL DEFAULT 1.0,
+    code_interpreter INTEGER DEFAULT 0,
+    retrieval INTEGER DEFAULT 0,
+    function_calling INTEGER DEFAULT 0,
+    is_active INTEGER DEFAULT 1,
+    is_default INTEGER DEFAULT 0,
+    usage_count INTEGER DEFAULT 0,
+    last_used INTEGER,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_assistants_type ON ai_assistants(type);
+
+-- ============================================
+-- PROMPTS LIBRARY TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS prompts_library (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT DEFAULT 'general',
+    prompt_template TEXT NOT NULL,
+    system_message TEXT,
+    variables TEXT,
+    example_output TEXT,
+    is_default INTEGER DEFAULT 0,
+    is_public INTEGER DEFAULT 1,
+    usage_count INTEGER DEFAULT 0,
+    rating REAL DEFAULT 0,
+    created_by TEXT DEFAULT 'Admin',
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_prompts_category ON prompts_library(category);
+
+-- ============================================
+-- AI API USAGE TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS ai_api_usage (
+    id TEXT PRIMARY KEY,
+    date TEXT NOT NULL UNIQUE,
+    prompt_tokens INTEGER DEFAULT 0,
+    completion_tokens INTEGER DEFAULT 0,
+    total_tokens INTEGER DEFAULT 0,
+    requests_count INTEGER DEFAULT 0,
+    successful_requests INTEGER DEFAULT 0,
+    failed_requests INTEGER DEFAULT 0,
+    estimated_cost_cents INTEGER DEFAULT 0,
+    model_usage TEXT,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_api_usage_date ON ai_api_usage(date);
+
+-- ============================================
+-- AI CONFIGURATION TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS ai_config (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    type TEXT DEFAULT 'string',
+    description TEXT,
+    is_secret INTEGER DEFAULT 0,
+    updated_at INTEGER
+);
+
+-- ============================================
+-- SCHEDULED RUNS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS scheduled_runs (
+    id TEXT PRIMARY KEY,
+    automation_path_id TEXT NOT NULL,
+    scheduled_time INTEGER NOT NULL,
+    status TEXT DEFAULT 'pending',
+    started_at INTEGER,
+    completed_at INTEGER,
+    generation_log_id TEXT,
+    error_message TEXT,
+    retry_count INTEGER DEFAULT 0,
+    max_retries INTEGER DEFAULT 3,
+    created_at INTEGER,
+    updated_at INTEGER,
+    FOREIGN KEY (automation_path_id) REFERENCES automation_paths(id) ON DELETE CASCADE,
+    FOREIGN KEY (generation_log_id) REFERENCES ai_generation_logs(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_scheduled_runs_time ON scheduled_runs(scheduled_time);
+CREATE INDEX IF NOT EXISTS idx_scheduled_runs_status ON scheduled_runs(status);
+
+-- ============================================
 -- CONVERSATIONS TABLE (Chatbot)
 -- ============================================
 CREATE TABLE IF NOT EXISTS conversations (
