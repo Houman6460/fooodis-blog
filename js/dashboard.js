@@ -1069,7 +1069,7 @@ function saveSettings(event) {
 }
 
 // Add new category
-function addNewCategory() {
+async function addNewCategory() {
     const categoryInput = document.getElementById('newCategory');
     if (!categoryInput) {
         showNotification('Category input field not found', 'error');
@@ -1083,87 +1083,155 @@ function addNewCategory() {
         return;
     }
     
-    // Check if category already exists
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            // Check if already exists
+            if (window.categoriesTagsManager.getCategoryByName(newCategory)) {
+                showNotification('This category already exists', 'error');
+                return;
+            }
+            
+            await window.categoriesTagsManager.createCategory(newCategory);
+            
+            // Update local array for compatibility
+            categories = window.categoriesTagsManager.getCategoryNames();
+            
+            categoryInput.value = '';
+            renderCategoriesLists();
+            populateCategoryDropdown();
+            showNotification('Category added successfully', 'success');
+        } catch (error) {
+            showNotification('Error creating category: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     if (categories.includes(newCategory)) {
         showNotification('This category already exists', 'error');
         return;
     }
     
-    // Add to categories array
     categories.push(newCategory);
-    
-    // Save to localStorage
     localStorage.setItem('fooodis-blog-categories', JSON.stringify(categories));
-    
-    // Clear input
     categoryInput.value = '';
-    
-    // Re-render categories
     renderCategoriesLists();
     populateCategoryDropdown();
-    
     showNotification('Category added successfully', 'success');
 }
 
 // Edit category
-function editCategory(category) {
+async function editCategory(category) {
     const newName = prompt('Enter new name for category:', category);
     
     if (!newName || newName.trim() === '') return;
     
-    // Check if new name already exists
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            // Check if new name already exists
+            if (newName !== category && window.categoriesTagsManager.getCategoryByName(newName)) {
+                alert('A category with this name already exists');
+                return;
+            }
+            
+            const categoryObj = window.categoriesTagsManager.getCategoryByName(category);
+            if (categoryObj) {
+                await window.categoriesTagsManager.updateCategory(categoryObj.id, { 
+                    name: newName,
+                    oldName: category
+                });
+                
+                // Update local arrays for compatibility
+                categories = window.categoriesTagsManager.getCategoryNames();
+                subcategories = window.categoriesTagsManager.subcategories.map(s => ({ 
+                    name: s.name, 
+                    parent: s.parentCategory 
+                }));
+            }
+            
+            renderCategoriesLists();
+            renderPostsTable();
+            populateCategoryDropdown();
+            showNotification('Category updated successfully', 'success');
+        } catch (error) {
+            showNotification('Error updating category: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     if (newName !== category && categories.includes(newName)) {
         alert('A category with this name already exists');
         return;
     }
     
-    // Update category name in categories array
     const index = categories.indexOf(category);
     if (index !== -1) {
         categories[index] = newName;
     }
     
-    // Update category name in subcategories
     subcategories.forEach((subcategory, i) => {
         if (subcategory.parent === category) {
             subcategories[i].parent = newName;
         }
     });
     
-    // Update category name in blog posts
     blogPosts.forEach((post, i) => {
         if (post.category === category) {
             blogPosts[i].category = newName;
         }
     });
     
-    // Save to localStorage
     localStorage.setItem('fooodis-blog-categories', JSON.stringify(categories));
     localStorage.setItem('fooodis-blog-subcategories', JSON.stringify(subcategories));
     localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
     
-    // Re-render categories and posts
     renderCategoriesLists();
     renderPostsTable();
     populateCategoryDropdown();
 }
 
 // Delete category
-function deleteCategory(category) {
+async function deleteCategory(category) {
     if (!confirm(`Are you sure you want to delete the category "${category}"? This will also delete all associated subcategories.`)) {
         return;
     }
     
-    // Remove category from categories array
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            const categoryObj = window.categoriesTagsManager.getCategoryByName(category);
+            if (categoryObj) {
+                await window.categoriesTagsManager.deleteCategory(categoryObj.id);
+                
+                // Update local arrays for compatibility
+                categories = window.categoriesTagsManager.getCategoryNames();
+                subcategories = window.categoriesTagsManager.subcategories.map(s => ({ 
+                    name: s.name, 
+                    parent: s.parentCategory 
+                }));
+            }
+            
+            renderCategoriesLists();
+            renderPostsTable();
+            populateCategoryDropdown();
+            showNotification('Category deleted successfully', 'success');
+        } catch (error) {
+            showNotification('Error deleting category: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     const index = categories.indexOf(category);
     if (index !== -1) {
         categories.splice(index, 1);
     }
     
-    // Remove associated subcategories
     subcategories = subcategories.filter(subcategory => subcategory.parent !== category);
     
-    // Update blog posts (set category to null)
     blogPosts.forEach((post, i) => {
         if (post.category === category) {
             blogPosts[i].category = null;
@@ -1171,20 +1239,18 @@ function deleteCategory(category) {
         }
     });
     
-    // Save to localStorage
     localStorage.setItem('fooodis-blog-categories', JSON.stringify(categories));
     localStorage.setItem('fooodis-blog-subcategories', JSON.stringify(subcategories));
     localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
     
-    // Re-render categories and posts
     renderCategoriesLists();
     renderPostsTable();
     populateCategoryDropdown();
 }
 
 // Add new subcategory
-function addNewSubcategory() {
-    const subcategoryInput = document.getElementById('newSubcategory');
+async function addNewSubcategory() {
+    const subcategoryInput = document.getElementById('newSubcategory') || document.getElementById('newSubcategoryName');
     const subcategoryParent = document.getElementById('subcategoryParent');
     
     if (!subcategoryInput || !subcategoryParent) {
@@ -1205,29 +1271,39 @@ function addNewSubcategory() {
         return;
     }
     
-    // Check if subcategory already exists
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            await window.categoriesTagsManager.createSubcategory(newSubcategory, parentCategory);
+            
+            // Update local array for compatibility
+            subcategories = window.categoriesTagsManager.subcategories.map(s => ({ 
+                name: s.name, 
+                parent: s.parentCategory 
+            }));
+            
+            subcategoryInput.value = '';
+            renderCategoriesLists();
+            populateCategoryDropdown();
+            showNotification('Subcategory added successfully', 'success');
+        } catch (error) {
+            showNotification('Error creating subcategory: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     const existingSubcategory = subcategories.find(s => s.name === newSubcategory && s.parent === parentCategory);
     if (existingSubcategory) {
         showNotification('This subcategory already exists under the selected parent category', 'error');
         return;
     }
     
-    // Add to subcategories array
-    subcategories.push({
-        name: newSubcategory,
-        parent: parentCategory
-    });
-    
-    // Save to localStorage
+    subcategories.push({ name: newSubcategory, parent: parentCategory });
     localStorage.setItem('fooodis-blog-subcategories', JSON.stringify(subcategories));
-    
-    // Clear input
     subcategoryInput.value = '';
-    
-    // Re-render subcategories
     renderCategoriesLists();
     populateCategoryDropdown();
-    
     showNotification('Subcategory added successfully', 'success');
 }
 
@@ -1268,37 +1344,60 @@ function editSubcategory(name, parent) {
 }
 
 // Delete subcategory
-function deleteSubcategory(name, parent) {
+async function deleteSubcategory(name, parent) {
     if (!confirm(`Are you sure you want to delete the subcategory "${name}"?`)) {
         return;
     }
     
-    // Remove subcategory from subcategories array
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            const subcategory = window.categoriesTagsManager.subcategories.find(
+                s => s.name === name && s.parentCategory === parent
+            );
+            if (subcategory) {
+                await window.categoriesTagsManager.deleteSubcategory(subcategory.id);
+                
+                // Update local array for compatibility
+                subcategories = window.categoriesTagsManager.subcategories.map(s => ({ 
+                    name: s.name, 
+                    parent: s.parentCategory 
+                }));
+            }
+            
+            renderCategoriesLists();
+            renderPostsTable();
+            populateCategoryDropdown();
+            showNotification('Subcategory deleted successfully', 'success');
+        } catch (error) {
+            showNotification('Error deleting subcategory: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     const index = subcategories.findIndex(s => s.name === name && s.parent === parent);
     if (index !== -1) {
         subcategories.splice(index, 1);
     }
     
-    // Update blog posts (set subcategory to null)
     blogPosts.forEach((post, i) => {
         if (post.category === parent && post.subcategory === name) {
             blogPosts[i].subcategory = null;
         }
     });
     
-    // Save to localStorage
     localStorage.setItem('fooodis-blog-subcategories', JSON.stringify(subcategories));
     localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
     
-    // Re-render subcategories and posts
     renderCategoriesLists();
     renderPostsTable();
     populateCategoryDropdown();
 }
 
 // Add new tag
-function addNewTag() {
-    const tagInput = document.getElementById('newTag');
+async function addNewTag() {
+    const tagInput = document.getElementById('newTag') || document.getElementById('newTagName');
     
     if (!tagInput) {
         showNotification('Tag input field not found', 'error');
@@ -1312,46 +1411,82 @@ function addNewTag() {
         return;
     }
     
-    // Check if tag already exists
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            const result = await window.categoriesTagsManager.createTag(newTag);
+            
+            // Update local array for compatibility
+            tags = window.categoriesTagsManager.getTagNames();
+            
+            tagInput.value = '';
+            renderTagsCloud();
+            
+            if (result.existing) {
+                showNotification('Tag already exists', 'info');
+            } else {
+                showNotification('Tag added successfully', 'success');
+            }
+        } catch (error) {
+            showNotification('Error creating tag: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     if (tags.includes(newTag)) {
         showNotification('This tag already exists', 'error');
         return;
     }
     
-    // Add to tags array
     tags.push(newTag);
-    
-    // Save to localStorage
     localStorage.setItem('fooodis-blog-tags', JSON.stringify(tags));
-    
-    // Clear input
     tagInput.value = '';
-    
-    // Re-render tags
     renderTagsCloud();
-    
     showNotification('Tag added successfully', 'success');
 }
 
 // Edit tag
-function editTag(tag) {
+async function editTag(tag) {
     const newName = prompt('Enter new name for tag:', tag);
     
     if (!newName || newName.trim() === '') return;
     
-    // Check if new name already exists
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            // Check if new name already exists
+            if (newName !== tag && window.categoriesTagsManager.getTagByName(newName)) {
+                showNotification('A tag with this name already exists', 'error');
+                return;
+            }
+            
+            const tagObj = window.categoriesTagsManager.getTagByName(tag);
+            if (tagObj) {
+                await window.categoriesTagsManager.updateTag(tagObj.id, { name: newName });
+                tags = window.categoriesTagsManager.getTagNames();
+            }
+            
+            renderTagsCloud();
+            renderPostsTable();
+            showNotification('Tag updated successfully', 'success');
+        } catch (error) {
+            showNotification('Error updating tag: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     if (newName !== tag && tags.includes(newName)) {
         showNotification('A tag with this name already exists', 'error');
         return;
     }
     
-    // Update tag name in tags array
     const index = tags.indexOf(tag);
     if (index !== -1) {
         tags[index] = newName;
     }
     
-    // Update tag name in blog posts
     blogPosts.forEach((post, i) => {
         if (post.tags && typeof post.tags === 'string' && post.tags.includes(tag)) {
             const tagArray = post.tags.split(',').map(t => t.trim());
@@ -1363,30 +1498,44 @@ function editTag(tag) {
         }
     });
     
-    // Save to localStorage
     localStorage.setItem('fooodis-blog-tags', JSON.stringify(tags));
     localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
     
-    // Re-render tags and posts
     renderTagsCloud();
     renderPostsTable();
-    
     showNotification('Tag updated successfully', 'success');
 }
 
 // Delete tag
-function deleteTag(tag) {
+async function deleteTag(tag) {
     if (!confirm(`Are you sure you want to delete the tag "${tag}"?`)) {
         return;
     }
     
-    // Remove tag from tags array
+    // Use CategoriesTagsManager if available
+    if (window.categoriesTagsManager) {
+        try {
+            const tagObj = window.categoriesTagsManager.getTagByName(tag);
+            if (tagObj) {
+                await window.categoriesTagsManager.deleteTag(tagObj.id);
+                tags = window.categoriesTagsManager.getTagNames();
+            }
+            
+            renderTagsCloud();
+            renderPostsTable();
+            showNotification('Tag deleted successfully', 'success');
+        } catch (error) {
+            showNotification('Error deleting tag: ' + error.message, 'error');
+        }
+        return;
+    }
+    
+    // Fallback to localStorage
     const index = tags.indexOf(tag);
     if (index !== -1) {
         tags.splice(index, 1);
     }
     
-    // Update blog posts (remove tag)
     blogPosts.forEach((post, i) => {
         if (post.tags && typeof post.tags === 'string' && post.tags.includes(tag)) {
             const updatedTags = post.tags.split(',').map(t => t.trim()).filter(t => t !== tag);
@@ -1394,14 +1543,11 @@ function deleteTag(tag) {
         }
     });
     
-    // Save to localStorage
     localStorage.setItem('fooodis-blog-tags', JSON.stringify(tags));
     localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
     
-    // Re-render tags and posts
     renderTagsCloud();
     renderPostsTable();
-    
     showNotification('Tag deleted successfully', 'success');
 }
 
