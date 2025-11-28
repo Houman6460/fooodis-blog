@@ -241,6 +241,9 @@ function setupEventListeners() {
         });
     }
     
+    // Category +/- buttons
+    setupCategoryButtons();
+    
     // Path actions (edit, delete, toggle)
     document.addEventListener('click', function(event) {
         // Edit path
@@ -539,11 +542,17 @@ function calculateNextRun(path) {
 function openAutomationPathForm() {
     const modal = document.querySelector('.automation-path-modal');
     if (modal) {
-        // Load categories from the categories section
-        loadCategories();
+        // Load categories from backend API
+        loadCategoriesFromAPI();
         
-        // Load custom assistants from AI Configuration
-        loadCustomAssistants();
+        // Load custom assistants from backend API
+        loadAssistantsFromAPI();
+        
+        // Load media folders from backend API
+        loadMediaFoldersFromAPI();
+        
+        // Load prompt templates from backend API
+        loadPromptTemplatesFromAPI();
         
         // Show the modal
         modal.classList.add('active');
@@ -551,7 +560,7 @@ function openAutomationPathForm() {
 }
 
 /**
- * Load categories from the categories section
+ * Load categories from the categories section (legacy - localStorage)
  */
 function loadCategories() {
     // Get the category and subcategory select elements
@@ -592,6 +601,472 @@ function loadCategories() {
         }
     } catch (error) {
         console.error('Error loading categories:', error);
+    }
+}
+
+/**
+ * Load categories from backend API (D1)
+ */
+async function loadCategoriesFromAPI() {
+    const categorySelect = document.getElementById('category');
+    const subcategorySelect = document.getElementById('subcategory');
+    
+    if (!categorySelect) return;
+    
+    try {
+        const response = await fetch('/api/categories?include_subcategories=true');
+        if (response.ok) {
+            const categories = await response.json();
+            
+            // Clear existing options except the first one
+            while (categorySelect.options.length > 1) {
+                categorySelect.remove(1);
+            }
+            if (subcategorySelect) {
+                while (subcategorySelect.options.length > 1) {
+                    subcategorySelect.remove(1);
+                }
+            }
+            
+            // Store for subcategory filtering
+            window.automationCategories = categories;
+            
+            // Add categories
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.name;
+                option.textContent = category.name;
+                option.dataset.categoryId = category.id;
+                categorySelect.appendChild(option);
+            });
+            
+            // Set up category change handler for subcategory filtering
+            categorySelect.addEventListener('change', function() {
+                updateSubcategoryOptions(this.value);
+            });
+            
+            console.log(`Loaded ${categories.length} categories from API`);
+        } else {
+            console.warn('Failed to load categories from API, falling back to localStorage');
+            loadCategories();
+        }
+    } catch (error) {
+        console.error('Error loading categories from API:', error);
+        loadCategories();
+    }
+}
+
+/**
+ * Update subcategory options based on selected category
+ */
+function updateSubcategoryOptions(categoryName) {
+    const subcategorySelect = document.getElementById('subcategory');
+    if (!subcategorySelect || !window.automationCategories) return;
+    
+    // Clear existing options
+    subcategorySelect.innerHTML = '<option value="" disabled selected>Select a subcategory</option>';
+    
+    // Find the selected category
+    const category = window.automationCategories.find(c => c.name === categoryName);
+    
+    if (category && category.subcategories && category.subcategories.length > 0) {
+        category.subcategories.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub.name;
+            option.textContent = sub.name;
+            option.dataset.subcategoryId = sub.id;
+            subcategorySelect.appendChild(option);
+        });
+        subcategorySelect.disabled = false;
+    } else {
+        subcategorySelect.innerHTML = '<option value="" disabled selected>No subcategories available</option>';
+        subcategorySelect.disabled = true;
+    }
+}
+
+/**
+ * Load AI assistants from backend API
+ */
+async function loadAssistantsFromAPI() {
+    const assistantTypeSelect = document.getElementById('assistant-type');
+    const assistantIdGroup = document.querySelector('.assistant-id-group');
+    const assistantIdInput = document.getElementById('assistant-id');
+    
+    if (!assistantTypeSelect) return;
+    
+    try {
+        const response = await fetch('/api/automation/assistants?active_only=true');
+        if (response.ok) {
+            const assistants = await response.json();
+            
+            // Remove existing custom assistant options
+            const options = Array.from(assistantTypeSelect.options);
+            for (let i = options.length - 1; i >= 0; i--) {
+                if (options[i].value.startsWith('custom-') || options[i].parentElement?.tagName === 'OPTGROUP') {
+                    options[i].remove();
+                }
+            }
+            
+            // Remove existing optgroup
+            const existingOptgroup = assistantTypeSelect.querySelector('optgroup');
+            if (existingOptgroup) existingOptgroup.remove();
+            
+            // Group assistants by type
+            const defaultAssistants = assistants.filter(a => a.type !== 'custom');
+            const customAssistants = assistants.filter(a => a.type === 'custom' || a.openai_assistant_id);
+            
+            // Update default options with backend assistants
+            defaultAssistants.forEach(assistant => {
+                // Check if option already exists
+                let existingOption = Array.from(assistantTypeSelect.options).find(
+                    opt => opt.value === assistant.type
+                );
+                if (existingOption) {
+                    existingOption.dataset.assistantId = assistant.openai_assistant_id;
+                    existingOption.dataset.instructions = assistant.instructions || '';
+                }
+            });
+            
+            // Add custom assistants
+            if (customAssistants.length > 0) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = 'Custom Assistants';
+                
+                customAssistants.forEach(assistant => {
+                    const option = document.createElement('option');
+                    option.value = `custom-${assistant.id}`;
+                    option.textContent = assistant.name;
+                    option.dataset.assistantId = assistant.openai_assistant_id;
+                    option.dataset.dbId = assistant.id;
+                    optgroup.appendChild(option);
+                });
+                
+                assistantTypeSelect.appendChild(optgroup);
+            }
+            
+            // Set up change handler
+            assistantTypeSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (this.value === 'custom' || this.value.startsWith('custom-')) {
+                    if (assistantIdGroup) assistantIdGroup.classList.add('visible');
+                    if (assistantIdInput && selectedOption.dataset.assistantId) {
+                        assistantIdInput.value = selectedOption.dataset.assistantId;
+                    }
+                } else {
+                    if (assistantIdGroup) assistantIdGroup.classList.remove('visible');
+                }
+            });
+            
+            console.log(`Loaded ${assistants.length} assistants from API`);
+        } else {
+            console.warn('Failed to load assistants from API, falling back to localStorage');
+            loadCustomAssistants();
+        }
+    } catch (error) {
+        console.error('Error loading assistants from API:', error);
+        loadCustomAssistants();
+    }
+}
+
+/**
+ * Load media folders from backend API
+ */
+async function loadMediaFoldersFromAPI() {
+    const mediaFolderSelect = document.getElementById('media-folder');
+    if (!mediaFolderSelect) return;
+    
+    try {
+        const response = await fetch('/api/media/folders');
+        if (response.ok) {
+            const folders = await response.json();
+            
+            // Clear existing options except the first one (Use Random Images)
+            while (mediaFolderSelect.options.length > 1) {
+                mediaFolderSelect.remove(1);
+            }
+            
+            // Add folders
+            folders.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder.name;
+                option.textContent = `${folder.name} (${folder.file_count} files)`;
+                mediaFolderSelect.appendChild(option);
+            });
+            
+            console.log(`Loaded ${folders.length} media folders from API`);
+        }
+    } catch (error) {
+        console.error('Error loading media folders from API:', error);
+    }
+}
+
+/**
+ * Load prompt templates from backend API
+ */
+async function loadPromptTemplatesFromAPI() {
+    try {
+        const response = await fetch('/api/automation/prompts');
+        if (response.ok) {
+            const prompts = await response.json();
+            
+            // Store prompts for use in the form
+            window.automationPrompts = prompts;
+            
+            // Populate prompt template dropdown if it exists
+            const promptSelect = document.getElementById('prompt-template-select');
+            if (promptSelect) {
+                // Clear existing options
+                promptSelect.innerHTML = '<option value="">Custom Prompt</option>';
+                
+                prompts.forEach(prompt => {
+                    const option = document.createElement('option');
+                    option.value = prompt.id;
+                    option.textContent = prompt.name;
+                    option.dataset.template = prompt.prompt_template;
+                    option.dataset.variables = JSON.stringify(prompt.variables);
+                    promptSelect.appendChild(option);
+                });
+            }
+            
+            console.log(`Loaded ${prompts.length} prompt templates from API`);
+        }
+    } catch (error) {
+        console.error('Error loading prompt templates from API:', error);
+    }
+}
+
+/**
+ * Setup category +/- buttons for quick add/remove
+ */
+function setupCategoryButtons() {
+    // Category add button
+    document.addEventListener('click', async function(event) {
+        // Add category button
+        if (event.target.closest('.add-category-btn') || 
+            (event.target.closest('button') && event.target.closest('.form-group')?.querySelector('#category'))) {
+            const btn = event.target.closest('button');
+            if (btn && btn.textContent.includes('+')) {
+                event.preventDefault();
+                await quickAddCategory();
+            } else if (btn && btn.textContent.includes('-') || btn?.textContent.includes('−')) {
+                event.preventDefault();
+                await quickRemoveCategory();
+            }
+        }
+        
+        // Add subcategory button
+        if (event.target.closest('.add-subcategory-btn') || 
+            (event.target.closest('button') && event.target.closest('.form-group')?.querySelector('#subcategory'))) {
+            const btn = event.target.closest('button');
+            if (btn && btn.textContent.includes('+')) {
+                event.preventDefault();
+                await quickAddSubcategory();
+            } else if (btn && btn.textContent.includes('-') || btn?.textContent.includes('−')) {
+                event.preventDefault();
+                await quickRemoveSubcategory();
+            }
+        }
+    });
+}
+
+/**
+ * Quick add a new category from the automation form
+ */
+async function quickAddCategory() {
+    const categoryName = prompt('Enter new category name:');
+    if (!categoryName || !categoryName.trim()) return;
+    
+    const name = categoryName.trim();
+    
+    try {
+        const response = await fetch('/api/categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Category created:', result);
+            
+            // Add to dropdown
+            const categorySelect = document.getElementById('category');
+            if (categorySelect) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                option.dataset.categoryId = result.category?.id;
+                categorySelect.appendChild(option);
+                categorySelect.value = name;
+            }
+            
+            // Refresh categories
+            await loadCategoriesFromAPI();
+            
+            alert(`Category "${name}" created successfully!`);
+        } else {
+            const error = await response.json();
+            alert('Failed to create category: ' + (error.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error creating category:', error);
+        alert('Error creating category: ' + error.message);
+    }
+}
+
+/**
+ * Quick remove the selected category
+ */
+async function quickRemoveCategory() {
+    const categorySelect = document.getElementById('category');
+    if (!categorySelect || !categorySelect.value) {
+        alert('Please select a category to remove');
+        return;
+    }
+    
+    const categoryName = categorySelect.value;
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const categoryId = selectedOption.dataset.categoryId;
+    
+    if (!confirm(`Are you sure you want to remove the category "${categoryName}"?`)) {
+        return;
+    }
+    
+    try {
+        // Try to delete by ID first, then by name
+        let response;
+        if (categoryId) {
+            response = await fetch(`/api/categories/${categoryId}`, { method: 'DELETE' });
+        } else {
+            // Find category by name first
+            const categories = await fetch('/api/categories').then(r => r.json());
+            const category = categories.find(c => c.name === categoryName);
+            if (category) {
+                response = await fetch(`/api/categories/${category.id}`, { method: 'DELETE' });
+            }
+        }
+        
+        if (response && response.ok) {
+            console.log('Category deleted');
+            
+            // Remove from dropdown
+            selectedOption.remove();
+            categorySelect.value = '';
+            
+            // Refresh categories
+            await loadCategoriesFromAPI();
+            
+            alert(`Category "${categoryName}" removed successfully!`);
+        } else {
+            const error = await response?.json();
+            alert('Failed to remove category: ' + (error?.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error removing category:', error);
+        alert('Error removing category: ' + error.message);
+    }
+}
+
+/**
+ * Quick add a new subcategory from the automation form
+ */
+async function quickAddSubcategory() {
+    const categorySelect = document.getElementById('category');
+    if (!categorySelect || !categorySelect.value) {
+        alert('Please select a category first');
+        return;
+    }
+    
+    const parentCategory = categorySelect.value;
+    const subcategoryName = prompt(`Enter new subcategory name for "${parentCategory}":`);
+    if (!subcategoryName || !subcategoryName.trim()) return;
+    
+    const name = subcategoryName.trim();
+    
+    try {
+        const response = await fetch('/api/subcategories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, parent_category: parentCategory })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Subcategory created:', result);
+            
+            // Add to dropdown
+            const subcategorySelect = document.getElementById('subcategory');
+            if (subcategorySelect) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                option.dataset.subcategoryId = result.subcategory?.id;
+                subcategorySelect.appendChild(option);
+                subcategorySelect.value = name;
+                subcategorySelect.disabled = false;
+            }
+            
+            // Refresh categories
+            await loadCategoriesFromAPI();
+            
+            alert(`Subcategory "${name}" created successfully!`);
+        } else {
+            const error = await response.json();
+            alert('Failed to create subcategory: ' + (error.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error creating subcategory:', error);
+        alert('Error creating subcategory: ' + error.message);
+    }
+}
+
+/**
+ * Quick remove the selected subcategory
+ */
+async function quickRemoveSubcategory() {
+    const subcategorySelect = document.getElementById('subcategory');
+    if (!subcategorySelect || !subcategorySelect.value) {
+        alert('Please select a subcategory to remove');
+        return;
+    }
+    
+    const subcategoryName = subcategorySelect.value;
+    const selectedOption = subcategorySelect.options[subcategorySelect.selectedIndex];
+    const subcategoryId = selectedOption.dataset.subcategoryId;
+    
+    if (!confirm(`Are you sure you want to remove the subcategory "${subcategoryName}"?`)) {
+        return;
+    }
+    
+    try {
+        // Find and delete subcategory
+        const subcategories = await fetch('/api/subcategories').then(r => r.json());
+        const subcategory = subcategories.find(s => s.name === subcategoryName);
+        
+        if (subcategory) {
+            const response = await fetch(`/api/subcategories/${subcategoryId || subcategory.id}`, { 
+                method: 'DELETE' 
+            });
+            
+            if (response.ok) {
+                console.log('Subcategory deleted');
+                
+                // Remove from dropdown
+                selectedOption.remove();
+                subcategorySelect.value = '';
+                
+                // Refresh categories
+                await loadCategoriesFromAPI();
+                
+                alert(`Subcategory "${subcategoryName}" removed successfully!`);
+            } else {
+                const error = await response.json();
+                alert('Failed to remove subcategory: ' + (error.error || 'Unknown error'));
+            }
+        }
+    } catch (error) {
+        console.error('Error removing subcategory:', error);
+        alert('Error removing subcategory: ' + error.message);
     }
 }
 
