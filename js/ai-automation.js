@@ -2434,18 +2434,26 @@ async function generateImage(title, contentType) {
 }
 
 /**
- * Publish an automated post
+ * Publish an automated post (or schedule it)
  * @param {Object} post - The post to publish
- * @returns {Promise<Object>} - The result of the publish operation
+ * @param {Object} options - Options including automationPath for context
+ * @returns {Promise<Object>} - The result of the publish/schedule operation
  */
-async function publishAutomatedPost(post) {
+async function publishAutomatedPost(post, options = {}) {
     try {
-        console.log('Publishing automated post:', post.title);
+        console.log('Publishing/scheduling automated post:', post.title);
         
         // Validate post
         if (!post) throw new Error('Post is null or undefined');
         if (!post.title) throw new Error('Post has no title');
         if (!post.content) throw new Error('Post has no content');
+        
+        const automationPath = options.automationPath || options.path;
+        
+        // Check if this should be scheduled instead of published immediately
+        if (options.scheduleFor || (automationPath && automationPath.mode === 'schedule')) {
+            return await scheduleAutomatedPost(post, automationPath, options);
+        }
         
         // Use BlogDataManager if available
         if (window.blogDataManager) {
@@ -2480,6 +2488,16 @@ async function publishAutomatedPost(post) {
                 console.log('Swedish translation published via BlogDataManager');
             }
             
+            // Dispatch event for other modules
+            document.dispatchEvent(new CustomEvent('aiPostPublished', {
+                detail: { 
+                    post: createdPost,
+                    source: 'ai_automation',
+                    automationPathId: automationPath?.id,
+                    automationPathName: automationPath?.name
+                }
+            }));
+            
             return { success: true, post: createdPost };
         } else {
             // Fallback to old localStorage method if manager not found
@@ -2493,6 +2511,109 @@ async function publishAutomatedPost(post) {
             error: error.message || 'Unknown error publishing post'
         };
     }
+}
+
+/**
+ * Schedule an AI-generated post for later publishing
+ * @param {Object} post - The post to schedule
+ * @param {Object} automationPath - The automation path that generated this
+ * @param {Object} options - Additional options
+ */
+async function scheduleAutomatedPost(post, automationPath, options = {}) {
+    try {
+        console.log('Scheduling automated post:', post.title);
+        
+        // Calculate scheduled datetime
+        let scheduledDatetime;
+        if (options.scheduleFor) {
+            scheduledDatetime = new Date(options.scheduleFor).getTime();
+        } else if (automationPath && automationPath.schedule) {
+            // Calculate next scheduled time based on path schedule
+            scheduledDatetime = calculateNextScheduledTime(automationPath.schedule);
+        } else {
+            // Default to 1 hour from now
+            scheduledDatetime = Date.now() + (60 * 60 * 1000);
+        }
+        
+        // Prepare scheduled post data
+        const scheduledPostData = {
+            title: post.title,
+            content: post.content,
+            excerpt: post.excerpt || '',
+            image_url: post.image || post.imageUrl || '',
+            category: post.category || 'Uncategorized',
+            subcategory: post.subcategory || '',
+            tags: post.tags || [],
+            author: post.author || 'AI Assistant',
+            scheduled_datetime: scheduledDatetime,
+            source: 'ai_automation',
+            automation_path_id: automationPath?.id,
+            automation_path_name: automationPath?.name,
+            is_featured: post.featured || false
+        };
+        
+        // Use ScheduledPostsManager if available
+        if (window.scheduledPostsManager) {
+            const result = await window.scheduledPostsManager.schedulePost(scheduledPostData, 'ai_automation');
+            console.log('Post scheduled via ScheduledPostsManager:', result.id);
+            
+            // Dispatch event
+            document.dispatchEvent(new CustomEvent('aiPostScheduled', {
+                detail: { 
+                    scheduledPost: result,
+                    source: 'ai_automation',
+                    automationPathId: automationPath?.id
+                }
+            }));
+            
+            return { success: true, scheduled: true, post: result };
+        } else {
+            // Fallback to API directly
+            const response = await fetch('/api/scheduled-posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(scheduledPostData)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Post scheduled via API:', result.post.id);
+                
+                document.dispatchEvent(new CustomEvent('aiPostScheduled', {
+                    detail: { scheduledPost: result.post, source: 'ai_automation' }
+                }));
+                
+                return { success: true, scheduled: true, post: result.post };
+            } else {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to schedule post');
+            }
+        }
+    } catch (error) {
+        console.error('Error scheduling automated post:', error);
+        return {
+            success: false,
+            error: error.message || 'Unknown error scheduling post'
+        };
+    }
+}
+
+/**
+ * Calculate next scheduled time based on schedule config
+ */
+function calculateNextScheduledTime(schedule) {
+    const now = new Date();
+    const [hours, minutes] = (schedule.time || '14:00').split(':').map(Number);
+    
+    let nextRun = new Date();
+    nextRun.setHours(hours, minutes, 0, 0);
+    
+    // If time has passed today, move to next occurrence
+    if (nextRun <= now) {
+        nextRun.setDate(nextRun.getDate() + 1);
+    }
+    
+    return nextRun.getTime();
 }
 
 /**

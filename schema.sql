@@ -388,6 +388,62 @@ CREATE INDEX IF NOT EXISTS idx_scheduled_runs_time ON scheduled_runs(scheduled_t
 CREATE INDEX IF NOT EXISTS idx_scheduled_runs_status ON scheduled_runs(status);
 
 -- ============================================
+-- SCHEDULED POSTS TABLE (Enhanced)
+-- Full post data with source tracking for all sections
+-- ============================================
+CREATE TABLE IF NOT EXISTS scheduled_posts (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT,
+    excerpt TEXT,
+    image_url TEXT,
+    category TEXT,
+    subcategory TEXT,
+    tags TEXT,
+    author TEXT DEFAULT 'Admin',
+    slug TEXT,
+    scheduled_datetime INTEGER NOT NULL,
+    timezone TEXT DEFAULT 'UTC',
+    source TEXT DEFAULT 'manual',
+    automation_path_id TEXT,
+    automation_path_name TEXT,
+    generation_log_id TEXT,
+    status TEXT DEFAULT 'pending',
+    published_post_id TEXT,
+    retry_count INTEGER DEFAULT 0,
+    max_retries INTEGER DEFAULT 3,
+    last_attempt INTEGER,
+    error_message TEXT,
+    is_featured INTEGER DEFAULT 0,
+    priority INTEGER DEFAULT 0,
+    notify_on_publish INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER,
+    FOREIGN KEY (automation_path_id) REFERENCES automation_paths(id) ON DELETE SET NULL,
+    FOREIGN KEY (generation_log_id) REFERENCES ai_generation_logs(id) ON DELETE SET NULL,
+    FOREIGN KEY (published_post_id) REFERENCES blog_posts(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_scheduled_datetime ON scheduled_posts(scheduled_datetime);
+CREATE INDEX IF NOT EXISTS idx_scheduled_status ON scheduled_posts(status);
+CREATE INDEX IF NOT EXISTS idx_scheduled_source ON scheduled_posts(source);
+
+-- ============================================
+-- SCHEDULED POST HISTORY TABLE
+-- Track scheduling events
+-- ============================================
+CREATE TABLE IF NOT EXISTS scheduled_post_history (
+    id TEXT PRIMARY KEY,
+    scheduled_post_id TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    event_data TEXT,
+    created_at INTEGER,
+    FOREIGN KEY (scheduled_post_id) REFERENCES scheduled_posts(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_history_post ON scheduled_post_history(scheduled_post_id);
+
+-- ============================================
 -- CONVERSATIONS TABLE (Chatbot)
 -- ============================================
 CREATE TABLE IF NOT EXISTS conversations (
