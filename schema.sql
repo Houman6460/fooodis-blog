@@ -6,6 +6,49 @@
 -- Or use this file for a fresh database setup
 
 -- ============================================
+-- USER PROFILES TABLE
+-- Single admin profile for blog management
+-- ============================================
+CREATE TABLE IF NOT EXISTS user_profiles (
+    user_id TEXT PRIMARY KEY,
+    display_name TEXT NOT NULL,
+    email TEXT,
+    role TEXT DEFAULT 'Administrator',
+    bio TEXT,
+    avatar_url TEXT,
+    password_hash TEXT,
+    password_changed_at INTEGER,
+    social_links TEXT,
+    preferences TEXT,
+    last_login INTEGER,
+    login_count INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+-- Default admin profile
+INSERT OR IGNORE INTO user_profiles (user_id, display_name, email, role, preferences, created_at, updated_at)
+VALUES ('admin', 'Admin User', 'admin@fooodis.com', 'Administrator', '{"theme":"dark","notifications":true}', 0, 0);
+
+-- ============================================
+-- ACTIVITY LOG TABLE
+-- Track user actions
+-- ============================================
+CREATE TABLE IF NOT EXISTS activity_log (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    action TEXT NOT NULL,
+    details TEXT,
+    ip_address TEXT,
+    user_agent TEXT,
+    created_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_activity_user ON activity_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_activity_action ON activity_log(action);
+CREATE INDEX IF NOT EXISTS idx_activity_date ON activity_log(created_at);
+
+-- ============================================
 -- BLOG POSTS TABLE (Core)
 -- ============================================
 CREATE TABLE IF NOT EXISTS blog_posts (
