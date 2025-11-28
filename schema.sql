@@ -880,7 +880,188 @@ CREATE TABLE IF NOT EXISTS canned_responses (
 CREATE INDEX IF NOT EXISTS idx_canned_category ON canned_responses(category);
 
 -- ============================================
--- CONVERSATIONS TABLE (Chatbot)
+-- CHATBOT CONVERSATIONS TABLE
+-- Store all chatbot conversations
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_conversations (
+    id TEXT PRIMARY KEY,
+    visitor_id TEXT,
+    user_id TEXT,
+    thread_id TEXT,
+    assistant_id TEXT,
+    user_name TEXT,
+    user_email TEXT,
+    user_phone TEXT,
+    restaurant_name TEXT,
+    user_type TEXT,
+    language TEXT DEFAULT 'en',
+    language_flag TEXT DEFAULT '🇺🇸',
+    status TEXT DEFAULT 'active',
+    is_registered INTEGER DEFAULT 0,
+    rating INTEGER,
+    rating_feedback TEXT,
+    message_count INTEGER DEFAULT 0,
+    first_message_at INTEGER,
+    last_message_at INTEGER,
+    ended_at INTEGER,
+    metadata TEXT,
+    created_at INTEGER,
+    updated_at INTEGER,
+    FOREIGN KEY (user_id) REFERENCES chatbot_users(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_conv_visitor ON chatbot_conversations(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_conv_user ON chatbot_conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_conv_status ON chatbot_conversations(status);
+CREATE INDEX IF NOT EXISTS idx_conv_date ON chatbot_conversations(created_at);
+
+-- ============================================
+-- CHATBOT MESSAGES TABLE
+-- Store individual messages in conversations
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_messages (
+    id TEXT PRIMARY KEY,
+    conversation_id TEXT NOT NULL,
+    role TEXT NOT NULL,
+    content TEXT NOT NULL,
+    assistant_id TEXT,
+    assistant_name TEXT,
+    tokens_used INTEGER DEFAULT 0,
+    response_time_ms INTEGER,
+    metadata TEXT,
+    created_at INTEGER,
+    FOREIGN KEY (conversation_id) REFERENCES chatbot_conversations(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_msg_conversation ON chatbot_messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_msg_role ON chatbot_messages(role);
+
+-- ============================================
+-- CHATBOT USERS (LEADS) TABLE
+-- Store user/lead information from chatbot
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_users (
+    id TEXT PRIMARY KEY,
+    visitor_id TEXT,
+    email TEXT UNIQUE,
+    name TEXT,
+    phone TEXT,
+    company TEXT,
+    restaurant_name TEXT,
+    user_type TEXT,
+    system_usage TEXT,
+    language TEXT DEFAULT 'en',
+    source TEXT DEFAULT 'chatbot',
+    status TEXT DEFAULT 'lead',
+    total_conversations INTEGER DEFAULT 0,
+    total_messages INTEGER DEFAULT 0,
+    last_conversation_at INTEGER,
+    custom_fields TEXT,
+    tags TEXT,
+    notes TEXT,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_chatbot_users_email ON chatbot_users(email);
+CREATE INDEX IF NOT EXISTS idx_chatbot_users_status ON chatbot_users(status);
+
+-- ============================================
+-- CHATBOT SCENARIOS TABLE
+-- Store conversation flow scenarios
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_scenarios (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    trigger_type TEXT DEFAULT 'keyword',
+    trigger_value TEXT,
+    language TEXT DEFAULT 'all',
+    flow_data TEXT NOT NULL,
+    is_active INTEGER DEFAULT 1,
+    priority INTEGER DEFAULT 0,
+    usage_count INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_scenarios_active ON chatbot_scenarios(is_active);
+CREATE INDEX IF NOT EXISTS idx_scenarios_trigger ON chatbot_scenarios(trigger_type);
+
+-- ============================================
+-- CHATBOT SETTINGS TABLE
+-- Store chatbot configuration
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    type TEXT DEFAULT 'string',
+    category TEXT DEFAULT 'general',
+    description TEXT,
+    updated_at INTEGER
+);
+
+-- Default chatbot settings
+INSERT OR IGNORE INTO chatbot_settings (key, value, type, category, updated_at) VALUES
+    ('enabled', 'true', 'boolean', 'general', 0),
+    ('chatbot_name', 'Fooodis Assistant', 'string', 'general', 0),
+    ('welcome_message', 'Hello! I''m your Fooodis assistant. How can I help you today?', 'string', 'general', 0),
+    ('widget_position', 'bottom-right', 'string', 'widget', 0),
+    ('widget_color', '#e8f24c', 'string', 'widget', 0),
+    ('default_language', 'en', 'string', 'general', 0),
+    ('supported_languages', '["en","sv"]', 'json', 'general', 0),
+    ('default_model', 'gpt-4', 'string', 'ai', 0),
+    ('enable_file_upload', 'true', 'boolean', 'features', 0),
+    ('enable_typing_indicator', 'true', 'boolean', 'features', 0),
+    ('enable_rating', 'true', 'boolean', 'features', 0),
+    ('enable_lead_capture', 'true', 'boolean', 'features', 0),
+    ('auto_greeting_delay', '3', 'number', 'behavior', 0);
+
+-- ============================================
+-- CHATBOT ANALYTICS TABLE
+-- Store daily chatbot analytics
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_analytics (
+    id TEXT PRIMARY KEY,
+    date TEXT NOT NULL UNIQUE,
+    total_conversations INTEGER DEFAULT 0,
+    new_conversations INTEGER DEFAULT 0,
+    returning_users INTEGER DEFAULT 0,
+    total_messages INTEGER DEFAULT 0,
+    avg_response_time_ms INTEGER DEFAULT 0,
+    avg_messages_per_conversation REAL DEFAULT 0,
+    total_tokens_used INTEGER DEFAULT 0,
+    leads_captured INTEGER DEFAULT 0,
+    ratings_count INTEGER DEFAULT 0,
+    ratings_sum INTEGER DEFAULT 0,
+    avg_rating REAL DEFAULT 0,
+    languages_used TEXT,
+    top_topics TEXT,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_chatbot_analytics_date ON chatbot_analytics(date);
+
+-- ============================================
+-- CHATBOT WIDGET DEPLOYMENTS TABLE
+-- Track widget code deployments
+-- ============================================
+CREATE TABLE IF NOT EXISTS chatbot_deployments (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    domain TEXT,
+    config TEXT,
+    api_key TEXT,
+    is_active INTEGER DEFAULT 1,
+    last_ping INTEGER,
+    total_loads INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER
+);
+
+-- ============================================
+-- LEGACY CONVERSATIONS TABLE (for migration)
 -- ============================================
 CREATE TABLE IF NOT EXISTS conversations (
     id TEXT PRIMARY KEY,
