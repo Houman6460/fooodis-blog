@@ -353,8 +353,8 @@ class ProfileManager {
      * Update avatar display elements
      */
     updateAvatarDisplay(avatarUrl) {
-        const avatarImages = document.querySelectorAll('.profile-avatar-img, .avatar-image, #avatar-preview');
-        const avatarContainers = document.querySelectorAll('.profile-avatar, .avatar-container');
+        const avatarImages = document.querySelectorAll('.profile-avatar-img, .avatar-image, #avatar-preview, .header-avatar-img');
+        const avatarContainers = document.querySelectorAll('.profile-avatar, .avatar-container, .header-avatar');
         
         avatarImages.forEach(img => {
             if (avatarUrl) {
@@ -376,7 +376,7 @@ class ProfileManager {
         });
         
         // Show/hide initials based on avatar
-        document.querySelectorAll('.avatar-initials').forEach(el => {
+        document.querySelectorAll('.avatar-initials, .header-avatar-initials').forEach(el => {
             el.style.display = avatarUrl ? 'none' : 'flex';
         });
     }
@@ -394,7 +394,7 @@ class ProfileManager {
             .substring(0, 2)
             .toUpperCase();
         
-        document.querySelectorAll('.avatar-initials').forEach(el => {
+        document.querySelectorAll('.avatar-initials, .header-avatar-initials').forEach(el => {
             el.textContent = initials;
         });
     }
