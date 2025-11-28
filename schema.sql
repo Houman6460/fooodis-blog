@@ -135,6 +135,36 @@ CREATE INDEX IF NOT EXISTS idx_media_folder ON media_library(folder);
 CREATE INDEX IF NOT EXISTS idx_media_r2_key ON media_library(r2_key);
 
 -- ============================================
+-- MEDIA FOLDERS TABLE
+-- Organize media into logical folders
+-- ============================================
+CREATE TABLE IF NOT EXISTS media_folders (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    display_name TEXT,
+    description TEXT,
+    parent_folder TEXT,
+    file_count INTEGER DEFAULT 0,
+    total_size INTEGER DEFAULT 0,
+    color TEXT DEFAULT '#478ac9',
+    icon TEXT DEFAULT 'folder',
+    is_system INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER,
+    FOREIGN KEY (parent_folder) REFERENCES media_folders(name) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_media_folders_parent ON media_folders(parent_folder);
+
+-- Default folders
+INSERT OR IGNORE INTO media_folders (id, name, display_name, description, is_system, created_at, updated_at)
+VALUES 
+    ('folder_uploads', 'uploads', 'Uploads', 'Default upload folder', 1, 0, 0),
+    ('folder_blog', 'blog-images', 'Blog Images', 'Images for blog posts', 1, 0, 0),
+    ('folder_ai', 'ai-generated', 'AI Generated', 'AI-generated media', 1, 0, 0),
+    ('folder_featured', 'featured', 'Featured', 'Featured images', 1, 0, 0);
+
+-- ============================================
 -- SCHEDULED POSTS TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS scheduled_posts (
