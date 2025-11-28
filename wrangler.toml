@@ -1,5 +1,6 @@
 name = "fooodis-blog"
 compatibility_date = "2023-01-01"
+pages_build_output_dir = "./"
 
 # ============================================
 # D1 Database Binding
@@ -16,7 +17,7 @@ database_id = "d106fe5e-fbe0-4942-9a9d-42e6c78515ed"
 # ============================================
 [[kv_namespaces]]
 binding = "KV"
-id = "PLACEHOLDER_KV_ID"  # Replace with your KV namespace ID from Cloudflare dashboard
+id = "cf0ff73f7d304dc79a9c0739d617e633"
 
 # ============================================
 # R2 Bucket Binding
@@ -34,5 +35,4 @@ ENVIRONMENT = "production"
 MAX_UPLOAD_SIZE = "10485760"  # 10MB in bytes
 ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 
-[site]
-bucket = "./"
+# Note: For Pages deployment, use pages_build_output_dir instead of [site]
