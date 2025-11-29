@@ -40,7 +40,10 @@ class BlogDataManager {
         try {
             const response = await fetch('/api/blog/posts');
             if (response.ok) {
-                const posts = await response.json();
+                const data = await response.json();
+                // API returns { posts: [...], pagination: {...} } - extract posts array
+                const posts = Array.isArray(data) ? data : (data.posts || []);
+                console.log('Blog Data Manager: Fetched', posts.length, 'posts from API');
                 // Update local storage to keep sync behavior working
                 localStorage.setItem(this.storageKey, JSON.stringify(posts));
                 // Dispatch update
@@ -54,7 +57,9 @@ class BlogDataManager {
     
     getAllPosts() {
         try {
-            const posts = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+            const data = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+            // Handle both array and object { posts: [...] } formats
+            const posts = Array.isArray(data) ? data : (data.posts || []);
             console.log('Blog Data Manager: Retrieved', posts.length, 'posts from storage');
             return posts;
         } catch (error) {
