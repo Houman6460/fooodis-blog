@@ -1617,11 +1617,37 @@ async function toggleAutomationPath(index) {
     }
 }
 
+// Add a global function to manually trigger automation
+window.runAutomationNow = function(pathIndex) {
+    if (pathIndex === undefined) {
+        // Run the first active path
+        const activeIndex = automationPaths.findIndex(p => p.active);
+        if (activeIndex === -1) {
+            console.error('No active automation paths found');
+            alert('No active automation paths. Please activate a path first.');
+            return;
+        }
+        pathIndex = activeIndex;
+    }
+    
+    const path = automationPaths[pathIndex];
+    if (!path) {
+        console.error('Path not found at index', pathIndex);
+        return;
+    }
+    
+    console.log('🚀 Manually triggering automation path:', path.name);
+    executeAutomationPath(path, pathIndex);
+};
+
+console.log('💡 TIP: Run runAutomationNow() in console to trigger automation immediately');
+
 /**
  * Initialize the scheduler
  */
 function initScheduler() {
     console.log('Initializing scheduler...');
+    console.log('⏰ NOTE: Scheduler only works while this page is open!');
     
     // Clear all scheduled tasks
     for (const taskId in scheduledTasks) {
