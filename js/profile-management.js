@@ -302,7 +302,11 @@ class ProfileManager {
      * Update all UI elements with profile data
      */
     updateUI() {
-        if (!this.profile) return;
+        console.log('ProfileManager: updateUI called, profile:', this.profile);
+        if (!this.profile) {
+            console.log('ProfileManager: No profile data, skipping UI update');
+            return;
+        }
         
         // Update form fields
         this.setFieldValue('profile-name', this.profile.display_name);
@@ -353,8 +357,12 @@ class ProfileManager {
      * Update avatar display elements
      */
     updateAvatarDisplay(avatarUrl) {
+        console.log('ProfileManager: updateAvatarDisplay called with:', avatarUrl);
         const avatarImages = document.querySelectorAll('.profile-avatar-img, .avatar-image, #avatar-preview, .header-avatar-img');
         const avatarContainers = document.querySelectorAll('.profile-avatar, .avatar-container, .header-avatar');
+        
+        console.log('ProfileManager: Found avatar images:', avatarImages.length);
+        console.log('ProfileManager: Found avatar containers:', avatarContainers.length);
         
         avatarImages.forEach(img => {
             if (avatarUrl) {
