@@ -9,6 +9,53 @@ window.automationPaths = window.automationPaths || [];
 window.editingPathIndex = window.editingPathIndex || -1;
 window.scheduledTasks = window.scheduledTasks || {};
 
+// Test function to verify API works (can be called from console)
+window.testCreatePost = async function() {
+    console.log('🧪 Testing post creation via API...');
+    
+    const testPost = {
+        title: 'AI Automation Test - ' + new Date().toLocaleString(),
+        content: '<p>This is a test post created by AI Automation to verify the API connection works correctly.</p>',
+        excerpt: 'Test post from AI Automation',
+        category: 'Test',
+        tags: ['test', 'automation'],
+        status: 'published',
+        author: 'AI Automation Test'
+    };
+    
+    try {
+        if (window.blogDataManager) {
+            console.log('Using BlogDataManager...');
+            const result = await window.blogDataManager.createPost(testPost);
+            console.log('✅ Test post created!', result);
+            alert('✅ Test post created successfully!\n\nPost ID: ' + result.id + '\n\nCheck the blog page to see it.');
+            return result;
+        } else {
+            console.log('BlogDataManager not found, using direct API call...');
+            const response = await fetch('/api/blog/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(testPost)
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Test post created via direct API!', data);
+                alert('✅ Test post created successfully!\n\nPost ID: ' + data.post.id);
+                return data.post;
+            } else {
+                throw new Error('API returned: ' + response.status);
+            }
+        }
+    } catch (error) {
+        console.error('❌ Test post creation failed:', error);
+        alert('❌ Test post creation failed!\n\n' + error.message);
+        return null;
+    }
+};
+
+console.log('💡 TIP: Run testCreatePost() in console to test post creation');
+
 // Initialize the AI Automation system when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log('AI Automation system initializing...');
@@ -2113,9 +2160,12 @@ async function generateAutomatedPost(path) {
         const aiConfig = window.aiConfig ? window.aiConfig.getConfig() : null;
         
         if (!aiConfig || !aiConfig.apiKey) {
+            console.error('❌ AI AUTOMATION ERROR: OpenAI API key is not configured!');
+            console.error('Please go to Chatbot Settings → OpenAI Configuration and enter your API key');
+            alert('AI Automation requires an OpenAI API key.\n\nPlease go to:\nChatbot Settings → OpenAI Configuration\n\nAnd enter your OpenAI API key.');
             return {
                 success: false,
-                error: 'AI configuration not found or API key not set'
+                error: 'OpenAI API key not configured. Please add your API key in Chatbot Settings → OpenAI Configuration.'
             };
         }
         
