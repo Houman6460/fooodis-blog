@@ -2431,10 +2431,12 @@ async function publishAutomatedPost(post, options = {}) {
         if (window.blogDataManager) {
             // Prepare the post for publishing
             post.date = new Date().toISOString();
+            post.published_date = new Date().toISOString();
             post.language = 'english'; // Mark the primary language
             post.status = 'published';
             post.category = post.category || 'Uncategorized';
             post.tags = post.tags || [];
+            post.image_url = post.image_url || post.image || '';
             
             console.log('publishAutomatedPost: Calling createPost with:', { title: post.title, category: post.category });
             
@@ -2474,9 +2476,36 @@ async function publishAutomatedPost(post, options = {}) {
             
             return { success: true, post: createdPost };
         } else {
-            // Fallback to old localStorage method if manager not found
-            console.warn('BlogDataManager not found, falling back to localStorage');
-            throw new Error('BlogDataManager not initialized');
+            // Direct API fallback if BlogDataManager not available
+            console.warn('BlogDataManager not found, using direct API call');
+            
+            // Prepare the post
+            post.date = new Date().toISOString();
+            post.published_date = new Date().toISOString();
+            post.status = 'published';
+            post.category = post.category || 'Uncategorized';
+            post.image_url = post.image_url || post.image || '';
+            
+            const response = await fetch('/api/blog/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(post)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                const createdPost = result.post || post;
+                console.log('Post published via direct API:', createdPost.id);
+                
+                document.dispatchEvent(new CustomEvent('aiPostPublished', {
+                    detail: { post: createdPost, source: 'ai_automation' }
+                }));
+                
+                return { success: true, post: createdPost };
+            } else {
+                const errorText = await response.text();
+                throw new Error('API error: ' + response.status + ' - ' + errorText);
+            }
         }
     } catch (error) {
         console.error('Error publishing automated post:', error);
