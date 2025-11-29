@@ -1850,7 +1850,7 @@
                             </div>
                             <div class="status-toggle">
                                 <label class="chatbot-toggle-switch">
-                                    <input type="checkbox" id="chatbotToggle">
+                                    <input type="checkbox" id="chatbotToggle" aria-label="Toggle chatbot">
                                     <span class="chatbot-toggle-slider"></span>
                                 </label>
                             </div>
@@ -1941,7 +1941,7 @@
                                     </button>
                                 </div>
                                 <div class="conversations-filters">
-                                    <select id="conversationFilter">
+                                    <select id="conversationFilter" aria-label="Filter conversations">
                                         <option value="all">All Conversations</option>
                                         <option value="active">Active</option>
                                         <option value="resolved">Resolved</option>
@@ -2082,7 +2082,7 @@
                                         <label for="openaiApiKey">OpenAI API Key</label>
                                         <div class="input-group">
                                             <input type="password" id="openaiApiKey" placeholder="Enter OpenAI API key">
-                                            <button type="button" class="toggle-visibility">
+                                            <button type="button" class="toggle-visibility" aria-label="Toggle password visibility" title="Toggle password visibility">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </div>
@@ -2228,14 +2228,14 @@
                 <!-- Ticket Filters and Search -->
                 <div class="ticket-filters">
                     <div class="filter-group">
-                        <select id="statusFilter" class="filter-select">
+                        <select id="statusFilter" class="filter-select" aria-label="Filter by status">
                             <option value="all">All Status</option>
                             <option value="open">Open</option>
                             <option value="in-progress">In Progress</option>
                             <option value="resolved">Resolved</option>
                             <option value="closed">Closed</option>
                         </select>
-                        <select id="priorityFilter" class="filter-select">
+                        <select id="priorityFilter" class="filter-select" aria-label="Filter by priority">
                             <option value="all">All Priority</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
