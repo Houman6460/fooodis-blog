@@ -2435,17 +2435,34 @@
                     if (profile && profile.avatar_url) {
                         console.log('Avatar URL found:', profile.avatar_url);
                         
-                        // Update all avatar images
-                        document.querySelectorAll('.profile-avatar-img, .header-avatar-img').forEach(img => {
-                            img.src = profile.avatar_url;
-                            img.style.display = 'block';
-                            console.log('Updated avatar img:', img.className);
-                        });
+                        // Find all avatar containers and add images if missing
+                        const avatarContainers = document.querySelectorAll('.profile-avatar, .user-avatar.header-avatar');
+                        console.log('Found avatar containers:', avatarContainers.length);
                         
-                        // Hide all initials
-                        document.querySelectorAll('.avatar-initials, .header-avatar-initials').forEach(el => {
-                            el.style.display = 'none';
-                            console.log('Hidden initials:', el.className);
+                        avatarContainers.forEach((container, index) => {
+                            console.log('Processing container', index, container.className);
+                            
+                            // Find or create img element
+                            let img = container.querySelector('img');
+                            if (!img) {
+                                console.log('Creating new img for container', index);
+                                img = document.createElement('img');
+                                img.className = container.classList.contains('header-avatar') ? 'header-avatar-img' : 'profile-avatar-img';
+                                img.alt = 'Avatar';
+                                container.insertBefore(img, container.firstChild);
+                            }
+                            
+                            // Set image source and display
+                            img.src = profile.avatar_url;
+                            img.style.cssText = 'display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; z-index: 100;';
+                            console.log('Set img src for container', index, img.src);
+                            
+                            // Hide initials
+                            const initials = container.querySelector('.avatar-initials, .header-avatar-initials, span');
+                            if (initials) {
+                                initials.style.cssText = 'display: none !important;';
+                                console.log('Hidden initials for container', index);
+                            }
                         });
                     }
                 })
