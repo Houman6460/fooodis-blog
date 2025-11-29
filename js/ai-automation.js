@@ -1951,14 +1951,39 @@ function executeAutomationPath(path, index) {
                     throw new Error('Generated post has no content');
                 }
                 
-                console.log('>>> AUTOMATION: Calling publishAutomatedPost with:', postToPublish.title);
+                console.log('>>> AUTOMATION: Calling direct API to publish:', postToPublish.title);
                 
-                // Publish the post via backend/D1
-                const publishResult = await publishAutomatedPost(postToPublish);
-                console.log('>>> AUTOMATION: publishResult =', JSON.stringify(publishResult));
+                // Publish directly to API (bypass BlogDataManager to ensure D1 save)
+                const apiPayload = {
+                    title: postToPublish.title,
+                    content: postToPublish.content,
+                    excerpt: postToPublish.excerpt || '',
+                    category: postToPublish.category || path.category || 'Uncategorized',
+                    tags: postToPublish.tags || path.tags || [],
+                    status: 'published',
+                    image_url: postToPublish.image_url || postToPublish.image || '',
+                    author: 'AI Automation'
+                };
                 
-                // Show a notification
-                showPublishNotification(postToPublish);
+                console.log('>>> AUTOMATION: API payload:', JSON.stringify(apiPayload).substring(0, 300));
+                
+                const response = await fetch('/api/blog/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(apiPayload)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('✅ AI POST SAVED TO D1:', result.post?.id);
+                    alert('✅ AI Post published successfully!\n\nTitle: ' + postToPublish.title + '\nID: ' + result.post?.id);
+                    showPublishNotification(postToPublish);
+                } else {
+                    const errorText = await response.text();
+                    console.error('❌ API ERROR:', response.status, errorText);
+                    alert('❌ Failed to publish AI post!\n\nError: ' + response.status + '\n' + errorText);
+                    throw new Error('API error: ' + response.status);
+                }
             } catch (publishError) {
                 console.error('Error publishing post:', publishError);
                 showPublishNotification(null, publishError);
