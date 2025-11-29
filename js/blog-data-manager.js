@@ -87,8 +87,10 @@ class BlogDataManager {
     
     async createPost(postData) {
         console.log('Blog Data Manager: Creating post', postData.title);
+        console.log('Blog Data Manager: Post status:', postData.status);
         console.log('Blog Data Manager: Post data:', JSON.stringify(postData).substring(0, 500));
         try {
+            console.log('Blog Data Manager: Making API call to /api/blog/posts...');
             const response = await fetch('/api/blog/posts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -99,7 +101,7 @@ class BlogDataManager {
             
             if (response.ok) {
                 const result = await response.json();
-                console.log('Blog Data Manager: API returned post ID:', result.post?.id);
+                console.log('Blog Data Manager: ✅ POST SAVED TO D1! ID:', result.post?.id);
                 const newPost = result.post;
                 
                 // Update local storage
@@ -109,11 +111,13 @@ class BlogDataManager {
                 
                 return newPost;
             } else {
-                console.error('Failed to create post on backend');
-                throw new Error('Backend creation failed');
+                const errorText = await response.text();
+                console.error('Blog Data Manager: ❌ API ERROR:', response.status, errorText);
+                throw new Error('Backend creation failed: ' + response.status + ' ' + errorText);
             }
         } catch (e) {
-            console.error('Blog Data Manager: Error creating post', e);
+            console.error('Blog Data Manager: ❌ FAILED TO SAVE TO D1:', e.message);
+            console.error('Blog Data Manager: Falling back to localStorage ONLY');
             // Fallback: save locally with temporary ID
             const newPost = { ...postData, id: postData.id || Date.now().toString() };
             const posts = this.getAllPosts();
