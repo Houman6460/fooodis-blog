@@ -82,6 +82,7 @@ class BlogDataManager {
     
     async createPost(postData) {
         console.log('Blog Data Manager: Creating post', postData.title);
+        console.log('Blog Data Manager: Post data:', JSON.stringify(postData).substring(0, 500));
         try {
             const response = await fetch('/api/blog/posts', {
                 method: 'POST',
@@ -89,8 +90,11 @@ class BlogDataManager {
                 body: JSON.stringify(postData)
             });
             
+            console.log('Blog Data Manager: API response status:', response.status);
+            
             if (response.ok) {
                 const result = await response.json();
+                console.log('Blog Data Manager: API returned post ID:', result.post?.id);
                 const newPost = result.post;
                 
                 // Update local storage

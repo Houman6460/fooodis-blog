@@ -2427,6 +2427,7 @@ async function publishAutomatedPost(post, options = {}) {
         }
         
         // Use BlogDataManager if available
+        console.log('publishAutomatedPost: window.blogDataManager available:', !!window.blogDataManager);
         if (window.blogDataManager) {
             // Prepare the post for publishing
             post.date = new Date().toISOString();
@@ -2435,9 +2436,11 @@ async function publishAutomatedPost(post, options = {}) {
             post.category = post.category || 'Uncategorized';
             post.tags = post.tags || [];
             
+            console.log('publishAutomatedPost: Calling createPost with:', { title: post.title, category: post.category });
+            
             // Create the post via API/Manager
             const createdPost = await window.blogDataManager.createPost(post);
-            console.log('Post published via BlogDataManager:', createdPost.id);
+            console.log('Post published via BlogDataManager:', createdPost?.id);
             
             // If the post has Swedish translation, create a separate post for it
             if (post.translations && post.translations.swedish) {
