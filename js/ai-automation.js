@@ -1819,6 +1819,7 @@ function executeAutomationPath(path, index) {
             }
             
             console.log(`Generated post for "${path.name}": ${result.post.title}`);
+            console.log('>>> AUTOMATION: About to publish post to API');
             
             // Publish the generated post
             try {
@@ -1834,9 +1835,11 @@ function executeAutomationPath(path, index) {
                     throw new Error('Generated post has no content');
                 }
                 
+                console.log('>>> AUTOMATION: Calling publishAutomatedPost with:', postToPublish.title);
+                
                 // Publish the post via backend/D1
                 const publishResult = await publishAutomatedPost(postToPublish);
-                console.log('Post published successfully:', publishResult);
+                console.log('>>> AUTOMATION: publishResult =', JSON.stringify(publishResult));
                 
                 // Show a notification
                 showPublishNotification(postToPublish);
@@ -2411,6 +2414,7 @@ async function generateImage(title, contentType) {
  * @returns {Promise<Object>} - The result of the publish/schedule operation
  */
 async function publishAutomatedPost(post, options = {}) {
+    console.log('>>> publishAutomatedPost CALLED with:', post?.title);
     try {
         console.log('Publishing/scheduling automated post:', post.title);
         
