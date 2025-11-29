@@ -36,8 +36,9 @@
 }
 
 .profile-avatar.has-image {
-    background-color: #2D333B;
-    border: none;
+    background: #2D333B !important;
+    background-image: none !important;
+    border: none !important;
 }
 
 .profile-avatar.small {
