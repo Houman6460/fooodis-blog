@@ -27,41 +27,52 @@ A complete blog system with dashboard, blog interface, and backend API.
    - Profile: http://localhost:3005/profile.html
    - API Health: http://localhost:3005/api/system-health
 
-## Fixed Modules
-
-This backup includes fixed modules to resolve JavaScript errors in the original codebase. The fixed modules are located in:
+## Project Structure
 
 ```
-/js/modules-fixed/
+fooodis-blog/
+├── api/                 # Backend API endpoints
+├── css/                 # Stylesheets
+├── data/                # Data storage
+├── docs/                # Documentation
+├── functions/           # Cloudflare Workers functions
+├── images/              # Image resources
+├── js/                  # JavaScript files
+│   └── modules/         # Modular JavaScript architecture
+├── migrations/          # Database migrations
+├── templates/           # HTML templates
+├── server.js            # Express.js server
+└── wrangler.toml        # Cloudflare Workers config
 ```
 
-To use these fixed modules:
+## Documentation
 
-1. Copy all files from `/js/modules-fixed/` to `/js/modules/`
-2. These modules implement the necessary functionality for:
-   - Module loading system
-   - Storage management
-   - API communication
-   - Execution management
-   - Scheduling
-   - Time handling
+Detailed documentation is available in the `/docs` folder:
 
-## Important Notes
+- **[Storage Setup](docs/STORAGE_SETUP.md)** - Cloudflare D1, R2, and KV configuration
+- **[Data Persistence Fix](docs/DATA_PERSISTENCE_FIX.md)** - Solutions for data persistence issues
+- **[Schedule Fix](docs/SCHEDULE_FIX.md)** - Scheduling system fixes
+- **[Fixes Summary](docs/FIXES_SUMMARY.md)** - Overview of all implemented fixes
 
-- The backend API requires Express.js and serves all static assets in the project directory.
-- API endpoints for system health and recovery have been implemented.
-- If you encounter any JavaScript errors, check the browser console and ensure the modules are properly loaded.
-- The dashboard has been fixed to work with the modular architecture.
+## Deployment
 
-## File Structure
+### Local Development
+```bash
+npm start
+```
 
-- `/api/` - Backend API endpoints
-- `/assets/` - Static assets for the blog system
-- `/css/` - Stylesheets
-- `/images/` - Image resources
-- `/js/` - JavaScript files
-- `/js/modules/` - Modular JavaScript architecture
-- `/templates/` - HTML templates
+### Cloudflare Pages
+```bash
+wrangler pages deploy ./
+```
+
+See [Storage Setup](docs/STORAGE_SETUP.md) for detailed Cloudflare configuration.
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+- OpenAI API key (for AI features)
+- Cloudflare credentials (for deployment)
 
 ## Contact
 

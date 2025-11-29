@@ -1,6 +1,0 @@
-            element.style.color = "var(--dark-text)";
-        });
-    }, 500);
-}
-
-}); // End of document.addEventListener
