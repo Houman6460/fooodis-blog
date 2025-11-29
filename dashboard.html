@@ -2416,8 +2416,41 @@
             // Fix 3: Post publishing
             fixPostPublishing();
 
+            // Fix 4: Avatar display
+            fixAvatarDisplay();
+
             console.log('All fixes applied');
         });
+
+        /**
+         * Fix 4: Avatar display - ensures avatar shows in all locations
+         */
+        function fixAvatarDisplay() {
+            console.log('Fixing avatar display...');
+            
+            // Fetch current profile and update all avatars
+            fetch('/api/profile')
+                .then(res => res.json())
+                .then(profile => {
+                    if (profile && profile.avatar_url) {
+                        console.log('Avatar URL found:', profile.avatar_url);
+                        
+                        // Update all avatar images
+                        document.querySelectorAll('.profile-avatar-img, .header-avatar-img').forEach(img => {
+                            img.src = profile.avatar_url;
+                            img.style.display = 'block';
+                            console.log('Updated avatar img:', img.className);
+                        });
+                        
+                        // Hide all initials
+                        document.querySelectorAll('.avatar-initials, .header-avatar-initials').forEach(el => {
+                            el.style.display = 'none';
+                            console.log('Hidden initials:', el.className);
+                        });
+                    }
+                })
+                .catch(err => console.error('Avatar fix error:', err));
+        }
 
         /**
          * Fix 1: Time display
