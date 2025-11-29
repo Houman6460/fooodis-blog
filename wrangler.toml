@@ -37,9 +37,5 @@ ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 
 # Note: For Pages deployment, use pages_build_output_dir instead of [site]
 
-# ============================================
-# Cron Triggers for Scheduled Automation
-# Runs every hour to check for scheduled AI posts
-# ============================================
-[triggers]
-crons = ["0 * * * *"]  # Every hour at minute 0
+# NOTE: Cron triggers are not supported in Cloudflare Pages
+# For scheduled automation, keep the dashboard open or use a separate Worker
