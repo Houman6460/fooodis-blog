@@ -55,21 +55,21 @@ export async function onRequestPut(context) {
         last_run = ?
       WHERE id = ?
     `).bind(
-      data.name,
-      data.contentType || data.content_type,
-      data.assistantId || data.assistant_id,
-      data.category,
-      data.subcategory,
+      data.name || '',
+      data.contentType || data.content_type || 'blog-post',
+      data.assistantId || data.assistant_id || null,
+      data.category || 'Uncategorized',
+      data.subcategory || null,
       JSON.stringify(data.topics || []),
-      data.mode,
-      data.scheduleType || data.schedule_type,
-      data.scheduleTime || data.schedule_time,
-      data.promptTemplate || data.prompt_template,
+      data.mode || 'immediate',
+      data.scheduleType || data.schedule_type || null,
+      data.scheduleTime || data.schedule_time || null,
+      data.promptTemplate || data.prompt_template || '',
       includeImages,
-      data.mediaFolder || data.media_folder,
-      JSON.stringify(data.languages || []),
+      data.mediaFolder || data.media_folder || null,
+      JSON.stringify(data.languages || ['en']),
       data.status || 'active',
-      data.lastRun || data.last_run,
+      data.lastRun || data.last_run || null,
       id
     ).run();
 
