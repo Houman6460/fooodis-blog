@@ -50,9 +50,13 @@ function initializeDOMElements() {
 
 // Initialize the blog system
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Blog.js: DOMContentLoaded fired');
     initializeDOMElements();
+    console.log('Blog.js: DOM elements initialized, blogPostsGrid:', blogPostsGrid);
     await loadBlogData();
+    console.log('Blog.js: Data loaded, blogPosts count:', blogPosts.length, 'window.blogPosts count:', window.blogPosts.length);
     renderBlogPosts();
+    console.log('Blog.js: renderBlogPosts completed');
     renderCategories();
     renderSubcategories();
     renderTags();
@@ -187,6 +191,10 @@ function extractTags(posts) {
 
 // Render blog posts to the grid with pagination
 function renderBlogPosts(customPosts = null) {
+    console.log('Blog.js: renderBlogPosts called with customPosts:', customPosts ? customPosts.length : 'null');
+    console.log('Blog.js: Current blogPosts:', blogPosts, 'length:', blogPosts ? blogPosts.length : 'undefined');
+    console.log('Blog.js: blogPostsGrid element:', blogPostsGrid);
+    
     // Set filtered posts globally if provided
     if (customPosts !== null) {
         filteredPosts = customPosts;
@@ -194,6 +202,7 @@ function renderBlogPosts(customPosts = null) {
     
     // Determine which posts to use (filtered or all)
     const posts = filteredPosts || blogPosts;
+    console.log('Blog.js: Using posts array with length:', posts ? posts.length : 'undefined');
     
     // Calculate total pages
     totalPages = Math.ceil(posts.length / postsPerPage);
