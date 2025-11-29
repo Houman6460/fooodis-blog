@@ -36,3 +36,10 @@ MAX_UPLOAD_SIZE = "10485760"  # 10MB in bytes
 ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 
 # Note: For Pages deployment, use pages_build_output_dir instead of [site]
+
+# ============================================
+# Cron Triggers for Scheduled Automation
+# Runs every hour to check for scheduled AI posts
+# ============================================
+[triggers]
+crons = ["0 * * * *"]  # Every hour at minute 0

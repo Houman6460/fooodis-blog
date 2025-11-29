@@ -56,6 +56,40 @@ window.testCreatePost = async function() {
 
 console.log('💡 TIP: Run testCreatePost() in console to test post creation');
 
+// Sync automation settings to cloud for scheduled execution
+window.syncAutomationToCloud = async function() {
+    console.log('☁️ Syncing automation settings to cloud...');
+    
+    try {
+        // Get AI config
+        const aiConfig = window.aiConfig ? window.aiConfig.getConfig() : null;
+        
+        const response = await fetch('/api/automation/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                automationPaths: window.automationPaths || [],
+                aiConfig: aiConfig
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Automation settings synced to cloud!', result);
+            alert('✅ Automation settings synced to cloud!\n\nScheduled posts will now run automatically even when your browser is closed.');
+            return true;
+        } else {
+            throw new Error('Sync failed: ' + response.status);
+        }
+    } catch (error) {
+        console.error('❌ Failed to sync to cloud:', error);
+        alert('❌ Failed to sync automation settings: ' + error.message);
+        return false;
+    }
+};
+
+console.log('💡 TIP: Run syncAutomationToCloud() to enable backend scheduling');
+
 // Initialize the AI Automation system when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log('AI Automation system initializing...');
@@ -1422,7 +1456,16 @@ async function saveAutomationPath() {
  * Keeping it as a no-op for backward compatibility
  */
 function saveAutomationPathsToStorage() {
-    console.log('saveAutomationPathsToStorage: Deprecated - paths are saved via API');
+    console.log('saveAutomationPathsToStorage: Syncing paths to cloud for backend scheduling');
+    
+    // Also sync to cloud KV for scheduled worker
+    if (typeof window.syncAutomationToCloud === 'function') {
+        // Sync in background - don't await to avoid blocking
+        window.syncAutomationToCloud().catch(err => {
+            console.warn('Background cloud sync failed:', err);
+        });
+    }
+    
     // Clear localStorage to prevent stale data
     try {
         localStorage.removeItem('aiAutomationPaths');
