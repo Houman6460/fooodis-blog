@@ -2453,27 +2453,15 @@
                                 }
                                 console.log('Set header avatar background:', profile.avatar_url);
                             } else {
-                                // For profile avatars, use img element
-                                let img = container.querySelector('img');
-                                if (!img) {
-                                    img = document.createElement('img');
-                                    img.className = 'profile-avatar-img';
-                                    img.alt = 'Avatar';
-                                    container.insertBefore(img, container.firstChild);
-                                }
-                                
-                                // Use transparent background for PNG transparency support
-                                container.style.cssText = 'background: transparent !important; border: none !important;';
+                                // For profile avatars, use background-image approach (same as header)
+                                container.style.cssText = 'background-color: transparent !important; background-image: url(' + profile.avatar_url + ') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; border: none !important;';
                                 container.classList.add('has-image');
                                 
-                                img.src = profile.avatar_url;
-                                img.style.cssText = 'display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center; z-index: 100;';
-                                
-                                // Hide initials completely
-                                const initials = container.querySelector('.avatar-initials');
-                                if (initials) {
-                                    initials.style.cssText = 'display: none !important; visibility: hidden !important;';
+                                // Remove all children (initials, img) to prevent overlay
+                                while (container.firstChild) {
+                                    container.removeChild(container.firstChild);
                                 }
+                                console.log('Set profile avatar background:', profile.avatar_url);
                             }
                         });
                     }
