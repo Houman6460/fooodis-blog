@@ -598,6 +598,14 @@
 </head>
 
 <body class="u-body u-xl-mode dashboard-body">
+    <!-- Mobile Menu Toggle Button -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <!-- Dashboard Header -->
     <header class="dashboard-header">
         <div class="header-container">
@@ -3827,5 +3835,45 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+    (function() {
+        const menuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.querySelector('.dashboard-sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            
+            // Toggle icon
+            const icon = menuToggle.querySelector('i');
+            if (sidebar.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', toggleSidebar);
+        }
+        
+        if (overlay) {
+            overlay.addEventListener('click', toggleSidebar);
+        }
+        
+        // Close sidebar when a nav item is clicked (mobile)
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 576 && sidebar.classList.contains('open')) {
+                    toggleSidebar();
+                }
+            });
+        });
+    })();
+    </script>
 </body>
 </html>

@@ -208,8 +208,8 @@ function overrideAutomationPublishing() {
         window.originalPublishAutomatedPost = window.publishAutomatedPost;
     }
     
-    // Override with media-aware version
-    window.publishAutomatedPost = function(post, automationPath) {
+    // Override with media-aware version (async to properly await API calls)
+    window.publishAutomatedPost = async function(post, automationPath) {
         console.log('AI Automation Media Fix: Publishing post with proper media handling');
         
         try {
@@ -237,12 +237,12 @@ function overrideAutomationPublishing() {
             // Validate that the image exists
             validateAndFixImageUrl(post);
             
-            // Call original publishing function
+            // Call original publishing function (await if async)
             if (window.originalPublishAutomatedPost) {
-                return window.originalPublishAutomatedPost(post, automationPath);
+                return await window.originalPublishAutomatedPost(post, automationPath);
             } else {
-                // Fallback publishing logic
-                return publishPostDirectly(post);
+                // Fallback publishing logic - must await
+                return await publishPostDirectly(post);
             }
             
         } catch (error) {
@@ -252,9 +252,9 @@ function overrideAutomationPublishing() {
             post.imageUrl = 'images/default-blog-image.jpg';
             
             if (window.originalPublishAutomatedPost) {
-                return window.originalPublishAutomatedPost(post, automationPath);
+                return await window.originalPublishAutomatedPost(post, automationPath);
             } else {
-                return publishPostDirectly(post);
+                return await publishPostDirectly(post);
             }
         }
     };
