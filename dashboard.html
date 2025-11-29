@@ -2447,14 +2447,9 @@
                                 container.style.cssText = 'background-image: url(' + profile.avatar_url + ') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; border: none !important;';
                                 container.classList.add('has-image');
                                 
-                                // Hide the img element if exists
-                                const img = container.querySelector('img');
-                                if (img) img.style.display = 'none';
-                                
-                                // Hide initials
-                                const initials = container.querySelector('.header-avatar-initials, span');
-                                if (initials) {
-                                    initials.style.cssText = 'display: none !important;';
+                                // Remove all children (AU text, img, span)
+                                while (container.firstChild) {
+                                    container.removeChild(container.firstChild);
                                 }
                                 console.log('Set header avatar background:', profile.avatar_url);
                             } else {
