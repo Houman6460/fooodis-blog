@@ -539,20 +539,31 @@ async function savePost(event) {
                     featured
                 };
                 
-                if (window.blogDataManager) {
-                    await window.blogDataManager.updatePost({
-                        id: updatedPost.id,
-                        title: updatedPost.title,
-                        content: updatedPost.content,
-                        excerpt: updatedPost.excerpt,
-                        category: updatedPost.category,
-                        subcategory: updatedPost.subcategory,
-                        tags: updatedPost.tags,
-                        status: 'published'
+                // Always use API to update posts in cloud database
+                try {
+                    const response = await fetch(`/api/blog/posts/${updatedPost.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title: updatedPost.title,
+                            content: updatedPost.content,
+                            excerpt: updatedPost.excerpt,
+                            category: updatedPost.category,
+                            subcategory: updatedPost.subcategory,
+                            tags: updatedPost.tags,
+                            status: 'published'
+                        })
                     });
-                } else {
-                    blogPosts[index] = updatedPost;
-                    localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || 'Failed to update post');
+                    }
+                    console.log('Post updated successfully via API');
+                } catch (apiError) {
+                    console.error('API error:', apiError);
+                    alert('Failed to update post in database: ' + apiError.message);
+                    return;
                 }
                 
                 updateFeaturedArray(updatedPost.id, featured);
@@ -569,20 +580,27 @@ async function savePost(event) {
                 status: 'published'
             };
             
-            if (window.blogDataManager) {
-                const createdPost = await window.blogDataManager.createPost(newPostPayload);
-                updateFeaturedArray(createdPost && createdPost.id, featured);
-            } else {
-                const localPost = {
-                    id: Date.now().toString(),
-                    ...newPostPayload,
-                    date: new Date().toISOString(),
-                    imageUrl: 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg',
-                    featured
-                };
-                blogPosts.push(localPost);
-                updateFeaturedArray(localPost.id, featured);
-                localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+            // Always use API to save posts to cloud database
+            try {
+                const response = await fetch('/api/blog/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newPostPayload)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const createdPost = result.post;
+                    console.log('Post created successfully via API:', createdPost.id);
+                    updateFeaturedArray(createdPost && createdPost.id, featured);
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Failed to save post');
+                }
+            } catch (apiError) {
+                console.error('API error:', apiError);
+                alert('Failed to save post to database: ' + apiError.message);
+                return;
             }
             
             alert('Post published successfully!');
