@@ -2452,12 +2452,13 @@
                                 container.insertBefore(img, container.firstChild);
                             }
                             
-                            // Set container background for transparent PNGs
-                            container.style.backgroundColor = '#2D333B';
+                            // Set container background for transparent PNGs and remove border
+                            container.style.cssText = 'background-color: #2D333B !important; border: none !important;';
+                            container.classList.add('has-image');
                             
                             // Set image source and display with proper sizing
                             img.src = profile.avatar_url;
-                            img.style.cssText = 'display: block !important; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; transform: translate(-50%, -50%); border-radius: 50%; object-fit: cover; z-index: 100;';
+                            img.style.cssText = 'display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center; z-index: 100;';
                             console.log('Set img src for container', index, img.src);
                             
                             // Hide initials completely
