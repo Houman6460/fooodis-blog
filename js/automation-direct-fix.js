@@ -223,23 +223,19 @@ function markPathCompleted(path) {
 }
 
 /**
- * Replace the publishAutomatedPost function
+ * Replace the publishAutomatedPost function - NOW USES API
  */
 function replacePublishAutomatedPost() {
-    console.log('Automation Direct Fix: Replacing publishAutomatedPost function...');
+    console.log('Automation Direct Fix: Replacing publishAutomatedPost function with API version...');
     
-    // Define the new function
-    window.publishAutomatedPost = function(post) {
-        console.log('Automation Direct Fix: Publishing post:', post.title);
+    // Define the new function that uses API
+    window.publishAutomatedPost = async function(post) {
+        console.log('Automation Direct Fix: Publishing post via API:', post.title);
         
         try {
             // Ensure post has required fields
             if (!post) {
                 throw new Error('Post is null or undefined');
-            }
-            
-            if (!post.id) {
-                post.id = Date.now().toString();
             }
             
             if (!post.title) {
@@ -250,44 +246,55 @@ function replacePublishAutomatedPost() {
                 throw new Error('Post has no content');
             }
             
-            // Get existing posts
-            let blogPosts = [];
-            try {
-                const savedPosts = localStorage.getItem('fooodis-blog-posts');
-                if (savedPosts) {
-                    blogPosts = JSON.parse(savedPosts);
-                }
-            } catch (error) {
-                console.error('Automation Direct Fix: Error loading existing posts:', error);
-            }
-            
-            // Ensure blogPosts is an array
-            if (!Array.isArray(blogPosts)) {
-                blogPosts = [];
-            }
-            
-            // Prepare the post
+            // Prepare the post for API
             post.date = new Date().toISOString();
+            post.published_date = new Date().toISOString();
             post.language = post.language || 'english';
             post.status = 'published';
             post.category = post.category || 'Uncategorized';
+            post.image_url = post.image_url || post.image || '';
             
-            // Add the post to the beginning of the array
-            blogPosts.unshift(post);
+            // Use BlogDataManager if available
+            if (window.blogDataManager) {
+                console.log('Automation Direct Fix: Using BlogDataManager to save post');
+                const createdPost = await window.blogDataManager.createPost(post);
+                console.log('Automation Direct Fix: Post saved via BlogDataManager, ID:', createdPost?.id);
+                
+                // Show a notification
+                showPublishNotification(createdPost || post);
+                
+                return {
+                    success: true,
+                    post: createdPost || post,
+                    url: 'blog.html?post=' + (createdPost?.id || post.id)
+                };
+            }
             
-            // Save to localStorage
-            localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+            // Direct API call fallback
+            console.log('Automation Direct Fix: BlogDataManager not available, calling API directly');
+            const response = await fetch('/api/blog/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(post)
+            });
             
-            // Show a notification
-            showPublishNotification(post);
-            
-            console.log('Automation Direct Fix: Post published successfully:', post.title);
-            
-            return {
-                success: true,
-                post: post,
-                url: 'blog.html?post=' + post.id
-            };
+            if (response.ok) {
+                const result = await response.json();
+                const savedPost = result.post || post;
+                console.log('Automation Direct Fix: Post saved to API, ID:', savedPost.id);
+                
+                // Show a notification
+                showPublishNotification(savedPost);
+                
+                return {
+                    success: true,
+                    post: savedPost,
+                    url: 'blog.html?post=' + savedPost.id
+                };
+            } else {
+                const errorText = await response.text();
+                throw new Error('API error: ' + response.status + ' - ' + errorText);
+            }
         } catch (error) {
             console.error('Automation Direct Fix: Error publishing post:', error);
             
