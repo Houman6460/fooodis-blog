@@ -2442,30 +2442,42 @@
                         avatarContainers.forEach((container, index) => {
                             console.log('Processing container', index, container.className);
                             
-                            // Find or create img element
-                            let img = container.querySelector('img');
-                            if (!img) {
-                                console.log('Creating new img for container', index);
-                                img = document.createElement('img');
-                                img.className = container.classList.contains('header-avatar') ? 'header-avatar-img' : 'profile-avatar-img';
-                                img.alt = 'Avatar';
-                                container.insertBefore(img, container.firstChild);
-                            }
-                            
-                            // Set container background for transparent PNGs and remove border
-                            container.style.cssText = 'background-color: #2D333B !important; border: none !important;';
-                            container.classList.add('has-image');
-                            
-                            // Set image source and display with proper sizing
-                            img.src = profile.avatar_url;
-                            img.style.cssText = 'display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center; z-index: 100;';
-                            console.log('Set img src for container', index, img.src);
-                            
-                            // Hide initials completely
-                            const initials = container.querySelector('.avatar-initials, .header-avatar-initials, span');
-                            if (initials) {
-                                initials.style.cssText = 'display: none !important; visibility: hidden !important;';
-                                console.log('Hidden initials for container', index);
+                            // For header avatar, use background-image approach
+                            if (container.classList.contains('header-avatar')) {
+                                container.style.cssText = 'background-image: url(' + profile.avatar_url + ') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; border: none !important;';
+                                container.classList.add('has-image');
+                                
+                                // Hide the img element if exists
+                                const img = container.querySelector('img');
+                                if (img) img.style.display = 'none';
+                                
+                                // Hide initials
+                                const initials = container.querySelector('.header-avatar-initials, span');
+                                if (initials) {
+                                    initials.style.cssText = 'display: none !important;';
+                                }
+                                console.log('Set header avatar background:', profile.avatar_url);
+                            } else {
+                                // For profile avatars, use img element
+                                let img = container.querySelector('img');
+                                if (!img) {
+                                    img = document.createElement('img');
+                                    img.className = 'profile-avatar-img';
+                                    img.alt = 'Avatar';
+                                    container.insertBefore(img, container.firstChild);
+                                }
+                                
+                                container.style.cssText = 'background-color: #2D333B !important; border: none !important;';
+                                container.classList.add('has-image');
+                                
+                                img.src = profile.avatar_url;
+                                img.style.cssText = 'display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center; z-index: 100;';
+                                
+                                // Hide initials
+                                const initials = container.querySelector('.avatar-initials');
+                                if (initials) {
+                                    initials.style.cssText = 'display: none !important;';
+                                }
                             }
                         });
                     }
