@@ -95,11 +95,30 @@ export async function onRequestGet(context) {
       ? await countStmt.bind(...params).first()
       : await countStmt.first();
 
-    // Parse JSON fields
+    // Parse JSON fields and transform to camelCase for frontend compatibility
     const posts = results.map(post => ({
-      ...post,
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      excerpt: post.excerpt,
+      imageUrl: post.image_url || '',  // Transform to camelCase
+      image_url: post.image_url || '', // Keep snake_case for backward compatibility
+      author: post.author,
+      category: post.category,
+      subcategory: post.subcategory,
       tags: post.tags ? JSON.parse(post.tags) : [],
-      featured: post.featured === 1 || post.featured === true
+      publishedDate: post.published_date,  // Transform to camelCase
+      published_date: post.published_date, // Keep snake_case for backward compatibility
+      scheduledDate: post.scheduled_date,
+      scheduled_date: post.scheduled_date,
+      status: post.status,
+      featured: post.featured === 1 || post.featured === true,
+      views: post.views || 0,
+      likes: post.likes || 0,
+      commentsCount: post.comments_count || 0,
+      createdAt: post.created_at,
+      updatedAt: post.updated_at,
+      slug: post.slug
     }));
 
     return new Response(JSON.stringify({
@@ -186,9 +205,35 @@ export async function onRequestPost(context) {
       ).bind(post.category).run();
     }
 
+    // Transform response to include both camelCase and snake_case for compatibility
+    const responsePost = {
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      excerpt: post.excerpt,
+      imageUrl: post.image_url,  // camelCase for frontend
+      image_url: post.image_url, // snake_case for backward compatibility
+      author: post.author,
+      category: post.category,
+      subcategory: post.subcategory,
+      tags: JSON.parse(post.tags),
+      publishedDate: post.published_date,
+      published_date: post.published_date,
+      scheduledDate: post.scheduled_date,
+      scheduled_date: post.scheduled_date,
+      status: post.status,
+      featured: post.featured === 1,
+      views: post.views,
+      likes: post.likes,
+      commentsCount: post.comments_count,
+      createdAt: post.created_at,
+      updatedAt: post.updated_at,
+      slug: post.slug
+    };
+
     return new Response(JSON.stringify({ 
       success: true, 
-      post: { ...post, tags: JSON.parse(post.tags), featured: post.featured === 1 } 
+      post: responsePost 
     }), {
       status: 201,
       headers: { "Content-Type": "application/json" }

@@ -16,17 +16,40 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const post = await env.DB.prepare("SELECT * FROM blog_posts WHERE id = ?").bind(id).first();
+    const dbPost = await env.DB.prepare("SELECT * FROM blog_posts WHERE id = ?").bind(id).first();
     
-    if (!post) {
+    if (!dbPost) {
       return new Response(JSON.stringify({ error: "Post not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" }
       });
     }
 
-    // Parse JSON fields
-    post.tags = post.tags ? JSON.parse(post.tags) : [];
+    // Transform to camelCase for frontend compatibility
+    const post = {
+      id: dbPost.id,
+      title: dbPost.title,
+      content: dbPost.content,
+      excerpt: dbPost.excerpt,
+      imageUrl: dbPost.image_url || '',  // camelCase for frontend
+      image_url: dbPost.image_url || '', // snake_case for backward compatibility
+      author: dbPost.author,
+      category: dbPost.category,
+      subcategory: dbPost.subcategory,
+      tags: dbPost.tags ? JSON.parse(dbPost.tags) : [],
+      publishedDate: dbPost.published_date,
+      published_date: dbPost.published_date,
+      scheduledDate: dbPost.scheduled_date,
+      scheduled_date: dbPost.scheduled_date,
+      status: dbPost.status,
+      featured: dbPost.featured === 1,
+      views: dbPost.views || 0,
+      likes: dbPost.likes || 0,
+      commentsCount: dbPost.comments_count || 0,
+      createdAt: dbPost.created_at,
+      updatedAt: dbPost.updated_at,
+      slug: dbPost.slug
+    };
 
     return new Response(JSON.stringify(post), {
       headers: { "Content-Type": "application/json" }
@@ -157,15 +180,35 @@ export async function onRequestPut(context) {
     `).bind(...values).run();
 
     // Fetch updated post
-    const updatedPost = await env.DB.prepare(
+    const dbPost = await env.DB.prepare(
       "SELECT * FROM blog_posts WHERE id = ?"
     ).bind(id).first();
 
-    // Parse JSON fields for response
-    if (updatedPost) {
-      updatedPost.tags = updatedPost.tags ? JSON.parse(updatedPost.tags) : [];
-      updatedPost.featured = updatedPost.featured === 1;
-    }
+    // Transform to camelCase for frontend compatibility
+    const updatedPost = dbPost ? {
+      id: dbPost.id,
+      title: dbPost.title,
+      content: dbPost.content,
+      excerpt: dbPost.excerpt,
+      imageUrl: dbPost.image_url || '',
+      image_url: dbPost.image_url || '',
+      author: dbPost.author,
+      category: dbPost.category,
+      subcategory: dbPost.subcategory,
+      tags: dbPost.tags ? JSON.parse(dbPost.tags) : [],
+      publishedDate: dbPost.published_date,
+      published_date: dbPost.published_date,
+      scheduledDate: dbPost.scheduled_date,
+      scheduled_date: dbPost.scheduled_date,
+      status: dbPost.status,
+      featured: dbPost.featured === 1,
+      views: dbPost.views || 0,
+      likes: dbPost.likes || 0,
+      commentsCount: dbPost.comments_count || 0,
+      createdAt: dbPost.created_at,
+      updatedAt: dbPost.updated_at,
+      slug: dbPost.slug
+    } : null;
 
     return new Response(JSON.stringify({ success: true, post: updatedPost }), {
       headers: { "Content-Type": "application/json" }
