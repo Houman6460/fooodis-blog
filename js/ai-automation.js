@@ -1381,10 +1381,17 @@ function saveAutomationPathsToStorage() {
  * @param {number} index - The index of the path to edit
  */
 function editAutomationPath(index) {
-    if (index < 0 || index >= automationPaths.length) return;
+    console.log('editAutomationPath called with index:', index);
+    console.log('automationPaths length:', automationPaths.length);
+    
+    if (index < 0 || index >= automationPaths.length) {
+        console.error('Invalid index for edit:', index);
+        return;
+    }
     
     // Set editing index
     editingPathIndex = index;
+    console.log('Editing path:', automationPaths[index]);
     
     // Get the path
     const path = automationPaths[index];
@@ -1464,8 +1471,13 @@ function editAutomationPath(index) {
  * @param {number} index - The index of the path to delete
  */
 async function deleteAutomationPath(index) {
+    console.log('deleteAutomationPath called with index:', index);
+    console.log('automationPaths:', automationPaths);
+    
     if (confirm('Are you sure you want to delete this automation path?')) {
         const path = automationPaths[index];
+        console.log('Path to delete:', path);
+        
         if (path && path.id) {
             try {
                 const response = await fetch(`/api/automation/paths/${path.id}`, {
