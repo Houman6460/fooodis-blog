@@ -105,10 +105,13 @@
             }
         });
         
-        // Update the automationPaths array if it exists globally
-        if (window.automationPaths) {
+        // Update the automationPaths array ONLY if the current array is empty
+        // Don't overwrite API-loaded paths with localStorage data
+        if (window.automationPaths && window.automationPaths.length === 0 && uniquePaths.length > 0) {
             window.automationPaths = uniquePaths;
-            console.log('Schedule Persistence Fix V2: Updated global automationPaths array');
+            console.log('Schedule Persistence Fix V2: Updated empty global automationPaths array with', uniquePaths.length, 'paths');
+        } else if (window.automationPaths && window.automationPaths.length > 0) {
+            console.log('Schedule Persistence Fix V2: Keeping existing', window.automationPaths.length, 'API-loaded paths, not overwriting');
         }
         
         // Save the consolidated paths to all storage locations
