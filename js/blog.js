@@ -46,9 +46,9 @@ function initializeDOMElements() {
 }
 
 // Initialize the blog system
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     initializeDOMElements();
-    loadBlogData();
+    await loadBlogData();
     renderBlogPosts();
     renderCategories();
     renderSubcategories();
@@ -66,51 +66,57 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('fooodis-prevent-auto-open', 'true');
 });
 
-// Load blog data from localStorage or use default data if none exists
-function loadBlogData() {
-    // Try to load from localStorage
-    const storedPosts = localStorage.getItem('fooodis-blog-posts');
-    const storedCategories = localStorage.getItem('fooodis-blog-categories');
-    const storedSubcategories = localStorage.getItem('fooodis-blog-subcategories');
-    const storedTags = localStorage.getItem('fooodis-blog-tags');
-    const storedFeaturedPosts = localStorage.getItem('fooodis-blog-featured');
-    
-    // If data exists in localStorage, use it
-    if (storedPosts) {
-        blogPosts = JSON.parse(storedPosts);
-    } else {
-        // Otherwise use default sample data
-        blogPosts = getSampleBlogPosts();
-        localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
-    }
-    
-    if (storedCategories) {
-        categories = JSON.parse(storedCategories);
-    } else {
-        categories = extractCategories(blogPosts);
-        localStorage.setItem('fooodis-blog-categories', JSON.stringify(categories));
-    }
-    
-    if (storedSubcategories) {
-        subcategories = JSON.parse(storedSubcategories);
-    } else {
-        subcategories = extractSubcategories(blogPosts);
-        localStorage.setItem('fooodis-blog-subcategories', JSON.stringify(subcategories));
-    }
-    
-    if (storedTags) {
-        tags = JSON.parse(storedTags);
-    } else {
-        tags = extractTags(blogPosts);
-        localStorage.setItem('fooodis-blog-tags', JSON.stringify(tags));
-    }
-    
-    if (storedFeaturedPosts) {
-        featuredPosts = JSON.parse(storedFeaturedPosts);
-    } else {
-        // Set the first post as featured by default
+// Load blog data from API (cloud database) instead of localStorage
+async function loadBlogData() {
+    try {
+        // Fetch posts from API
+        const postsResponse = await fetch('/api/blog/posts?status=published');
+        if (postsResponse.ok) {
+            const data = await postsResponse.json();
+            blogPosts = data.posts || [];
+            console.log('Loaded', blogPosts.length, 'posts from API');
+        } else {
+            console.error('Failed to load posts from API:', postsResponse.status);
+            blogPosts = [];
+        }
+        
+        // Fetch categories from API
+        const categoriesResponse = await fetch('/api/categories');
+        if (categoriesResponse.ok) {
+            categories = await categoriesResponse.json();
+            console.log('Loaded', categories.length, 'categories from API');
+        } else {
+            categories = extractCategories(blogPosts);
+        }
+        
+        // Fetch subcategories from API
+        const subcategoriesResponse = await fetch('/api/subcategories');
+        if (subcategoriesResponse.ok) {
+            subcategories = await subcategoriesResponse.json();
+            console.log('Loaded', subcategories.length, 'subcategories from API');
+        } else {
+            subcategories = extractSubcategories(blogPosts);
+        }
+        
+        // Fetch tags from API
+        const tagsResponse = await fetch('/api/tags');
+        if (tagsResponse.ok) {
+            tags = await tagsResponse.json();
+            console.log('Loaded', tags.length, 'tags from API');
+        } else {
+            tags = extractTags(blogPosts);
+        }
+        
+        // Extract featured posts from loaded data
         featuredPosts = blogPosts.filter(post => post.featured).map(post => post.id);
-        localStorage.setItem('fooodis-blog-featured', JSON.stringify(featuredPosts));
+        
+    } catch (error) {
+        console.error('Error loading blog data from API:', error);
+        blogPosts = [];
+        categories = [];
+        subcategories = [];
+        tags = [];
+        featuredPosts = [];
     }
 }
 
