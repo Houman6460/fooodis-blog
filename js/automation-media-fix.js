@@ -84,9 +84,11 @@ function overridePostGeneration() {
                     title: title,
                     content: content,
                     image: imageUrl,
+                    image_url: imageUrl, // API expects image_url
                     author: 'AI Assistant',
                     date: new Date().toISOString(),
-                    status: 'draft',
+                    published_date: new Date().toISOString(),
+                    status: 'published', // Set to published so it shows on frontend
                     category: path.category || 'Uncategorized',
                     tags: path.tags || [],
                     mediaFolderId: folderId, // Store folder ID for reference
@@ -94,8 +96,8 @@ function overridePostGeneration() {
                     generatedAt: new Date().toISOString()
                 };
                 
-                // Save the post
-                savePost(post);
+                // Save the post to API
+                await savePost(post);
                 
                 // Update generation count
                 updatePathGenerationCount(path);
@@ -326,31 +328,48 @@ function updatePathGenerationCount(path) {
 }
 
 /**
- * Helper function to save post
+ * Helper function to save post - now uses API via BlogDataManager
  */
-function savePost(post) {
+async function savePost(post) {
     if (!post) return;
     
-    // Get posts from localStorage
-    let posts = [];
     try {
-        const savedPosts = localStorage.getItem('fooodis-blog-posts');
-        if (savedPosts) {
-            posts = JSON.parse(savedPosts);
+        // Use BlogDataManager to save via API
+        if (window.blogDataManager) {
+            console.log('savePost: Using BlogDataManager to save post to API');
+            const createdPost = await window.blogDataManager.createPost(post);
+            console.log('savePost: Post saved to API with ID:', createdPost?.id);
+            
+            // Show notification if function exists
+            if (typeof window.showPublishNotification === 'function') {
+                window.showPublishNotification(createdPost || post);
+            }
+            return createdPost;
+        } else {
+            // Fallback: Direct API call if BlogDataManager not available
+            console.log('savePost: BlogDataManager not available, calling API directly');
+            const response = await fetch('/api/blog/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(post)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('savePost: Post saved to API with ID:', result.post?.id);
+                
+                if (typeof window.showPublishNotification === 'function') {
+                    window.showPublishNotification(result.post || post);
+                }
+                return result.post;
+            } else {
+                console.error('savePost: API call failed:', response.status);
+                throw new Error('Failed to save post to API');
+            }
         }
     } catch (error) {
-        console.error('Error loading posts:', error);
-    }
-    
-    // Add new post
-    posts.unshift(post);
-    
-    // Save to localStorage
-    localStorage.setItem('fooodis-blog-posts', JSON.stringify(posts));
-    console.log(`Saved post ${post.id} to localStorage`);
-    
-    // Show notification if function exists
-    if (typeof window.showPublishNotification === 'function') {
-        window.showPublishNotification(post);
+        console.error('savePost: Error saving post:', error);
+        // No localStorage fallback - we want to ensure posts go to the API
+        throw error;
     }
 }
