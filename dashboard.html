@@ -2452,15 +2452,18 @@
                                 container.insertBefore(img, container.firstChild);
                             }
                             
-                            // Set image source and display
+                            // Set container background for transparent PNGs
+                            container.style.backgroundColor = '#2D333B';
+                            
+                            // Set image source and display with proper sizing
                             img.src = profile.avatar_url;
-                            img.style.cssText = 'display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; z-index: 100;';
+                            img.style.cssText = 'display: block !important; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; transform: translate(-50%, -50%); border-radius: 50%; object-fit: cover; z-index: 100;';
                             console.log('Set img src for container', index, img.src);
                             
-                            // Hide initials
+                            // Hide initials completely
                             const initials = container.querySelector('.avatar-initials, .header-avatar-initials, span');
                             if (initials) {
-                                initials.style.cssText = 'display: none !important;';
+                                initials.style.cssText = 'display: none !important; visibility: hidden !important;';
                                 console.log('Hidden initials for container', index);
                             }
                         });
