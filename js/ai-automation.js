@@ -2492,11 +2492,23 @@ async function publishAutomatedPost(post, options = {}) {
             post.tags = post.tags || [];
             post.image_url = post.image_url || post.image || '';
             
-            console.log('publishAutomatedPost: Calling createPost with:', { title: post.title, category: post.category });
+            console.log('publishAutomatedPost: Calling createPost with:', { title: post.title, category: post.category, status: post.status });
+            console.log('publishAutomatedPost: Full post data:', JSON.stringify(post).substring(0, 500));
             
             // Create the post via API/Manager
-            const createdPost = await window.blogDataManager.createPost(post);
-            console.log('Post published via BlogDataManager:', createdPost?.id);
+            let createdPost;
+            try {
+                createdPost = await window.blogDataManager.createPost(post);
+                console.log('✅ AI Post published via BlogDataManager:', createdPost?.id);
+                
+                if (!createdPost || !createdPost.id) {
+                    console.error('❌ WARNING: Post may not have been saved to D1 - no ID returned');
+                }
+            } catch (createError) {
+                console.error('❌ AI Post FAILED to publish:', createError);
+                alert('Failed to save AI post to database: ' + createError.message);
+                throw createError;
+            }
             
             // If the post has Swedish translation, create a separate post for it
             if (post.translations && post.translations.swedish) {
