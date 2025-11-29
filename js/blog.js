@@ -3,26 +3,29 @@
  * Handles blog post display, filtering, and modal functionality
  */
 
-// Global variables - avoid duplicate declarations by checking if they exist
-// This prevents the 'Identifier has already been declared' error
-if (typeof window.blogPostsInitialized === 'undefined') {
-    window.blogPostsInitialized = true;
-    var blogPosts = [];
-    var categories = [];
-    var subcategories = [];
-    var tags = [];
-    var featuredPosts = [];
-    window.currentPage = 1;
-    window.postsPerPage = 6;
-    window.totalPages = 1;
-    window.filteredPosts = null;
-}
+// Global variables - ensure they're always available
+// Store on window to prevent duplicate declaration errors
+window.blogPostsInitialized = true;
+window.blogPosts = window.blogPosts || [];
+window.blogCategories = window.blogCategories || [];
+window.blogSubcategories = window.blogSubcategories || [];
+window.blogTags = window.blogTags || [];
+window.blogFeaturedPosts = window.blogFeaturedPosts || [];
+window.currentPage = window.currentPage || 1;
+window.postsPerPage = window.postsPerPage || 6;
+window.totalPages = window.totalPages || 1;
+window.filteredPosts = window.filteredPosts || null;
 
-// Use the globally defined variables
-var currentPage = window.currentPage || 1;
-var postsPerPage = window.postsPerPage || 6;
-var totalPages = window.totalPages || 1;
-var filteredPosts = window.filteredPosts || null;
+// Create local references for convenience
+var blogPosts = window.blogPosts;
+var categories = window.blogCategories;
+var subcategories = window.blogSubcategories;
+var tags = window.blogTags;
+var featuredPosts = window.blogFeaturedPosts;
+var currentPage = window.currentPage;
+var postsPerPage = window.postsPerPage;
+var totalPages = window.totalPages;
+var filteredPosts = window.filteredPosts;
 
 // DOM Elements
 let blogPostsGrid, categoryList, subcategoryList, tagsContainer, bannerContainer;
@@ -73,11 +76,15 @@ async function loadBlogData() {
         const postsResponse = await fetch('/api/blog/posts?status=published');
         if (postsResponse.ok) {
             const data = await postsResponse.json();
-            blogPosts = data.posts || [];
+            const posts = data.posts || [];
+            // Update both local and window references
+            blogPosts = posts;
+            window.blogPosts = posts;
             console.log('Loaded', blogPosts.length, 'posts from API');
         } else {
             console.error('Failed to load posts from API:', postsResponse.status);
             blogPosts = [];
+            window.blogPosts = [];
         }
         
         // Fetch categories from API
@@ -113,10 +120,15 @@ async function loadBlogData() {
     } catch (error) {
         console.error('Error loading blog data from API:', error);
         blogPosts = [];
+        window.blogPosts = [];
         categories = [];
+        window.blogCategories = [];
         subcategories = [];
+        window.blogSubcategories = [];
         tags = [];
+        window.blogTags = [];
         featuredPosts = [];
+        window.blogFeaturedPosts = [];
     }
 }
 
