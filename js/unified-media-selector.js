@@ -1257,28 +1257,15 @@
         return folders;
     }
     
-    console.log(`Unified Media Selector: Rebuilt folder list with ${folders.length} folders`);
-}
-
-/**
- * Update folder counts in sidebar
- * @param {HTMLElement} modal - The modal element
- * @param {Array} mediaItems - Media items array
- */
-function updateFolderCounts(modal, mediaItems) {
-    // Update folder counts if available
-    const folderCountElements = modal.querySelectorAll('.folder-count');
-    folderCountElements.forEach(countElement => {
-        const folder = countElement.closest('.folder');
-        if (folder) {
-            const folderType = folder.getAttribute('data-folder');
-            if (folderType) {
-                // Count items in this folder
-                let count = 0;
-                if (folderType === 'all') {
-                    count = mediaItems.length;
-                } else {
-                    count = mediaItems.filter(item => item.folder === folderType).length;
+    /**
+     * Rebuild folder list in sidebar
+     * @param {HTMLElement} modal - The modal element
+     * @param {HTMLElement} folderListContainer - The folder list container
+     * @param {Array} folders - Array of folder objects
+     * @param {Array} mediaItems - Array of media items
+     * @param {string} activeFolderId - Currently active folder ID
+     */
+    function rebuildFolderListUI(modal, folderListContainer, folders, mediaItems, activeFolderId) {
         // Clear the existing folder list
         folderListContainer.innerHTML = '';
         
@@ -1477,5 +1464,11 @@ function updateFolderCounts(modal, mediaItems) {
                 }
             }
         });
+    }
+    
+    // End of rebuildFolderListUI function
+    }
+    
+    // End of main initialization function
     }
 })();
