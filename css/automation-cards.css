@@ -120,6 +120,15 @@ input:checked + .slider:before {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+/* Ensure edit and delete buttons are always clickable */
+.path-actions .edit-btn,
+.path-actions .delete-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative;
+    z-index: 10;
+}
+
 .edit-btn:hover {
     color: #e8f24c !important;
 }

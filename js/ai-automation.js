@@ -251,24 +251,34 @@ function setupEventListeners() {
     // Category +/- buttons
     setupCategoryButtons();
     
-    // Path actions (edit, delete, toggle)
+    // Path actions (edit, delete, toggle) - use capture phase for reliability
     document.addEventListener('click', function(event) {
         // Edit path
-        if (event.target.closest('.edit-btn')) {
-            const pathElement = event.target.closest('.automation-path');
+        const editBtn = event.target.closest('.edit-btn');
+        if (editBtn) {
+            event.preventDefault();
+            event.stopPropagation();
+            const pathElement = editBtn.closest('.automation-path');
             const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
+            console.log('Edit button clicked, pathIndex:', pathIndex);
             if (pathIndex >= 0) {
                 editAutomationPath(pathIndex);
             }
+            return;
         }
         
         // Delete path
-        if (event.target.closest('.delete-btn')) {
-            const pathElement = event.target.closest('.automation-path');
+        const deleteBtn = event.target.closest('.delete-btn');
+        if (deleteBtn) {
+            event.preventDefault();
+            event.stopPropagation();
+            const pathElement = deleteBtn.closest('.automation-path');
             const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
+            console.log('Delete button clicked, pathIndex:', pathIndex);
             if (pathIndex >= 0) {
                 deleteAutomationPath(pathIndex);
             }
+            return;
         }
         
         // Toggle path status
@@ -279,7 +289,7 @@ function setupEventListeners() {
                 toggleAutomationPath(pathIndex);
             }
         }
-    });
+    }, true); // Use capture phase
 }
 
 /**
