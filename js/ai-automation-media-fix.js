@@ -283,15 +283,11 @@ function validateAndFixImageUrl(post) {
     }
 }
 
-function publishPostDirectly(post) {
-    console.log('AI Automation Media Fix: Publishing post directly');
+async function publishPostDirectly(post) {
+    console.log('AI Automation Media Fix: Publishing post directly via API');
     
     try {
         // Ensure post has required fields
-        if (!post.id) {
-            post.id = Date.now().toString();
-        }
-        
         if (!post.date) {
             post.date = new Date().toISOString();
         }
@@ -300,35 +296,46 @@ function publishPostDirectly(post) {
             post.status = 'published';
         }
         
-        // Get existing posts
-        let blogPosts = [];
-        try {
-            const saved = localStorage.getItem('fooodis-blog-posts');
-            if (saved) {
-                blogPosts = JSON.parse(saved);
-            }
-        } catch (e) {
-            console.error('Error parsing existing posts:', e);
-        }
-        
-        // Add new post
-        blogPosts.unshift(post);
-        
-        // Save to localStorage
-        localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
-        
-        console.log('AI Automation Media Fix: Post published successfully');
-        
-        // Trigger refresh events
-        document.dispatchEvent(new CustomEvent('blogPostsUpdated', {
-            detail: { posts: blogPosts }
-        }));
-        
-        return {
-            success: true,
-            post: post,
-            url: 'blog.html?post=' + post.id
+        // Prepare post data for API
+        const postData = {
+            title: post.title,
+            content: post.content,
+            excerpt: post.excerpt || '',
+            category: post.category || 'Uncategorized',
+            subcategory: post.subcategory || null,
+            tags: post.tags || [],
+            image_url: post.imageUrl || post.image_url || '',
+            status: 'published',
+            published_date: post.date
         };
+        
+        // Save to cloud database via API
+        const response = await fetch('/api/blog/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(postData)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            const createdPost = result.post;
+            
+            console.log('AI Automation Media Fix: Post published to database:', createdPost.id);
+            
+            // Trigger refresh events
+            document.dispatchEvent(new CustomEvent('blogPostsUpdated', {
+                detail: { posts: [createdPost] }
+            }));
+            
+            return {
+                success: true,
+                post: createdPost,
+                url: 'blog.html?post=' + createdPost.id
+            };
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Failed to save post to database');
+        }
         
     } catch (error) {
         console.error('AI Automation Media Fix: Error in direct publishing:', error);

@@ -110,6 +110,13 @@ function restoreExecutionStatusCards() {
 async function loadAutomationPaths() {
     try {
         console.log('Loading automation paths from API...');
+        
+        // Clear any stale localStorage data first
+        try {
+            localStorage.removeItem('aiAutomationPaths');
+            sessionStorage.removeItem('aiAutomationPaths');
+        } catch (e) { /* ignore */ }
+        
         const response = await fetch('/api/automation/paths');
         
         if (response.ok) {
@@ -1354,77 +1361,19 @@ async function saveAutomationPath() {
 
 /**
  * Save automation paths to storage
+ * NOTE: This function is deprecated - all saves now go through the API
+ * Keeping it as a no-op for backward compatibility
  */
 function saveAutomationPathsToStorage() {
+    console.log('saveAutomationPathsToStorage: Deprecated - paths are saved via API');
+    // Clear localStorage to prevent stale data
     try {
-        // Make sure we have valid data before saving
-        if (!Array.isArray(automationPaths)) {
-            console.error('automationPaths is not an array:', automationPaths);
-            automationPaths = [];
-        }
-        
-        // Validate and clean up each path before saving
-        automationPaths = automationPaths.filter(path => {
-            return path && typeof path === 'object' && path.name;
-        });
-        
-        // Add ID to paths that don't have one
-        automationPaths.forEach(path => {
-            if (!path.id) {
-                path.id = generateId();
-                console.log('Added missing ID to path:', path.name);
-            }
-        });
-        
-        // Save to all storage methods for redundancy
-        let saveSuccessful = false;
-        
-        // 1. Save via StorageManager (primary method)
-        if (window.StorageManager && typeof window.StorageManager.save === 'function') {
-            const saved = window.StorageManager.save('ai-automation-paths', automationPaths, {
-                compress: true, // Use compression for potentially large data
-                onSuccess: function() {
-                    console.log('Automation paths saved successfully via StorageManager');
-                    saveSuccessful = true;
-                },
-                onError: function(error, status) {
-                    console.error('Error saving automation paths via StorageManager:', error, status);
-                }
-            });
-        }
-        
-        // 2. Always save to direct localStorage as well (backup method)
-        try {
-            const serialized = JSON.stringify(automationPaths);
-            localStorage.setItem('aiAutomationPaths', serialized);
-            console.log('Automation paths saved to direct localStorage (size:', serialized.length, 'bytes)');
-            saveSuccessful = true;
-            
-            // Verify the save worked by reading it back
-            const savedData = localStorage.getItem('aiAutomationPaths');
-            if (savedData !== serialized) {
-                console.warn('Verification failed: saved data does not match what was written');
-            }
-        } catch (e) {
-            console.error('Error saving to direct localStorage:', e);
-        }
-        
-        // 3. Save to sessionStorage as an additional backup
-        try {
-            sessionStorage.setItem('aiAutomationPaths', JSON.stringify(automationPaths));
-            console.log('Automation paths saved to sessionStorage as additional backup');
-        } catch (e) {
-            console.error('Error saving to sessionStorage:', e);
-        }
-        
-        // Log the paths that were saved for debugging
-        console.log('Saved automation paths:', automationPaths);
-        
-        return saveSuccessful;
-    } catch (error) {
-        console.error('Error saving automation paths:', error);
-        return false;
+        localStorage.removeItem('aiAutomationPaths');
+        sessionStorage.removeItem('aiAutomationPaths');
+    } catch (e) {
+        // Ignore errors
     }
+    return true;
 }
 
 /**
