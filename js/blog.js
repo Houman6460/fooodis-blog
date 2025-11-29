@@ -50,9 +50,14 @@ function initializeDOMElements() {
 
 // Initialize the blog system
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 Blog.js v2 - Starting initialization');
     initializeDOMElements();
+    console.log('📦 Loading blog data from API...');
     await loadBlogData();
+    console.log('📊 blogPosts loaded:', window.blogPosts.length, 'posts');
+    console.log('🎨 Rendering posts...');
     renderBlogPosts();
+    console.log('✅ Blog initialization complete');
     renderCategories();
     renderSubcategories();
     renderTags();
