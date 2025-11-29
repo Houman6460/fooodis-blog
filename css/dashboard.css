@@ -126,15 +126,13 @@ body.dashboard-body {
 .header-actions .user-avatar,
 .user-info .user-avatar,
 .user-avatar.header-avatar {
-    background: #2D333B !important;
-    background-image: none !important;
+    background: transparent !important;
     border: none !important;
 }
 
 .user-avatar.has-image,
 .header-avatar.has-image {
-    background: #2D333B !important;
-    background-image: none !important;
+    background-color: transparent !important;
     border: none !important;
 }
 
