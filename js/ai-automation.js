@@ -380,8 +380,8 @@ function createAutomationPathElement(path, index) {
                     <span class="slider"></span>
                 </label>
                 ${path.active ? '<span class="toggle-active">Active</span>' : ''}
-                <button class="edit-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                <button class="delete-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                <button class="edit-btn" title="Edit" onclick="window.editAutomationPath(${index}); return false;"><i class="fas fa-edit"></i></button>
+                <button class="delete-btn" title="Delete" onclick="window.deleteAutomationPath(${index}); return false;"><i class="fas fa-trash-alt"></i></button>
             </div>
         </div>
         <div class="automation-path-grid">
@@ -2683,7 +2683,12 @@ window.aiAutomation = {
     saveAutomationPath,
     closeAutomationPathForm,
     deleteAutomationPath,
+    editAutomationPath,
     generateAndPublishNow,
     generateAutomatedPost,
     publishAutomatedPost
 };
+
+// Expose edit/delete directly on window for onclick handlers
+window.editAutomationPath = editAutomationPath;
+window.deleteAutomationPath = deleteAutomationPath;
