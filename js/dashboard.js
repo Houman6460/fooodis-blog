@@ -3,6 +3,8 @@
  * Handles blog post creation, management, and dashboard functionality
  */
 
+console.log('📊 Dashboard.js loading...');
+
 // Global variables - use window to avoid duplicate declarations
 if (typeof window.dashboardBlogPosts === 'undefined') {
     window.dashboardBlogPosts = [];
@@ -1070,8 +1072,10 @@ async function deletePost(postId) {
             console.log('✅ Post deleted from D1:', postId);
             showNotification('Post deleted successfully!', 'success');
             
-            // Remove from local array
-            blogPosts = blogPosts.filter(p => String(p.id) !== String(postId));
+            // Remove from local array and update window reference
+            const filtered = blogPosts.filter(p => String(p.id) !== String(postId));
+            window.dashboardBlogPosts = filtered;
+            blogPosts = filtered;
             
             // Update localStorage cache
             localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));

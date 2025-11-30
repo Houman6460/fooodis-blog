@@ -15,7 +15,7 @@
     
     // Set up a more frequent check interval for critical updates
     setInterval(() => {
-        if (initialized) {
+        if (initialized && typeof detectFolderChanges === 'function') {
             // Check and sync folder changes more frequently
             detectFolderChanges();
         }
