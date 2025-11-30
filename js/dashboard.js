@@ -66,9 +66,9 @@ function showNotification(message, type = 'info') {
 }
 
 // Initialize the dashboard
-function initializeDashboard() {
-    // Load blog data (initially from localStorage; will be overwritten by BlogDataManager sync)
-    loadBlogData();
+async function initializeDashboard() {
+    // Load blog data from API (D1 database)
+    await loadBlogData();
     
     // Setup navigation
     setupNavigation();
@@ -122,23 +122,34 @@ document.addEventListener('blogPostsUpdated', function(e) {
 });
 
 // Load blog data from localStorage
-function loadBlogData() {
-    // Try to load from localStorage
-    const storedPosts = localStorage.getItem('fooodis-blog-posts');
+async function loadBlogData() {
+    // Fetch posts from API (D1 database) first
+    try {
+        console.log('Dashboard: Fetching posts from API...');
+        const response = await fetch('/api/blog/posts');
+        if (response.ok) {
+            const data = await response.json();
+            blogPosts = data.posts || [];
+            console.log('Dashboard: Loaded', blogPosts.length, 'posts from API');
+            // Update localStorage cache
+            localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+        } else {
+            console.warn('Dashboard: API fetch failed, falling back to localStorage');
+            const storedPosts = localStorage.getItem('fooodis-blog-posts');
+            blogPosts = storedPosts ? JSON.parse(storedPosts) : [];
+        }
+    } catch (error) {
+        console.error('Dashboard: Error fetching from API:', error);
+        // Fallback to localStorage
+        const storedPosts = localStorage.getItem('fooodis-blog-posts');
+        blogPosts = storedPosts ? JSON.parse(storedPosts) : [];
+    }
+    
     const storedCategories = localStorage.getItem('fooodis-blog-categories');
     const storedSubcategories = localStorage.getItem('fooodis-blog-subcategories');
     const storedTags = localStorage.getItem('fooodis-blog-tags');
     const storedFeaturedPosts = localStorage.getItem('fooodis-blog-featured');
     const storedSettings = localStorage.getItem('fooodis-blog-settings');
-    
-    // If data exists in localStorage, use it
-    if (storedPosts) {
-        blogPosts = JSON.parse(storedPosts);
-    } else {
-        // Otherwise use default sample data
-        blogPosts = getSampleBlogPosts();
-        localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
-    }
     
     if (storedCategories) {
         categories = JSON.parse(storedCategories);
@@ -1013,23 +1024,35 @@ function confirmDeletePost(postId) {
 
 // Delete post
 async function deletePost(postId) {
-    // Prefer BlogDataManager so D1 and local storage stay in sync
-    if (window.blogDataManager && typeof window.blogDataManager.deletePost === 'function') {
-        try {
-            const success = await window.blogDataManager.deletePost(postId);
-            if (!success) {
-                console.warn('Dashboard: BlogDataManager.deletePost reported failure, falling back to local deletion');
-                deletePostLocally(postId);
-            }
-        } catch (err) {
-            console.error('Dashboard: Error deleting post via BlogDataManager', err);
-            deletePostLocally(postId);
-        }
-        return;
-    }
+    console.log('Dashboard: Deleting post', postId);
     
-    // Fallback: local-only deletion
-    deletePostLocally(postId);
+    try {
+        // Call API to delete from D1 database
+        const response = await fetch(`/api/blog/posts/${postId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            console.log('✅ Post deleted from D1:', postId);
+            showNotification('Post deleted successfully!', 'success');
+            
+            // Remove from local array
+            blogPosts = blogPosts.filter(p => String(p.id) !== String(postId));
+            
+            // Update localStorage cache
+            localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
+            
+            // Re-render posts table
+            renderPostsTable();
+        } else {
+            const errorText = await response.text();
+            console.error('❌ Delete failed:', response.status, errorText);
+            showNotification('Failed to delete post: ' + response.status, 'error');
+        }
+    } catch (err) {
+        console.error('Dashboard: Error deleting post', err);
+        showNotification('Error deleting post: ' + err.message, 'error');
+    }
 }
 
 // Local deletion logic used as fallback when BlogDataManager is unavailable
