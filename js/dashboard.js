@@ -3,15 +3,41 @@
  * Handles blog post creation, management, and dashboard functionality
  */
 
-// Global variables
-let blogPosts = [];
-let categories = [];
-let subcategories = [];
-let tags = [];
-let featuredPosts = [];
-let blogSettings = {};
-let currentEditingPostId = null;
-let confirmationCallback = null;
+// Global variables - use window to avoid duplicate declarations
+if (typeof window.dashboardBlogPosts === 'undefined') {
+    window.dashboardBlogPosts = [];
+}
+if (typeof window.dashboardCategories === 'undefined') {
+    window.dashboardCategories = [];
+}
+if (typeof window.dashboardSubcategories === 'undefined') {
+    window.dashboardSubcategories = [];
+}
+if (typeof window.dashboardTags === 'undefined') {
+    window.dashboardTags = [];
+}
+if (typeof window.dashboardFeaturedPosts === 'undefined') {
+    window.dashboardFeaturedPosts = [];
+}
+if (typeof window.dashboardSettings === 'undefined') {
+    window.dashboardSettings = {};
+}
+if (typeof window.currentEditingPostId === 'undefined') {
+    window.currentEditingPostId = null;
+}
+if (typeof window.confirmationCallback === 'undefined') {
+    window.confirmationCallback = null;
+}
+
+// Local references
+var blogPosts = window.dashboardBlogPosts;
+var categories = window.dashboardCategories;
+var subcategories = window.dashboardSubcategories;
+var tags = window.dashboardTags;
+var featuredPosts = window.dashboardFeaturedPosts;
+var blogSettings = window.dashboardSettings;
+var currentEditingPostId = window.currentEditingPostId;
+var confirmationCallback = window.confirmationCallback;
 
 // DOM Elements
 document.addEventListener('DOMContentLoaded', function() {
