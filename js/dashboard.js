@@ -147,7 +147,7 @@ document.addEventListener('blogPostsUpdated', function(e) {
     }
 });
 
-// Load blog data from localStorage
+// Load blog data from API
 async function loadBlogData() {
     // Fetch posts from API (D1 database) first
     try {
@@ -155,20 +155,27 @@ async function loadBlogData() {
         const response = await fetch('/api/blog/posts');
         if (response.ok) {
             const data = await response.json();
-            blogPosts = data.posts || [];
+            const posts = data.posts || [];
+            // Update both window and local reference
+            window.dashboardBlogPosts = posts;
+            blogPosts = posts;
             console.log('Dashboard: Loaded', blogPosts.length, 'posts from API');
             // Update localStorage cache
             localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
         } else {
             console.warn('Dashboard: API fetch failed, falling back to localStorage');
             const storedPosts = localStorage.getItem('fooodis-blog-posts');
-            blogPosts = storedPosts ? JSON.parse(storedPosts) : [];
+            const posts = storedPosts ? JSON.parse(storedPosts) : [];
+            window.dashboardBlogPosts = posts;
+            blogPosts = posts;
         }
     } catch (error) {
         console.error('Dashboard: Error fetching from API:', error);
         // Fallback to localStorage
         const storedPosts = localStorage.getItem('fooodis-blog-posts');
-        blogPosts = storedPosts ? JSON.parse(storedPosts) : [];
+        const posts = storedPosts ? JSON.parse(storedPosts) : [];
+        window.dashboardBlogPosts = posts;
+        blogPosts = posts;
     }
     
     const storedCategories = localStorage.getItem('fooodis-blog-categories');
@@ -749,62 +756,63 @@ function updateSubcategoryDropdown(category) {
 
 // Render posts table
 function renderPostsTable() {
+    console.log('Dashboard: renderPostsTable called with', blogPosts.length, 'posts');
     const postsTableBody = document.getElementById('postsTableBody');
     
-    if (postsTableBody) {
-        postsTableBody.innerHTML = '';
-        
-        if (blogPosts.length === 0) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = '<td colspan="4" class="no-posts">No blog posts found.</td>';
-            postsTableBody.appendChild(tr);
-            return;
-        }
-        
-        blogPosts.forEach(post => {
-            const tr = document.createElement('tr');
-            
-            tr.innerHTML = `
-                <td>${post.title}</td>
-                <td>${post.category || 'Uncategorized'}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
-                <td>${post.featured ? '<span class="post-featured-badge">Featured</span>' : 'No'}</td>
-                <td>
-                    <div class="post-actions">
-                        <button class="edit-btn" data-id="${post.id}" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="feature-btn" data-id="${post.id}" title="${post.featured ? 'Unfeature' : 'Feature'}">
-                            <i class="fas ${post.featured ? 'fa-star' : 'fa-star-o'}"></i>
-                        </button>
-                        <button class="delete-btn" data-id="${post.id}" title="Delete"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </td>
-            `;
-            
-            postsTableBody.appendChild(tr);
-        });
-        
-        // Add event listeners to action buttons
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const postId = this.getAttribute('data-id');
-                editPost(postId);
-            });
-        });
-        
-        document.querySelectorAll('.feature-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const postId = this.getAttribute('data-id');
-                toggleFeaturePost(postId);
-            });
-        });
-        
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const postId = this.getAttribute('data-id');
-                confirmDeletePost(postId);
-            });
-        });
+    if (!postsTableBody) {
+        console.warn('Dashboard: postsTableBody not found');
+        return;
     }
+    
+    postsTableBody.innerHTML = '';
+    
+    if (!blogPosts || blogPosts.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="4" class="no-posts">No blog posts found.</td>';
+        postsTableBody.appendChild(tr);
+        return;
+    }
+    
+    blogPosts.forEach((post, index) => {
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-post-id', post.id);
+        
+        tr.innerHTML = `
+            <td>${post.title || 'Untitled'}</td>
+            <td>${post.category || 'Uncategorized'}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
+            <td>${post.featured ? '<span class="post-featured-badge">Featured</span>' : 'No'}</td>
+            <td>
+                <div class="post-actions">
+                    <button class="edit-btn" data-id="${post.id}" data-index="${index}" title="Edit" onclick="window.dashboardEditPost('${post.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="feature-btn" data-id="${post.id}" title="${post.featured ? 'Unfeature' : 'Feature'}" onclick="window.dashboardToggleFeature('${post.id}')">
+                        <i class="fas ${post.featured ? 'fa-star' : 'fa-star-o'}"></i>
+                    </button>
+                    <button class="delete-btn" data-id="${post.id}" title="Delete" onclick="window.dashboardDeletePost('${post.id}')"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            </td>
+        `;
+        
+        postsTableBody.appendChild(tr);
+    });
+    
+    console.log('Dashboard: Rendered', blogPosts.length, 'posts to table');
 }
+
+// Global functions for button clicks
+window.dashboardEditPost = function(postId) {
+    console.log('Dashboard: Edit clicked for post', postId);
+    editPost(postId);
+};
+
+window.dashboardDeletePost = function(postId) {
+    console.log('Dashboard: Delete clicked for post', postId);
+    confirmDeletePost(postId);
+};
+
+window.dashboardToggleFeature = function(postId) {
+    console.log('Dashboard: Feature toggle clicked for post', postId);
+    toggleFeaturePost(postId);
+};
 
 // Render categories lists
 function renderCategoriesLists() {
