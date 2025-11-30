@@ -1,6 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- CRITICAL: Global post management functions - must be defined FIRST -->
+    <script>
+    console.log('🚀 Early script loading...');
+    
+    // Define global functions immediately
+    window.dashboardEditPost = function(postId) {
+        console.log('✏️ EDIT post:', postId);
+        alert('Editing post: ' + postId);
+        // Find and call the real edit function when available
+        if (typeof editPost === 'function') {
+            editPost(postId);
+        }
+    };
+    
+    window.dashboardDeletePost = async function(postId) {
+        console.log('🗑️ DELETE post:', postId);
+        if (confirm('Are you sure you want to delete this post?')) {
+            try {
+                const response = await fetch('/api/blog/posts/' + postId, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('✅ Post deleted successfully!');
+                    location.reload();
+                } else {
+                    alert('❌ Failed to delete: ' + response.status);
+                }
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+    };
+    
+    window.dashboardToggleFeature = function(postId) {
+        console.log('⭐ FEATURE toggle:', postId);
+        if (typeof toggleFeaturePost === 'function') {
+            toggleFeaturePost(postId);
+        }
+    };
+    
+    console.log('✅ Global functions defined');
+    </script>
+    
+    <style>
+    /* Ensure button clicks work */
+    .post-actions button { pointer-events: auto !important; cursor: pointer !important; }
+    .post-actions button i { pointer-events: none; }
+    </style>
+
     <!-- COMPREHENSIVE ERROR PREVENTION: Must load first to prevent all JS errors -->
     <script src="js/comprehensive-error-prevention.js"></script>
 
