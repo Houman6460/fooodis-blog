@@ -43,8 +43,37 @@ var confirmationCallback = window.confirmationCallback;
 
 // DOM Elements
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Dashboard.js: DOMContentLoaded fired');
+    
     // Initialize the dashboard
     initializeDashboard();
+    
+    // Add fallback click handler for post management buttons
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.edit-btn, .delete-btn, .feature-btn');
+        if (!btn) return;
+        
+        // Only handle if inside postsTableBody
+        const postsTable = btn.closest('#postsTableBody');
+        if (!postsTable) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const postId = btn.getAttribute('data-id');
+        console.log('Dashboard.js: Fallback handler - button clicked, postId:', postId);
+        
+        if (btn.classList.contains('edit-btn')) {
+            console.log('Dashboard.js: Fallback - calling editPost');
+            if (typeof editPost === 'function') editPost(postId);
+        } else if (btn.classList.contains('delete-btn')) {
+            console.log('Dashboard.js: Fallback - calling confirmDeletePost');
+            if (typeof confirmDeletePost === 'function') confirmDeletePost(postId);
+        } else if (btn.classList.contains('feature-btn')) {
+            console.log('Dashboard.js: Fallback - calling toggleFeaturePost');
+            if (typeof toggleFeaturePost === 'function') toggleFeaturePost(postId);
+        }
+    }, true); // Use capture phase
 });
 
 /**
@@ -779,17 +808,20 @@ function renderPostsTable() {
         const tr = document.createElement('tr');
         tr.setAttribute('data-post-id', post.id);
         
+        // Escape post.id for use in onclick
+        const safeId = String(post.id).replace(/'/g, "\\'");
+        
         tr.innerHTML = `
             <td>${post.title || 'Untitled'}</td>
             <td>${post.category || 'Uncategorized'}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
             <td>${post.featured ? '<span class="post-featured-badge">Featured</span>' : 'No'}</td>
             <td>
                 <div class="post-actions">
-                    <button class="edit-btn" data-id="${post.id}" data-index="${index}" title="Edit" onclick="window.dashboardEditPost('${post.id}')"><i class="fas fa-edit"></i></button>
-                    <button class="feature-btn" data-id="${post.id}" title="${post.featured ? 'Unfeature' : 'Feature'}" onclick="window.dashboardToggleFeature('${post.id}')">
+                    <button type="button" class="edit-btn" data-id="${post.id}" data-index="${index}" title="Edit" onclick="event.stopPropagation(); window.dashboardEditPost('${safeId}'); return false;"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="feature-btn" data-id="${post.id}" title="${post.featured ? 'Unfeature' : 'Feature'}" onclick="event.stopPropagation(); window.dashboardToggleFeature('${safeId}'); return false;">
                         <i class="fas ${post.featured ? 'fa-star' : 'fa-star-o'}"></i>
                     </button>
-                    <button class="delete-btn" data-id="${post.id}" title="Delete" onclick="window.dashboardDeletePost('${post.id}')"><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" class="delete-btn" data-id="${post.id}" title="Delete" onclick="event.stopPropagation(); window.dashboardDeletePost('${safeId}'); return false;"><i class="fas fa-trash-alt"></i></button>
                 </div>
             </td>
         `;
@@ -800,21 +832,27 @@ function renderPostsTable() {
     console.log('Dashboard: Rendered', blogPosts.length, 'posts to table');
 }
 
-// Global functions for button clicks
-window.dashboardEditPost = function(postId) {
-    console.log('Dashboard: Edit clicked for post', postId);
-    editPost(postId);
-};
+// Global functions for button clicks - only define if not already defined in head
+if (typeof window.dashboardEditPost !== 'function') {
+    window.dashboardEditPost = function(postId) {
+        console.log('Dashboard.js: Edit clicked for post', postId);
+        editPost(postId);
+    };
+}
 
-window.dashboardDeletePost = function(postId) {
-    console.log('Dashboard: Delete clicked for post', postId);
-    confirmDeletePost(postId);
-};
+if (typeof window.dashboardDeletePost !== 'function') {
+    window.dashboardDeletePost = function(postId) {
+        console.log('Dashboard.js: Delete clicked for post', postId);
+        confirmDeletePost(postId);
+    };
+}
 
-window.dashboardToggleFeature = function(postId) {
-    console.log('Dashboard: Feature toggle clicked for post', postId);
-    toggleFeaturePost(postId);
-};
+if (typeof window.dashboardToggleFeature !== 'function') {
+    window.dashboardToggleFeature = function(postId) {
+        console.log('Dashboard.js: Feature toggle clicked for post', postId);
+        toggleFeaturePost(postId);
+    };
+}
 
 // Render categories lists
 function renderCategoriesLists() {
