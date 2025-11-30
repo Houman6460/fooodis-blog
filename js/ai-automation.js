@@ -332,45 +332,48 @@ function setupEventListeners() {
     // Category +/- buttons
     setupCategoryButtons();
     
-    // Path actions (edit, delete, toggle) - use capture phase for reliability
-    document.addEventListener('click', function(event) {
-        // Edit path
-        const editBtn = event.target.closest('.edit-btn');
-        if (editBtn) {
-            event.preventDefault();
-            event.stopPropagation();
-            const pathElement = editBtn.closest('.automation-path');
-            const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
-            console.log('Edit button clicked, pathIndex:', pathIndex);
-            if (pathIndex >= 0) {
-                editAutomationPath(pathIndex);
+    // Path actions (edit, delete, toggle) - ONLY for automation paths container
+    const automationContainer = document.getElementById('automationPaths');
+    if (automationContainer) {
+        automationContainer.addEventListener('click', function(event) {
+            // Edit path
+            const editBtn = event.target.closest('.edit-btn');
+            if (editBtn) {
+                event.preventDefault();
+                event.stopPropagation();
+                const pathElement = editBtn.closest('.automation-path');
+                const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
+                console.log('Automation: Edit button clicked, pathIndex:', pathIndex);
+                if (pathIndex >= 0) {
+                    editAutomationPath(pathIndex);
+                }
+                return;
             }
-            return;
-        }
-        
-        // Delete path
-        const deleteBtn = event.target.closest('.delete-btn');
-        if (deleteBtn) {
-            event.preventDefault();
-            event.stopPropagation();
-            const pathElement = deleteBtn.closest('.automation-path');
-            const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
-            console.log('Delete button clicked, pathIndex:', pathIndex);
-            if (pathIndex >= 0) {
-                deleteAutomationPath(pathIndex);
+            
+            // Delete path
+            const deleteBtn = event.target.closest('.delete-btn');
+            if (deleteBtn) {
+                event.preventDefault();
+                event.stopPropagation();
+                const pathElement = deleteBtn.closest('.automation-path');
+                const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
+                console.log('Automation: Delete button clicked, pathIndex:', pathIndex);
+                if (pathIndex >= 0) {
+                    deleteAutomationPath(pathIndex);
+                }
+                return;
             }
-            return;
-        }
-        
-        // Toggle path status
-        if (event.target.closest('.status-toggle input')) {
-            const pathElement = event.target.closest('.automation-path');
-            const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
-            if (pathIndex >= 0) {
-                toggleAutomationPath(pathIndex);
+            
+            // Toggle path status
+            if (event.target.closest('.status-toggle input')) {
+                const pathElement = event.target.closest('.automation-path');
+                const pathIndex = pathElement ? parseInt(pathElement.dataset.index) : -1;
+                if (pathIndex >= 0) {
+                    toggleAutomationPath(pathIndex);
+                }
             }
-        }
-    }, true); // Use capture phase
+        });
+    }
 }
 
 /**
