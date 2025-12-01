@@ -560,6 +560,7 @@ async function savePost(event) {
     const subcategorySelect = document.getElementById('postSubcategory');
     const tagsInput = document.getElementById('postTags');
     const featuredCheckbox = document.getElementById('postFeatured');
+    const imageUrlInput = document.getElementById('postImageUrl');
     
     const title = titleInput ? titleInput.value.trim() : '';
     const excerpt = excerptInput ? excerptInput.value.trim() : '';
@@ -571,6 +572,7 @@ async function savePost(event) {
     const subcategory = subcategorySelect ? (subcategorySelect.value || null) : null;
     const tagsString = tagsInput ? tagsInput.value.trim() : '';
     const featured = featuredCheckbox ? !!featuredCheckbox.checked : false;
+    const imageUrl = imageUrlInput ? imageUrlInput.value.trim() : '';
     
     if (!title || !content) {
         alert('Please fill in all required fields');
@@ -608,6 +610,7 @@ async function savePost(event) {
                     title,
                     excerpt,
                     content,
+                    image_url: imageUrl,
                     category,
                     subcategory,
                     tags: tagsArray,
@@ -623,9 +626,11 @@ async function savePost(event) {
                             title: updatedPost.title,
                             content: updatedPost.content,
                             excerpt: updatedPost.excerpt,
+                            image_url: updatedPost.image_url,
                             category: updatedPost.category,
                             subcategory: updatedPost.subcategory,
                             tags: updatedPost.tags,
+                            featured: updatedPost.featured,
                             status: 'published'
                         })
                     });
@@ -649,9 +654,11 @@ async function savePost(event) {
                 title,
                 content,
                 excerpt,
+                image_url: imageUrl,
                 category,
                 subcategory,
                 tags: tagsArray,
+                featured: featured,
                 status: 'published'
             };
             
