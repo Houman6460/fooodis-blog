@@ -39,18 +39,46 @@ function initAIConfigIntegration() {
 }
 
 /**
- * Load saved configuration from localStorage
+ * Load saved configuration from backend API (with localStorage fallback)
  */
-function loadSavedConfig() {
-    // Try to get saved configuration
-    const savedConfig = localStorage.getItem('aiConfig');
+async function loadSavedConfig() {
+    console.log('AI Config Integration: Loading config from API...');
     
+    try {
+        // First, try to load from backend API
+        const response = await fetch('/api/automation/config');
+        
+        if (response.ok) {
+            const configArray = await response.json();
+            console.log('AI Config Integration: Loaded config from API:', configArray.length, 'settings');
+            
+            // Convert array format to object format for the form
+            const config = {};
+            configArray.forEach(item => {
+                if (item.key === 'openai_api_key') config.apiKey = item.value;
+                else if (item.key === 'model') config.model = item.value;
+                else if (item.key === 'assistant_type') config.assistant = item.value;
+                else if (item.key === 'custom_assistant') config.customAssistant = item.value;
+            });
+            
+            // Also update localStorage for offline access
+            localStorage.setItem('aiConfig', JSON.stringify(config));
+            
+            // Apply the configuration to the form
+            setTimeout(() => {
+                applyConfigToForm(config);
+            }, 100);
+            return;
+        }
+    } catch (error) {
+        console.warn('AI Config Integration: API fetch failed, falling back to localStorage:', error);
+    }
+    
+    // Fallback to localStorage
+    const savedConfig = localStorage.getItem('aiConfig');
     if (savedConfig) {
         try {
-            // Parse the saved configuration
             const config = JSON.parse(savedConfig);
-            
-            // Apply the saved configuration to the form
             setTimeout(() => {
                 applyConfigToForm(config);
             }, 100);
@@ -327,9 +355,9 @@ function showConnectionStatus(type, message, loading = false) {
 }
 
 /**
- * Save the configuration
+ * Save the configuration to backend API and localStorage
  */
-function saveConfiguration() {
+async function saveConfiguration() {
     // Get the configuration values
     const config = {
         apiKey: document.getElementById('openai-api-key').value.trim(),
@@ -353,12 +381,52 @@ function saveConfiguration() {
         return;
     }
     
-    // Save the configuration to localStorage
+    // Show saving status
+    showConnectionStatus('warning', 'Saving configuration...', true);
+    
     try {
-        localStorage.setItem('aiConfig', JSON.stringify(config));
-        showConnectionStatus('success', 'Configuration saved successfully');
+        // Save to backend API (D1 + KV)
+        const configData = {
+            config: [
+                { key: 'openai_api_key', value: config.apiKey, type: 'string', is_secret: true },
+                { key: 'model', value: config.model, type: 'string', is_secret: false },
+                { key: 'assistant_type', value: config.assistant, type: 'string', is_secret: false },
+                { key: 'custom_assistant', value: config.customAssistant, type: 'json', is_secret: false }
+            ]
+        };
+        
+        const response = await fetch('/api/automation/config', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(configData)
+        });
+        
+        if (response.ok) {
+            console.log('AI Config Integration: Configuration saved to backend');
+            
+            // Also save to localStorage for offline access
+            localStorage.setItem('aiConfig', JSON.stringify(config));
+            
+            // Also sync to KV for scheduled worker
+            if (typeof window.syncAutomationToCloud === 'function') {
+                window.syncAutomationToCloud().catch(e => console.warn('Cloud sync failed:', e));
+            }
+            
+            showConnectionStatus('success', 'Configuration saved successfully to cloud!');
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Failed to save to backend');
+        }
     } catch (error) {
-        showConnectionStatus('error', `Failed to save configuration: ${error.message}`);
+        console.error('AI Config Integration: Backend save failed:', error);
+        
+        // Fallback: save to localStorage only
+        try {
+            localStorage.setItem('aiConfig', JSON.stringify(config));
+            showConnectionStatus('warning', 'Saved locally (backend unavailable)');
+        } catch (localError) {
+            showConnectionStatus('error', `Failed to save: ${error.message}`);
+        }
     }
 }
 

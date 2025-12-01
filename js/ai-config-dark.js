@@ -17,6 +17,59 @@ window.aiConfig = window.aiConfig || {
     }
 };
 
+/**
+ * Fetch configuration from backend API and update localStorage
+ * This ensures the API key is synced from the cloud
+ */
+async function fetchConfigFromAPI() {
+    try {
+        console.log('AI Config: Fetching configuration from backend API...');
+        const response = await fetch('/api/automation/config');
+        
+        if (response.ok) {
+            const configArray = await response.json();
+            console.log('AI Config: Got', configArray.length, 'settings from API');
+            
+            // Convert array format to object format
+            const config = {
+                customAssistants: [],
+                model: 'gpt-4',
+                assistant: 'default',
+                customAssistant: { id: '', name: '', instructions: '' }
+            };
+            
+            configArray.forEach(item => {
+                if (item.key === 'openai_api_key') config.apiKey = item.value;
+                else if (item.key === 'model') config.model = item.value;
+                else if (item.key === 'assistant_type') config.assistant = item.value;
+                else if (item.key === 'custom_assistant' && item.value) {
+                    config.customAssistant = typeof item.value === 'string' 
+                        ? JSON.parse(item.value) 
+                        : item.value;
+                }
+            });
+            
+            if (config.apiKey) {
+                console.log('AI Config: API key found in backend, updating localStorage');
+                localStorage.setItem('aiConfig', JSON.stringify(config));
+                localStorage.setItem('fooodis-aiConfig', JSON.stringify(config));
+                
+                // Update global object
+                Object.assign(window.aiConfig, config);
+                
+                // Re-apply to form if it exists
+                setTimeout(() => {
+                    if (typeof applyConfigToForm === 'function') {
+                        applyConfigToForm(config);
+                    }
+                }, 100);
+            }
+        }
+    } catch (error) {
+        console.warn('AI Config: Could not fetch from API (will use localStorage):', error.message);
+    }
+}
+
 // Main initialization
 document.addEventListener('DOMContentLoaded', function() {
     console.log('AI Config: Initializing...');
@@ -132,10 +185,13 @@ function initAIConfig() {
 }
 
 /**
- * Load saved configuration from storage
+ * Load saved configuration from storage (with API fetch for backend support)
  */
 function loadSavedConfig() {
     console.log('AI Config: Loading saved configuration from all possible storage locations...');
+    
+    // Also try to fetch from API in background and update localStorage
+    fetchConfigFromAPI();
     
     try {
         let bestConfig = null;
