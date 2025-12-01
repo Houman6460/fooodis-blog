@@ -650,42 +650,104 @@ async function savePost(event) {
                 alert('Post updated successfully!');
             }
         } else {
-            const newPostPayload = {
-                title,
-                content,
-                excerpt,
-                image_url: imageUrl,
-                category,
-                subcategory,
-                tags: tagsArray,
-                featured: featured,
-                status: 'published'
-            };
+            // Check if post should be scheduled
+            const scheduleInput = document.getElementById('postScheduleDate');
+            const scheduleDate = scheduleInput ? scheduleInput.value : '';
             
-            // Always use API to save posts to cloud database
-            try {
-                const response = await fetch('/api/blog/posts', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newPostPayload)
-                });
+            if (scheduleDate) {
+                // Schedule the post for future publishing
+                const scheduledDateTime = new Date(scheduleDate).getTime();
+                const now = Date.now();
                 
-                if (response.ok) {
-                    const result = await response.json();
-                    const createdPost = result.post;
-                    console.log('Post created successfully via API:', createdPost.id);
-                    updateFeaturedArray(createdPost && createdPost.id, featured);
-                } else {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || 'Failed to save post');
+                if (scheduledDateTime <= now) {
+                    alert('Schedule date must be in the future');
+                    return;
                 }
-            } catch (apiError) {
-                console.error('API error:', apiError);
-                alert('Failed to save post to database: ' + apiError.message);
-                return;
+                
+                const scheduledPostPayload = {
+                    title,
+                    content,
+                    excerpt,
+                    image_url: imageUrl,
+                    category,
+                    subcategory,
+                    tags: tagsArray,
+                    is_featured: featured,
+                    scheduled_datetime: scheduledDateTime,
+                    source: 'manual'
+                };
+                
+                try {
+                    const response = await fetch('/api/scheduled-posts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(scheduledPostPayload)
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log('Post scheduled successfully via API:', result.post?.id);
+                        
+                        // Notify ScheduledPostsManager (supports both event names)
+                        document.dispatchEvent(new CustomEvent('scheduledPostCreated', {
+                            detail: { post: result.post, source: 'manual' }
+                        }));
+                        document.dispatchEvent(new CustomEvent('postScheduled', {
+                            detail: { post: result.post, source: 'manual' }
+                        }));
+                        
+                        // Clear the schedule date field
+                        if (scheduleInput) scheduleInput.value = '';
+                        
+                        alert(`Post scheduled for ${new Date(scheduledDateTime).toLocaleString()}!`);
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || 'Failed to schedule post');
+                    }
+                } catch (apiError) {
+                    console.error('API error:', apiError);
+                    alert('Failed to schedule post: ' + apiError.message);
+                    return;
+                }
+            } else {
+                // Publish immediately
+                const newPostPayload = {
+                    title,
+                    content,
+                    excerpt,
+                    image_url: imageUrl,
+                    category,
+                    subcategory,
+                    tags: tagsArray,
+                    featured: featured,
+                    status: 'published'
+                };
+                
+                // Always use API to save posts to cloud database
+                try {
+                    const response = await fetch('/api/blog/posts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newPostPayload)
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        const createdPost = result.post;
+                        console.log('Post created successfully via API:', createdPost.id);
+                        updateFeaturedArray(createdPost && createdPost.id, featured);
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || 'Failed to save post');
+                    }
+                } catch (apiError) {
+                    console.error('API error:', apiError);
+                    alert('Failed to save post to database: ' + apiError.message);
+                    return;
+                }
+                
+                alert('Post published successfully!');
             }
-            
-            alert('Post published successfully!');
             
             const postForm = document.getElementById('postForm');
             if (postForm) {
