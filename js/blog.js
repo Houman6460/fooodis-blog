@@ -695,6 +695,9 @@ function openBlogPostModal(postId) {
         return;
     }
     
+    // Track page view for this post
+    trackPostView(postId);
+    
     modalBody.innerHTML = `
         <div class="modal-image">
             <img src="${post.imageUrl || 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg'}" alt="${post.title}" onerror="this.src='images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg'; this.onerror=null;">
@@ -1028,3 +1031,48 @@ function getSampleBlogPosts() {
         }
     ];
 }
+
+/**
+ * Track post view - sends to both stats API and blog posts API
+ */
+async function trackPostView(postId) {
+    if (!postId) return;
+    
+    try {
+        // Track via statistics API (records in page_views and post_stats tables)
+        if (window.blogStatisticsManager && typeof window.blogStatisticsManager.trackPageView === 'function') {
+            window.blogStatisticsManager.trackPageView(postId, window.location.href);
+        } else {
+            // Direct API call as fallback
+            fetch('/api/stats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'page_view',
+                    post_id: postId,
+                    page_url: window.location.href,
+                    referrer: document.referrer
+                })
+            }).catch(e => console.warn('Stats tracking error:', e));
+        }
+        
+        // Also increment view count on the blog post itself
+        if (window.blogDataManager && typeof window.blogDataManager.incrementViews === 'function') {
+            window.blogDataManager.incrementViews(postId);
+        } else {
+            // Direct API call as fallback
+            fetch(`/api/blog/posts/${postId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ increment: 'views' })
+            }).catch(e => console.warn('View increment error:', e));
+        }
+        
+        console.log('Post view tracked:', postId);
+    } catch (error) {
+        console.error('Error tracking post view:', error);
+    }
+}
+
+// Expose for external use
+window.trackPostView = trackPostView;
