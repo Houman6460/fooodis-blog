@@ -353,6 +353,96 @@ class MediaLibraryManager {
     }
     
     /**
+     * Rename a folder
+     */
+    async renameFolder(oldName, newName, newDisplayName = null) {
+        console.log('MediaLibraryManager: Renaming folder', oldName, 'to', newName);
+        
+        try {
+            const response = await fetch('/api/media/folders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: oldName,
+                    new_name: newName,
+                    new_display_name: newDisplayName || newName
+                })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                
+                // Update local folder array
+                const folderIndex = this.folders.findIndex(f => f.name === oldName);
+                if (folderIndex !== -1) {
+                    this.folders[folderIndex].name = result.new_name;
+                    this.folders[folderIndex].display_name = result.display_name;
+                }
+                
+                // Update media items with old folder name
+                this.media.forEach(m => {
+                    if (m.folder === oldName) {
+                        m.folder = result.new_name;
+                    }
+                });
+                
+                document.dispatchEvent(new CustomEvent('mediaFolderRenamed', {
+                    detail: { 
+                        oldName: oldName,
+                        newName: result.new_name,
+                        displayName: result.display_name
+                    }
+                }));
+                
+                return result;
+            } else {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to rename folder');
+            }
+        } catch (error) {
+            console.error('MediaLibraryManager: Folder rename error', error);
+            throw error;
+        }
+    }
+    
+    /**
+     * Delete a folder (files moved to uploads)
+     */
+    async deleteFolder(folderName) {
+        console.log('MediaLibraryManager: Deleting folder', folderName);
+        
+        try {
+            const response = await fetch(`/api/media/folders?name=${encodeURIComponent(folderName)}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                // Remove from local array
+                this.folders = this.folders.filter(f => f.name !== folderName);
+                
+                // Update media items to 'uploads' folder
+                this.media.forEach(m => {
+                    if (m.folder === folderName) {
+                        m.folder = 'uploads';
+                    }
+                });
+                
+                document.dispatchEvent(new CustomEvent('mediaFolderDeleted', {
+                    detail: { folderName }
+                }));
+                
+                return true;
+            } else {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to delete folder');
+            }
+        } catch (error) {
+            console.error('MediaLibraryManager: Folder delete error', error);
+            throw error;
+        }
+    }
+    
+    /**
      * Move media to a different folder
      */
     async moveToFolder(mediaId, targetFolder) {

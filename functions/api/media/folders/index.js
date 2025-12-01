@@ -245,6 +245,118 @@ export async function onRequestPost(context) {
 }
 
 /**
+ * PUT /api/media/folders - Rename a folder
+ */
+export async function onRequestPut(context) {
+  const { request, env } = context;
+
+  if (!env.DB) {
+    return new Response(JSON.stringify({ error: "Database not configured" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  try {
+    const data = await request.json();
+    
+    if (!data.name || !data.new_name) {
+      return new Response(JSON.stringify({ error: "Current name and new name are required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    const oldName = data.name;
+    const newName = data.new_name
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    const newDisplayName = data.new_display_name || data.new_name;
+    const now = Date.now();
+
+    // Check if it's a system folder
+    try {
+      const folder = await env.DB.prepare(
+        "SELECT is_system FROM media_folders WHERE name = ?"
+      ).bind(oldName).first();
+
+      if (folder && folder.is_system === 1) {
+        return new Response(JSON.stringify({ error: "Cannot rename system folder" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+    } catch (e) {
+      // Table might not exist
+    }
+
+    // Check if new name already exists
+    try {
+      const existing = await env.DB.prepare(
+        "SELECT id FROM media_folders WHERE name = ? AND name != ?"
+      ).bind(newName, oldName).first();
+
+      if (existing) {
+        return new Response(JSON.stringify({ error: "A folder with this name already exists" }), {
+          status: 409,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+    } catch (e) {
+      // Table might not exist
+    }
+
+    // Update folder in media_folders table
+    try {
+      await env.DB.prepare(
+        "UPDATE media_folders SET name = ?, display_name = ?, updated_at = ? WHERE name = ?"
+      ).bind(newName, newDisplayName, now, oldName).run();
+    } catch (e) {
+      console.log('Could not update media_folders:', e.message);
+    }
+
+    // Update all files in this folder to new folder name
+    await env.DB.prepare(
+      "UPDATE media_library SET folder = ?, updated_at = ? WHERE folder = ?"
+    ).bind(newName, now, oldName).run();
+
+    // Update R2 folder marker
+    if (env.MEDIA_BUCKET) {
+      try {
+        // Delete old placeholder
+        await env.MEDIA_BUCKET.delete(`${oldName}/.folder`);
+        // Create new placeholder
+        await env.MEDIA_BUCKET.put(`${newName}/.folder`, '', {
+          customMetadata: { 
+            created: new Date().toISOString(),
+            display_name: newDisplayName
+          }
+        });
+      } catch (r2Error) {
+        console.error('R2 folder rename error:', r2Error);
+      }
+    }
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      old_name: oldName,
+      new_name: newName,
+      display_name: newDisplayName
+    }), {
+      headers: { "Content-Type": "application/json" }
+    });
+
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+
+/**
  * DELETE /api/media/folders - Delete a folder (move files to uploads)
  */
 export async function onRequestDelete(context) {
