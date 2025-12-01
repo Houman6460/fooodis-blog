@@ -1006,13 +1006,36 @@ function loadSettingsForm() {
 function editPost(postId) {
     // Find the post by ID
     const post = blogPosts.find(p => p.id == postId);
-    if (!post) return;
+    if (!post) {
+        console.error('Dashboard: Post not found for editing:', postId);
+        showNotification('Post not found', 'error');
+        return;
+    }
+    
+    console.log('Dashboard: Editing post', postId, post.title);
     
     // Fill the form with post data
-    document.getElementById('postTitle').value = post.title;
+    document.getElementById('postTitle').value = post.title || '';
     document.getElementById('postExcerpt').value = post.excerpt || '';
     document.getElementById('postContentEditor').innerHTML = post.content || '';
     document.getElementById('postContent').value = post.content || '';
+    
+    // Set featured image URL (handle both camelCase and snake_case)
+    const imageUrl = post.imageUrl || post.image_url || '';
+    const imageUrlInput = document.getElementById('postImageUrl');
+    if (imageUrlInput) {
+        imageUrlInput.value = imageUrl;
+    }
+    
+    // Show image preview if URL exists
+    if (imageUrl) {
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImg = document.getElementById('imagePreview');
+        if (previewContainer && previewImg) {
+            previewImg.src = imageUrl;
+            previewContainer.style.display = 'block';
+        }
+    }
     
     if (post.category) {
         document.getElementById('postCategory').value = post.category;
@@ -1021,10 +1044,14 @@ function editPost(postId) {
     }
     
     if (post.subcategory) {
-        document.getElementById('postSubcategory').value = post.subcategory;
+        setTimeout(() => {
+            document.getElementById('postSubcategory').value = post.subcategory;
+        }, 100); // Small delay to allow subcategory dropdown to populate
     }
     
-    document.getElementById('postTags').value = post.tags || '';
+    // Handle tags - convert array to comma-separated string if needed
+    const tagsValue = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
+    document.getElementById('postTags').value = tagsValue;
     document.getElementById('postFeatured').checked = post.featured || false;
     
     // Set current editing post ID
@@ -1717,20 +1744,24 @@ function filterPosts() {
             return;
         }
         
-        filteredPosts.forEach(post => {
+        filteredPosts.forEach((post, index) => {
             const tr = document.createElement('tr');
+            tr.setAttribute('data-post-id', post.id);
+            
+            // Escape post.id for use in onclick
+            const safeId = String(post.id).replace(/'/g, "\\'");
             
             tr.innerHTML = `
-                <td>${post.title}</td>
+                <td>${post.title || 'Untitled'}</td>
                 <td>${post.category || 'Uncategorized'}${post.subcategory ? ` / ${post.subcategory}` : ''}</td>
                 <td>${post.featured ? '<span class="post-featured-badge">Featured</span>' : 'No'}</td>
                 <td>
                     <div class="post-actions">
-                        <button class="edit-btn" data-id="${post.id}" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="feature-btn" data-id="${post.id}" title="${post.featured ? 'Unfeature' : 'Feature'}">
+                        <button type="button" class="edit-btn" data-id="${post.id}" data-index="${index}" title="Edit" onclick="event.stopPropagation(); window.dashboardEditPost('${safeId}'); return false;"><i class="fas fa-edit"></i></button>
+                        <button type="button" class="feature-btn" data-id="${post.id}" title="${post.featured ? 'Unfeature' : 'Feature'}" onclick="event.stopPropagation(); window.dashboardToggleFeature('${safeId}'); return false;">
                             <i class="fas ${post.featured ? 'fa-star' : 'fa-star-o'}"></i>
                         </button>
-                        <button class="delete-btn" data-id="${post.id}" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                        <button type="button" class="delete-btn" data-id="${post.id}" title="Delete" onclick="event.stopPropagation(); window.dashboardDeletePost('${safeId}'); return false;"><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </td>
             `;
@@ -1738,26 +1769,6 @@ function filterPosts() {
             postsTableBody.appendChild(tr);
         });
         
-        // Add event listeners to action buttons
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const postId = this.getAttribute('data-id');
-                editPost(postId);
-            });
-        });
-        
-        document.querySelectorAll('.feature-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const postId = this.getAttribute('data-id');
-                toggleFeaturePost(postId);
-            });
-        });
-        
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const postId = this.getAttribute('data-id');
-                confirmDeletePost(postId);
-            });
-        });
+        console.log('Dashboard: Filtered to', filteredPosts.length, 'posts');
     }
 }
