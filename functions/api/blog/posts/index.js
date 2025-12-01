@@ -283,18 +283,40 @@ export async function onRequestDelete(context) {
     // Delete posts one by one (D1 doesn't support IN with bindings well)
     let deletedCount = 0;
     const errors = [];
+    const categoryUpdates = {}; // Track category count decrements
 
     for (const id of ids) {
       try {
+        // Get post category before deleting
+        const post = await env.DB.prepare(
+          "SELECT category FROM blog_posts WHERE id = ?"
+        ).bind(id).first();
+        
         const result = await env.DB.prepare(
           "DELETE FROM blog_posts WHERE id = ?"
         ).bind(id).run();
         
         if (result.meta.changes > 0) {
           deletedCount++;
+          
+          // Track category for count update
+          if (post && post.category && post.category !== 'Uncategorized') {
+            categoryUpdates[post.category] = (categoryUpdates[post.category] || 0) + 1;
+          }
         }
       } catch (e) {
         errors.push({ id, error: e.message });
+      }
+    }
+    
+    // Update category post counts
+    for (const [category, count] of Object.entries(categoryUpdates)) {
+      try {
+        await env.DB.prepare(
+          "UPDATE categories SET post_count = MAX(0, post_count - ?) WHERE name = ?"
+        ).bind(count, category).run();
+      } catch (e) {
+        console.error('Error updating category count:', e);
       }
     }
 
@@ -302,6 +324,7 @@ export async function onRequestDelete(context) {
       success: true, 
       deleted: deletedCount,
       requested: ids.length,
+      categoriesUpdated: Object.keys(categoryUpdates),
       errors: errors.length > 0 ? errors : undefined
     }), {
       headers: { "Content-Type": "application/json" }

@@ -314,6 +314,19 @@ export async function onRequestDelete(context) {
   }
 
   try {
+    // First, get the post to know its category (for decrementing count)
+    const post = await env.DB.prepare(
+      "SELECT category FROM blog_posts WHERE id = ?"
+    ).bind(id).first();
+    
+    if (!post) {
+      return new Response(JSON.stringify({ error: "Post not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    
+    // Delete the post
     const result = await env.DB.prepare("DELETE FROM blog_posts WHERE id = ?").bind(id).run();
     
     if (result.meta.changes === 0) {
@@ -322,8 +335,15 @@ export async function onRequestDelete(context) {
             headers: { "Content-Type": "application/json" }
          });
     }
+    
+    // Decrement category post count
+    if (post.category && post.category !== 'Uncategorized') {
+      await env.DB.prepare(
+        "UPDATE categories SET post_count = MAX(0, post_count - 1) WHERE name = ?"
+      ).bind(post.category).run();
+    }
 
-    return new Response(JSON.stringify({ success: true, id }), {
+    return new Response(JSON.stringify({ success: true, id, category: post.category }), {
       headers: { "Content-Type": "application/json" }
     });
 

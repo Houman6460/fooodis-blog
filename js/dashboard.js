@@ -178,6 +178,60 @@ document.addEventListener('blogPostsUpdated', function(e) {
     }
 });
 
+// Listen for categories/tags loaded from API (CategoriesTagsManager)
+document.addEventListener('categoriesTagsReady', function(e) {
+    console.log('Dashboard: Categories and tags loaded from API');
+    try {
+        if (e.detail) {
+            // Update from manager data
+            if (e.detail.categories && Array.isArray(e.detail.categories)) {
+                categories = e.detail.categories;
+                window.dashboardCategories = categories;
+            }
+            if (e.detail.subcategories && Array.isArray(e.detail.subcategories)) {
+                subcategories = e.detail.subcategories;
+                window.dashboardSubcategories = subcategories;
+            }
+            if (e.detail.tags && Array.isArray(e.detail.tags)) {
+                tags = e.detail.tags;
+            }
+            
+            // Refresh dropdowns
+            renderCategoriesLists();
+            renderTagsCloud();
+            populateCategoryDropdown();
+        }
+    } catch (err) {
+        console.error('Dashboard: Error syncing categories from API', err);
+    }
+});
+
+// Listen for category/tag updates
+document.addEventListener('categoriesTagsUpdated', function(e) {
+    console.log('Dashboard: Categories/tags updated');
+    try {
+        if (e.detail) {
+            if (e.detail.categories) {
+                categories = e.detail.categories;
+                window.dashboardCategories = categories;
+            }
+            if (e.detail.subcategories) {
+                subcategories = e.detail.subcategories;
+                window.dashboardSubcategories = subcategories;
+            }
+            if (e.detail.tags) {
+                tags = e.detail.tags;
+            }
+            
+            renderCategoriesLists();
+            renderTagsCloud();
+            populateCategoryDropdown();
+        }
+    } catch (err) {
+        console.error('Dashboard: Error syncing category updates', err);
+    }
+});
+
 // Load blog data from API
 async function loadBlogData() {
     // Fetch posts from API (D1 database) first
