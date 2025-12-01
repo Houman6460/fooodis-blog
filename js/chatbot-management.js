@@ -95,38 +95,111 @@ class ChatbotManager {
     async loadData() {
         console.log('📁 LOADING CONFIG - Starting configuration load process...');
         
-        // First, try to load from chatbot-config.json file
+        // First priority: Load from backend API (D1 database)
+        let loadedFromBackend = false;
         try {
-            const configResponse = await fetch('./chatbot-config.json');
+            const configResponse = await fetch('/api/chatbot/config');
             if (configResponse.ok) {
-                const configData = await configResponse.json();
-                console.log('🔑 CONFIG LOADED - chatbot-config.json loaded successfully:', {
-                    enabled: configData.enabled,
-                    hasApiKey: !!configData.openaiApiKey,
-                    apiKeyPrefix: configData.openaiApiKey ? configData.openaiApiKey.substring(0, 15) + '...' : 'NONE',
-                    assistantsCount: configData.assistants ? configData.assistants.length : 0
-                });
-                
-                // Store the loaded config for use throughout the class
-                this.config = configData;
-                
-                // Set OpenAI API key in localStorage for immediate access
-                if (configData.openaiApiKey) {
-                    localStorage.setItem('openai-api-key', configData.openaiApiKey);
-                    localStorage.setItem('OPENAI_API_KEY', configData.openaiApiKey);
-                    console.log('✅ API KEY STORED - OpenAI API key stored in localStorage');
+                const result = await configResponse.json();
+                if (result.success) {
+                    console.log('🔌 BACKEND CONFIG - Loaded from API:', {
+                        assistantsCount: result.assistants?.length || 0,
+                        scenariosCount: result.scenarios?.length || 0,
+                        enabled: result.config?.enabled
+                    });
+                    
+                    // Load assistants from backend
+                    if (result.assistants && result.assistants.length > 0) {
+                        this.assistants = result.assistants.map(a => ({
+                            id: a.id,
+                            name: a.name,
+                            description: a.description,
+                            assistantId: a.openaiAssistantId || a.openai_assistant_id || '',
+                            openaiAssistantId: a.openaiAssistantId || a.openai_assistant_id || '',
+                            model: a.model,
+                            systemPrompt: a.systemPrompt || a.instructions,
+                            instructions: a.instructions || a.systemPrompt,
+                            status: a.status || (a.isActive ? 'active' : 'inactive'),
+                            createdAt: a.createdAt
+                        }));
+                        console.log('✅ ASSISTANTS FROM BACKEND - Loaded', this.assistants.length, 'assistants');
+                        loadedFromBackend = true;
+                    }
+                    
+                    // Load scenarios from backend
+                    if (result.scenarios && result.scenarios.length > 0) {
+                        this.scenarios = result.scenarios.map(s => ({
+                            id: s.id,
+                            name: s.name,
+                            description: s.description,
+                            active: s.active || s.isActive,
+                            triggerType: s.triggerType,
+                            triggerValue: s.triggerValue,
+                            language: s.language,
+                            questions: s.flowData?.questions || {},
+                            responses: s.flowData?.responses || {},
+                            flowData: s.flowData,
+                            createdAt: s.createdAt,
+                            updatedAt: s.updatedAt
+                        }));
+                        console.log('✅ SCENARIOS FROM BACKEND - Loaded', this.scenarios.length, 'scenarios');
+                    }
+                    
+                    // Store config settings
+                    if (result.config) {
+                        this.settings = {
+                            ...this.getDefaultSettings(),
+                            enabled: result.config.enabled,
+                            chatbotName: result.config.chatbotName,
+                            welcomeMessage: result.config.welcomeMessage,
+                            defaultModel: result.config.defaultModel,
+                            widgetPosition: result.config.widgetPosition,
+                            widgetColor: result.config.widgetColor,
+                            languages: result.config.languages,
+                            allowFileUpload: result.config.allowFileUpload,
+                            showTypingIndicator: result.config.showTypingIndicator
+                        };
+                    }
                 }
-                
-                // Load assistants from config if available
-                if (configData.assistants && configData.assistants.length > 0) {
-                    this.assistants = configData.assistants;
-                    console.log('✅ ASSISTANTS LOADED - Loaded', configData.assistants.length, 'assistants from config');
-                }
-            } else {
-                console.warn('⚠️ CONFIG WARNING - Could not load chatbot-config.json, using localStorage/defaults');
             }
         } catch (error) {
-            console.error('❌ CONFIG ERROR - Error loading chatbot-config.json:', error);
+            console.warn('⚠️ BACKEND CONFIG - Could not load from API, trying fallbacks:', error.message);
+        }
+        
+        // Second priority: Try chatbot-config.json file
+        if (!loadedFromBackend) {
+            try {
+                const configResponse = await fetch('./chatbot-config.json');
+                if (configResponse.ok) {
+                    const configData = await configResponse.json();
+                    console.log('🔑 CONFIG LOADED - chatbot-config.json loaded successfully:', {
+                        enabled: configData.enabled,
+                        hasApiKey: !!configData.openaiApiKey,
+                        apiKeyPrefix: configData.openaiApiKey ? configData.openaiApiKey.substring(0, 15) + '...' : 'NONE',
+                        assistantsCount: configData.assistants ? configData.assistants.length : 0
+                    });
+                    
+                    // Store the loaded config for use throughout the class
+                    this.config = configData;
+                    
+                    // Set OpenAI API key in localStorage for immediate access
+                    if (configData.openaiApiKey) {
+                        localStorage.setItem('openai-api-key', configData.openaiApiKey);
+                        localStorage.setItem('OPENAI_API_KEY', configData.openaiApiKey);
+                        console.log('✅ API KEY STORED - OpenAI API key stored in localStorage');
+                    }
+                    
+                    // Load assistants from config if available
+                    if (configData.assistants && configData.assistants.length > 0) {
+                        this.assistants = configData.assistants;
+                        console.log('✅ ASSISTANTS LOADED - Loaded', configData.assistants.length, 'assistants from config');
+                    }
+                } else {
+                    console.warn('⚠️ CONFIG WARNING - Could not load chatbot-config.json, using localStorage/defaults');
+                }
+            } catch (error) {
+                console.error('❌ CONFIG ERROR - Error loading chatbot-config.json:', error);
+            }
         }
         
         // Load from localStorage (fallback or override)
@@ -2033,7 +2106,7 @@ class ChatbotManager {
         container.appendChild(questionGroup);
     }
 
-    saveScenarioFromForm(scenarioId = null) {
+    async saveScenarioFromForm(scenarioId = null) {
         const name = document.getElementById('scenarioName').value;
         const description = document.getElementById('scenarioDescription').value;
 
@@ -2049,12 +2122,17 @@ class ChatbotManager {
             id: scenarioId || 'scenario-' + Date.now(),
             name: name,
             description: description,
-            active: scenarioId ? this.scenarios.find(s => s.id === scenarioId).active : false,
+            active: scenarioId ? this.scenarios.find(s => s.id === scenarioId)?.active : false,
+            isActive: scenarioId ? this.scenarios.find(s => s.id === scenarioId)?.active : false,
             questions: {
                 en: englishQuestions,
                 sv: swedishQuestions
             },
-            responses: scenarioId ? this.scenarios.find(s => s.id === scenarioId).responses : {},
+            responses: scenarioId ? this.scenarios.find(s => s.id === scenarioId)?.responses : {},
+            flowData: {
+                questions: { en: englishQuestions, sv: swedishQuestions },
+                responses: scenarioId ? this.scenarios.find(s => s.id === scenarioId)?.responses : {}
+            },
             createdAt: scenarioId ? undefined : new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -2072,7 +2150,44 @@ class ChatbotManager {
 
         this.saveData();
         this.renderScenarios();
+        
+        // Sync to backend API
+        await this.syncScenarioToBackend(scenarioData, !!scenarioId);
+        
         this.showNotification('Scenario saved successfully!', 'success');
+    }
+    
+    async syncScenarioToBackend(scenarioData, isUpdate = false) {
+        try {
+            const method = isUpdate ? 'PUT' : 'POST';
+            
+            const response = await fetch('/api/chatbot/scenarios', {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: scenarioData.id,
+                    name: scenarioData.name,
+                    description: scenarioData.description,
+                    trigger_type: 'keyword',
+                    trigger_value: '',
+                    language: 'all',
+                    flowData: scenarioData.flowData || {
+                        questions: scenarioData.questions,
+                        responses: scenarioData.responses
+                    },
+                    isActive: scenarioData.active || scenarioData.isActive || false,
+                    priority: 0
+                })
+            });
+            
+            if (response.ok) {
+                console.log('✅ Scenario synced to backend successfully');
+            } else {
+                console.warn('⚠️ Failed to sync scenario to backend:', await response.text());
+            }
+        } catch (error) {
+            console.error('❌ Error syncing scenario to backend:', error);
+        }
     }
 
     showAssistantModal() {
@@ -2121,7 +2236,7 @@ class ChatbotManager {
         });
     }
 
-    saveAssistant(assistantId = null) {
+    async saveAssistant(assistantId = null) {
         // Get existing assistant to preserve status
         const existingAssistant = assistantId ? this.assistants.find(a => a.id === assistantId) : null;
         
@@ -2130,8 +2245,10 @@ class ChatbotManager {
             name: document.getElementById('assistantName').value,
             description: document.getElementById('assistantDescription').value,
             assistantId: document.getElementById('assistantIdInput').value,
+            openaiAssistantId: document.getElementById('assistantIdInput').value,
             model: document.getElementById('assistantModel').value,
             systemPrompt: document.getElementById('assistantPrompt').value,
+            instructions: document.getElementById('assistantPrompt').value,
             status: existingAssistant ? existingAssistant.status : 'inactive', // Preserve existing status
             createdAt: assistantId ? undefined : new Date().toISOString()
         };
@@ -2149,7 +2266,40 @@ class ChatbotManager {
 
         this.saveData();
         this.renderAssistants();
+        
+        // Sync to backend API
+        await this.syncAssistantToBackend(formData, !!assistantId);
+        
         this.showNotification('Assistant saved successfully!', 'success');
+    }
+    
+    async syncAssistantToBackend(assistantData, isUpdate = false) {
+        try {
+            const endpoint = '/api/automation/assistants' + (isUpdate ? `/${assistantData.id}` : '');
+            const method = isUpdate ? 'PUT' : 'POST';
+            
+            const response = await fetch(endpoint, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: assistantData.id,
+                    name: assistantData.name,
+                    description: assistantData.description,
+                    openai_assistant_id: assistantData.assistantId || assistantData.openaiAssistantId || '',
+                    model: assistantData.model,
+                    instructions: assistantData.systemPrompt || assistantData.instructions,
+                    is_active: assistantData.status === 'active' ? 1 : 0
+                })
+            });
+            
+            if (response.ok) {
+                console.log('✅ Assistant synced to backend successfully');
+            } else {
+                console.warn('⚠️ Failed to sync assistant to backend:', await response.text());
+            }
+        } catch (error) {
+            console.error('❌ Error syncing assistant to backend:', error);
+        }
     }
 
     editAssistant(assistantId) {
@@ -2199,23 +2349,46 @@ class ChatbotManager {
         });
     }
 
-    toggleAssistant(assistantId) {
+    async toggleAssistant(assistantId) {
         const assistant = this.assistants.find(a => a.id === assistantId);
         if (!assistant) return;
 
         assistant.status = assistant.status === 'active' ? 'inactive' : 'active';
         this.saveData();
         this.renderAssistants();
+        
+        // Sync to backend
+        try {
+            await fetch(`/api/automation/assistants/${assistantId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ is_active: assistant.status === 'active' ? 1 : 0 })
+            });
+            console.log('✅ Assistant status synced to backend');
+        } catch (error) {
+            console.warn('⚠️ Failed to sync assistant status to backend:', error);
+        }
 
         const action = assistant.status === 'active' ? 'enabled' : 'disabled';
         this.showNotification(`Assistant ${action} successfully!`, 'success');
     }
 
-    deleteAssistant(assistantId) {
+    async deleteAssistant(assistantId) {
         if (confirm('Are you sure you want to delete this assistant? This action cannot be undone.')) {
             this.assistants = this.assistants.filter(a => a.id !== assistantId);
             this.saveData();
             this.renderAssistants();
+            
+            // Sync to backend
+            try {
+                await fetch(`/api/automation/assistants/${assistantId}`, {
+                    method: 'DELETE'
+                });
+                console.log('✅ Assistant deleted from backend');
+            } catch (error) {
+                console.warn('⚠️ Failed to delete assistant from backend:', error);
+            }
+            
             this.showNotification('Assistant deleted successfully!', 'success');
         }
     }
