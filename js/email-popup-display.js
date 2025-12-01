@@ -11,14 +11,49 @@ class EmailPopupDisplay {
         this.init();
     }
     
-    init() {
-        this.loadConfig();
+    async init() {
+        await this.loadConfig();
         this.createPopup();
         this.setupTriggers();
     }
     
-    loadConfig() {
-        // Load saved configuration from localStorage
+    async loadConfig() {
+        // First try to load from API
+        try {
+            const response = await fetch('/api/subscribers/popup-config');
+            if (response.ok) {
+                const apiConfig = await response.json();
+                
+                // Map API config to display config format
+                this.config = this.getDefaultConfig();
+                if (apiConfig.enabled !== undefined) {
+                    localStorage.setItem('popup-enabled', apiConfig.enabled ? 'true' : 'false');
+                }
+                if (apiConfig.title) this.config.customText.title = apiConfig.title;
+                if (apiConfig.description) this.config.customText.description = apiConfig.description;
+                if (apiConfig.button_text) this.config.customText.buttonText = apiConfig.button_text;
+                if (apiConfig.placeholder_text) this.config.customText.placeholder = apiConfig.placeholder_text;
+                if (apiConfig.success_message) this.config.customText.successMessage = apiConfig.success_message;
+                if (apiConfig.trigger_type) localStorage.setItem('popup-trigger', apiConfig.trigger_type);
+                if (apiConfig.trigger_delay) localStorage.setItem('popup-delay', apiConfig.trigger_delay.toString());
+                if (apiConfig.trigger_scroll_percent) localStorage.setItem('scroll-percentage', apiConfig.trigger_scroll_percent.toString());
+                if (apiConfig.background_color) this.config.colors.background = apiConfig.background_color;
+                if (apiConfig.button_color) this.config.colors.buttonBackground = apiConfig.button_color;
+                if (apiConfig.popup_image) {
+                    this.config.image.url = apiConfig.popup_image;
+                    this.config.image.enabled = true;
+                }
+                
+                // Cache locally
+                localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
+                console.log('EmailPopupDisplay: Config loaded from API');
+                return;
+            }
+        } catch (error) {
+            console.warn('EmailPopupDisplay: Could not load config from API, using localStorage', error);
+        }
+        
+        // Fallback to localStorage
         const savedConfig = localStorage.getItem('fooodis-email-popup-config');
         if (savedConfig) {
             try {
@@ -263,13 +298,15 @@ class EmailPopupDisplay {
         }
     }
     
-    handleSubmit(e) {
+    async handleSubmit(e) {
         const form = e.target;
         const emailInput = form.querySelector('.email-input');
         const submitBtn = form.querySelector('.email-submit-btn');
         const animElement = submitBtn.querySelector(`[class^="anim-"]`);
         
         if (!emailInput || !emailInput.value) return;
+        
+        const email = emailInput.value.trim();
         
         // Show loading animation
         if (animElement) {
@@ -285,65 +322,104 @@ class EmailPopupDisplay {
         // Disable button
         submitBtn.disabled = true;
         
-        // Simulate API call
-        setTimeout(() => {
-            // Show success message
-            const popup = document.getElementById('emailPopupOverlay');
-            if (!popup) return;
+        try {
+            // Call the backend API to save subscriber
+            const response = await fetch('/api/subscribers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    source: 'popup',
+                    subscribed_from: window.location.href
+                })
+            });
             
-            const emailPopup = popup.querySelector('.email-popup');
-            if (emailPopup && this.config.customText) {
-                emailPopup.innerHTML = `
-                    <div class="email-popup-success">
-                        <i class="fas fa-check-circle success-icon"></i>
-                        <h2 class="success-title">${this.config.customText.successMessage}</h2>
-                    </div>
-                `;
-                
-                // Close popup after delay
-                setTimeout(() => {
-                    this.closePopup();
-                }, 3000);
-            }
+            const result = await response.json();
             
-            // Save email to localStorage in a format compatible with the SubscriberListManager
-            try {
-                // First check if email already exists
-                const emails = JSON.parse(localStorage.getItem('subscriber-emails') || '[]');
-                const emailExists = emails.some(item => item.email === emailInput.value);
+            if (response.ok) {
+                console.log('Subscriber saved to database:', result);
                 
-                if (!emailExists) {
-                    // Add new subscriber with proper format
-                    emails.push({
-                        email: emailInput.value,
-                        date: new Date().toISOString(),
-                        status: 'active'
-                    });
+                // Show success message
+                const popup = document.getElementById('emailPopupOverlay');
+                if (!popup) return;
+                
+                const emailPopup = popup.querySelector('.email-popup');
+                if (emailPopup && this.config.customText) {
+                    let successText = this.config.customText.successMessage;
+                    if (result.existing) {
+                        successText = 'You are already subscribed!';
+                    } else if (result.reactivated) {
+                        successText = 'Welcome back! Your subscription has been reactivated.';
+                    }
                     
-                    // Save to localStorage
-                    localStorage.setItem('subscriber-emails', JSON.stringify(emails));
+                    emailPopup.innerHTML = `
+                        <div class="email-popup-success">
+                            <i class="fas fa-check-circle success-icon"></i>
+                            <h2 class="success-title">${successText}</h2>
+                        </div>
+                    `;
                     
-                    // Log for debugging
-                    console.log('New subscriber saved:', emailInput.value);
-                    console.log('Total subscribers:', emails.length);
+                    // Close popup after delay
+                    setTimeout(() => {
+                        this.closePopup();
+                    }, 3000);
+                }
+                
+                // Also save to localStorage for offline/cache
+                try {
+                    const emails = JSON.parse(localStorage.getItem('subscriber-emails') || '[]');
+                    const emailExists = emails.some(item => item.email === email);
                     
-                    // Trigger an event that the dashboard can listen for if it's open in another tab
+                    if (!emailExists) {
+                        emails.push({
+                            email: email,
+                            date: new Date().toISOString(),
+                            status: 'active'
+                        });
+                        localStorage.setItem('subscriber-emails', JSON.stringify(emails));
+                    }
+                    
+                    // Broadcast to other tabs
                     if (window.BroadcastChannel) {
                         try {
                             const bc = new BroadcastChannel('fooodis-subscribers');
-                            bc.postMessage({
-                                action: 'new-subscriber',
-                                email: emailInput.value
-                            });
+                            bc.postMessage({ action: 'new-subscriber', email: email });
                         } catch (e) {
-                            console.error('Broadcast error:', e);
+                            console.warn('Broadcast error:', e);
                         }
                     }
+                } catch (storageError) {
+                    console.warn('localStorage save error:', storageError);
                 }
-            } catch (error) {
-                console.error('Error saving subscriber:', error);
+                
+                // Dispatch event
+                document.dispatchEvent(new CustomEvent('subscriberAdded', {
+                    detail: { email, result }
+                }));
+                
+            } else {
+                // Show error message
+                console.error('Subscriber API error:', result.error);
+                alert(result.error || 'Failed to subscribe. Please try again.');
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                if (animElement) {
+                    animElement.style.display = 'none';
+                }
+                submitBtn.textContent = this.config.customText.buttonText;
             }
-        }, 1500);
+        } catch (error) {
+            console.error('Error submitting subscription:', error);
+            alert('Network error. Please check your connection and try again.');
+            
+            // Re-enable button
+            submitBtn.disabled = false;
+            if (animElement) {
+                animElement.style.display = 'none';
+            }
+            submitBtn.textContent = this.config.customText.buttonText;
+        }
     }
     
     startCountdown() {
