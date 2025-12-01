@@ -88,8 +88,31 @@ function loadMediaFoldersForSelect() {
  * @returns {Promise<Object>} - The image object or null if no unused images are available
  */
 async function getUnusedImageFromFolder(folderId) {
-    // Get media library
-    let mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
+    let mediaLibrary = [];
+    
+    // Try to fetch from API first (R2/D1)
+    try {
+        const apiUrl = folderId && folderId !== 'uncategorized' 
+            ? `/api/media?folder=${encodeURIComponent(folderId)}&limit=100`
+            : '/api/media?limit=100';
+        
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+            const data = await response.json();
+            mediaLibrary = data.media || [];
+            console.log(`Loaded ${mediaLibrary.length} media items from API`);
+            
+            // Update localStorage cache
+            localStorage.setItem('fooodis-blog-media', JSON.stringify(mediaLibrary));
+        }
+    } catch (error) {
+        console.warn('Failed to fetch media from API, falling back to localStorage:', error);
+    }
+    
+    // Fallback to localStorage if API failed
+    if (mediaLibrary.length === 0) {
+        mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
+    }
     
     // Filter by folder if specified
     let folderMedia = mediaLibrary;
@@ -103,7 +126,10 @@ async function getUnusedImageFromFolder(folderId) {
     }
     
     // Filter to only include images (not videos)
-    folderMedia = folderMedia.filter(item => item.type.startsWith('image/'));
+    folderMedia = folderMedia.filter(item => {
+        const mimeType = item.mime_type || item.type || '';
+        return mimeType.startsWith('image/');
+    });
     
     // Filter to only include unused images
     const unusedMedia = folderMedia.filter(item => !item.usedInAutomation);
@@ -115,7 +141,13 @@ async function getUnusedImageFromFolder(folderId) {
     
     // Get a random unused image
     const randomIndex = Math.floor(Math.random() * unusedMedia.length);
-    return unusedMedia[randomIndex];
+    const selectedImage = unusedMedia[randomIndex];
+    
+    // Return with proper URL (handle R2 URLs)
+    return {
+        ...selectedImage,
+        url: selectedImage.r2_url || selectedImage.url || selectedImage.filename
+    };
 }
 
 /**

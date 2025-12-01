@@ -1981,15 +1981,49 @@ function executeAutomationPath(path, index) {
                     console.log('✅ AI POST SAVED TO D1:', result.post?.id);
                     alert('✅ AI Post published successfully!\n\nTitle: ' + postToPublish.title + '\nID: ' + result.post?.id);
                     showPublishNotification(postToPublish);
+                    
+                    // Log successful generation to D1
+                    saveGenerationLog({
+                        automation_path_id: path.id,
+                        path_name: path.name,
+                        status: 'completed',
+                        content_type: path.contentType,
+                        category: path.category,
+                        generated_title: postToPublish.title,
+                        generated_content: postToPublish.content?.substring(0, 1000),
+                        published_post_id: result.post?.id,
+                        published_at: Date.now()
+                    });
                 } else {
                     const errorText = await response.text();
                     console.error('❌ API ERROR:', response.status, errorText);
                     alert('❌ Failed to publish AI post!\n\nError: ' + response.status + '\n' + errorText);
+                    
+                    // Log failed generation
+                    saveGenerationLog({
+                        automation_path_id: path.id,
+                        path_name: path.name,
+                        status: 'failed',
+                        content_type: path.contentType,
+                        category: path.category,
+                        generated_title: postToPublish.title,
+                        error_message: `API error: ${response.status} - ${errorText}`
+                    });
+                    
                     throw new Error('API error: ' + response.status);
                 }
             } catch (publishError) {
                 console.error('Error publishing post:', publishError);
                 showPublishNotification(null, publishError);
+                
+                // Log error
+                saveGenerationLog({
+                    automation_path_id: path.id,
+                    path_name: path.name,
+                    status: 'failed',
+                    content_type: path.contentType,
+                    error_message: publishError.message
+                });
             }
             
             // Increment generation count
@@ -2869,6 +2903,36 @@ function generateAndPublishNow() {
     } else {
         console.error('Generate & Publish Now functionality not available');
         alert('Generate & Publish Now functionality not available. Please refresh the page and try again.');
+    }
+}
+
+/**
+ * Save generation log to D1 database via API
+ * @param {Object} logData - The log data to save
+ */
+async function saveGenerationLog(logData) {
+    try {
+        console.log('Saving generation log to D1:', logData.status, logData.path_name);
+        
+        const response = await fetch('/api/automation/logs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ...logData,
+                started_at: Date.now(),
+                completed_at: logData.status === 'completed' ? Date.now() : null
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Generation log saved to D1:', result.log?.id);
+        } else {
+            console.error('❌ Failed to save generation log:', response.status);
+        }
+    } catch (error) {
+        console.error('Error saving generation log:', error);
+        // Don't throw - logging failure shouldn't break the main flow
     }
 }
 
