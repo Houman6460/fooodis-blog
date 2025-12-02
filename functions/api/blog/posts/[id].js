@@ -126,7 +126,21 @@ export async function onRequestPut(context) {
     }
     if (data.tags !== undefined) {
       updates.push('tags = ?');
-      values.push(JSON.stringify(data.tags || []));
+      // Ensure tags is properly formatted as a JSON string
+      let tagsString = '[]';
+      if (data.tags) {
+        if (typeof data.tags === 'string') {
+          try {
+            JSON.parse(data.tags);
+            tagsString = data.tags;
+          } catch (e) {
+            tagsString = JSON.stringify([data.tags]);
+          }
+        } else if (Array.isArray(data.tags)) {
+          tagsString = JSON.stringify(data.tags);
+        }
+      }
+      values.push(tagsString);
     }
     if (data.published_date !== undefined || data.publishedDate !== undefined) {
       updates.push('published_date = ?');

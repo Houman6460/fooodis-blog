@@ -163,6 +163,26 @@ export async function onRequestPost(context) {
     const id = crypto.randomUUID();
     const now = Date.now();
     
+    // Ensure tags is properly formatted as a JSON string
+    let tagsString = '[]';
+    if (data.tags) {
+      if (typeof data.tags === 'string') {
+        // Already a string - validate it's valid JSON
+        try {
+          JSON.parse(data.tags);
+          tagsString = data.tags;
+        } catch (e) {
+          // Not valid JSON, wrap it as a single tag
+          tagsString = JSON.stringify([data.tags]);
+        }
+      } else if (Array.isArray(data.tags)) {
+        tagsString = JSON.stringify(data.tags);
+      } else {
+        // Object or other - try to stringify
+        tagsString = JSON.stringify([]);
+      }
+    }
+    
     const post = {
       id,
       title: data.title,
@@ -172,7 +192,7 @@ export async function onRequestPost(context) {
       author: data.author || 'Admin',
       category: data.category || 'Uncategorized',
       subcategory: data.subcategory || null,
-      tags: JSON.stringify(data.tags || []),
+      tags: tagsString,
       published_date: data.published_date || data.publishedDate || new Date().toISOString(),
       scheduled_date: data.scheduled_date || data.scheduledDate || null,
       status: data.status || 'draft',

@@ -105,30 +105,37 @@ export async function onRequestPost(context) {
     const id = crypto.randomUUID();
     const now = Date.now();
 
+    // Helper function to ensure value is a primitive (string, number, null)
+    const toPrimitive = (val, defaultVal = null) => {
+      if (val === undefined || val === null) return defaultVal;
+      if (typeof val === 'object') return JSON.stringify(val);
+      return val;
+    };
+
     const log = {
       id,
-      automation_path_id: data.automation_path_id || data.pathId,
-      path_name: data.path_name || data.pathName,
-      status: data.status || 'pending',
-      prompt_used: data.prompt_used || data.prompt,
-      model_used: data.model_used || data.model || 'gpt-4',
-      assistant_id: data.assistant_id || data.assistantId,
-      content_type: data.content_type || data.contentType,
-      category: data.category,
-      topic: data.topic,
-      language: data.language || 'en',
-      generated_title: data.generated_title || data.title,
-      generated_content: data.generated_content || data.content,
-      generated_excerpt: data.generated_excerpt || data.excerpt,
-      tokens_used: data.tokens_used || data.tokensUsed || 0,
-      generation_time_ms: data.generation_time_ms || data.generationTime,
-      published_post_id: data.published_post_id || data.postId,
-      published_at: data.published_at,
-      error_message: data.error_message || data.error,
-      error_code: data.error_code,
-      retry_count: data.retry_count || 0,
-      started_at: data.started_at || now,
-      completed_at: data.completed_at,
+      automation_path_id: toPrimitive(data.automation_path_id || data.pathId),
+      path_name: toPrimitive(data.path_name || data.pathName),
+      status: toPrimitive(data.status || 'pending'),
+      prompt_used: toPrimitive(data.prompt_used || data.prompt),
+      model_used: toPrimitive(data.model_used || data.model || 'gpt-4'),
+      assistant_id: toPrimitive(data.assistant_id || data.assistantId),
+      content_type: toPrimitive(data.content_type || data.contentType),
+      category: toPrimitive(data.category),
+      topic: toPrimitive(data.topic),
+      language: toPrimitive(data.language || 'en'),
+      generated_title: toPrimitive(data.generated_title || data.title),
+      generated_content: toPrimitive(data.generated_content || data.content),
+      generated_excerpt: toPrimitive(data.generated_excerpt || data.excerpt),
+      tokens_used: parseInt(data.tokens_used || data.tokensUsed || 0) || 0,
+      generation_time_ms: parseInt(data.generation_time_ms || data.generationTime || 0) || null,
+      published_post_id: toPrimitive(data.published_post_id || data.postId),
+      published_at: toPrimitive(data.published_at),
+      error_message: toPrimitive(data.error_message || data.error),
+      error_code: toPrimitive(data.error_code),
+      retry_count: parseInt(data.retry_count || 0) || 0,
+      started_at: parseInt(data.started_at || now) || now,
+      completed_at: data.completed_at ? parseInt(data.completed_at) : null,
       created_at: now
     };
 
