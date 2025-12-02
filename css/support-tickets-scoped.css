@@ -14,11 +14,9 @@
 
 /* Support Tickets Section Main Container */
 #support-tickets-section {
-    padding: 30px 40px;
-    margin: 0 20px 0 370px;
+    padding: 20px;
+    margin: 0;
     background: var(--secondary-color) !important;
-    min-height: calc(100vh - 100px);
-    max-width: calc(100% - 40px);
     box-sizing: border-box;
     color: var(--text-color);
     font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
