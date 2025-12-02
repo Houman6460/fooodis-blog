@@ -83,41 +83,65 @@ function loadMediaFoldersForSelect() {
 }
 
 /**
+ * Get used image IDs from cloud API
+ * @param {string} pathId - Optional path ID to filter by
+ * @returns {Promise<string[]>} - Array of used image IDs
+ */
+async function getUsedImageIds(pathId = null) {
+    try {
+        const url = pathId 
+            ? `/api/media/used-images?path_id=${encodeURIComponent(pathId)}`
+            : '/api/media/used-images';
+        
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            return data.usedImageIds || [];
+        }
+    } catch (error) {
+        console.warn('Failed to fetch used images from API:', error);
+    }
+    return [];
+}
+
+/**
  * Get an unused image from a specific folder
  * @param {string} folderId - The folder ID to get an image from
+ * @param {string} pathId - The automation path ID (for tracking unique usage per path)
+ * @param {boolean} useRandom - If true, use any image from any folder
  * @returns {Promise<Object>} - The image object or null if no unused images are available
  */
-async function getUnusedImageFromFolder(folderId) {
+async function getUnusedImageFromFolder(folderId, pathId = null, useRandom = false) {
     let mediaLibrary = [];
     
     // Try to fetch from API first (R2/D1)
     try {
-        const apiUrl = folderId && folderId !== 'uncategorized' 
-            ? `/api/media?folder=${encodeURIComponent(folderId)}&limit=100`
-            : '/api/media?limit=100';
+        // If useRandom is true, get ALL images; otherwise filter by folder
+        const apiUrl = useRandom
+            ? '/api/media?limit=500'
+            : (folderId && folderId !== 'uncategorized' 
+                ? `/api/media?folder=${encodeURIComponent(folderId)}&limit=100`
+                : '/api/media?limit=100');
         
         const response = await fetch(apiUrl);
         if (response.ok) {
             const data = await response.json();
             mediaLibrary = data.media || [];
             console.log(`Loaded ${mediaLibrary.length} media items from API`);
-            
-            // Update localStorage cache
-            localStorage.setItem('fooodis-blog-media', JSON.stringify(mediaLibrary));
         }
     } catch (error) {
-        console.warn('Failed to fetch media from API, falling back to localStorage:', error);
+        console.warn('Failed to fetch media from API:', error);
     }
     
-    // Fallback to localStorage if API failed
     if (mediaLibrary.length === 0) {
-        mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
+        console.warn('No media items found in library');
+        return null;
     }
     
-    // Filter by folder if specified
+    // Filter by folder if specified and not using random
     let folderMedia = mediaLibrary;
     
-    if (folderId) {
+    if (!useRandom && folderId) {
         if (folderId === 'uncategorized') {
             folderMedia = mediaLibrary.filter(item => !item.folder || item.folder === 'uncategorized');
         } else {
@@ -125,17 +149,24 @@ async function getUnusedImageFromFolder(folderId) {
         }
     }
     
-    // Filter to only include images (not videos)
+    // Filter to only include images (not videos) with cloud URLs
     folderMedia = folderMedia.filter(item => {
         const mimeType = item.mime_type || item.type || '';
-        return mimeType.startsWith('image/');
+        const url = item.r2_url || item.url || '';
+        // Only use images that are stored in cloud (R2), not base64 or localhost
+        const isCloudImage = url && !url.startsWith('data:') && !url.includes('localhost');
+        return mimeType.startsWith('image/') && isCloudImage;
     });
     
+    // Get used image IDs from cloud API
+    const usedImageIds = await getUsedImageIds(pathId);
+    
     // Filter to only include unused images
-    const unusedMedia = folderMedia.filter(item => !item.usedInAutomation);
+    const unusedMedia = folderMedia.filter(item => !usedImageIds.includes(item.id));
     
     // If no unused images, return null
     if (unusedMedia.length === 0) {
+        console.warn(`No unused images available${folderId ? ` in folder ${folderId}` : ''}`);
         return null;
     }
     
@@ -143,34 +174,79 @@ async function getUnusedImageFromFolder(folderId) {
     const randomIndex = Math.floor(Math.random() * unusedMedia.length);
     const selectedImage = unusedMedia[randomIndex];
     
-    // Return with proper URL (handle R2 URLs)
+    // Return with proper cloud URL
     return {
         ...selectedImage,
-        url: selectedImage.r2_url || selectedImage.url || selectedImage.filename
+        url: selectedImage.r2_url || selectedImage.url
     };
 }
 
 /**
- * Mark an image as used in automation
+ * Mark an image as used in automation (saves to cloud D1 database)
  * @param {string} imageId - The ID of the image to mark as used
+ * @param {string} pathId - The automation path ID
+ * @param {string} postId - The post ID that uses this image
  */
-function markImageAsUsed(imageId) {
-    // Get media library
-    let mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
-    
-    // Find the image
-    const imageIndex = mediaLibrary.findIndex(item => item.id === imageId);
-    
-    if (imageIndex !== -1) {
-        // Mark as used
-        mediaLibrary[imageIndex].usedInAutomation = true;
-        mediaLibrary[imageIndex].usedDate = new Date().toISOString();
+async function markImageAsUsed(imageId, pathId = null, postId = null) {
+    try {
+        const response = await fetch('/api/media/used-images', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mediaId: imageId,
+                pathId: pathId,
+                postId: postId
+            })
+        });
         
-        // Save to localStorage
-        localStorage.setItem('fooodis-blog-media', JSON.stringify(mediaLibrary));
-        
-        console.log(`Image ${imageId} marked as used in automation`);
+        if (response.ok) {
+            console.log(`Image ${imageId} marked as used in cloud database`);
+            return true;
+        } else {
+            console.error('Failed to mark image as used in cloud');
+            return false;
+        }
+    } catch (error) {
+        console.error('Error marking image as used:', error);
+        return false;
     }
+}
+
+/**
+ * Report a failed post to the cloud API
+ * @param {string} pathId - The automation path ID
+ * @param {string} pathName - The automation path name
+ * @param {string} reason - The reason for failure
+ * @param {string} details - Additional details
+ */
+async function reportFailedPost(pathId, pathName, reason, details = null) {
+    try {
+        const response = await fetch('/api/automation/failed-posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pathId: pathId,
+                pathName: pathName,
+                scheduledDate: new Date().toISOString(),
+                reason: reason,
+                details: details
+            })
+        });
+        
+        if (response.ok) {
+            console.log('Failed post reported to cloud');
+            
+            // Dispatch event for dashboard to show alert
+            window.dispatchEvent(new CustomEvent('automationPostFailed', {
+                detail: { pathId, pathName, reason, details }
+            }));
+            
+            return true;
+        }
+    } catch (error) {
+        console.error('Error reporting failed post:', error);
+    }
+    return false;
 }
 
 /**
@@ -178,81 +254,65 @@ function markImageAsUsed(imageId) {
  * @param {string} title - The post title
  * @param {string} contentType - The content type
  * @param {string} folderId - The folder ID to get an image from (optional)
- * @returns {Promise<string>} - The image URL
+ * @param {Object} options - Additional options
+ * @param {string} options.pathId - The automation path ID
+ * @param {string} options.pathName - The automation path name
+ * @param {boolean} options.useRandomImages - Whether to use random images from any folder
+ * @param {boolean} options.stopOnNoImage - Whether to stop publishing if no image is available
+ * @returns {Promise<Object>} - { url: string, success: boolean, error?: string }
  */
-async function generateImageFromFolder(title, contentType, folderId) {
-    // If no folder ID is specified or include images is not checked, use the original function
-    if (!folderId) {
-        // Use the original function (placeholder implementation)
-        const placeholders = {
-            recipe: [
-                'images/placeholder-recipe-1.jpg',
-                'images/placeholder-recipe-2.jpg',
-                'images/placeholder-recipe-3.jpg'
-            ],
-            review: [
-                'images/placeholder-restaurant-1.jpg',
-                'images/placeholder-restaurant-2.jpg',
-                'images/placeholder-restaurant-3.jpg'
-            ],
-            general: [
-                'images/placeholder-food-1.jpg',
-                'images/placeholder-food-2.jpg',
-                'images/placeholder-food-3.jpg'
-            ]
-        };
-        
-        // Select a placeholder based on content type
-        let images;
-        switch (contentType) {
-            case 'recipe':
-                images = placeholders.recipe;
-                break;
-            case 'review':
-                images = placeholders.review;
-                break;
-            default:
-                images = placeholders.general;
-        }
-        
-        // Return a random placeholder
-        return Promise.resolve(images[Math.floor(Math.random() * images.length)]);
-    }
+async function generateImageFromFolder(title, contentType, folderId, options = {}) {
+    const { pathId, pathName, useRandomImages = false, stopOnNoImage = true } = options;
     
-    // Try to get an unused image from the folder
-    const unusedImage = await getUnusedImageFromFolder(folderId);
+    // Try to get an unused image from the folder (or any folder if useRandomImages)
+    const unusedImage = await getUnusedImageFromFolder(folderId, pathId, useRandomImages);
     
-    // If no unused image is available, use a placeholder
+    // If no unused image is available
     if (!unusedImage) {
-        console.log(`No unused images available in folder ${folderId}, using placeholder`);
+        const reason = useRandomImages 
+            ? 'No unused images available in media library'
+            : `No unused images available in folder: ${folderId || 'default'}`;
         
-        // Use a placeholder based on content type
-        const placeholders = {
-            recipe: 'images/placeholder-recipe-1.jpg',
-            review: 'images/placeholder-restaurant-1.jpg',
-            general: 'images/placeholder-food-1.jpg'
-        };
+        console.warn(reason);
         
-        let placeholder;
-        switch (contentType) {
-            case 'recipe':
-                placeholder = placeholders.recipe;
-                break;
-            case 'review':
-                placeholder = placeholders.review;
-                break;
-            default:
-                placeholder = placeholders.general;
+        // Report the failure
+        await reportFailedPost(pathId, pathName || 'Unknown Path', reason, 
+            `Post title: ${title}\nContent type: ${contentType}`);
+        
+        // If stopOnNoImage is true, return failure
+        if (stopOnNoImage) {
+            return {
+                url: null,
+                success: false,
+                error: reason
+            };
         }
         
-        return Promise.resolve(placeholder);
+        // Otherwise use a placeholder (legacy behavior)
+        const placeholders = {
+            recipe: '/images/placeholder-recipe-1.jpg',
+            review: '/images/placeholder-restaurant-1.jpg',
+            general: '/images/placeholder-food-1.jpg'
+        };
+        
+        const placeholder = placeholders[contentType] || placeholders.general;
+        
+        return {
+            url: placeholder,
+            success: true,
+            isPlaceholder: true
+        };
     }
     
-    // Mark the image as used
-    markImageAsUsed(unusedImage.id);
+    // Mark the image as used in cloud database
+    await markImageAsUsed(unusedImage.id, pathId, null);
     
-    // Return the image URL
-    return Promise.resolve(unusedImage.url);
+    // Return the image URL (ensure it's a cloud URL)
+    return {
+        url: unusedImage.url,
+        success: true,
+        imageId: unusedImage.id
+    };
 }
 
 // Override the original generateImage function if it exists
@@ -264,6 +324,8 @@ if (typeof window.generateImage === 'function') {
 // Make functions available globally
 window.automationMediaFolders = {
     getUnusedImageFromFolder,
+    getUsedImageIds,
     markImageAsUsed,
+    reportFailedPost,
     generateImageFromFolder
 };
