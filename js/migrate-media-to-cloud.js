@@ -188,3 +188,50 @@ async function clearAllMediaEverywhere() {
 window.clearAllMediaEverywhere = clearAllMediaEverywhere;
 
 console.log('🧹 Run clearAllMediaEverywhere() to delete ALL media and start fresh');
+
+/**
+ * Diagnostic: Check what's actually in R2 cloud storage
+ */
+async function diagnoseMediaLibrary() {
+    console.log('🔍 Diagnosing media library...\n');
+    
+    // Check API
+    try {
+        const response = await fetch('/api/media?limit=100');
+        const data = await response.json();
+        
+        console.log('📊 Cloud Database (D1):');
+        console.log(`   Total items: ${data.media?.length || 0}`);
+        
+        if (data.media && data.media.length > 0) {
+            console.log('\n   First 3 items:');
+            data.media.slice(0, 3).forEach((item, i) => {
+                console.log(`   ${i+1}. ${item.original_filename || item.filename}`);
+                console.log(`      URL: ${item.r2_url || item.url}`);
+                console.log(`      R2 Key: ${item.r2_key}`);
+            });
+            
+            // Test if first image URL works
+            const testUrl = data.media[0].r2_url || data.media[0].url;
+            console.log(`\n🧪 Testing first image URL: ${testUrl}`);
+            
+            const imgTest = await fetch(testUrl);
+            if (imgTest.ok) {
+                console.log('   ✅ Image loads correctly!');
+            } else {
+                console.log(`   ❌ Image failed to load: ${imgTest.status}`);
+            }
+        }
+    } catch (error) {
+        console.error('❌ API Error:', error);
+    }
+    
+    // Check localStorage
+    const localMedia = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
+    console.log(`\n📦 localStorage: ${localMedia.length} items`);
+    
+    console.log('\n💡 If cloud has items but localStorage is empty, run:');
+    console.log('   await loadMediaFromCloud()');
+}
+
+window.diagnoseMediaLibrary = diagnoseMediaLibrary;
