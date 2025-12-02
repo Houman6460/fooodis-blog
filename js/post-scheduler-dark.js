@@ -43,26 +43,44 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Also get AI automation scheduled posts from localStorage
         try {
-            const aiPaths = JSON.parse(localStorage.getItem('ai-automation-paths') || '[]');
+            // Try multiple possible keys for AI automation paths
+            let aiPathsData = localStorage.getItem('fooodis-ai-automation-paths') || 
+                localStorage.getItem('aiAutomationPaths') || 
+                localStorage.getItem('ai-automation-paths');
+            
+            console.log('AI Automation paths raw data:', aiPathsData);
+            
+            const aiPaths = JSON.parse(aiPathsData || '[]');
+            console.log('AI Automation paths parsed:', aiPaths);
+            
             aiPaths.forEach(path => {
-                if (path.active && path.schedule) {
+                console.log('Processing path:', path.name, 'active:', path.active, 'schedule:', path.schedule);
+                
+                // Check if path is active (handle both boolean and string)
+                const isActive = path.active === true || path.active === 'true' || path.status === 'active';
+                
+                if (isActive && path.schedule) {
                     // Add future scheduled AI posts
                     const nextRun = getNextRunDate(path.schedule);
+                    console.log('Next run calculated:', nextRun);
+                    
                     if (nextRun) {
                         scheduledPosts.push({
-                            id: `ai-${path.id}`,
+                            id: `ai-${path.id || path.name}`,
                             title: `AI: ${path.name}`,
                             date: nextRun,
                             status: 'ai-generated',
-                            category: path.category || 'AI Generated',
-                            excerpt: `Automated ${path.contentType} post`,
+                            category: path.category || path.categories?.[0] || 'AI Generated',
+                            excerpt: `Automated ${path.contentType || 'content'} - Next run: ${nextRun.toLocaleString()}`,
                             source: 'ai_automation'
                         });
                     }
                 }
             });
+            
+            console.log('Total scheduled posts after AI merge:', scheduledPosts);
         } catch (e) {
-            console.log('No AI automation paths found');
+            console.error('Error loading AI automation paths:', e);
         }
         
         renderCalendar();
@@ -98,6 +116,34 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     if (filterScheduledPosts) {
         filterScheduledPosts.addEventListener('change', renderScheduledPosts);
+    }
+    
+    // Listen for AI automation changes
+    document.addEventListener('automationPathsUpdated', () => {
+        console.log('Automation paths updated, reloading scheduled posts');
+        loadScheduledPosts();
+    });
+    
+    // Also listen for storage changes (in case another tab updates)
+    window.addEventListener('storage', (e) => {
+        if (e.key && e.key.includes('automation')) {
+            console.log('Storage changed for automation, reloading');
+            loadScheduledPosts();
+        }
+    });
+    
+    // Refresh when section becomes visible
+    const scheduledSection = document.getElementById('scheduled-posts-section');
+    if (scheduledSection) {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.target.classList.contains('active')) {
+                    console.log('Scheduled posts section became active, reloading');
+                    loadScheduledPosts();
+                }
+            });
+        });
+        observer.observe(scheduledSection, { attributes: true, attributeFilter: ['class'] });
     }
     
     /**
