@@ -136,3 +136,55 @@ async function clearMediaCacheAndReload() {
 }
 
 window.clearMediaCacheAndReload = clearMediaCacheAndReload;
+
+/**
+ * COMPLETE CLEANUP - Clear everything and start fresh
+ */
+async function clearAllMediaEverywhere() {
+    if (!confirm('⚠️ This will DELETE ALL media from:\n- Browser localStorage\n- Cloud database (D1)\n- Cloud storage (R2)\n\nAre you sure?')) {
+        return;
+    }
+    
+    console.log('🗑️ Starting complete media cleanup...');
+    
+    // 1. Clear localStorage
+    localStorage.removeItem('fooodis-blog-media');
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('media') || key.includes('image'))) {
+            localStorage.removeItem(key);
+        }
+    }
+    console.log('✅ localStorage cleared');
+    
+    // 2. Clear cloud storage via API
+    try {
+        const response = await fetch('/api/media/clear-all', {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Cloud storage cleared:', result);
+        } else {
+            console.error('❌ Failed to clear cloud storage');
+        }
+    } catch (error) {
+        console.error('❌ Error clearing cloud:', error);
+    }
+    
+    // 3. Refresh the page to show empty library
+    console.log('✅ Complete cleanup done!');
+    alert('✅ All media has been deleted!\n\nThe page will now refresh.\nYou can upload fresh images to R2 cloud storage.');
+    
+    // Refresh the media display
+    if (typeof filterMedia === 'function') {
+        filterMedia();
+    }
+    
+    location.reload();
+}
+
+window.clearAllMediaEverywhere = clearAllMediaEverywhere;
+
+console.log('🧹 Run clearAllMediaEverywhere() to delete ALL media and start fresh');
