@@ -431,7 +431,9 @@
     gap: 12px;
 }
 
-.pagination-btn {
+/* Scoped to email popup only - don't override blog pagination */
+.email-popup-container .pagination-btn,
+.popup-preview .pagination-btn {
     background-color: var(--dark-input, #2a2e36); /* Using Fooodis dark input */
     border: 1px solid var(--dark-border, #32363f); /* Using Fooodis dark border */
     color: var(--dark-text, #e0e0e0); /* Using Fooodis dark text */
@@ -447,7 +449,8 @@
     overflow: hidden;
 }
 
-.pagination-btn:before {
+.email-popup-container .pagination-btn:before,
+.popup-preview .pagination-btn:before {
     content: '';
     position: absolute;
     top: 0;
@@ -462,24 +465,28 @@
     z-index: -1;
 }
 
-.pagination-btn:hover {
+.email-popup-container .pagination-btn:hover,
+.popup-preview .pagination-btn:hover {
     color: var(--secondary-color, #1e2127); /* Dark text on yellow hover */
     border-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
 }
 
-.pagination-btn:hover:before {
+.email-popup-container .pagination-btn:hover:before,
+.popup-preview .pagination-btn:hover:before {
     opacity: 0.9;
     transform: scale(1);
 }
 
-.pagination-btn.disabled {
+.email-popup-container .pagination-btn.disabled,
+.popup-preview .pagination-btn.disabled {
     background-color: var(--darker-bg, #171a1f); /* Using Fooodis darker background */
     color: var(--dark-text-secondary, #a0a0a0); /* Using Fooodis secondary text */
     border-color: var(--dark-border, #32363f); /* Using Fooodis dark border */
     cursor: not-allowed;
 }
 
-.pagination-btn.disabled:hover:before {
+.email-popup-container .pagination-btn.disabled:hover:before,
+.popup-preview .pagination-btn.disabled:hover:before {
     opacity: 0;
     transform: scale(0);
 }
