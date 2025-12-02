@@ -11,7 +11,11 @@ let currentMediaType = 'all';
 /**
  * Initialize media folders
  */
-function initializeMediaFolders() {
+async function initializeMediaFolders() {
+    // First, sync media from cloud storage
+    console.log('Syncing media from R2 cloud storage...');
+    await loadMediaFromCloud().catch(err => console.warn('Cloud sync failed, using local cache:', err));
+    
     console.log('Initializing media folders...');
     
     // Add CSS styles for context menus and dropdowns
@@ -960,110 +964,143 @@ function cleanupStorage() {
  * @param {FileList} files - The files to upload
  * @param {string} folderId - The folder ID to upload to (optional)
  */
-function uploadMediaToFolder(files, folderId = currentFolder) {
+/**
+ * Upload media to R2 cloud storage via API
+ * @param {FileList} files - The files to upload
+ * @param {string} folderId - The folder ID to upload to (optional)
+ */
+async function uploadMediaToFolder(files, folderId = currentFolder) {
     // If current folder is 'all', use 'uncategorized' instead
     const targetFolder = folderId === 'all' ? 'uncategorized' : folderId;
     
     // Convert FileList to Array
     const filesArray = Array.from(files);
     
-    // Clean up storage before adding new items
-    try {
-        cleanupStorage();
-    } catch (error) {
-        console.error('Error cleaning up storage:', error);
-    }
+    // Show upload progress
+    showNotification(`Uploading ${filesArray.length} file(s) to cloud...`, 'info');
+    
+    let successCount = 0;
+    let failCount = 0;
     
     // Process each file
-    filesArray.forEach(file => {
-        // Check if file is an image or video
-        if (file.type.match('image.*')) {
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                // Compress image before storing
-                compressImage(e.target.result, 0.6, function(compressedDataURL) {
-                    try {
-                        // Get existing media library
-                        let mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
-                        
-                        // Create new media item
-                        const newMedia = {
-                            id: 'media_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5),
-                            name: file.name,
-                            type: file.type,
-                            url: compressedDataURL,
-                            date: new Date().toISOString(),
-                            size: file.size,
-                            folder: targetFolder
-                        };
-                        
-                        // Add to media library
-                        mediaLibrary.push(newMedia);
-                        
-                        // Save to localStorage
-                        localStorage.setItem('fooodis-blog-media', JSON.stringify(mediaLibrary));
-                        
-                        // Update folder counts
-                        updateFolderCounts();
-                        
-                        // Re-filter media
-                        filterMedia();
-                        
-                        // Show notification
-                        showNotification(`File "${file.name}" uploaded successfully`, 'success');
-                    } catch (error) {
-                        console.error('Error saving to localStorage:', error);
-                        showNotification('Error uploading file: Storage quota exceeded. Please delete some media items first.', 'error');
-                    }
-                });
-            };
-            
-            // Read file as data URL
-            reader.readAsDataURL(file);
-        } else if (file.type.match('video.*')) {
-            // For videos, just store metadata to save space
-            try {
-                // Get existing media library
-                let mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
-                
-                // Create new media item with placeholder
-                const newMedia = {
-                    id: 'media_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5),
-                    name: file.name,
-                    type: file.type,
-                    // Use a placeholder image for videos
-                    url: 'images/video-placeholder.jpg',
-                    date: new Date().toISOString(),
-                    size: file.size,
-                    folder: targetFolder,
-                    isVideoPlaceholder: true
-                };
-                
-                // Add to media library
-                mediaLibrary.push(newMedia);
-                
-                // Save to localStorage
-                localStorage.setItem('fooodis-blog-media', JSON.stringify(mediaLibrary));
-                
-                // Update folder counts
-                updateFolderCounts();
-                
-                // Re-filter media
-                filterMedia();
-                
-                // Show notification
-                showNotification(`Video "${file.name}" metadata saved (placeholder used to save space)`, 'success');
-            } catch (error) {
-                console.error('Error saving to localStorage:', error);
-                showNotification('Error uploading file: Storage quota exceeded. Please delete some media items first.', 'error');
-            }
-        } else {
-            // Show error for non-image/video files
-            showNotification(`File "${file.name}" is not a supported media type`, 'error');
+    for (const file of filesArray) {
+        // Check if file is an allowed type
+        if (!file.type.match('image.*') && !file.type.match('video.*')) {
+            console.warn('Skipping unsupported file type:', file.type);
+            failCount++;
+            continue;
         }
-    });
+        
+        try {
+            // Create FormData for API upload
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('folder', targetFolder);
+            formData.append('alt_text', file.name.replace(/\.[^/.]+$/, ''));
+            
+            // Upload to R2 via API
+            const response = await fetch('/api/media', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ File uploaded to R2:', result.media?.r2_url || result.media?.url);
+                successCount++;
+                
+                // Also sync to localStorage for immediate display
+                syncMediaToLocalStorage(result.media);
+            } else {
+                const error = await response.json().catch(() => ({}));
+                console.error('❌ Upload failed:', error);
+                failCount++;
+            }
+        } catch (error) {
+            console.error('❌ Upload error:', error);
+            failCount++;
+        }
+    }
+    
+    // Show result notification
+    if (successCount > 0) {
+        showNotification(`✅ ${successCount} file(s) uploaded to cloud storage`, 'success');
+    }
+    if (failCount > 0) {
+        showNotification(`❌ ${failCount} file(s) failed to upload`, 'error');
+    }
+    
+    // Refresh media display
+    await loadMediaFromCloud();
+    updateFolderCounts();
+    filterMedia();
 }
+
+/**
+ * Sync a single media item to localStorage for display
+ */
+function syncMediaToLocalStorage(mediaItem) {
+    try {
+        let mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
+        
+        // Add the new item with cloud URL
+        mediaLibrary.push({
+            id: mediaItem.id,
+            name: mediaItem.original_filename || mediaItem.filename,
+            type: mediaItem.mime_type,
+            url: mediaItem.r2_url || mediaItem.url,  // Use R2 URL
+            r2_url: mediaItem.r2_url || mediaItem.url,
+            date: new Date().toISOString(),
+            size: mediaItem.file_size,
+            folder: mediaItem.folder || 'uncategorized'
+        });
+        
+        localStorage.setItem('fooodis-blog-media', JSON.stringify(mediaLibrary));
+    } catch (error) {
+        console.error('Error syncing to localStorage:', error);
+    }
+}
+
+/**
+ * Load all media from cloud API and sync to localStorage
+ */
+async function loadMediaFromCloud() {
+    try {
+        const response = await fetch('/api/media?limit=500');
+        if (!response.ok) {
+            console.error('Failed to load media from cloud');
+            return;
+        }
+        
+        const data = await response.json();
+        const cloudMedia = data.media || [];
+        
+        // Convert to localStorage format
+        const localFormat = cloudMedia.map(item => ({
+            id: item.id,
+            name: item.original_filename || item.filename,
+            type: item.mime_type,
+            url: item.r2_url || item.url,
+            r2_url: item.r2_url || item.url,
+            date: item.created_at ? new Date(item.created_at).toISOString() : new Date().toISOString(),
+            size: item.file_size,
+            folder: item.folder || 'uncategorized'
+        }));
+        
+        // Save to localStorage
+        localStorage.setItem('fooodis-blog-media', JSON.stringify(localFormat));
+        console.log(`✅ Synced ${localFormat.length} media items from cloud`);
+        
+        return localFormat;
+    } catch (error) {
+        console.error('Error loading media from cloud:', error);
+        return [];
+    }
+}
+
+// Make loadMediaFromCloud available globally
+window.loadMediaFromCloud = loadMediaFromCloud;
+window.uploadMediaToFolder = uploadMediaToFolder;
 
 /**
  * Update the upload folder select dropdown with available folders
