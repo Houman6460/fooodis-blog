@@ -157,8 +157,8 @@
 
 .email-submit-btn {
     padding: 12px 20px; /* Reduced padding for more compact look */
-    background-color: var(--primary-color, #e8f24c); /* Using Fooodis primary yellow */
-    color: var(--secondary-color, #1e2127); /* Dark text on yellow button */
+    background-color: #e8f24c !important; /* Fooodis primary yellow - always */
+    color: #1e2127 !important; /* Dark text on yellow button */
     border: none;
     border-radius: 6px; /* Smaller border radius */
     font-size: 15px; /* Slightly smaller font */
@@ -173,7 +173,7 @@
 }
 
 .email-submit-btn:hover {
-    background-color: var(--accent-color, #c7d037); /* Using Fooodis darker yellow */
+    background-color: #d4de3a !important; /* Darker Fooodis yellow on hover */
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(232, 242, 76, 0.3);
 }

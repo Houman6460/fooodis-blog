@@ -27,7 +27,7 @@ window.emailPopupSystem = window.emailPopupSystem || (function() {
         footerText: 'We respect your privacy and will never share your information.',
         backgroundColor: '#1e1e2d',
         textColor: '#ffffff',
-        accentColor: '#3699ff',
+        accentColor: '#e8f24c', // Fooodis yellow
         triggerType: 'time', // time, exit, scroll
         triggerValue: 5, // seconds, scroll percentage
         showOnce: true,
