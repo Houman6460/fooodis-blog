@@ -40,7 +40,31 @@ export async function onRequestGet(context) {
       ).first();
     }
 
-    return new Response(JSON.stringify(config), {
+    // Normalize field names for compatibility
+    const normalizedConfig = {
+      id: config.id,
+      enabled: config.enabled,
+      title: config.title,
+      description: config.description,
+      button_text: config.button_text,
+      placeholder_text: config.placeholder_text || 'Enter your email address',
+      success_message: config.success_message,
+      // Support both old and new field names
+      trigger_type: config.trigger_type || 'time',
+      trigger_delay: config.trigger_delay || config.display_delay || 5,
+      trigger_scroll_percent: config.trigger_scroll_percent || 50,
+      show_once: config.show_once !== undefined ? config.show_once : 1,
+      show_every_days: config.show_every_days || 7,
+      background_color: config.background_color || '#1e1e24',
+      text_color: config.text_color || '#e0e0e0',
+      button_color: config.button_color || '#e8f24c',
+      popup_image: config.popup_image || null,
+      logo_image: config.logo_image || null,
+      custom_css: config.custom_css || null,
+      updated_at: config.updated_at
+    };
+
+    return new Response(JSON.stringify(normalizedConfig), {
       headers: { "Content-Type": "application/json" }
     });
 
