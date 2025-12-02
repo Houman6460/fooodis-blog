@@ -99,3 +99,40 @@ async function migrateLocalMediaToCloud() {
 window.migrateLocalMediaToCloud = migrateLocalMediaToCloud;
 
 console.log('📦 Media migration tool loaded. Run migrateLocalMediaToCloud() to migrate local images to R2.');
+
+/**
+ * Clear all cached media data and reload from cloud
+ */
+async function clearMediaCacheAndReload() {
+    console.log('🗑️ Clearing all cached media data...');
+    
+    // Clear localStorage
+    localStorage.removeItem('fooodis-blog-media');
+    
+    // Clear any other media caches
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('media') || key.includes('image'))) {
+            keysToRemove.push(key);
+        }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    
+    console.log('✅ Cache cleared. Reloading from cloud...');
+    
+    // Reload from cloud
+    if (window.loadMediaFromCloud) {
+        await window.loadMediaFromCloud();
+    }
+    
+    // Refresh the display
+    if (typeof filterMedia === 'function') {
+        filterMedia();
+    }
+    
+    console.log('✅ Media library refreshed from cloud');
+    alert('Media cache cleared! The library now shows images from R2 cloud storage.');
+}
+
+window.clearMediaCacheAndReload = clearMediaCacheAndReload;

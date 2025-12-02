@@ -1065,6 +1065,9 @@ function syncMediaToLocalStorage(mediaItem) {
  * Load all media from cloud API and sync to localStorage
  */
 async function loadMediaFromCloud() {
+    // Clear old localStorage data first to ensure fresh sync
+    localStorage.removeItem('fooodis-blog-media');
+    console.log('🗑️ Cleared old localStorage media cache');
     try {
         const response = await fetch('/api/media?limit=500');
         if (!response.ok) {
