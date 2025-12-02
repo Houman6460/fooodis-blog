@@ -1910,6 +1910,28 @@ body.dashboard-body {
     display: none;
 }
 
+/* Hidden elements - use instead of inline style="display: none" */
+.hidden {
+    display: none !important;
+}
+
+/* Avatar image initially hidden until loaded */
+.avatar-img-hidden {
+    display: none;
+}
+
+/* Transparent background container */
+.transparent-container {
+    background: transparent !important;
+    min-height: 0 !important;
+}
+
+/* Full width no margin container */
+.full-width-container {
+    width: 100%;
+    margin: 0;
+}
+
 /* Enhanced Multiple Support Agents UI/UX */
 .multiple-agents-container {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

@@ -5,31 +5,34 @@ A complete blog system with dashboard, blog interface, and backend API.
 ## Setup Instructions
 
 ### Prerequisites
+
 - Node.js 14.x or later
 - NPM 6.x or later
 
 ### Installation
 
 1. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Start the server**:
+
    ```bash
    npm start
    ```
-   
+
 3. **Access the application**:
-   - Dashboard: http://localhost:3005/dashboard.html
-   - Blog: http://localhost:3005/blog.html
-   - Login: http://localhost:3005/login.html
-   - Profile: http://localhost:3005/profile.html
-   - API Health: http://localhost:3005/api/system-health
+   - Dashboard: <http://localhost:3005/dashboard.html>
+   - Blog: <http://localhost:3005/blog.html>
+   - Login: <http://localhost:3005/login.html>
+   - Profile: <http://localhost:3005/profile.html>
+   - API Health: <http://localhost:3005/api/system-health>
 
 ## Project Structure
 
-```
+```text
 fooodis-blog/
 ├── api/                 # Backend API endpoints
 ├── css/                 # Stylesheets
@@ -57,11 +60,13 @@ Detailed documentation is available in the `/docs` folder:
 ## Deployment
 
 ### Local Development
+
 ```bash
 npm start
 ```
 
 ### Cloudflare Pages
+
 ```bash
 wrangler pages deploy ./
 ```
@@ -71,6 +76,7 @@ See [Storage Setup](docs/STORAGE_SETUP.md) for detailed Cloudflare configuration
 ## Environment Variables
 
 Copy `.env.example` to `.env` and configure:
+
 - OpenAI API key (for AI features)
 - Cloudflare credentials (for deployment)
 

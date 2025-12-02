@@ -713,3 +713,9 @@ body {
         height: 200px;
     }
 }
+
+/* Full width no margin container */
+.full-width-container {
+    width: 100%;
+    margin: 0;
+}
