@@ -21,44 +21,69 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
-     * Load real scheduled posts from AI automation and localStorage
+     * Load real scheduled posts from cloud API
      */
-    function loadRealScheduledPosts() {
+    async function loadRealScheduledPosts() {
         const posts = [];
         
-        // Load AI automation paths
+        // Load AI automation paths from API
         try {
-            const aiPathsData = localStorage.getItem('fooodis-ai-automation-paths') || 
-                localStorage.getItem('aiAutomationPaths') || '[]';
-            const aiPaths = JSON.parse(aiPathsData);
-            
-            aiPaths.forEach(path => {
-                const isActive = path.active === true || path.active === 'true' || path.status === 'active';
+            const response = await fetch('/api/automation/paths');
+            if (response.ok) {
+                const aiPaths = await response.json();
+                console.log('Loaded AI paths from API:', aiPaths);
                 
-                if (isActive && path.schedule && path.schedule.time) {
-                    const [hours, minutes] = path.schedule.time.split(':').map(Number);
-                    const nextRun = new Date();
-                    nextRun.setHours(hours, minutes, 0, 0);
+                aiPaths.forEach(path => {
+                    const isActive = path.status === 'active';
                     
-                    if (nextRun <= new Date()) {
-                        nextRun.setDate(nextRun.getDate() + 1);
+                    if (isActive && path.schedule_time) {
+                        const [hours, minutes] = path.schedule_time.split(':').map(Number);
+                        const nextRun = new Date();
+                        nextRun.setHours(hours, minutes, 0, 0);
+                        
+                        if (nextRun <= new Date()) {
+                            nextRun.setDate(nextRun.getDate() + 1);
+                        }
+                        
+                        posts.push({
+                            id: `ai-${path.id}`,
+                            title: `AI: ${path.name}`,
+                            status: 'ai-generated',
+                            date: nextRun.toLocaleDateString('en-US', { 
+                                weekday: 'short', month: 'short', day: 'numeric', 
+                                year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                            }),
+                            category: path.category || 'AI Generated',
+                            excerpt: `Automated ${path.content_type || 'content'} - ${path.schedule_type || 'daily'} at ${path.schedule_time}`
+                        });
                     }
-                    
+                });
+            }
+        } catch (e) {
+            console.error('Error loading AI automation paths from API:', e);
+        }
+        
+        // Also load scheduled posts from API
+        try {
+            const response = await fetch('/api/scheduled-posts');
+            if (response.ok) {
+                const data = await response.json();
+                (data.posts || []).forEach(post => {
                     posts.push({
-                        id: `ai-${path.id || path.name}`,
-                        title: `AI: ${path.name}`,
-                        status: 'ai-generated',
-                        date: nextRun.toLocaleDateString('en-US', { 
+                        id: post.id,
+                        title: post.title,
+                        status: post.status === 'pending' ? 'scheduled' : post.status,
+                        date: new Date(post.scheduled_date || post.scheduled_datetime).toLocaleDateString('en-US', { 
                             weekday: 'short', month: 'short', day: 'numeric', 
                             year: 'numeric', hour: '2-digit', minute: '2-digit' 
                         }),
-                        category: path.category || path.categories?.[0] || 'AI Generated',
-                        excerpt: `Automated ${path.contentType || 'content'} - ${path.schedule.type || 'daily'} at ${path.schedule.time}`
+                        category: post.category || 'Uncategorized',
+                        excerpt: post.excerpt || ''
                     });
-                }
-            });
+                });
+            }
         } catch (e) {
-            console.error('Error loading AI automation paths:', e);
+            console.error('Error loading scheduled posts from API:', e);
         }
         
         // Show message if no posts
@@ -79,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Create the scheduled posts UI
      */
-    function createScheduledPostsUI() {
+    async function createScheduledPostsUI() {
         // Find the target container (either in the schedule modal or in the dashboard)
         const targetContainer = document.querySelector('#schedulePostModal .modal-body') || 
                                document.querySelector('#scheduled-posts-section .scheduled-posts-panel');
@@ -222,8 +247,8 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduledPostsTitle.className = 'scheduled-posts-title';
         scheduledPostsTitle.textContent = 'Scheduled Posts';
         
-        // Load real scheduled posts from AI automation and API
-        const realPosts = loadRealScheduledPosts();
+        // Load real scheduled posts from cloud API
+        const realPosts = await loadRealScheduledPosts();
         
         // Create the scheduled post items
         realPosts.forEach(post => {

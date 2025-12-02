@@ -20,69 +20,66 @@ document.addEventListener('DOMContentLoaded', function() {
     // Scheduled posts data - loaded from API
     let scheduledPosts = [];
     
-    // Load posts from API and localStorage
+    // Load posts from cloud API only
     async function loadScheduledPosts() {
+        scheduledPosts = [];
+        
+        // Load scheduled posts from API
         try {
-            // Try API first
             const response = await fetch('/api/scheduled-posts');
             if (response.ok) {
                 const data = await response.json();
-                scheduledPosts = (data.posts || []).map(post => ({
-                    id: post.id,
-                    title: post.title,
-                    date: new Date(post.scheduled_date || post.scheduled_datetime),
-                    status: post.status === 'pending' ? 'scheduled' : post.status,
-                    category: post.category || 'Uncategorized',
-                    excerpt: post.excerpt || '',
-                    source: post.source || 'manual'
-                }));
+                (data.posts || []).forEach(post => {
+                    scheduledPosts.push({
+                        id: post.id,
+                        title: post.title,
+                        date: new Date(post.scheduled_date || post.scheduled_datetime),
+                        status: post.status === 'pending' ? 'scheduled' : post.status,
+                        category: post.category || 'Uncategorized',
+                        excerpt: post.excerpt || '',
+                        source: post.source || 'manual'
+                    });
+                });
             }
         } catch (error) {
             console.error('Error loading scheduled posts:', error);
         }
         
-        // Also get AI automation scheduled posts from localStorage
+        // Load AI automation paths from cloud API
         try {
-            // Try multiple possible keys for AI automation paths
-            let aiPathsData = localStorage.getItem('fooodis-ai-automation-paths') || 
-                localStorage.getItem('aiAutomationPaths') || 
-                localStorage.getItem('ai-automation-paths');
-            
-            console.log('AI Automation paths raw data:', aiPathsData);
-            
-            const aiPaths = JSON.parse(aiPathsData || '[]');
-            console.log('AI Automation paths parsed:', aiPaths);
-            
-            aiPaths.forEach(path => {
-                console.log('Processing path:', path.name, 'active:', path.active, 'schedule:', path.schedule);
+            const response = await fetch('/api/automation/paths');
+            if (response.ok) {
+                const aiPaths = await response.json();
+                console.log('Loaded AI paths from API:', aiPaths);
                 
-                // Check if path is active (handle both boolean and string)
-                const isActive = path.active === true || path.active === 'true' || path.status === 'active';
-                
-                if (isActive && path.schedule) {
-                    // Add future scheduled AI posts
-                    const nextRun = getNextRunDate(path.schedule);
-                    console.log('Next run calculated:', nextRun);
+                aiPaths.forEach(path => {
+                    const isActive = path.status === 'active';
                     
-                    if (nextRun) {
-                        scheduledPosts.push({
-                            id: `ai-${path.id || path.name}`,
-                            title: `AI: ${path.name}`,
-                            date: nextRun,
-                            status: 'ai-generated',
-                            category: path.category || path.categories?.[0] || 'AI Generated',
-                            excerpt: `Automated ${path.contentType || 'content'} - Next run: ${nextRun.toLocaleString()}`,
-                            source: 'ai_automation'
+                    if (isActive && path.schedule_time) {
+                        const nextRun = getNextRunDate({ 
+                            type: path.schedule_type, 
+                            time: path.schedule_time 
                         });
+                        
+                        if (nextRun) {
+                            scheduledPosts.push({
+                                id: `ai-${path.id}`,
+                                title: `AI: ${path.name}`,
+                                date: nextRun,
+                                status: 'ai-generated',
+                                category: path.category || 'AI Generated',
+                                excerpt: `Automated ${path.content_type || 'content'} - ${path.schedule_type || 'daily'} at ${path.schedule_time}`,
+                                source: 'ai_automation'
+                            });
+                        }
                     }
-                }
-            });
-            
-            console.log('Total scheduled posts after AI merge:', scheduledPosts);
+                });
+            }
         } catch (e) {
-            console.error('Error loading AI automation paths:', e);
+            console.error('Error loading AI automation paths from API:', e);
         }
         
+        console.log('Total scheduled posts loaded:', scheduledPosts.length);
         renderCalendar();
         renderScheduledPosts();
     }
