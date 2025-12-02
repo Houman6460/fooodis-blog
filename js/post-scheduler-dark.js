@@ -15,38 +15,85 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
     let selectedDate = null;
+    let currentView = 'month'; // month, week, list
     
-    // Sample scheduled posts data (replace with actual data in production)
-    let scheduledPosts = [
-        {
-            id: 1,
-            title: 'Top 10 Restaurant Management Tips',
-            date: new Date(currentYear, currentMonth, currentDate.getDate() + 2, 10, 0),
-            status: 'scheduled',
-            category: 'Management',
-            excerpt: 'Learn the top 10 tips for effective restaurant management...'
-        },
-        {
-            id: 2,
-            title: 'Seasonal Menu Planning Guide',
-            date: new Date(currentYear, currentMonth, currentDate.getDate() + 5, 14, 30),
-            status: 'draft',
-            category: 'Menu Planning',
-            excerpt: 'A comprehensive guide to planning your seasonal menu...'
-        },
-        {
-            id: 3,
-            title: 'Restaurant Marketing Strategies for 2025',
-            date: new Date(currentYear, currentMonth, currentDate.getDate() + 7, 9, 0),
-            status: 'ai-generated',
-            category: 'Marketing',
-            excerpt: 'Discover the latest marketing strategies for restaurants in 2025...'
+    // Scheduled posts data - loaded from API
+    let scheduledPosts = [];
+    
+    // Load posts from API and localStorage
+    async function loadScheduledPosts() {
+        try {
+            // Try API first
+            const response = await fetch('/api/scheduled-posts');
+            if (response.ok) {
+                const data = await response.json();
+                scheduledPosts = (data.posts || []).map(post => ({
+                    id: post.id,
+                    title: post.title,
+                    date: new Date(post.scheduled_date || post.scheduled_datetime),
+                    status: post.status === 'pending' ? 'scheduled' : post.status,
+                    category: post.category || 'Uncategorized',
+                    excerpt: post.excerpt || '',
+                    source: post.source || 'manual'
+                }));
+            }
+        } catch (error) {
+            console.error('Error loading scheduled posts:', error);
         }
-    ];
+        
+        // Also get AI automation scheduled posts from localStorage
+        try {
+            const aiPaths = JSON.parse(localStorage.getItem('ai-automation-paths') || '[]');
+            aiPaths.forEach(path => {
+                if (path.active && path.schedule) {
+                    // Add future scheduled AI posts
+                    const nextRun = getNextRunDate(path.schedule);
+                    if (nextRun) {
+                        scheduledPosts.push({
+                            id: `ai-${path.id}`,
+                            title: `AI: ${path.name}`,
+                            date: nextRun,
+                            status: 'ai-generated',
+                            category: path.category || 'AI Generated',
+                            excerpt: `Automated ${path.contentType} post`,
+                            source: 'ai_automation'
+                        });
+                    }
+                }
+            });
+        } catch (e) {
+            console.log('No AI automation paths found');
+        }
+        
+        renderCalendar();
+        renderScheduledPosts();
+    }
+    
+    // Get next run date from schedule
+    function getNextRunDate(schedule) {
+        if (!schedule || !schedule.time) return null;
+        
+        const [hours, minutes] = schedule.time.split(':').map(Number);
+        const now = new Date();
+        let nextRun = new Date();
+        nextRun.setHours(hours, minutes, 0, 0);
+        
+        if (nextRun <= now) {
+            nextRun.setDate(nextRun.getDate() + 1);
+        }
+        
+        if (schedule.type === 'weekly' && schedule.day !== undefined) {
+            while (nextRun.getDay() !== schedule.day) {
+                nextRun.setDate(nextRun.getDate() + 1);
+            }
+        }
+        
+        return nextRun;
+    }
     
     // Initialize the calendar and scheduled posts list
     initCalendar();
-    renderScheduledPosts();
+    loadScheduledPosts();
     
     // Event listeners
     if (filterScheduledPosts) {
@@ -115,25 +162,31 @@ document.addEventListener('DOMContentLoaded', function() {
         viewOptions.className = 'calendar-view-options';
         
         const monthView = document.createElement('button');
-        monthView.textContent = 'Month';
+        monthView.textContent = 'MONTH';
         monthView.className = 'active';
+        monthView.dataset.view = 'month';
         monthView.addEventListener('click', () => {
+            currentView = 'month';
             setActiveViewButton(monthView);
-            // Implement month view logic
+            renderCalendar();
         });
         
         const weekView = document.createElement('button');
-        weekView.textContent = 'Week';
+        weekView.textContent = 'WEEK';
+        weekView.dataset.view = 'week';
         weekView.addEventListener('click', () => {
+            currentView = 'week';
             setActiveViewButton(weekView);
-            // Implement week view logic
+            renderWeekView();
         });
         
         const listView = document.createElement('button');
-        listView.textContent = 'List';
+        listView.textContent = 'LIST';
+        listView.dataset.view = 'list';
         listView.addEventListener('click', () => {
+            currentView = 'list';
             setActiveViewButton(listView);
-            // Implement list view logic
+            renderListView();
         });
         
         viewOptions.appendChild(monthView);
@@ -409,6 +462,118 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show notification
         showNotification('Post deleted successfully', 'success');
+    }
+    
+    /**
+     * Render Week View
+     */
+    function renderWeekView() {
+        const calendarGridContainer = document.getElementById('calendarGrid');
+        if (!calendarGridContainer) return;
+        
+        calendarGridContainer.innerHTML = '';
+        
+        // Get start of current week (Sunday)
+        const weekStart = new Date(currentYear, currentMonth, currentDate.getDate() - currentDate.getDay());
+        
+        // Update title
+        const calendarTitle = document.querySelector('.calendar-title');
+        if (calendarTitle) {
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            calendarTitle.textContent = `${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+        }
+        
+        const table = document.createElement('table');
+        table.className = 'calendar-grid week-view';
+        
+        // Header row
+        const headerRow = document.createElement('tr');
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        dayNames.forEach((day, i) => {
+            const th = document.createElement('th');
+            const dayDate = new Date(weekStart);
+            dayDate.setDate(dayDate.getDate() + i);
+            th.innerHTML = `${day}<br><span class="date-num">${dayDate.getDate()}</span>`;
+            headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+        
+        // Single row for events
+        const row = document.createElement('tr');
+        for (let i = 0; i < 7; i++) {
+            const cell = document.createElement('td');
+            cell.className = 'week-cell';
+            const cellDate = new Date(weekStart);
+            cellDate.setDate(cellDate.getDate() + i);
+            
+            // Find posts for this day
+            const dayPosts = scheduledPosts.filter(post => {
+                const postDate = new Date(post.date);
+                return postDate.toDateString() === cellDate.toDateString();
+            });
+            
+            dayPosts.forEach(post => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = `week-event status-${post.status}`;
+                eventDiv.textContent = post.title;
+                cell.appendChild(eventDiv);
+            });
+            
+            if (cellDate.toDateString() === new Date().toDateString()) {
+                cell.classList.add('today');
+            }
+            
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+        
+        calendarGridContainer.appendChild(table);
+    }
+    
+    /**
+     * Render List View
+     */
+    function renderListView() {
+        const calendarGridContainer = document.getElementById('calendarGrid');
+        if (!calendarGridContainer) return;
+        
+        calendarGridContainer.innerHTML = '';
+        
+        // Update title
+        const calendarTitle = document.querySelector('.calendar-title');
+        if (calendarTitle) {
+            calendarTitle.textContent = 'All Scheduled Posts';
+        }
+        
+        const listContainer = document.createElement('div');
+        listContainer.className = 'list-view-container';
+        
+        // Sort posts by date
+        const sortedPosts = [...scheduledPosts].sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        if (sortedPosts.length === 0) {
+            listContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <p>No scheduled posts</p>
+                </div>
+            `;
+        } else {
+            sortedPosts.forEach(post => {
+                const listItem = document.createElement('div');
+                listItem.className = `list-item status-${post.status}`;
+                listItem.innerHTML = `
+                    <div class="list-date">${formatDate(post.date)}</div>
+                    <div class="list-title">${post.title}</div>
+                    <div class="list-status">${capitalizeFirstLetter(post.status)}</div>
+                    <div class="list-category">${post.category}</div>
+                `;
+                listContainer.appendChild(listItem);
+            });
+        }
+        
+        calendarGridContainer.appendChild(listContainer);
     }
     
     /**

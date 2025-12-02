@@ -439,3 +439,128 @@ input:checked + .toggle-slider:before {
         justify-content: flex-end;
     }
 }
+
+/* Week View Styles */
+.calendar-grid.week-view {
+    width: 100%;
+}
+
+.calendar-grid.week-view th {
+    text-align: center;
+    padding: 10px 5px;
+    background: var(--dark-card);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.calendar-grid.week-view th .date-num {
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+    margin-top: 5px;
+}
+
+.week-cell {
+    vertical-align: top;
+    min-height: 100px;
+    padding: 8px !important;
+    border: 1px solid var(--dark-border);
+}
+
+.week-cell.today {
+    background: var(--today-highlight);
+}
+
+.week-event {
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.week-event.status-scheduled {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.week-event.status-draft {
+    background: var(--status-draft);
+    color: var(--dark-text);
+    border-left: 3px solid #666;
+}
+
+.week-event.status-ai-generated {
+    background: var(--status-ai-generated);
+    color: var(--dark-text);
+    border-left: 3px solid #64c8ff;
+}
+
+/* List View Styles */
+.list-view-container {
+    padding: 10px 0;
+}
+
+.list-item {
+    display: grid;
+    grid-template-columns: 180px 1fr 100px 120px;
+    gap: 15px;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--dark-border);
+    align-items: center;
+    transition: background 0.2s ease;
+}
+
+.list-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.list-item.status-scheduled {
+    border-left: 3px solid var(--primary-color);
+}
+
+.list-item.status-draft {
+    border-left: 3px solid #666;
+}
+
+.list-item.status-ai-generated {
+    border-left: 3px solid #64c8ff;
+}
+
+.list-date {
+    color: var(--dark-text-secondary);
+    font-size: 13px;
+}
+
+.list-title {
+    font-weight: 500;
+    color: var(--dark-text);
+}
+
+.list-status {
+    text-align: center;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.list-category {
+    color: var(--primary-color);
+    font-size: 13px;
+}
+
+/* Empty state in list view */
+.list-view-container .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--dark-text-secondary);
+}
+
+.list-view-container .empty-state i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
