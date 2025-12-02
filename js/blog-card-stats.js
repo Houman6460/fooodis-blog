@@ -65,8 +65,12 @@ function addStatsToBlogCards() {
     
     // Process each post card
     postCards.forEach(card => {
-        const postId = card.getAttribute('data-post-id');
-        if (!postId) return;
+        // Check multiple possible ID attributes
+        const postId = card.getAttribute('data-post-id') || card.getAttribute('data-id') || card.dataset.postId || card.dataset.id;
+        if (!postId) {
+            console.log('Blog Card Stats: Card missing post ID', card.className);
+            return;
+        }
         
         // Get stats for this post
         const viewCount = viewCounts[postId] || 0;
@@ -89,10 +93,16 @@ function addStatsToBlogCards() {
             </div>
         `;
         
-        // Append to the post card
-        card.appendChild(statsDiv);
+        // Find the best place to append - content area or card itself
+        const contentArea = card.querySelector('.blog-post-content') || card.querySelector('.post-content') || card;
         
-        console.log(`Blog Card Stats: Added stats to post ${postId}`);
+        // Make sure card has relative positioning
+        card.style.position = 'relative';
+        
+        // Append to content area if found, otherwise to card
+        contentArea.appendChild(statsDiv);
+        
+        console.log(`Blog Card Stats: Added stats to post ${postId} in`, contentArea.className || 'card');
     });
     
     // Initialize tracking for views and ratings
@@ -112,28 +122,26 @@ function addFixedPositionCSS() {
     const style = document.createElement('style');
     style.id = 'blog-card-stats-css';
     style.textContent = `
-        /* Position the blog post cards as relative so we can position stats */
-        .blog-post-card, .blog-post, .blog-grid-item {
-            position: relative !important;
-            padding-bottom: 50px !important;
-            overflow: hidden !important;
-        }
-        
-        /* Style the stats container */
+        /* Style the stats container - uses flex layout, not absolute */
         .blog-card-stats {
-            position: absolute !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
             display: flex !important;
             justify-content: space-between !important;
+            align-items: center !important;
             background: rgba(30, 33, 39, 0.95) !important;
             padding: 10px 15px !important;
+            margin-top: auto !important;
             border-top: 1px solid rgba(232, 242, 76, 0.3) !important;
-            z-index: 10 !important;
             color: rgba(255, 255, 255, 0.9) !important;
             font-size: 14px !important;
             box-sizing: border-box !important;
+            width: 100% !important;
+        }
+        
+        /* Ensure blog-post-content uses flex to push stats to bottom */
+        .blog-post-content {
+            display: flex !important;
+            flex-direction: column !important;
+            flex-grow: 1 !important;
         }
         
         /* View count styles */
