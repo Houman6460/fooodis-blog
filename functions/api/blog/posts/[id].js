@@ -80,6 +80,19 @@ export async function onRequestPut(context) {
     const data = await request.json();
     const now = Date.now();
 
+    // Helper function to ensure value is a primitive (string, number, null)
+    const toPrimitive = (val, defaultVal = null) => {
+      if (val === undefined || val === null) return defaultVal;
+      if (typeof val === 'object') return JSON.stringify(val);
+      return String(val);
+    };
+    
+    const toNumber = (val, defaultVal = 0) => {
+      if (val === undefined || val === null) return defaultVal;
+      const num = parseInt(val);
+      return isNaN(num) ? defaultVal : num;
+    };
+
     // Get current post to support partial updates
     const currentPost = await env.DB.prepare(
       "SELECT * FROM blog_posts WHERE id = ?"
@@ -98,35 +111,34 @@ export async function onRequestPut(context) {
 
     if (data.title !== undefined) {
       updates.push('title = ?');
-      values.push(data.title);
+      values.push(toPrimitive(data.title, 'Untitled'));
     }
     if (data.content !== undefined) {
       updates.push('content = ?');
-      values.push(data.content);
+      values.push(toPrimitive(data.content, ''));
     }
     if (data.excerpt !== undefined) {
       updates.push('excerpt = ?');
-      values.push(data.excerpt);
+      values.push(toPrimitive(data.excerpt, ''));
     }
     if (data.image_url !== undefined || data.imageUrl !== undefined) {
       updates.push('image_url = ?');
-      values.push(data.image_url || data.imageUrl);
+      values.push(toPrimitive(data.image_url || data.imageUrl, ''));
     }
     if (data.author !== undefined) {
       updates.push('author = ?');
-      values.push(data.author);
+      values.push(toPrimitive(data.author, 'Admin'));
     }
     if (data.category !== undefined) {
       updates.push('category = ?');
-      values.push(data.category);
+      values.push(toPrimitive(data.category, 'Uncategorized'));
     }
     if (data.subcategory !== undefined) {
       updates.push('subcategory = ?');
-      values.push(data.subcategory);
+      values.push(data.subcategory ? toPrimitive(data.subcategory) : null);
     }
     if (data.tags !== undefined) {
       updates.push('tags = ?');
-      // Ensure tags is properly formatted as a JSON string
       let tagsString = '[]';
       if (data.tags) {
         if (typeof data.tags === 'string') {
@@ -138,21 +150,24 @@ export async function onRequestPut(context) {
           }
         } else if (Array.isArray(data.tags)) {
           tagsString = JSON.stringify(data.tags);
+        } else if (typeof data.tags === 'object') {
+          tagsString = JSON.stringify(Object.values(data.tags));
         }
       }
       values.push(tagsString);
     }
     if (data.published_date !== undefined || data.publishedDate !== undefined) {
       updates.push('published_date = ?');
-      values.push(data.published_date || data.publishedDate);
+      values.push(toPrimitive(data.published_date || data.publishedDate, new Date().toISOString()));
     }
     if (data.scheduled_date !== undefined || data.scheduledDate !== undefined) {
       updates.push('scheduled_date = ?');
-      values.push(data.scheduled_date || data.scheduledDate);
+      const schedDate = data.scheduled_date || data.scheduledDate;
+      values.push(schedDate ? toPrimitive(schedDate) : null);
     }
     if (data.status !== undefined) {
       updates.push('status = ?');
-      values.push(data.status);
+      values.push(toPrimitive(data.status, 'draft'));
     }
     if (data.featured !== undefined) {
       updates.push('featured = ?');
@@ -160,19 +175,20 @@ export async function onRequestPut(context) {
     }
     if (data.likes !== undefined) {
       updates.push('likes = ?');
-      values.push(data.likes);
+      values.push(toNumber(data.likes, 0));
     }
     if (data.views !== undefined) {
       updates.push('views = ?');
-      values.push(data.views);
+      values.push(toNumber(data.views, 0));
     }
     if (data.slug !== undefined) {
       updates.push('slug = ?');
-      values.push(data.slug);
+      values.push(toPrimitive(data.slug, ''));
     } else if (data.title !== undefined) {
       // Auto-generate slug if title changed
       updates.push('slug = ?');
-      values.push(data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
+      const titleStr = toPrimitive(data.title, 'untitled');
+      values.push(titleStr.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
     }
 
     // Always update updated_at

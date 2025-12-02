@@ -163,46 +163,63 @@ export async function onRequestPost(context) {
     const id = crypto.randomUUID();
     const now = Date.now();
     
+    // Helper function to ensure value is a primitive (string, number, null)
+    // D1 doesn't support objects - they must be stringified
+    const toPrimitive = (val, defaultVal = null) => {
+      if (val === undefined || val === null) return defaultVal;
+      if (typeof val === 'object') {
+        // Convert objects to JSON strings
+        return JSON.stringify(val);
+      }
+      return String(val); // Ensure it's always a string for text fields
+    };
+    
+    const toNumber = (val, defaultVal = 0) => {
+      if (val === undefined || val === null) return defaultVal;
+      const num = parseInt(val);
+      return isNaN(num) ? defaultVal : num;
+    };
+    
     // Ensure tags is properly formatted as a JSON string
     let tagsString = '[]';
     if (data.tags) {
       if (typeof data.tags === 'string') {
-        // Already a string - validate it's valid JSON
         try {
           JSON.parse(data.tags);
           tagsString = data.tags;
         } catch (e) {
-          // Not valid JSON, wrap it as a single tag
           tagsString = JSON.stringify([data.tags]);
         }
       } else if (Array.isArray(data.tags)) {
         tagsString = JSON.stringify(data.tags);
-      } else {
-        // Object or other - try to stringify
-        tagsString = JSON.stringify([]);
+      } else if (typeof data.tags === 'object') {
+        tagsString = JSON.stringify(Object.values(data.tags));
       }
     }
     
+    // Get title as string
+    const title = toPrimitive(data.title, 'Untitled');
+    
     const post = {
       id,
-      title: data.title,
-      content: data.content || '',
-      excerpt: data.excerpt || '',
-      image_url: data.image_url || data.imageUrl || '',
-      author: data.author || 'Admin',
-      category: data.category || 'Uncategorized',
-      subcategory: data.subcategory || null,
+      title: title,
+      content: toPrimitive(data.content, ''),
+      excerpt: toPrimitive(data.excerpt, ''),
+      image_url: toPrimitive(data.image_url || data.imageUrl, ''),
+      author: toPrimitive(data.author, 'Admin'),
+      category: toPrimitive(data.category, 'Uncategorized'),
+      subcategory: data.subcategory ? toPrimitive(data.subcategory) : null,
       tags: tagsString,
-      published_date: data.published_date || data.publishedDate || new Date().toISOString(),
-      scheduled_date: data.scheduled_date || data.scheduledDate || null,
-      status: data.status || 'draft',
+      published_date: toPrimitive(data.published_date || data.publishedDate, new Date().toISOString()),
+      scheduled_date: data.scheduled_date || data.scheduledDate ? toPrimitive(data.scheduled_date || data.scheduledDate) : null,
+      status: toPrimitive(data.status, 'draft'),
       featured: data.featured ? 1 : 0,
       views: 0,
-      likes: data.likes || 0,
-      comments_count: data.comments_count || data.commentsCount || 0,
+      likes: toNumber(data.likes, 0),
+      comments_count: toNumber(data.comments_count || data.commentsCount, 0),
       created_at: now,
       updated_at: now,
-      slug: data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+      slug: toPrimitive(data.slug) || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
     };
 
     await env.DB.prepare(`
