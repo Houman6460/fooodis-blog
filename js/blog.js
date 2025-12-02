@@ -78,9 +78,10 @@ function getValidImageUrl(imageUrl) {
 }
 
 // Async function to get cloud fallback image for onerror handlers
-async function loadCloudFallbackForImage(imgElement) {
+// Now passes postId for deterministic fallback (same post always gets same image)
+async function loadCloudFallbackForImage(imgElement, postId = null) {
     if (window.getCloudFallbackImage) {
-        const cloudUrl = await window.getCloudFallbackImage();
+        const cloudUrl = await window.getCloudFallbackImage(postId);
         if (cloudUrl && imgElement) {
             imgElement.src = cloudUrl;
             imgElement.onerror = null; // Prevent infinite loop
@@ -279,9 +280,9 @@ function renderBlogPosts(customPosts = null) {
         const validImageUrl = getValidImageUrl(post.imageUrl);
         img.src = validImageUrl;
         img.alt = post.title;
-        img.onerror = function() { loadCloudFallbackForImage(this); return; // Old code below for reference:
-            this.src = 'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
-            this.onerror = null;
+        img.dataset.postId = post.id; // Store post ID for deterministic fallback
+        img.onerror = function() { 
+            loadCloudFallbackForImage(this, this.dataset.postId); 
         };
         imageContainer.appendChild(img);
         
@@ -601,10 +602,9 @@ function renderBanners() {
         
         // Use validated image URL
         const imageUrl = getValidImageUrl(post.imageUrl);
-        const fallbackImage = 'images/image-placeholder.jpg';
         
         banner.innerHTML = `
-            <img src="${imageUrl}" alt="${post.title}" >
+            <img src="${imageUrl}" alt="${post.title}" data-post-id="${post.id}" onerror="loadCloudFallbackForImage(this, '${post.id}')" >
             <div class="blog-banner-overlay">
                 <h2 class="blog-banner-title">${post.title}</h2>
                 <p class="blog-banner-description">${post.excerpt || post.content.substring(0, 150) + '...'}</p>
@@ -737,11 +737,10 @@ function openBlogPostModal(postId) {
     
     // Get a valid image URL for the post
     const imageUrl = getValidImageUrl(post.imageUrl);
-    const fallbackImage = 'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
     
     modalBody.innerHTML = `
         <div class="modal-image">
-            <img src="${imageUrl}" alt="${post.title}" >
+            <img src="${imageUrl}" alt="${post.title}" data-post-id="${post.id}" onerror="loadCloudFallbackForImage(this, '${post.id}')" >
         </div>
         <div class="modal-header">
             <div class="modal-category">${post.category}${post.subcategory ? ` / ${post.subcategory}` : ''}</div>

@@ -4,33 +4,33 @@
  * Never uses local hardcoded paths
  */
 
-// Cache for cloud fallback image
-let cachedCloudFallbackUrl = null;
+// Cache for cloud fallback images
+let cachedCloudImages = null;
 let lastFetchTime = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+// Cache for per-post fallback images (so card and modal show same image)
+const postImageCache = new Map();
+
 /**
- * Get a fallback image URL from the cloud media library
- * @returns {Promise<string|null>} - R2 URL or null if none available
+ * Fetch cloud images from media library (cached)
  */
-async function getCloudFallbackImage() {
-    // Check cache first
-    if (cachedCloudFallbackUrl && (Date.now() - lastFetchTime) < CACHE_DURATION) {
-        return cachedCloudFallbackUrl;
+async function fetchCloudImages() {
+    if (cachedCloudImages && (Date.now() - lastFetchTime) < CACHE_DURATION) {
+        return cachedCloudImages;
     }
     
     try {
-        const response = await fetch('/api/media?limit=20');
-        if (!response.ok) return null;
+        const response = await fetch('/api/media?limit=50');
+        if (!response.ok) return [];
         
         const data = await response.json();
         const media = data.media || [];
         
         // Filter to only cloud-hosted images with valid R2 URLs
-        const cloudImages = media.filter(item => {
+        cachedCloudImages = media.filter(item => {
             const mimeType = item.mime_type || item.type || '';
             const url = item.r2_url || item.url || '';
-            // Must be an image and have a proper cloud URL (not base64, not local path)
             return mimeType.startsWith('image/') && 
                    url && 
                    !url.startsWith('data:') && 
@@ -38,21 +38,54 @@ async function getCloudFallbackImage() {
                    (url.includes('r2.cloudflarestorage') || url.includes('/api/media/serve/'));
         });
         
-        if (cloudImages.length > 0) {
-            // Get a random image
-            const randomImage = cloudImages[Math.floor(Math.random() * cloudImages.length)];
-            cachedCloudFallbackUrl = randomImage.r2_url || randomImage.url;
-            lastFetchTime = Date.now();
-            console.log('Cloud fallback image cached:', cachedCloudFallbackUrl);
-            return cachedCloudFallbackUrl;
-        }
-        
+        lastFetchTime = Date.now();
+        console.log(`Cached ${cachedCloudImages.length} cloud images for fallbacks`);
+        return cachedCloudImages;
+    } catch (error) {
+        console.error('Error fetching cloud images:', error);
+        return [];
+    }
+}
+
+/**
+ * Get a fallback image URL - deterministic by postId so same post always gets same image
+ * @param {string} postId - Optional post ID for deterministic selection
+ * @returns {Promise<string|null>} - R2 URL or null if none available
+ */
+async function getCloudFallbackImage(postId = null) {
+    const cloudImages = await fetchCloudImages();
+    
+    if (cloudImages.length === 0) {
         console.warn('No cloud images available in media library');
         return null;
-    } catch (error) {
-        console.error('Error fetching cloud fallback image:', error);
-        return null;
     }
+    
+    // If we have a postId, use deterministic selection
+    if (postId) {
+        // Check cache first
+        if (postImageCache.has(postId)) {
+            return postImageCache.get(postId);
+        }
+        
+        // Use hash of postId to pick consistent image
+        let hash = 0;
+        for (let i = 0; i < postId.length; i++) {
+            hash = ((hash << 5) - hash) + postId.charCodeAt(i);
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        const index = Math.abs(hash) % cloudImages.length;
+        const selectedImage = cloudImages[index];
+        const url = selectedImage.r2_url || selectedImage.url;
+        
+        // Cache it
+        postImageCache.set(postId, url);
+        console.log(`Deterministic fallback for post ${postId}:`, url);
+        return url;
+    }
+    
+    // No postId - return random (for generic fallbacks)
+    const randomImage = cloudImages[Math.floor(Math.random() * cloudImages.length)];
+    return randomImage.r2_url || randomImage.url;
 }
 
 /**
