@@ -59,7 +59,7 @@ function addStatsToBlogCards() {
     addFixedPositionCSS();
     
     // Find all blog post cards - try multiple selectors
-    const postCards = Array.from(document.querySelectorAll('.blog-post, .blog-grid-item'));
+    const postCards = Array.from(document.querySelectorAll('.blog-post-card, .blog-post, .blog-grid-item'));
     
     console.log(`Blog Card Stats: Found ${postCards.length} blog post cards`);
     
@@ -113,9 +113,10 @@ function addFixedPositionCSS() {
     style.id = 'blog-card-stats-css';
     style.textContent = `
         /* Position the blog post cards as relative so we can position stats */
-        .blog-post, .blog-grid-item {
+        .blog-post-card, .blog-post, .blog-grid-item {
             position: relative !important;
-            padding-bottom: 40px !important;
+            padding-bottom: 50px !important;
+            overflow: hidden !important;
         }
         
         /* Style the stats container */
@@ -126,45 +127,48 @@ function addFixedPositionCSS() {
             right: 0 !important;
             display: flex !important;
             justify-content: space-between !important;
-            background: rgba(33, 33, 33, 0.7) !important;
-            padding: 8px 10px !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            z-index: 5 !important;
-            color: rgba(255, 255, 255, 0.8) !important;
+            background: rgba(30, 33, 39, 0.95) !important;
+            padding: 10px 15px !important;
+            border-top: 1px solid rgba(232, 242, 76, 0.3) !important;
+            z-index: 10 !important;
+            color: rgba(255, 255, 255, 0.9) !important;
             font-size: 14px !important;
+            box-sizing: border-box !important;
         }
         
         /* View count styles */
         .stats-view-count {
             display: flex !important;
             align-items: center !important;
-            gap: 5px !important;
+            gap: 6px !important;
         }
         
         .eye-icon {
-            color: #FFD010 !important;
+            color: #e8f24c !important;
         }
         
         /* Rating styles */
         .stats-rating {
             display: flex !important;
             align-items: center !important;
-            gap: 5px !important;
+            gap: 6px !important;
         }
         
         .stats-stars {
-            display: flex !important;
+            display: inline-flex !important;
             gap: 2px !important;
         }
         
         /* Move Read More button above stats bar */
+        .blog-post-card .read-more,
+        .blog-post-card .blog-post-share,
         .blog-post .u-btn,
         .blog-post button,
         .blog-post .btn,
         .blog-post .read-more,
         .blog-post a.more,
         .blog-post .read-more-button {
-            margin-bottom: 40px !important;
+            margin-bottom: 10px !important;
             position: relative !important;
             z-index: 6 !important;
         }

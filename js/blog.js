@@ -517,8 +517,10 @@ function renderTags() {
     tags.forEach(tag => {
         const tagElement = document.createElement('span');
         tagElement.className = 'tag';
-        tagElement.textContent = tag;
-        tagElement.dataset.tag = tag;
+        // Handle both string tags and object tags (from API)
+        const tagName = typeof tag === 'object' ? (tag.name || tag.slug || String(tag)) : tag;
+        tagElement.textContent = tagName;
+        tagElement.dataset.tag = tagName;
         tagsContainer.appendChild(tagElement);
     });
     
