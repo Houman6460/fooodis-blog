@@ -49,20 +49,43 @@ function initializeDOMElements() {
 }
 
 // Helper function to get a valid image URL (defined early so it's available everywhere)
+// Only accepts cloud URLs (R2), rejects local paths that won't work across devices
 function getValidImageUrl(imageUrl) {
-    const fallback = 'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
-    
-    // Check if imageUrl is valid
+    // Check if imageUrl is invalid
     if (!imageUrl || 
         imageUrl === 'undefined' || 
         imageUrl === 'null' || 
         imageUrl === '' ||
-        imageUrl.startsWith('data:image') || // Skip base64 images - too large
+        imageUrl === '[object Object]' ||
         imageUrl.trim() === '') {
-        return fallback;
+        return ''; // Return empty - will trigger onerror handler
     }
     
+    // Reject base64 images (too large, not cloud)
+    if (imageUrl.startsWith('data:image')) {
+        console.warn('Rejecting base64 image');
+        return '';
+    }
+    
+    // Reject local paths - they don't work on other devices
+    if (imageUrl.startsWith('images/') || imageUrl.startsWith('/images/')) {
+        console.warn('Rejecting local image path:', imageUrl);
+        return '';
+    }
+    
+    // Accept cloud URLs
     return imageUrl;
+}
+
+// Async function to get cloud fallback image for onerror handlers
+async function loadCloudFallbackForImage(imgElement) {
+    if (window.getCloudFallbackImage) {
+        const cloudUrl = await window.getCloudFallbackImage();
+        if (cloudUrl && imgElement) {
+            imgElement.src = cloudUrl;
+            imgElement.onerror = null; // Prevent infinite loop
+        }
+    }
 }
 
 // Initialize the blog system
@@ -256,7 +279,7 @@ function renderBlogPosts(customPosts = null) {
         const validImageUrl = getValidImageUrl(post.imageUrl);
         img.src = validImageUrl;
         img.alt = post.title;
-        img.onerror = function() {
+        img.onerror = function() { loadCloudFallbackForImage(this); return; // Old code below for reference:
             this.src = 'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
             this.onerror = null;
         };
@@ -581,7 +604,7 @@ function renderBanners() {
         const fallbackImage = 'images/image-placeholder.jpg';
         
         banner.innerHTML = `
-            <img src="${imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='${fallbackImage}';">
+            <img src="${imageUrl}" alt="${post.title}" >
             <div class="blog-banner-overlay">
                 <h2 class="blog-banner-title">${post.title}</h2>
                 <p class="blog-banner-description">${post.excerpt || post.content.substring(0, 150) + '...'}</p>
@@ -718,7 +741,7 @@ function openBlogPostModal(postId) {
     
     modalBody.innerHTML = `
         <div class="modal-image">
-            <img src="${imageUrl}" alt="${post.title}" onerror="this.src='${fallbackImage}'; this.onerror=null;">
+            <img src="${imageUrl}" alt="${post.title}" >
         </div>
         <div class="modal-header">
             <div class="modal-category">${post.category}${post.subcategory ? ` / ${post.subcategory}` : ''}</div>

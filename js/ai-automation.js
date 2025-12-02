@@ -2578,8 +2578,13 @@ async function generateImage(title, contentType) {
         console.warn('Failed to fetch media library for image:', error);
     }
     
-    // Fallback to existing local images in the images folder
-    const fallbackImages = [
+    // No cloud images available - return empty (will show no image)
+    // Local fallback images removed - they don't work across devices
+    console.warn('No cloud images available in media library');
+    return ''; // Return empty, don't use broken local paths
+    
+    // OLD CODE (disabled):
+    /* const fallbackImages = [
         'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg',
         'images/restaurant-interior-2022-11-11-02-07-29-utc.jpg',
         'images/chef-cooking-food-kitchen-restaurant-hotel-2022-12-16-23-47-49-utc.jpg'

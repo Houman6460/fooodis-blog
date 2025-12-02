@@ -288,7 +288,11 @@ async function generateImageFromFolder(title, contentType, folderId, options = {
             };
         }
         
-        // Otherwise use a placeholder (legacy behavior)
+        // Legacy placeholder code removed - local paths don't work across devices
+        // Return failure instead of broken placeholder
+        return { url: null, success: false, error: reason };
+        
+        /* OLD PLACEHOLDER CODE (disabled):
         const placeholders = {
             recipe: '/images/placeholder-recipe-1.jpg',
             review: '/images/placeholder-restaurant-1.jpg',
@@ -301,6 +305,7 @@ async function generateImageFromFolder(title, contentType, folderId, options = {
             url: placeholder,
             success: true,
             isPlaceholder: true
+        }; */
         };
     }
     
