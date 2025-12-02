@@ -21,6 +21,62 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
+     * Load real scheduled posts from AI automation and localStorage
+     */
+    function loadRealScheduledPosts() {
+        const posts = [];
+        
+        // Load AI automation paths
+        try {
+            const aiPathsData = localStorage.getItem('fooodis-ai-automation-paths') || 
+                localStorage.getItem('aiAutomationPaths') || '[]';
+            const aiPaths = JSON.parse(aiPathsData);
+            
+            aiPaths.forEach(path => {
+                const isActive = path.active === true || path.active === 'true' || path.status === 'active';
+                
+                if (isActive && path.schedule && path.schedule.time) {
+                    const [hours, minutes] = path.schedule.time.split(':').map(Number);
+                    const nextRun = new Date();
+                    nextRun.setHours(hours, minutes, 0, 0);
+                    
+                    if (nextRun <= new Date()) {
+                        nextRun.setDate(nextRun.getDate() + 1);
+                    }
+                    
+                    posts.push({
+                        id: `ai-${path.id || path.name}`,
+                        title: `AI: ${path.name}`,
+                        status: 'ai-generated',
+                        date: nextRun.toLocaleDateString('en-US', { 
+                            weekday: 'short', month: 'short', day: 'numeric', 
+                            year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                        }),
+                        category: path.category || path.categories?.[0] || 'AI Generated',
+                        excerpt: `Automated ${path.contentType || 'content'} - ${path.schedule.type || 'daily'} at ${path.schedule.time}`
+                    });
+                }
+            });
+        } catch (e) {
+            console.error('Error loading AI automation paths:', e);
+        }
+        
+        // Show message if no posts
+        if (posts.length === 0) {
+            posts.push({
+                id: 'empty',
+                title: 'No scheduled posts',
+                status: 'info',
+                date: '',
+                category: '',
+                excerpt: 'Create a new automation path or schedule a post manually'
+            });
+        }
+        
+        return posts;
+    }
+    
+    /**
      * Create the scheduled posts UI
      */
     function createScheduledPostsUI() {
@@ -166,36 +222,11 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduledPostsTitle.className = 'scheduled-posts-title';
         scheduledPostsTitle.textContent = 'Scheduled Posts';
         
-        // Sample scheduled posts
-        const samplePosts = [
-            {
-                id: 1,
-                title: 'Top 10 Restaurant Management Tips',
-                status: 'scheduled',
-                date: 'Sun, May 4, 2025, 10:00 AM',
-                category: 'Management',
-                excerpt: 'Learn the top 10 tips for effective restaurant management...'
-            },
-            {
-                id: 2,
-                title: 'Seasonal Menu Planning Guide',
-                status: 'draft',
-                date: 'Wed, May 7, 2025, 02:30 PM',
-                category: 'Menu Planning',
-                excerpt: 'A comprehensive guide to planning your seasonal menu...'
-            },
-            {
-                id: 3,
-                title: 'Restaurant Marketing Strategies for 2025',
-                status: 'ai-generated',
-                date: 'Fri, May 9, 2025, 09:00 AM',
-                category: 'Marketing',
-                excerpt: 'Discover the latest marketing strategies for restaurants in 2025...'
-            }
-        ];
+        // Load real scheduled posts from AI automation and API
+        const realPosts = loadRealScheduledPosts();
         
         // Create the scheduled post items
-        samplePosts.forEach(post => {
+        realPosts.forEach(post => {
             const postItem = document.createElement('div');
             postItem.className = 'scheduled-post-item';
             postItem.innerHTML = `
