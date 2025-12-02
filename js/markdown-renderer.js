@@ -438,13 +438,14 @@ function addMarkdownStyles() {
     document.head.appendChild(styleElement);
 }
 
-// Direct hook for blog.js
+// Direct hook for blog.js - ONLY for modal content, NOT blog cards
 document.addEventListener('DOMContentLoaded', function() {
-    // Direct DOM manipulation for blog posts
+    // Direct DOM manipulation for full post content ONLY (not card previews)
     setInterval(function() {
-        const blogPosts = document.querySelectorAll('.blog-post-content');
-        if (blogPosts.length > 0) {
-            blogPosts.forEach(postContent => {
+        // Only process modal content text, NOT blog card content
+        const modalContentText = document.querySelectorAll('.modal-content-text');
+        if (modalContentText.length > 0) {
+            modalContentText.forEach(postContent => {
                 // Check if this post has already been processed
                 if (!postContent.dataset.markdownProcessed) {
                     const originalText = postContent.textContent || postContent.innerText;
@@ -460,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Mark as processed
                         postContent.dataset.markdownProcessed = 'true';
-                        console.log('Markdown Renderer: Processed post content via DOM');
+                        console.log('Markdown Renderer: Processed modal content via DOM');
                     }
                 }
             });

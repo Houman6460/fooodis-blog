@@ -273,13 +273,22 @@ function renderBlogPosts(customPosts = null) {
         title.textContent = post.title;
         contentContainer.appendChild(title);
         
-        // Add excerpt - remove any "READ MORE" text from content
+        // Add excerpt - clean up content
         const excerpt = document.createElement('p');
         excerpt.className = 'blog-post-excerpt';
-        let excerptText = post.excerpt || (post.content && post.content.substring(0, 120) + '...') || 'Content for ' + post.title + '...';
-        // Remove "READ MORE" variations from excerpt text
-        excerptText = excerptText.replace(/\.{0,3}READ MORE$/i, '...').replace(/READ MORE/gi, '');
-        excerpt.textContent = excerptText;
+        let excerptText = post.excerpt || (post.content && post.content.substring(0, 150)) || '';
+        // Clean up excerpt text - remove markdown headings, READ MORE, and HTML tags
+        excerptText = excerptText
+            .replace(/<[^>]*>/g, '') // Remove HTML tags
+            .replace(/^#+\s*.+$/gm, '') // Remove markdown headings
+            .replace(/READ MORE/gi, '')
+            .replace(/\s+/g, ' ') // Normalize whitespace
+            .trim();
+        // Truncate if too long
+        if (excerptText.length > 120) {
+            excerptText = excerptText.substring(0, 120) + '...';
+        }
+        excerpt.textContent = excerptText || 'Click to read more...';
         contentContainer.appendChild(excerpt);
         
         // Create the share container for read more and social icons
