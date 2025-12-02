@@ -242,6 +242,9 @@ function ensurePostsUniqueness(posts) {
         }
         
         // ENSURE UNIQUE IMAGE
+        // DISABLED - cloud-image-fallback.js now handles images deterministically
+        // This was causing issues by overriding cloud fallback images with local paths
+        /*
         if (post.image || post.imageUrl) {
             const imageUrl = post.image || post.imageUrl;
             
@@ -264,6 +267,7 @@ function ensurePostsUniqueness(posts) {
             // Add this image to seen set
             imagesSeen.add(post.image);
         }
+        */
         
         return post;
     });

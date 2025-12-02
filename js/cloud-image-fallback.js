@@ -38,8 +38,15 @@ async function fetchCloudImages() {
                    (url.includes('r2.cloudflarestorage') || url.includes('/api/media/serve/'));
         });
         
+        // Sort by ID for consistent ordering (important for deterministic selection)
+        cachedCloudImages.sort((a, b) => {
+            const idA = a.id || '';
+            const idB = b.id || '';
+            return idA.localeCompare(idB);
+        });
+        
         lastFetchTime = Date.now();
-        console.log(`Cached ${cachedCloudImages.length} cloud images for fallbacks`);
+        console.log(`Cached ${cachedCloudImages.length} cloud images for fallbacks (sorted by ID)`);
         return cachedCloudImages;
     } catch (error) {
         console.error('Error fetching cloud images:', error);
