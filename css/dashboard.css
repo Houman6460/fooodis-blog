@@ -263,6 +263,13 @@ body.dashboard-body {
 
 .dashboard-section.active {
     display: block;
+    min-height: 0;
+}
+
+/* Prevent excessive scrolling in dashboard sections */
+.dashboard-section > div,
+.dashboard-section .section-content {
+    min-height: 0;
 }
 
 @keyframes fadeIn {

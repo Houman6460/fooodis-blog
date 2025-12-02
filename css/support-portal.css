@@ -907,8 +907,7 @@ button {
 /* Split View Layout - Exact Admin Style */
 .ticket-split-view {
     display: flex;
-    height: calc(100vh - 300px);
-    min-height: 600px;
+    min-height: 400px;
     background: var(--secondary-color);
 }
 
