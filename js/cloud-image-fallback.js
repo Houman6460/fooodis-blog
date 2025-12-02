@@ -28,13 +28,26 @@ async function fetchCloudImages() {
         const media = data.media || [];
         
         // Filter to only cloud-hosted images with valid R2 URLs
+        // Exclude avatars, logos, and profile pictures from being used as post fallbacks
+        const excludedFolders = ['avatars', 'logos', 'profile', 'branding'];
         cachedCloudImages = media.filter(item => {
             const mimeType = item.mime_type || item.type || '';
             const url = item.r2_url || item.url || '';
+            const folder = (item.folder || '').toLowerCase();
+            const filename = (item.filename || item.original_filename || '').toLowerCase();
+            
+            // Exclude system images (avatars, logos, profile pictures)
+            const isSystemImage = excludedFolders.includes(folder) ||
+                                  filename.includes('logo') ||
+                                  filename.includes('avatar') ||
+                                  filename.includes('profile') ||
+                                  filename.includes('icon');
+            
             return mimeType.startsWith('image/') && 
                    url && 
                    !url.startsWith('data:') && 
                    !url.startsWith('images/') &&
+                   !isSystemImage &&
                    (url.includes('r2.cloudflarestorage') || url.includes('/api/media/serve/'));
         });
         

@@ -1143,13 +1143,26 @@ function editPost(postId) {
         imageUrlInput.value = imageUrl;
     }
     
-    // Show image preview if URL exists
-    if (imageUrl) {
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const previewImg = document.getElementById('imagePreview');
-        if (previewContainer && previewImg) {
+    // Show image preview if URL exists, or load cloud fallback
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImg = document.getElementById('imagePreview');
+    if (previewContainer && previewImg) {
+        if (imageUrl) {
             previewImg.src = imageUrl;
             previewContainer.style.display = 'block';
+        } else if (window.getCloudFallbackImage) {
+            // No saved image - load the same fallback used on the blog
+            window.getCloudFallbackImage(postId).then(fallbackUrl => {
+                if (fallbackUrl) {
+                    previewImg.src = fallbackUrl;
+                    previewContainer.style.display = 'block';
+                    // Also set the input so it gets saved when updating
+                    if (imageUrlInput) {
+                        imageUrlInput.value = fallbackUrl;
+                    }
+                    console.log('Dashboard: Loaded cloud fallback image for post', postId);
+                }
+            });
         }
     }
     
