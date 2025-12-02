@@ -47,30 +47,77 @@ class ScheduledPostsManager {
     }
     
     /**
-     * Load scheduled posts from D1 API
+     * Load scheduled posts from D1 API and AI automation paths
      */
     async loadPosts() {
+        this.posts = [];
+        
+        // Load scheduled posts from API
         try {
             const response = await fetch('/api/scheduled-posts');
             if (response.ok) {
                 const data = await response.json();
                 this.posts = data.posts || [];
                 console.log(`ScheduledPostsManager: Loaded ${this.posts.length} scheduled posts`);
-                
-                // Also sync to localStorage for offline/fallback
-                localStorage.setItem('fooodis-scheduled-posts', JSON.stringify(this.posts));
-                
-                // Render UI
-                this.renderPosts();
-                this.updateCalendar();
-                
-                return this.posts;
             }
         } catch (error) {
-            console.error('ScheduledPostsManager: Error loading posts', error);
+            console.error('ScheduledPostsManager: Error loading scheduled posts', error);
         }
         
-        // Fallback to localStorage
+        // Also load AI automation paths
+        try {
+            const response = await fetch('/api/automation/paths');
+            if (response.ok) {
+                const aiPaths = await response.json();
+                console.log(`ScheduledPostsManager: Loaded ${aiPaths.length} AI automation paths`);
+                
+                aiPaths.forEach(path => {
+                    if (path.status === 'active' && path.schedule_time) {
+                        const [hours, minutes] = path.schedule_time.split(':').map(Number);
+                        const nextRun = new Date();
+                        nextRun.setHours(hours, minutes, 0, 0);
+                        
+                        if (nextRun <= new Date()) {
+                            nextRun.setDate(nextRun.getDate() + 1);
+                        }
+                        
+                        this.posts.push({
+                            id: `ai-${path.id}`,
+                            title: `AI: ${path.name}`,
+                            status: 'pending',
+                            source: 'ai_automation',
+                            scheduled_datetime: nextRun.toISOString(),
+                            scheduled_date: nextRun.toISOString(),
+                            category: path.category || 'AI Generated',
+                            excerpt: `Automated ${path.content_type || 'content'} - ${path.schedule_type || 'daily'} at ${path.schedule_time}`
+                        });
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('ScheduledPostsManager: Error loading AI automation paths', error);
+        }
+        
+        console.log(`ScheduledPostsManager: Total ${this.posts.length} posts`);
+        
+        // Render UI
+        this.renderPosts();
+        this.updateCalendar();
+        
+        // Sync to localStorage for offline/fallback
+        try {
+            localStorage.setItem('fooodis-scheduled-posts', JSON.stringify(this.posts));
+        } catch (e) {
+            console.warn('Could not save to localStorage');
+        }
+        
+        return this.posts;
+    }
+    
+    /**
+     * Fallback load from localStorage (kept for backward compatibility)
+     */
+    loadFromLocalStorage() {
         try {
             const saved = localStorage.getItem('fooodis-scheduled-posts');
             if (saved) {
