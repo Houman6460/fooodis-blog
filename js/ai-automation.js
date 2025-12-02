@@ -2588,7 +2588,7 @@ async function generateImage(title, contentType) {
         'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg',
         'images/restaurant-interior-2022-11-11-02-07-29-utc.jpg',
         'images/chef-cooking-food-kitchen-restaurant-hotel-2022-12-16-23-47-49-utc.jpg'
-    ];
+    ]; */
     
     return fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
 }

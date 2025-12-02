@@ -306,7 +306,6 @@ async function generateImageFromFolder(title, contentType, folderId, options = {
             success: true,
             isPlaceholder: true
         }; */
-        };
     }
     
     // Mark the image as used in cloud database
