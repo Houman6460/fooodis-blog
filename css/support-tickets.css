@@ -1,24 +1,29 @@
 /* Support Tickets Dashboard Styles - Using Fooodis Design System */
 
-/* Ticket Page Container - Prevents sidebar overlap */
+/* Ticket Page Container - Inside dashboard, no extra margin needed */
 .ticket-page-container {
-    margin-left: 280px; /* Account for sidebar width */
-    padding: 20px;
-    max-width: calc(100vw - 320px); /* Prevent horizontal overflow */
+    padding: 0;
     position: relative;
     background: var(--dark-bg);
 }
 
-/* Responsive adjustments */
+/* Only add margin-left when used standalone (outside dashboard) */
+.support-portal .ticket-page-container {
+    margin-left: 280px;
+    padding: 20px;
+    max-width: calc(100vw - 320px);
+}
+
+/* Responsive adjustments for standalone */
 @media (max-width: 1200px) {
-    .ticket-page-container {
+    .support-portal .ticket-page-container {
         margin-left: 260px;
         max-width: calc(100vw - 280px);
     }
 }
 
 @media (max-width: 768px) {
-    .ticket-page-container {
+    .support-portal .ticket-page-container {
         margin-left: 0;
         max-width: 100%;
         padding: 15px;
