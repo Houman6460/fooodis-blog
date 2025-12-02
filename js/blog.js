@@ -50,7 +50,7 @@ function initializeDOMElements() {
 
 // Helper function to get a valid image URL (defined early so it's available everywhere)
 function getValidImageUrl(imageUrl) {
-    const fallback = 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
+    const fallback = 'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
     
     // Check if imageUrl is valid
     if (!imageUrl || 
@@ -257,7 +257,7 @@ function renderBlogPosts(customPosts = null) {
         img.src = validImageUrl;
         img.alt = post.title;
         img.onerror = function() {
-            this.src = 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
+            this.src = 'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
             this.onerror = null;
         };
         imageContainer.appendChild(img);
@@ -561,7 +561,7 @@ function renderBanners() {
         const defaultBanner = document.createElement('div');
         defaultBanner.className = 'blog-banner';
         defaultBanner.innerHTML = `
-            <img src="images/New images/restaurant-interior-2022-11-11-02-07-29-utc.jpg" alt="Fooodis Blog">
+            <img src="images/restaurant-interior-2022-11-11-02-07-29-utc.jpg" alt="Fooodis Blog">
             <div class="blog-banner-overlay">
                 <h2 class="blog-banner-title">Welcome to Fooodis Blog</h2>
                 <p class="blog-banner-description">Discover the latest restaurant management tips, industry insights, and Fooodis platform updates.</p>
@@ -578,7 +578,7 @@ function renderBanners() {
         
         // Use validated image URL
         const imageUrl = getValidImageUrl(post.imageUrl);
-        const fallbackImage = 'images/New images/image-placeholder.jpg';
+        const fallbackImage = 'images/image-placeholder.jpg';
         
         banner.innerHTML = `
             <img src="${imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='${fallbackImage}';">
@@ -714,7 +714,7 @@ function openBlogPostModal(postId) {
     
     // Get a valid image URL for the post
     const imageUrl = getValidImageUrl(post.imageUrl);
-    const fallbackImage = 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
+    const fallbackImage = 'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
     
     modalBody.innerHTML = `
         <div class="modal-image">
