@@ -48,6 +48,23 @@ function initializeDOMElements() {
     nextPageBtn = document.getElementById('nextPageBtn');
 }
 
+// Helper function to get a valid image URL (defined early so it's available everywhere)
+function getValidImageUrl(imageUrl) {
+    const fallback = 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
+    
+    // Check if imageUrl is valid
+    if (!imageUrl || 
+        imageUrl === 'undefined' || 
+        imageUrl === 'null' || 
+        imageUrl === '' ||
+        imageUrl.startsWith('data:image') || // Skip base64 images - too large
+        imageUrl.trim() === '') {
+        return fallback;
+    }
+    
+    return imageUrl;
+}
+
 // Initialize the blog system
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 Blog.js v2 - Starting initialization');
@@ -234,9 +251,10 @@ function renderBlogPosts(customPosts = null) {
         const imageContainer = document.createElement('div');
         imageContainer.className = 'blog-post-image';
         
-        // Create the image element
+        // Create the image element with validated URL
         const img = document.createElement('img');
-        img.src = post.imageUrl || 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
+        const validImageUrl = getValidImageUrl(post.imageUrl);
+        img.src = validImageUrl;
         img.alt = post.title;
         img.onerror = function() {
             this.src = 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
@@ -558,21 +576,12 @@ function renderBanners() {
         banner.className = 'blog-banner';
         banner.dataset.id = post.id;
         
-        // Check if image URL exists and use a valid fallback if not
-        let imageUrl = post.imageUrl;
-        if (!imageUrl || imageUrl === 'undefined' || imageUrl === 'null') {
-            // Use one of our known working images as fallback
-            const fallbackImages = [
-                'images/New images/restaurant-interior-2022-11-11-02-07-29-utc.jpg',
-                'images/New images/chef-cooking-food-kitchen-restaurant-hotel-2022-12-16-23-47-49-utc.jpg',
-                'images/New images/chef-decorating-delicious-appetizing-food-plate-2022-11-11-19-41-47-utc.jpg',
-                'images/New images/image-placeholder.jpg'
-            ];
-            imageUrl = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-        }
+        // Use validated image URL
+        const imageUrl = getValidImageUrl(post.imageUrl);
+        const fallbackImage = 'images/New images/image-placeholder.jpg';
         
         banner.innerHTML = `
-            <img src="${imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='images/New images/image-placeholder.jpg';">
+            <img src="${imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='${fallbackImage}';">
             <div class="blog-banner-overlay">
                 <h2 class="blog-banner-title">${post.title}</h2>
                 <p class="blog-banner-description">${post.excerpt || post.content.substring(0, 150) + '...'}</p>
@@ -703,9 +712,13 @@ function openBlogPostModal(postId) {
     // Track page view for this post
     trackPostView(postId);
     
+    // Get a valid image URL for the post
+    const imageUrl = getValidImageUrl(post.imageUrl);
+    const fallbackImage = 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg';
+    
     modalBody.innerHTML = `
         <div class="modal-image">
-            <img src="${post.imageUrl || 'images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg'}" alt="${post.title}" onerror="this.src='images/New images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg'; this.onerror=null;">
+            <img src="${imageUrl}" alt="${post.title}" onerror="this.src='${fallbackImage}'; this.onerror=null;">
         </div>
         <div class="modal-header">
             <div class="modal-category">${post.category}${post.subcategory ? ` / ${post.subcategory}` : ''}</div>
