@@ -160,7 +160,7 @@ export async function onRequestPost(context) {
 
       // Get R2 public URL (you'll need to configure public access for your bucket)
       // For now, we'll construct a relative URL that your app can serve
-      const r2Url = `/api/media/serve/${encodeURIComponent(r2Key)}`;
+      const r2Url = `/api/media/serve/${r2Key}`;
 
       // Get image dimensions if it's an image
       let width = null;

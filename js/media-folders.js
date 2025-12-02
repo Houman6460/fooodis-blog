@@ -1094,6 +1094,11 @@ async function loadMediaFromCloud() {
         localStorage.setItem('fooodis-blog-media', JSON.stringify(localFormat));
         console.log(`✅ Synced ${localFormat.length} media items from cloud`);
         
+        // Refresh the display
+        if (typeof filterMedia === 'function') {
+            setTimeout(() => filterMedia(), 100);
+        }
+        
         return localFormat;
     } catch (error) {
         console.error('Error loading media from cloud:', error);
