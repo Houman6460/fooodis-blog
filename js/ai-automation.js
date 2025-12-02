@@ -2367,7 +2367,12 @@ async function generateAutomatedPost(path) {
                     imageUrl = await generateImage(title, path.contentType);
                 }
                 
-                post.image = imageUrl;
+                // Extract URL from result object if necessary
+                if (imageUrl && typeof imageUrl === 'object') {
+                    post.image = imageUrl.url || imageUrl.r2_url || '';
+                } else {
+                    post.image = imageUrl || '';
+                }
                 console.log('Generated image:', imageUrl);
             } catch (error) {
                 console.error('Error generating image:', error);
@@ -2548,48 +2553,39 @@ function generateTitle(contentType, topics) {
     return titles[Math.floor(Math.random() * titles.length)];
 }
 
-/**
- * Generate an image for the post
- * @param {string} title - The post title
- * @param {string} contentType - The content type
- * @returns {Promise<string>} - The image URL
- */
 async function generateImage(title, contentType) {
-    // In a real implementation, this would call an image generation API
-    // For now, we'll return a placeholder image
-    const placeholders = {
-        recipe: [
-            'images/placeholder-recipe-1.jpg',
-            'images/placeholder-recipe-2.jpg',
-            'images/placeholder-recipe-3.jpg'
-        ],
-        review: [
-            'images/placeholder-restaurant-1.jpg',
-            'images/placeholder-restaurant-2.jpg',
-            'images/placeholder-restaurant-3.jpg'
-        ],
-        general: [
-            'images/placeholder-food-1.jpg',
-            'images/placeholder-food-2.jpg',
-            'images/placeholder-food-3.jpg'
-        ]
-    };
-    
-    // Select a placeholder based on content type
-    let images;
-    switch (contentType) {
-        case 'recipe':
-            images = placeholders.recipe;
-            break;
-        case 'review':
-            images = placeholders.review;
-            break;
-        default:
-            images = placeholders.general;
+    // Try to get an image from the cloud media library first
+    try {
+        const response = await fetch('/api/media?limit=50');
+        if (response.ok) {
+            const data = await response.json();
+            const media = data.media || [];
+            
+            // Filter to only cloud-hosted images (have r2_url)
+            const cloudImages = media.filter(item => {
+                const mimeType = item.mime_type || item.type || '';
+                const url = item.r2_url || item.url || '';
+                return mimeType.startsWith('image/') && url && !url.startsWith('data:');
+            });
+            
+            if (cloudImages.length > 0) {
+                // Return a random cloud image URL
+                const randomImage = cloudImages[Math.floor(Math.random() * cloudImages.length)];
+                return randomImage.r2_url || randomImage.url;
+            }
+        }
+    } catch (error) {
+        console.warn('Failed to fetch media library for image:', error);
     }
     
-    // Return a random placeholder
-    return Promise.resolve(images[Math.floor(Math.random() * images.length)]);
+    // Fallback to existing local images in the images folder
+    const fallbackImages = [
+        'images/restaurant-chilling-out-classy-lifestyle-reserved-2025-02-10-13-23-53-utc.jpg',
+        'images/restaurant-interior-2022-11-11-02-07-29-utc.jpg',
+        'images/chef-cooking-food-kitchen-restaurant-hotel-2022-12-16-23-47-49-utc.jpg'
+    ];
+    
+    return fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
 }
 
 /**
