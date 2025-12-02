@@ -192,12 +192,6 @@ async function loadAutomationPaths() {
     try {
         console.log('Loading automation paths from API...');
         
-        // Clear any stale localStorage data first
-        try {
-            localStorage.removeItem('aiAutomationPaths');
-            sessionStorage.removeItem('aiAutomationPaths');
-        } catch (e) { /* ignore */ }
-        
         const response = await fetch('/api/automation/paths');
         
         if (response.ok) {
@@ -234,6 +228,10 @@ async function loadAutomationPaths() {
             }));
             
             console.log(`Loaded ${automationPaths.length} paths from API`);
+            
+            // Save to localStorage for scheduled posts display
+            saveAutomationPathsToStorage();
+            
             renderAutomationPaths();
         } else {
             console.error('Failed to load from API, status:', response.status);
@@ -1455,11 +1453,24 @@ async function saveAutomationPath() {
 
 /**
  * Save automation paths to storage
- * NOTE: This function is deprecated - all saves now go through the API
- * Keeping it as a no-op for backward compatibility
+ * Saves to both localStorage (for scheduled posts display) and API (for backend scheduling)
  */
 function saveAutomationPathsToStorage() {
-    console.log('saveAutomationPathsToStorage: Syncing paths to cloud for backend scheduling');
+    console.log('saveAutomationPathsToStorage: Saving paths');
+    
+    // Save to localStorage for scheduled posts display
+    try {
+        localStorage.setItem('fooodis-ai-automation-paths', JSON.stringify(automationPaths));
+        localStorage.setItem('aiAutomationPaths', JSON.stringify(automationPaths));
+        console.log('Saved', automationPaths.length, 'paths to localStorage');
+        
+        // Dispatch event so scheduled posts can update
+        document.dispatchEvent(new CustomEvent('automationPathsUpdated', { 
+            detail: { paths: automationPaths } 
+        }));
+    } catch (e) {
+        console.error('Error saving to localStorage:', e);
+    }
     
     // Also sync to cloud KV for scheduled worker
     if (typeof window.syncAutomationToCloud === 'function') {
@@ -1469,13 +1480,6 @@ function saveAutomationPathsToStorage() {
         });
     }
     
-    // Clear localStorage to prevent stale data
-    try {
-        localStorage.removeItem('aiAutomationPaths');
-        sessionStorage.removeItem('aiAutomationPaths');
-    } catch (e) {
-        // Ignore errors
-    }
     return true;
 }
 
