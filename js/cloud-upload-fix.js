@@ -87,3 +87,45 @@
     
     console.log('☁️ Cloud Upload Fix: Ready - uploads will now go to R2');
 })();
+
+// Override deleteMediaItem to also delete from cloud
+window.deleteMediaItem = async function(id) {
+    console.log('🗑️ Deleting media item:', id);
+    
+    // First, try to delete from cloud API
+    try {
+        const response = await fetch(`/api/media/${id}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            console.log('✅ Deleted from cloud');
+        } else {
+            console.warn('⚠️ Cloud delete failed, trying to continue...');
+        }
+    } catch (error) {
+        console.error('❌ Cloud delete error:', error);
+    }
+    
+    // Also remove from localStorage
+    let mediaLibrary = JSON.parse(localStorage.getItem('fooodis-blog-media') || '[]');
+    const itemIndex = mediaLibrary.findIndex(item => item.id === id);
+    
+    if (itemIndex !== -1) {
+        mediaLibrary.splice(itemIndex, 1);
+        localStorage.setItem('fooodis-blog-media', JSON.stringify(mediaLibrary));
+    }
+    
+    // Refresh display
+    if (typeof filterMedia === 'function') {
+        filterMedia();
+    } else if (typeof renderMediaLibrary === 'function') {
+        renderMediaLibrary();
+    }
+    
+    if (typeof showNotification === 'function') {
+        showNotification('Media item deleted', 'success');
+    }
+};
+
+console.log('☁️ Cloud Delete Fix: Ready - deletes will now remove from R2');
