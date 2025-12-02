@@ -6,33 +6,19 @@
 (function() {
     console.log('Blog Card Stats: Initializing...');
     
-    // Run immediately and on DOM/window events to ensure it catches everything
-    addStatsToBlogCards();
-    
-    document.addEventListener('DOMContentLoaded', addStatsToBlogCards);
-    window.addEventListener('load', function() {
-        addStatsToBlogCards();
+    // Only run once when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(addStatsToBlogCards, 500);
+        });
+    } else {
         setTimeout(addStatsToBlogCards, 500);
-        setTimeout(addStatsToBlogCards, 1500);
-    });
+    }
     
-    // Set up a mutation observer to detect new blog posts
-    const observer = new MutationObserver(function(mutations) {
-        let newContentAdded = false;
-        
-        for (const mutation of mutations) {
-            if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                newContentAdded = true;
-                break;
-            }
-        }
-        
-        if (newContentAdded) {
-            setTimeout(addStatsToBlogCards, 100);
-        }
+    // Also run after window load for dynamically loaded posts
+    window.addEventListener('load', function() {
+        setTimeout(addStatsToBlogCards, 1000);
     });
-    
-    observer.observe(document.body, { childList: true, subtree: true });
 })();
 
 /**
@@ -52,11 +38,19 @@ function addStatsToBlogCards() {
         console.error('Blog Card Stats: Error loading stats', error);
     }
     
-    // First, remove any existing stats to avoid duplicates
-    document.querySelectorAll('.blog-card-stats').forEach(el => el.remove());
-    
-    // Add pure CSS for stats positioning
+    // Add CSS once
     addFixedPositionCSS();
+    
+    // Clean up any orphan stats that are not inside cards
+    document.querySelectorAll('.blog-card-stats').forEach(el => {
+        const parent = el.parentElement;
+        if (!parent || (!parent.classList.contains('blog-post-card') && 
+            !parent.classList.contains('blog-post') && 
+            !parent.classList.contains('blog-post-content') &&
+            !parent.classList.contains('blog-grid-item'))) {
+            el.remove();
+        }
+    });
     
     // Find all blog post cards - try multiple selectors
     const postCards = Array.from(document.querySelectorAll('.blog-post-card, .blog-post, .blog-grid-item'));
@@ -65,11 +59,15 @@ function addStatsToBlogCards() {
     
     // Process each post card
     postCards.forEach(card => {
+        // Skip if this card already has stats
+        if (card.querySelector('.blog-card-stats')) {
+            return;
+        }
+        
         // Check multiple possible ID attributes
         const postId = card.getAttribute('data-post-id') || card.getAttribute('data-id') || card.dataset.postId || card.dataset.id;
         if (!postId) {
-            console.log('Blog Card Stats: Card missing post ID', card.className);
-            return;
+            return; // Skip silently
         }
         
         // Get stats for this post
