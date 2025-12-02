@@ -9,6 +9,7 @@ const ALLOWED_MIME_TYPES = [
   'image/png',
   'image/gif',
   'image/webp',
+  'image/avif',
   'image/svg+xml',
   'video/mp4',
   'video/webm',
@@ -109,7 +110,7 @@ export async function onRequestPost(context) {
       const folder = formData.get('folder') || 'uploads';
       const altText = formData.get('alt_text') || '';
       const caption = formData.get('caption') || '';
-      const postId = formData.get('post_id') || null;
+      // post_id removed - not in schema
 
       if (!file || !(file instanceof File)) {
         return new Response(JSON.stringify({ error: "No file provided" }), {
@@ -174,8 +175,8 @@ export async function onRequestPost(context) {
         INSERT INTO media_library (
           id, filename, original_filename, mime_type, file_size,
           width, height, r2_key, r2_url, alt_text, caption, folder,
-          post_id, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         id,
         `${timestamp}-${id}.${ext}`,
@@ -189,7 +190,6 @@ export async function onRequestPost(context) {
         altText,
         caption,
         folder,
-        postId,
         now,
         now
       ).run();
