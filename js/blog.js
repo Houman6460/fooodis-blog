@@ -92,32 +92,13 @@ async function loadBlogData() {
             window.blogPosts = [];
         }
         
-        // Fetch categories from API
-        const categoriesResponse = await fetch('/api/categories');
-        if (categoriesResponse.ok) {
-            categories = await categoriesResponse.json();
-            console.log('Loaded', categories.length, 'categories from API');
-        } else {
-            categories = extractCategories(blogPosts);
-        }
+        // Always extract categories/subcategories/tags from posts to get accurate counts
+        // This ensures counts are always correct based on actual posts
+        categories = extractCategories(blogPosts);
+        subcategories = extractSubcategories(blogPosts);
+        tags = extractTags(blogPosts);
         
-        // Fetch subcategories from API
-        const subcategoriesResponse = await fetch('/api/subcategories');
-        if (subcategoriesResponse.ok) {
-            subcategories = await subcategoriesResponse.json();
-            console.log('Loaded', subcategories.length, 'subcategories from API');
-        } else {
-            subcategories = extractSubcategories(blogPosts);
-        }
-        
-        // Fetch tags from API
-        const tagsResponse = await fetch('/api/tags');
-        if (tagsResponse.ok) {
-            tags = await tagsResponse.json();
-            console.log('Loaded', tags.length, 'tags from API');
-        } else {
-            tags = extractTags(blogPosts);
-        }
+        console.log('Extracted', categories.length, 'categories,', subcategories.length, 'subcategories,', tags.length, 'tags from posts');
         
         // Extract featured posts from loaded data
         featuredPosts = blogPosts.filter(post => post.featured).map(post => post.id);
@@ -183,7 +164,13 @@ function extractTags(posts) {
     
     posts.forEach(post => {
         if (post.tags && Array.isArray(post.tags)) {
-            post.tags.forEach(tag => tagSet.add(tag));
+            post.tags.forEach(tag => {
+                // Handle both string tags and object tags
+                const tagName = typeof tag === 'object' ? (tag.name || tag.slug || String(tag)) : tag;
+                if (tagName && tagName !== '[object Object]') {
+                    tagSet.add(tagName);
+                }
+            });
         }
     });
     
@@ -683,7 +670,11 @@ function filterPostsBySubcategory(subcategory) {
 function filterPostsByTag(tag) {
     const filtered = blogPosts.filter(post => {
         if (post.tags && Array.isArray(post.tags)) {
-            return post.tags.includes(tag);
+            // Handle both string tags and object tags
+            return post.tags.some(t => {
+                const tagName = typeof t === 'object' ? (t.name || t.slug || String(t)) : t;
+                return tagName === tag;
+            });
         }
         return false;
     });

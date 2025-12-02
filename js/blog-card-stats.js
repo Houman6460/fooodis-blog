@@ -24,18 +24,44 @@
 /**
  * Add stats (views and ratings) to all blog post cards
  */
-function addStatsToBlogCards() {
+async function addStatsToBlogCards() {
     console.log('Blog Card Stats: Adding stats to blog post cards');
     
-    // Get view counts and ratings from localStorage
+    // Get view counts and ratings - prefer from blog posts data (loaded from API)
     let viewCounts = {};
     let ratings = {};
     
+    // Try to get stats from blog posts data first (from backend)
+    if (window.blogPosts && Array.isArray(window.blogPosts)) {
+        window.blogPosts.forEach(post => {
+            if (post.id) {
+                viewCounts[post.id] = post.views || 0;
+                ratings[post.id] = {
+                    average: post.rating_avg || 0,
+                    count: post.rating_count || 0
+                };
+            }
+        });
+    }
+    
+    // Merge with localStorage for any missing data
     try {
-        viewCounts = JSON.parse(localStorage.getItem('fooodis-blog-post-views') || '{}');
-        ratings = JSON.parse(localStorage.getItem('fooodis-blog-post-ratings') || '{}');
+        const localViews = JSON.parse(localStorage.getItem('fooodis-blog-post-views') || '{}');
+        const localRatings = JSON.parse(localStorage.getItem('fooodis-blog-post-ratings') || '{}');
+        
+        // Use localStorage values if backend doesn't have them
+        Object.keys(localViews).forEach(id => {
+            if (!viewCounts[id] || viewCounts[id] < localViews[id]) {
+                viewCounts[id] = localViews[id];
+            }
+        });
+        Object.keys(localRatings).forEach(id => {
+            if (!ratings[id] || !ratings[id].count) {
+                ratings[id] = localRatings[id];
+            }
+        });
     } catch (error) {
-        console.error('Blog Card Stats: Error loading stats', error);
+        console.error('Blog Card Stats: Error loading local stats', error);
     }
     
     // Add CSS once
