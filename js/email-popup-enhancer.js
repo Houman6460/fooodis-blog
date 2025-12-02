@@ -342,14 +342,21 @@ class EmailPopupEnhancer {
             popupCustomization.appendChild(enhancedUIContainer);
         }
         
-        // Move existing customization options to the basic tab
-        const basicSettings = document.querySelectorAll('.customization-options');
+        // Move existing customization options to the basic tab (move, don't clone)
+        const basicSettings = document.querySelectorAll('.popup-customization > form > .customization-options');
         const basicTab = document.getElementById('basic-tab');
         
         if (basicSettings.length && basicTab) {
             basicSettings.forEach(settings => {
-                basicTab.appendChild(settings.cloneNode(true));
+                // Move the element, not clone it (to avoid duplicates)
+                basicTab.appendChild(settings);
             });
+        }
+        
+        // Also move the trigger settings to basic tab
+        const triggerSettings = document.querySelector('.popup-customization > form > .popup-trigger-settings');
+        if (triggerSettings && basicTab) {
+            basicTab.appendChild(triggerSettings);
         }
     }
     

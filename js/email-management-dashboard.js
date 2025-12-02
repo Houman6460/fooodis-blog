@@ -1,29 +1,21 @@
 /**
  * Fooodis Email Management Dashboard
- * This script adds the email subscriber management section to the dashboard
+ * DISABLED - Dashboard.html now has the complete email section
+ * and email-subscribers-manager.js handles all functionality
+ * 
+ * This file is kept for reference but no longer creates duplicate sections.
  */
 
 document.addEventListener('DOMContentLoaded', function() {
     // Check if we're on the dashboard page
     if (!document.querySelector('.dashboard-container')) return;
     
-    // Check if email popup script has been initialized
-    if (typeof window.emailPopupSystem === 'undefined') {
-        console.log('Email popup system not initialized yet, waiting for it...');
-        // Wait for the email popup system to be initialized
-        setTimeout(function() {
-            // Initialize the email content (subscribers, etc.)
-            initializeEmailContent();
-        }, 1000);
-    } else {
-        // Initialize the email content immediately
-        initializeEmailContent();
-    }
+    // DISABLED - Section already exists in dashboard.html
+    // email-subscribers-manager.js now handles all email subscriber functionality
+    console.log('Email Management Dashboard: Using built-in HTML section (no dynamic creation)');
     
-    // Add event listener for the email nav item
+    // Only add nav item listener if needed
     addEmailNavItemEventListener();
-    
-    console.log('Email Management Dashboard initialized');
 });
 
 /**
