@@ -79,15 +79,15 @@ function addStatsToBlogCards() {
         statsDiv.className = 'blog-card-stats';
         statsDiv.setAttribute('data-post-id', postId);
         
-        // Set the HTML content
+        // Set the HTML content - use Font Awesome eye icon and Fooodis yellow (#e8f24c)
         statsDiv.innerHTML = `
             <div class="stats-view-count">
-                <span class="eye-icon" style="color: #FFD010; font-weight: bold; font-size: 16px;">👁️</span>
-                <span style="color: #FFD010; font-weight: bold;">${viewCount}</span>
+                <i class="fas fa-eye" style="color: #e8f24c; font-size: 14px;"></i>
+                <span style="color: #e8f24c; font-weight: bold;">${viewCount}</span>
             </div>
             <div class="stats-rating">
                 <div class="stats-stars">${getStarsHtml(postRating.average)}</div>
-                <span style="color: #FFD010;">(${postRating.count})</span>
+                <span style="color: #e8f24c;">(${postRating.count})</span>
             </div>
         `;
         
@@ -197,14 +197,14 @@ function getStarsHtml(rating) {
     const fullStars = Math.floor(rating);
     let starsHtml = '';
     
-    // Add full stars - using exact Fooodis yellow color
+    // Add full stars - using exact Fooodis yellow color #e8f24c
     for (let i = 0; i < fullStars; i++) {
-        starsHtml += '<span style="color: #FFD010;">★</span>';
+        starsHtml += '<span style="color: #e8f24c;">★</span>';
     }
     
     // Add empty stars
     for (let i = fullStars; i < 5; i++) {
-        starsHtml += '<span style="color: rgba(255,208,16,0.3);">★</span>';
+        starsHtml += '<span style="color: rgba(232,242,76,0.3);">★</span>';
     }
     
     return starsHtml;
@@ -237,6 +237,12 @@ function initializeViewTracking() {
                 
                 // Save to localStorage
                 localStorage.setItem('fooodis-blog-post-views', JSON.stringify(viewCounts));
+                
+                // Sync to backend API for Blog Statistics
+                fetch('/api/posts/' + postId + '/view', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                }).catch(err => console.warn('Could not sync view to backend:', err));
                 
                 // Update stats display
                 setTimeout(addStatsToBlogCards, 100);
@@ -313,14 +319,14 @@ function addRatingToModal(postId) {
             <div class="interactive-stars" style="display: flex; gap: 3px;">
     `;
     
-    // Add stars
+    // Add stars - use Fooodis yellow #e8f24c
     for (let i = 1; i <= 5; i++) {
         const isRated = postRating.userRating >= i;
         ratingHtml += `
             <span class="rating-star" data-rating="${i}" style="
                 font-size: 24px;
                 cursor: pointer;
-                color: ${isRated ? '#FFD010' : 'rgba(255,208,16,0.3)'};
+                color: ${isRated ? '#e8f24c' : 'rgba(232,242,76,0.3)'};
                 transition: transform 0.2s, color 0.2s;
             ">★</span>
         `;
@@ -332,7 +338,7 @@ function addRatingToModal(postId) {
         </div>
         <div class="rating-info" style="display: flex; gap: 10px; color: rgba(255,255,255,0.7); font-size: 14px;">
             <div class="average-rating">
-                <span style="color: #FFD010; font-weight: bold;">${postRating.average > 0 ? postRating.average.toFixed(1) : '-'}</span>
+                <span style="color: #e8f24c; font-weight: bold;">${postRating.average > 0 ? postRating.average.toFixed(1) : '-'}</span>
                 <span>average</span>
             </div>
             <div class="rating-count">
@@ -341,7 +347,7 @@ function addRatingToModal(postId) {
             </div>
         </div>
         <div class="rating-message" style="
-            color: #FFD010;
+            color: #e8f24c;
             font-size: 14px;
             height: 20px;
             margin-top: 5px;
@@ -379,10 +385,10 @@ function highlightStars(stars, rating) {
     stars.forEach((star, index) => {
         const starRating = parseInt(star.getAttribute('data-rating'));
         if (starRating <= rating) {
-            star.style.color = '#FFD010';
+            star.style.color = '#e8f24c';
             star.style.transform = 'scale(1.2)';
         } else {
-            star.style.color = 'rgba(255,208,16,0.3)';
+            star.style.color = 'rgba(232,242,76,0.3)';
             star.style.transform = 'scale(1)';
         }
     });
@@ -395,9 +401,9 @@ function resetStarHighlight(stars, userRating) {
     stars.forEach((star, index) => {
         const starRating = parseInt(star.getAttribute('data-rating'));
         if (starRating <= userRating) {
-            star.style.color = '#FFD010';
+            star.style.color = '#e8f24c';
         } else {
-            star.style.color = 'rgba(255,208,16,0.3)';
+            star.style.color = 'rgba(232,242,76,0.3)';
         }
         star.style.transform = 'scale(1)';
     });
@@ -450,6 +456,13 @@ function submitRating(postId, rating) {
     ratings[postId] = postRating;
     localStorage.setItem('fooodis-blog-post-ratings', JSON.stringify(ratings));
     
+    // Sync to backend API for Blog Statistics
+    fetch('/api/posts/' + postId + '/rating', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating: rating })
+    }).catch(err => console.warn('Could not sync rating to backend:', err));
+    
     console.log(`Blog Card Stats: Submitted rating ${rating} for post ${postId}, new average: ${postRating.average}`);
     
     // Update the UI
@@ -469,9 +482,9 @@ function submitRating(postId, rating) {
     stars.forEach(star => {
         const starRating = parseInt(star.getAttribute('data-rating'));
         if (starRating <= rating) {
-            star.style.color = '#FFD010';
+            star.style.color = '#e8f24c';
         } else {
-            star.style.color = 'rgba(255,208,16,0.3)';
+            star.style.color = 'rgba(232,242,76,0.3)';
         }
     });
     
