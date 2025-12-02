@@ -1,12 +1,16 @@
 /**
  * Blog Image Diversifier
- * Ensures each post displays a different image on the blog page
+ * DISABLED - Now using cloud-image-fallback.js for deterministic per-post images
+ * This script was causing issues by overriding cloud fallback images
  */
 
+// DISABLED - cloud-image-fallback.js now handles image selection deterministically
+/*
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Blog Image Diversifier loaded');
     setTimeout(diversifyBlogImages, 500); // Wait for blog.js to render posts
 });
+*/
 
 /**
  * Main function to diversify images on blog posts
@@ -170,19 +174,9 @@ function findUnusedImage(imagePool, usedImages, index) {
 
 /**
  * Update post image in localStorage
+ * DISABLED
  */
 function updatePostImageInStorage(postId, newImageUrl) {
-    try {
-        const blogPosts = JSON.parse(localStorage.getItem('fooodis-blog-posts') || '[]');
-        const postIndex = blogPosts.findIndex(post => post.id === postId);
-
-        if (postIndex !== -1) {
-            blogPosts[postIndex].image = newImageUrl;
-            blogPosts[postIndex].imageUrl = newImageUrl;
-            localStorage.setItem('fooodis-blog-posts', JSON.stringify(blogPosts));
-            console.log(`Updated post ${postId} image in storage: ${newImageUrl}`);
-        }
-    } catch (error) {
-        console.error('Error updating post image in storage:', error);
-    }
+    // DISABLED - no longer modifying localStorage
+    console.log('Blog Image Diversifier: updatePostImageInStorage disabled');
 }
