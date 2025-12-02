@@ -77,7 +77,7 @@ export async function onRequestPut(context) {
       'enabled', 'title', 'description', 'button_text', 'placeholder_text',
       'success_message', 'trigger_type', 'trigger_delay', 'trigger_scroll_percent',
       'show_once', 'show_every_days', 'background_color', 'text_color',
-      'button_color', 'popup_image', 'custom_css'
+      'button_color', 'popup_image', 'logo_image', 'custom_css'
     ];
 
     allowedFields.forEach(field => {

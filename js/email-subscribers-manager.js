@@ -632,11 +632,19 @@ class EmailSubscribersManager {
             });
         }
         
-        // Popup config form
+        // Popup config form - both form submit and save button click
         const configForm = document.getElementById('popupConfigForm');
         if (configForm) {
             configForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                await this.handlePopupConfigSave();
+            });
+        }
+        
+        // Save button click (in case it's type="button" not type="submit")
+        const saveBtn = document.querySelector('.email-customization-save');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', async () => {
                 await this.handlePopupConfigSave();
             });
         }
@@ -668,20 +676,75 @@ class EmailSubscribersManager {
      * Handle popup config save
      */
     async handlePopupConfigSave() {
+        const saveBtn = document.querySelector('.email-customization-save');
+        const originalText = saveBtn?.textContent || 'Save Configuration';
+        
+        // Show saving state
+        if (saveBtn) {
+            saveBtn.textContent = 'Saving...';
+            saveBtn.disabled = true;
+        }
+        
         const config = {
             enabled: document.getElementById('popupEnabled')?.checked || false,
             title: document.getElementById('popupTitle')?.value || '',
+            description: document.getElementById('popupDescription')?.value || '',
             button_text: document.getElementById('buttonText')?.value || 'Subscribe',
             placeholder_text: document.getElementById('placeholderText')?.value || '',
             success_message: document.getElementById('successMessage')?.value || '',
             trigger_type: document.getElementById('triggerType')?.value || 'time',
-            trigger_delay: parseInt(document.getElementById('timeDelay')?.value) || 5,
+            trigger_delay: parseInt(document.getElementById('popupDelay')?.value || document.getElementById('timeDelay')?.value) || 5,
             trigger_scroll_percent: parseInt(document.getElementById('scrollPercentage')?.value) || 50,
             show_once: document.getElementById('showOnce')?.checked || false,
-            show_every_days: parseInt(document.getElementById('showEveryDays')?.value) || 7
+            show_every_days: parseInt(document.getElementById('showEveryDays')?.value) || 7,
+            popup_image: document.getElementById('popupBackgroundImage')?.value || '',
+            background_color: document.getElementById('popupBackgroundColor')?.value || '',
+            button_color: '#e8f24c' // Always use Fooodis yellow
         };
         
-        await this.savePopupConfig(config);
+        try {
+            await this.savePopupConfig(config);
+            
+            // Show success
+            if (saveBtn) {
+                saveBtn.textContent = 'Saved!';
+                saveBtn.style.backgroundColor = '#4caf50';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.style.backgroundColor = '';
+                    saveBtn.disabled = false;
+                }, 2000);
+            }
+            
+            this.showNotification('Popup configuration saved successfully', 'success');
+        } catch (error) {
+            // Show error
+            if (saveBtn) {
+                saveBtn.textContent = 'Error!';
+                saveBtn.style.backgroundColor = '#f44336';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.style.backgroundColor = '';
+                    saveBtn.disabled = false;
+                }, 2000);
+            }
+            
+            this.showNotification('Failed to save configuration: ' + error.message, 'error');
+        }
+    }
+    
+    /**
+     * Show notification
+     */
+    showNotification(message, type = 'info') {
+        // Try global notification
+        if (window.showNotification) {
+            window.showNotification(message, type);
+            return;
+        }
+        
+        // Fallback to console
+        console.log(`[${type.toUpperCase()}] ${message}`);
     }
     
     // ========================================

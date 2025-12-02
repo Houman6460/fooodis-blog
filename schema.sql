@@ -689,8 +689,9 @@ CREATE TABLE IF NOT EXISTS email_popup_config (
     show_every_days INTEGER DEFAULT 7,
     background_color TEXT DEFAULT '#1e1e24',
     text_color TEXT DEFAULT '#e0e0e0',
-    button_color TEXT DEFAULT '#cce62a',
+    button_color TEXT DEFAULT '#e8f24c',
     popup_image TEXT,
+    logo_image TEXT,
     custom_css TEXT,
     updated_at INTEGER
 );

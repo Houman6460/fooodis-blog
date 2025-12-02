@@ -70,11 +70,12 @@ window.emailPopupSystem = window.emailPopupSystem || (function() {
         initializeTrigger();
         
         // Initialize dashboard management if on dashboard page
-        if (document.getElementById('email-management-section')) {
+        // Skip if EmailSubscribersManager is already handling this (avoids conflicts)
+        if (document.getElementById('email-management-section') && !window.emailSubscribersManager) {
             initializeDashboard();
         }
         
-        console.log('Email Collection System initialized');
+        console.log('Email Collection System initialized (localStorage mode)');
     }
     
     /**
