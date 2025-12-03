@@ -2938,8 +2938,11 @@
                 }
             }
             
-            // Second try: Find agent by department
+            // Second try: Find agent by department (case-insensitive, handle different formats)
             if (department) {
+                const normalizedDept = department.toLowerCase().replace(/[-_]/g, ' ');
+                console.log('🔍 Looking for department:', department, '→ normalized:', normalizedDept);
+                
                 if (window.chatbotManager) {
                     const departmentAgents = window.chatbotManager.getAgentsByDepartment?.(department) || [];
                     if (departmentAgents.length > 0) {
@@ -2948,13 +2951,15 @@
                         return;
                     }
                 }
-                // Try widget's availableAgents by department
+                // Try widget's availableAgents by department (case-insensitive matching)
                 if (this.availableAgents?.length > 0) {
-                    const deptAgent = this.availableAgents.find(a => 
-                        a.department === department || a.departmentId === department
-                    );
+                    const deptAgent = this.availableAgents.find(a => {
+                        const agentDept = (a.department || '').toLowerCase().replace(/[-_]/g, ' ');
+                        const agentDeptId = (a.departmentId || a.id || '').toLowerCase().replace(/[-_]/g, ' ');
+                        return agentDept === normalizedDept || agentDeptId === normalizedDept;
+                    });
                     if (deptAgent) {
-                        console.log('Auto-assigning from department (widget):', department);
+                        console.log('✅ Found agent by department (widget):', deptAgent.name, deptAgent.department);
                         this.assignSpecificAgent(deptAgent);
                         return;
                     }
