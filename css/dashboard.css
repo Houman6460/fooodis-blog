@@ -2761,3 +2761,17 @@ select option {
     height: 100%;
     object-fit: cover;
 }
+
+/* Agent Assistant Link */
+.agent-assistant-link {
+    font-size: 12px;
+    color: var(--primary-color, #e8f24c);
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.agent-assistant-link i {
+    font-size: 11px;
+}

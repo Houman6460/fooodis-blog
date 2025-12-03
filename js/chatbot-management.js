@@ -1321,12 +1321,12 @@ class ChatbotManager {
         assistantsGrid.innerHTML = this.assistants.map(assistant => `
             <div class="assistant-card" data-assistant-id="${assistant.id}">
                 <div class="assistant-header">
-                    <h4 class="assistant-name">${assistant.name}</h4>
-                    <span class="assistant-status ${assistant.status}">${assistant.status}</span>
+                    <h4 class="assistant-name">${assistant.name || 'Unnamed Assistant'}</h4>
+                    <span class="assistant-status ${assistant.status || 'inactive'}">${assistant.status || 'inactive'}</span>
                 </div>
-                <p class="assistant-description">${assistant.description}</p>
+                <p class="assistant-description">${assistant.description || 'No description set'}</p>
                 <div class="assistant-id">
-                    Assistant ID: ${assistant.assistantId || 'Not set'}
+                    Assistant ID: ${assistant.assistantId || assistant.openaiAssistantId || 'Not set'}
                 </div>
                 <div class="assistant-actions">
                     <button class="btn btn-secondary btn-sm" onclick="chatbotManager.editAssistant('${assistant.id}')">
@@ -3464,6 +3464,15 @@ class ChatbotManager {
             const introPreview = introText.length > 50 ? introText.substring(0, 50) + '...' : introText;
             const defaultAvatar = this.getDefaultAvatar();
             
+            // Find assigned assistant name
+            let assignedAssistantName = 'No AI Assistant';
+            if (agent.assignedAssistantId) {
+                const assistant = this.assistants.find(a => a.id === agent.assignedAssistantId);
+                if (assistant) {
+                    assignedAssistantName = assistant.name;
+                }
+            }
+            
             return `
                 <div class="agent-card" data-agent-id="${agent.id}">
                     <div class="agent-avatar">
@@ -3472,6 +3481,9 @@ class ChatbotManager {
                     <div class="agent-info">
                         <div class="agent-name">${agent.name || 'Unnamed Agent'}</div>
                         <div class="agent-personality">${agent.personality || 'No personality set'}</div>
+                        <div class="agent-assistant-link">
+                            <i class="fas fa-robot"></i> ${assignedAssistantName}
+                        </div>
                         <div class="agent-intro-preview">
                             ${introPreview}
                         </div>
@@ -3583,13 +3595,29 @@ class ChatbotManager {
         return this.assistants.filter(assistant => assistant.status === 'active');
     }
 
-    generateAssistantDropdownOptions() {
+    generateAssistantDropdownOptions(selectedId = null) {
         const activeAssistants = this.getActiveAssistants();
         let options = '<option value="">No AI Assistant (Manual Only)</option>';
         
         activeAssistants.forEach(assistant => {
-            options += `<option value="${assistant.id}">${assistant.name} (${assistant.assistantId || 'No ID'})</option>`;
+            const assistantId = assistant.assistantId || assistant.openaiAssistantId || '';
+            const displayId = assistantId ? assistantId.substring(0, 15) + '...' : 'No ID';
+            const isSelected = selectedId && (assistant.id === selectedId || assistantId === selectedId) ? 'selected' : '';
+            options += `<option value="${assistant.id}" ${isSelected}>${assistant.name} (${displayId})</option>`;
         });
+        
+        // Also include all assistants even if inactive, marked as such
+        const inactiveAssistants = this.assistants.filter(a => a.status !== 'active');
+        if (inactiveAssistants.length > 0) {
+            options += '<optgroup label="Inactive Assistants">';
+            inactiveAssistants.forEach(assistant => {
+                const assistantId = assistant.assistantId || assistant.openaiAssistantId || '';
+                const displayId = assistantId ? assistantId.substring(0, 15) + '...' : 'No ID';
+                const isSelected = selectedId && (assistant.id === selectedId || assistantId === selectedId) ? 'selected' : '';
+                options += `<option value="${assistant.id}" ${isSelected}>${assistant.name} (${displayId})</option>`;
+            });
+            options += '</optgroup>';
+        }
         
         return options;
     }
@@ -4576,7 +4604,7 @@ class ChatbotManager {
                 <div class="form-group">
                     <label for="agentAssistant">Assigned AI Assistant</label>
                     <select id="agentAssistant" class="form-control">
-                        ${this.generateAssistantDropdownOptions()}
+                        ${this.generateAssistantDropdownOptions(agent.assignedAssistantId)}
                     </select>
                     <small class="form-text text-muted">
                         Select an AI Assistant to handle automated responses for this agent. Leave unassigned for manual-only responses.
@@ -4584,11 +4612,11 @@ class ChatbotManager {
                 </div>
                 <div class="form-group">
                     <label for="agentIntroEn">Introduction (English)</label>
-                    <textarea id="agentIntroEn" rows="2" required>${agent.introduction.en}</textarea>
+                    <textarea id="agentIntroEn" rows="2" required>${agent.introduction?.en || ''}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="agentIntroSv">Introduction (Swedish)</label>
-                    <textarea id="agentIntroSv" rows="2" required>${agent.introduction.sv}</textarea>
+                    <textarea id="agentIntroSv" rows="2" required>${agent.introduction?.sv || ''}</textarea>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
