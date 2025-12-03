@@ -1242,7 +1242,38 @@
                 skipButtonSv.addEventListener('click', () => this.skipRegistration());
             }
 
+            // Quick reply button click handler (delegated)
+            const messagesContainer = document.getElementById('chatbot-messages');
+            if (messagesContainer) {
+                messagesContainer.addEventListener('click', (e) => {
+                    const quickReplyBtn = e.target.closest('.chatbot-quick-reply');
+                    if (quickReplyBtn) {
+                        const reply = quickReplyBtn.dataset.reply;
+                        console.log('🔘 Quick reply clicked:', reply);
+                        this.handleQuickReply(reply);
+                    }
+                });
+            }
+
             // Dropdown setup moved to showRegistrationForm() for proper timing
+        },
+        
+        // Handle quick reply button clicks
+        handleQuickReply: function(intentId) {
+            // Get the formatted label for display
+            const label = intentId
+                .replace(/-/g, ' ')
+                .replace(/_/g, ' ')
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+            
+            // Send the intent as a message
+            const messageInput = document.getElementById('chatbot-message-input');
+            if (messageInput) {
+                messageInput.value = label;
+                this.sendMessage();
+            }
         },
 
         toggleChat: function() {

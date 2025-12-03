@@ -104,16 +104,50 @@
             return questionPrompts.some(prompt => lowerMessage.includes(prompt));
         },
 
-        // Generate quick reply buttons
-        generateQuickReplyButtons: function() {
-            return `
-                <div class="chatbot-quick-replies">
-                    <button class="chatbot-quick-reply" data-reply="menu">Menu</button>
-                    <button class="chatbot-quick-reply" data-reply="hours">Hours</button>
-                    <button class="chatbot-quick-reply" data-reply="location">Location</button>
-                    <button class="chatbot-quick-reply" data-reply="contact">Contact</button>
-                </div>
-            `;
+        // Generate quick reply buttons from intents or use defaults
+        generateQuickReplyButtons: function(intents) {
+            // Use dynamic intents if provided, otherwise use defaults
+            const buttonIntents = intents || this.getDefaultIntents();
+            
+            if (!buttonIntents || buttonIntents.length === 0) {
+                return '';
+            }
+            
+            const buttons = buttonIntents.map(intent => {
+                const label = this.formatIntentLabel(intent);
+                return `<button class="chatbot-quick-reply" data-reply="${intent}">${label}</button>`;
+            }).join('');
+            
+            return `<div class="chatbot-quick-replies">${buttons}</div>`;
+        },
+        
+        // Format intent ID to human-readable label
+        formatIntentLabel: function(intent) {
+            // Convert intent-id format to readable label
+            return intent
+                .replace(/-/g, ' ')
+                .replace(/_/g, ' ')
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        },
+        
+        // Get default intents (fallback)
+        getDefaultIntents: function() {
+            // Try to get intents from node flow
+            if (window.fooodisWidget?.nodeFlow?.nodes) {
+                const intentNode = window.fooodisWidget.nodeFlow.nodes.find(n => n.type === 'intent');
+                if (intentNode?.data?.intents) {
+                    return intentNode.data.intents;
+                }
+            }
+            // Fallback to hardcoded defaults
+            return ['menu-help', 'ordering-help', 'technical-support', 'billing-question'];
+        },
+        
+        // Set current intents (called by chatbot widget)
+        setCurrentIntents: function(intents) {
+            this.currentIntents = intents;
         },
 
         // Generate rating buttons
