@@ -30,6 +30,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     pointer-events: auto;
     transition: background-color 0.2s ease;
+    -webkit-user-select: none;
     user-select: none;
     transform-origin: center;
 }
@@ -274,6 +275,7 @@
     border: 2px solid #555;
     border-radius: 8px;
     cursor: move;
+    -webkit-user-select: none;
     user-select: none;
     z-index: 10;
 }
@@ -406,6 +408,7 @@
 /* Canvas interaction styles */
 .node-flow-canvas {
     cursor: default;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -429,10 +432,10 @@
 
 /* Prevent text selection during node operations */
 .node-flow-canvas * {
-    user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    user-select: none;
 }
 
 @keyframes pulse {

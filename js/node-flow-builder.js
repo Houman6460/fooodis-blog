@@ -289,13 +289,13 @@ class NodeFlowBuilder {
     }
 
     setupEventListeners() {
-        // Canvas zoom controls
+        // Canvas zoom controls - handle clicks on icon inside button too
         document.addEventListener('click', (e) => {
-            if (e.target.id === 'canvas-zoom-in') {
+            if (e.target.id === 'canvas-zoom-in' || e.target.closest('#canvas-zoom-in')) {
                 this.zoomIn();
-            } else if (e.target.id === 'canvas-zoom-out') {
+            } else if (e.target.id === 'canvas-zoom-out' || e.target.closest('#canvas-zoom-out')) {
                 this.zoomOut();
-            } else if (e.target.id === 'canvas-zoom-reset') {
+            } else if (e.target.id === 'canvas-zoom-reset' || e.target.closest('#canvas-zoom-reset')) {
                 this.resetZoom();
             }
         });
@@ -884,13 +884,13 @@ class NodeFlowBuilder {
                 return;
             }
             
-            // Calculate midpoint of connection relative to canvas
-            const startX = fromNode.position.x + 150; // Node center
-            const startY = fromNode.position.y + 40;
-            const endX = toNode.position.x + 150;
-            const endY = toNode.position.y + 40;
+            // Calculate midpoint of connection line (matches createConnectionElement)
+            const startX = fromNode.position.x + 150; // Right side of from node
+            const startY = fromNode.position.y + 50;
+            const endX = toNode.position.x; // Left side of to node
+            const endY = toNode.position.y + 50;
             
-            // Position relative to canvas container (not viewport)
+            // Position at midpoint of the connection line
             const midX = (startX + endX) / 2;
             const midY = (startY + endY) / 2;
             
