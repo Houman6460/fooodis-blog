@@ -121,8 +121,28 @@ class EmailPopupDisplay {
         popup.className = 'email-overlay';
         popup.id = 'emailPopupOverlay';
         
+        const layout = this.config.layout || 'standard';
+        const hasImage = this.config.image && this.config.image.enabled && this.config.image.url;
+        
+        console.log('EmailPopupDisplay: Layout and Image', {
+            layout: layout,
+            hasImage: hasImage,
+            imageUrl: this.config.image?.url
+        });
+        
+        // Build image HTML
+        const imageHtml = hasImage ? `
+            <div class="popup-image-container">
+                <img src="${this.config.image.url}" alt="" class="popup-image">
+            </div>
+        ` : '';
+        
+        // Text background style
+        const textBgStyle = this.config.colors.textBackground ? 
+            `background-color:${this.config.colors.textBackground};padding:15px;border-radius:6px;` : '';
+        
         let popupContent = `
-            <div class="email-popup layout-${this.config.layout}">
+            <div class="email-popup layout-${layout}">
                 <div class="email-popup-header">
                     <h2 class="email-popup-title">${this.config.customText.title}</h2>
                     <button class="email-popup-close">&times;</button>
@@ -130,24 +150,16 @@ class EmailPopupDisplay {
                 <div class="email-popup-content">
         `;
         
-        // Add image if enabled
-        console.log('EmailPopupDisplay: Image check', {
-            hasImageConfig: !!this.config.image,
-            imageEnabled: this.config.image?.enabled,
-            imageUrl: this.config.image?.url
-        });
-        if (this.config.image && this.config.image.enabled && this.config.image.url) {
-            console.log('EmailPopupDisplay: Adding image to popup');
-            popupContent += `
-                <div class="popup-image-container">
-                    <img src="${this.config.image.url}" alt="" class="popup-image">
-                </div>
-            `;
+        // For image-left, image-top: image comes first
+        // For image-right, image-bottom: image comes after text
+        // For image-background: image is positioned absolute
+        if (layout === 'image-left' || layout === 'image-top' || layout === 'image-background') {
+            popupContent += imageHtml;
         }
         
         // Add text container
         popupContent += `
-                <div class="popup-text-container" style="${this.config.colors.textBackground ? 'background-color:' + this.config.colors.textBackground + ';padding:15px;border-radius:6px;' : ''}">
+                <div class="popup-text-container" style="${textBgStyle}">
                     <p class="email-popup-description">${this.config.customText.description}</p>
         `;
         
@@ -190,6 +202,14 @@ class EmailPopupDisplay {
                         </button>
                     </form>
                 </div>
+        `;
+        
+        // For image-right and image-bottom: add image after text
+        if (layout === 'image-right' || layout === 'image-bottom') {
+            popupContent += imageHtml;
+        }
+        
+        popupContent += `
             </div>
             <div class="email-popup-footer">
                 <p>We respect your privacy. Unsubscribe at any time.</p>
