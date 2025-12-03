@@ -3786,15 +3786,20 @@ class ChatbotManager {
                 });
             }
 
-            // If no valid assistant found, return error instead of static fallback
-            console.log('❌ AI ASSISTANT DEBUG - No valid assistant found for agent:', agent.name);
-            return {
-                success: false,
-                message: language === 'sv' 
-                    ? 'Jag har för närvarande tekniska problem. Vänligen försök igen om ett ögonblick.'
-                    : 'I\'m experiencing technical difficulties right now. Please try again in a moment.',
-                error: 'No valid assistant configuration found'
+            // If no valid assistant found, use agent's system prompt directly with Chat API
+            console.log('💡 AI ASSISTANT DEBUG - No specific assistant, using agent system prompt directly');
+            
+            // Create a virtual assistant from agent config
+            const virtualAssistant = {
+                id: agent.id || 'agent-fallback',
+                name: agent.name || 'Support Agent',
+                systemPrompt: agent.systemPrompt || `You are ${agent.name || 'a helpful support agent'} for Fooodis. Help customers with their questions in a friendly and professional manner.`,
+                model: agent.model || 'gpt-4',
+                personality: agent.personality || 'Friendly and helpful'
             };
+            
+            console.log('🔧 AI ASSISTANT DEBUG - Using virtual assistant:', virtualAssistant.name);
+            return await this.callOpenAIChat(message, virtualAssistant, null, language, conversationId);
             
         } catch (error) {
             console.error('Error generating agent response:', error);
@@ -3956,12 +3961,22 @@ class ChatbotManager {
     async callOpenAIChat(message, assistant, apiKey, language, conversationId) {
         try {
             const systemPrompt = assistant.systemPrompt || 'You are a helpful assistant.';
-            const model = localStorage.getItem('openai-model') || 'gpt-4';
+            const model = localStorage.getItem('openai-model') || assistant.model || 'gpt-4';
+            
+            // Get API key from multiple sources if not provided
+            let key = apiKey || localStorage.getItem('openai-api-key') || 
+                      localStorage.getItem('OPENAI_API_KEY') ||
+                      this.config?.openaiApiKey;
+            
+            if (!key) {
+                console.error('❌ No OpenAI API key available');
+                return this.enhancedFallbackResponse(message, assistant, language, conversationId);
+            }
 
             const response = await fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${apiKey}`,
+                    'Authorization': `Bearer ${key}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
