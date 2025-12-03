@@ -21,6 +21,14 @@ function fixBlogImages() {
     let fixedCount = 0;
     
     allImages.forEach(img => {
+        // SKIP blog post images - they use the cloud fallback system in blog.js
+        if (img.closest('.blog-post-card, .blog-post-image, .modal-image, .blog-banner')) {
+            return;
+        }
+        if (img.hasAttribute('data-post-id')) {
+            return;
+        }
+        
         const originalSrc = img.src;
         let newSrc = originalSrc;
         
