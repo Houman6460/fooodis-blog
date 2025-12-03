@@ -177,5 +177,93 @@ document.addEventListener('DOMContentLoaded', function() {
                 saveButton.parentNode.appendChild(testButton);
             }
         }
+        
+        // Logo Settings Handlers
+        setupLogoSettings();
     }, 1000);
+    
+    // Logo settings functionality
+    function setupLogoSettings() {
+        const logoEnabled = document.getElementById('popupLogoEnabled');
+        const logoSizeSlider = document.getElementById('popupLogoSize');
+        const logoSizeValue = document.getElementById('logoSizeValue');
+        const logoPreviewImg = document.querySelector('.logo-preview-img');
+        const positionBtns = document.querySelectorAll('.position-btn');
+        
+        // Load saved logo settings
+        const savedLogoSettings = JSON.parse(localStorage.getItem('fooodis-popup-logo') || '{}');
+        
+        // Apply saved settings
+        if (logoEnabled) {
+            logoEnabled.checked = savedLogoSettings.enabled !== false;
+        }
+        if (logoSizeSlider && savedLogoSettings.size) {
+            logoSizeSlider.value = savedLogoSettings.size;
+            if (logoSizeValue) logoSizeValue.textContent = savedLogoSettings.size;
+            if (logoPreviewImg) logoPreviewImg.style.maxWidth = savedLogoSettings.size + 'px';
+        }
+        if (positionBtns.length && savedLogoSettings.position) {
+            positionBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.position === savedLogoSettings.position) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        // Logo toggle handler
+        if (logoEnabled) {
+            logoEnabled.addEventListener('change', function() {
+                saveLogoSettings();
+            });
+        }
+        
+        // Logo size slider handler
+        if (logoSizeSlider) {
+            logoSizeSlider.addEventListener('input', function() {
+                const size = this.value;
+                if (logoSizeValue) logoSizeValue.textContent = size;
+                if (logoPreviewImg) logoPreviewImg.style.maxWidth = size + 'px';
+                saveLogoSettings();
+            });
+        }
+        
+        // Position button handlers
+        positionBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                positionBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                saveLogoSettings();
+            });
+        });
+        
+        function saveLogoSettings() {
+            const settings = {
+                enabled: logoEnabled ? logoEnabled.checked : true,
+                size: logoSizeSlider ? parseInt(logoSizeSlider.value) : 100,
+                position: document.querySelector('.position-btn.active')?.dataset.position || 'center'
+            };
+            localStorage.setItem('fooodis-popup-logo', JSON.stringify(settings));
+            
+            // Also save to API
+            saveLogoSettingsToAPI(settings);
+        }
+        
+        async function saveLogoSettingsToAPI(settings) {
+            try {
+                await fetch('/api/subscribers/popup-config', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        logo_enabled: settings.enabled,
+                        logo_size: settings.size,
+                        logo_position: settings.position
+                    })
+                });
+                console.log('Logo settings saved to API:', settings);
+            } catch (error) {
+                console.error('Error saving logo settings:', error);
+            }
+        }
+    }
 });

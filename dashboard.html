@@ -1791,15 +1791,40 @@
                                     <h4 class="email-config-section-title">Basic Configuration</h4>
                                 </div>
 
-                                <div class="customization-option">
-                                    <label class="option-label" for="popupLogoImage">Logo Image</label>
-                                    <div class="option-input-group">
-                                        <input type="text" id="popupLogoImage" class="option-input" placeholder="Logo image URL">
-                                        <button type="button" class="email-media-select-button" data-target-input="popupLogoImage">
-                                            <i class="fas fa-images"></i> Select Image
-                                        </button>
+                                <div class="customization-option logo-settings-section">
+                                    <div class="logo-header-row">
+                                        <label class="option-label">Fooodis Logo</label>
+                                        <div class="toggle-switch-inline">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="popupLogoEnabled">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <span class="toggle-label-text">Show Logo</span>
+                                        </div>
                                     </div>
-                                    <div class="image-preview logo-preview"></div>
+                                    <div class="logo-preview-box" id="logoPreviewBox">
+                                        <img src="css/images/logo.svg" alt="Fooodis Logo" class="logo-preview-img">
+                                    </div>
+                                    <div class="logo-controls">
+                                        <div class="logo-position-control">
+                                            <label class="control-label">Position</label>
+                                            <div class="position-buttons">
+                                                <button type="button" class="position-btn" data-position="left" title="Left">
+                                                    <i class="fas fa-align-left"></i>
+                                                </button>
+                                                <button type="button" class="position-btn active" data-position="center" title="Center">
+                                                    <i class="fas fa-align-center"></i>
+                                                </button>
+                                                <button type="button" class="position-btn" data-position="right" title="Right">
+                                                    <i class="fas fa-align-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="logo-size-control">
+                                            <label class="control-label">Size: <span id="logoSizeValue">100</span>px</label>
+                                            <input type="range" id="popupLogoSize" min="40" max="200" value="100" class="size-slider">
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="customization-option">
