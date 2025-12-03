@@ -163,10 +163,14 @@ export async function onRequestPost(context) {
         
         if (historyResult?.results) {
           // Reverse to get chronological order and format for OpenAI
-          conversationHistory = historyResult.results.reverse().map(msg => ({
-            role: msg.role === 'assistant' ? 'assistant' : 'user',
-            content: msg.content
-          }));
+          // Filter out any messages with null/undefined content
+          conversationHistory = historyResult.results
+            .filter(msg => msg.content && msg.content.trim() !== '')
+            .reverse()
+            .map(msg => ({
+              role: msg.role === 'assistant' ? 'assistant' : 'user',
+              content: msg.content
+            }));
         }
       } catch (historyError) {
         console.error('Error fetching conversation history:', historyError);
@@ -193,9 +197,19 @@ export async function onRequestPost(context) {
           tokensUsed = response.tokens || 0;
         }
       } catch (error) {
-        console.error('OpenAI API error:', error);
+        console.error('OpenAI API error:', error.message);
+        console.error('OpenAI API error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack?.substring(0, 200)
+        });
         aiResponse = getErrorResponse(language);
       }
+    } else {
+      console.warn('No API key available - using fallback response');
+      aiResponse = language === 'sv' 
+        ? 'Hej! Hur kan jag hjälpa dig idag?'
+        : 'Hello! How can I help you today?';
     }
 
     const responseTime = Date.now() - startTime;
