@@ -93,6 +93,31 @@ class EmailPopupDisplay {
                     animation: this.config.animation
                 });
                 
+                // Load logo settings from cloud
+                if (apiConfig.logo_enabled !== undefined) {
+                    this.config.logo.enabled = apiConfig.logo_enabled;
+                }
+                if (apiConfig.logo_size) {
+                    this.config.logo.size = apiConfig.logo_size;
+                }
+                if (apiConfig.logo_position) {
+                    this.config.logo.position = apiConfig.logo_position;
+                }
+                
+                // Also try localStorage for logo settings
+                const logoSettings = JSON.parse(localStorage.getItem('fooodis-popup-logo') || '{}');
+                if (logoSettings.enabled !== undefined && apiConfig.logo_enabled === undefined) {
+                    this.config.logo.enabled = logoSettings.enabled;
+                }
+                if (logoSettings.size && !apiConfig.logo_size) {
+                    this.config.logo.size = logoSettings.size;
+                }
+                if (logoSettings.position && !apiConfig.logo_position) {
+                    this.config.logo.position = logoSettings.position;
+                }
+                
+                console.log('EmailPopupDisplay: Loaded logo settings', this.config.logo);
+                
                 // Also try to load settings from localStorage (set by enhancer)
                 const savedConfig = localStorage.getItem('fooodis-email-popup-config');
                 if (savedConfig) {
@@ -171,6 +196,11 @@ class EmailPopupDisplay {
             },
             animation: 'spinner',
             template: 'newsletter',
+            logo: {
+                enabled: true,
+                size: 100,
+                position: 'center'
+            },
             customText: {
                 title: 'Subscribe to Our Newsletter',
                 description: 'Stay updated with our latest news and offers.',
@@ -219,8 +249,19 @@ class EmailPopupDisplay {
         // Popup background color
         const popupBgColor = this.config.colors.background || '#252830';
         
+        // Logo HTML
+        const logoEnabled = this.config.logo && this.config.logo.enabled;
+        const logoSize = this.config.logo?.size || 100;
+        const logoPosition = this.config.logo?.position || 'center';
+        const logoHtml = logoEnabled ? `
+            <div class="popup-logo-container" style="text-align: ${logoPosition}; padding: 15px 20px 0;">
+                <img src="/images/Artboard17copy9.svg" alt="Fooodis" class="popup-logo" style="width: ${logoSize}px; height: auto;">
+            </div>
+        ` : '';
+        
         let popupContent = `
             <div class="email-popup layout-${layout}" style="background-color: ${popupBgColor};">
+                ${logoHtml}
                 <div class="email-popup-header">
                     <h2 class="email-popup-title">${this.config.customText.title}</h2>
                     <button class="email-popup-close">&times;</button>
