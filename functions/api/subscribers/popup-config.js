@@ -20,6 +20,7 @@ export async function onRequestGet(context) {
   try {
     // Ensure new columns exist (safe migration) - wrap each in try/catch
     const migrations = [
+      "ALTER TABLE email_popup_config ADD COLUMN popup_image TEXT",
       "ALTER TABLE email_popup_config ADD COLUMN popup_image_enabled INTEGER DEFAULT 0",
       "ALTER TABLE email_popup_config ADD COLUMN popup_layout TEXT DEFAULT 'standard'"
     ];

@@ -87,13 +87,44 @@ class EmailPopupEnhancer {
     }
     
     init() {
-        this.loadConfig();
-        this.createEnhancedUI();
-        this.bindEvents();
+        this.loadConfigFromAPI().then(() => {
+            this.createEnhancedUI();
+            this.bindEvents();
+        });
     }
     
-    loadConfig() {
-        // Load saved configuration from localStorage if available
+    async loadConfigFromAPI() {
+        try {
+            // First try to load from API (source of truth)
+            const response = await fetch('/api/subscribers/popup-config');
+            if (response.ok) {
+                const apiConfig = await response.json();
+                console.log('EmailPopupEnhancer: Loaded config from API', apiConfig);
+                
+                // Map API fields to config
+                if (apiConfig.popup_image) {
+                    this.config.image.url = apiConfig.popup_image;
+                }
+                if (apiConfig.popup_image_enabled !== undefined) {
+                    this.config.image.enabled = Boolean(apiConfig.popup_image_enabled);
+                }
+                if (apiConfig.popup_layout) {
+                    this.config.layout = apiConfig.popup_layout;
+                }
+                
+                // Also cache to localStorage
+                localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
+                return;
+            }
+        } catch (error) {
+            console.warn('EmailPopupEnhancer: Could not load from API, using localStorage', error);
+        }
+        
+        // Fallback to localStorage
+        this.loadConfigFromLocalStorage();
+    }
+    
+    loadConfigFromLocalStorage() {
         const savedConfig = localStorage.getItem('fooodis-email-popup-config');
         if (savedConfig) {
             try {
@@ -822,9 +853,21 @@ class EmailPopupEnhancer {
                 this.config.image.url = url;
                 this.config.image.name = name;
                 this.config.image.type = 'image/jpeg';
+                this.config.image.enabled = true; // Auto-enable when image is selected
+                
+                // Update the checkbox state
+                const imageToggle = document.getElementById('imageEnabled');
+                if (imageToggle) {
+                    imageToggle.checked = true;
+                }
                 
                 this.updateImagePreview();
                 this.saveConfig();
+                console.log('Image selected and saving:', {
+                    url: this.config.image.url,
+                    enabled: this.config.image.enabled,
+                    layout: this.config.layout
+                });
                 this.showNotification('Image selected: ' + name);
                 
                 modal.remove();
