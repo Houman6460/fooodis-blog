@@ -3001,8 +3001,11 @@
             this.currentNode = null;
             console.log('✅ Handoff complete - scenario mode disabled, now in agent chat mode');
             
-            // Update UI to show current agent
-            this.updateAgentDisplay();
+            // Update UI to show current agent name in header
+            const agentNameElement = document.querySelector('.chatbot-header .agent-name, .chatbot-header h3');
+            if (agentNameElement && this.currentAgent) {
+                agentNameElement.textContent = this.currentAgent.name;
+            }
             
             // Human-like delay for agent typing their introduction
             const typingDelay = this.calculateAgentTypingDelay();
