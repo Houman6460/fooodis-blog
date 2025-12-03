@@ -1375,8 +1375,13 @@
                 agentActive: !!this.currentAgent
             });
             
-            // Reset inactivity timer when user sends message
+            // Reset inactivity timer on every user message
             this.resetInactivityTimer();
+            
+            // If user was in end flow but sends a new message, allow them to continue
+            if (this.isInEndFlow) {
+                this.allowContinueAfterEndCheck();
+            }
             
             // Check if user wants to finish conversation and handle intelligently
             if (this.handleUserFinishMessage(message)) {
@@ -3504,18 +3509,28 @@
             }
         },
 
-        // Reset inactivity timer - now integrated with ChatbotRatingSystem
+        // Inactivity timer - triggers end check after 2 minutes of no user message
         resetInactivityTimer: function() {
-            if (window.ChatbotRatingSystem) {
-                window.ChatbotRatingSystem.resetInactivity();
+            // Clear existing timer
+            if (this.inactivityTimer) {
+                clearTimeout(this.inactivityTimer);
+            }
+            
+            // Only start timer if conversation has actually started (after handoff)
+            if (this.handoffComplete && this.conversationPhase === 'agent') {
+                this.inactivityTimer = setTimeout(() => {
+                    console.log('⏰ Inactivity timer triggered (2 minutes)');
+                    this.triggerEndOfConversationCheck();
+                }, 120000); // 2 minutes
             }
         },
 
-        // Trigger end-of-conversation check
         triggerEndOfConversationCheck: function() {
-            if (this.isInEndFlow) return;
+            // Allow re-triggering if user continued conversation after previous end check
+            if (this.isInEndFlow && !this.userContinuedAfterEndCheck) return;
             
             this.isInEndFlow = true;
+            this.userContinuedAfterEndCheck = false;
             const checkMessage = this.getLocalizedEndCheckMessage();
             this.addMessage(checkMessage, 'assistant');
             
@@ -3523,6 +3538,21 @@
             this.endCheckTimer = setTimeout(() => {
                 this.sendThankYouAndRating();
             }, 40000);
+        },
+        
+        // Allow user to continue chatting after end check message
+        allowContinueAfterEndCheck: function() {
+            if (this.isInEndFlow) {
+                console.log('📝 User continuing after end check - resetting flow');
+                this.isInEndFlow = false;
+                this.userContinuedAfterEndCheck = true;
+                
+                // Clear the end check timer
+                if (this.endCheckTimer) {
+                    clearTimeout(this.endCheckTimer);
+                    this.endCheckTimer = null;
+                }
+            }
         },
 
         // Get localized end-of-conversation check message
