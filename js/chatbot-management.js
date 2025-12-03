@@ -1106,6 +1106,11 @@ class ChatbotManager {
 
         // Load chatbot avatar
         this.loadChatbotAvatar();
+        
+        // Show agents container and render agents if enabled
+        if (this.settings.enableMultipleAgents) {
+            this.toggleMultipleAgents(true);
+        }
     }
 
     saveSettings() {
@@ -3200,7 +3205,14 @@ class ChatbotManager {
     toggleMultipleAgents(enabled) {
         const agentsContainer = document.getElementById('agentsContainer');
         if (agentsContainer) {
-            agentsContainer.style.display = enabled ? 'block' : 'none';
+            // Remove/add hidden class instead of using style.display (hidden uses !important)
+            if (enabled) {
+                agentsContainer.classList.remove('hidden');
+                agentsContainer.style.display = 'block';
+            } else {
+                agentsContainer.classList.add('hidden');
+                agentsContainer.style.display = 'none';
+            }
         }
 
         // Update the checkbox state to match the enabled parameter

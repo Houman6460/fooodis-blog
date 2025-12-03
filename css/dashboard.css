@@ -2451,3 +2451,94 @@ body.dashboard-body {
         width: 90%;
     }
 }
+
+/* Multiple Agents Section */
+.agents-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--dark-border, #32363f);
+}
+
+.agents-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--primary-color, #e8f24c);
+}
+
+.agents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.agents-list .agent-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--darker-bg, #171a1f);
+    border: 1px solid var(--dark-border, #32363f);
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.2s ease;
+}
+
+.agents-list .agent-card:hover {
+    border-color: var(--primary-color, #e8f24c);
+    transform: translateY(-2px);
+}
+
+.agents-list .agent-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.agents-list .agent-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.agents-list .agent-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.agents-list .agent-name {
+    font-weight: 600;
+    color: var(--text-light, #ffffff);
+    margin-bottom: 4px;
+}
+
+.agents-list .agent-personality {
+    font-size: 0.85rem;
+    color: var(--primary-color, #e8f24c);
+    margin-bottom: 4px;
+}
+
+.agents-list .agent-intro-preview {
+    font-size: 0.8rem;
+    color: var(--text-muted, #a0a0a0);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.agents-list .agent-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+#agentsContainer {
+    margin-top: 20px;
+    padding: 20px;
+    background: var(--dark-card, #252830);
+    border-radius: 10px;
+    border: 1px solid var(--dark-border, #32363f);
+}
