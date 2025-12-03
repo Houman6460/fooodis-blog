@@ -3453,29 +3453,40 @@ class ChatbotManager {
     renderAgents() {
         const agentsList = document.getElementById('agentsList');
         if (!agentsList) return;
+        
+        if (!this.settings.agents || this.settings.agents.length === 0) {
+            agentsList.innerHTML = '<div class="no-agents">No agents configured. Click "Add Agent" to create one.</div>';
+            return;
+        }
 
-        agentsList.innerHTML = this.settings.agents.map(agent => `
-            <div class="agent-card" data-agent-id="${agent.id}">
-                <div class="agent-avatar">
-                    <img src="${agent.avatar || this.getDefaultAvatar()}" alt="${agent.name}" onerror="this.src='${this.getDefaultAvatar()}'" />
-                </div>
-                <div class="agent-info">
-                    <div class="agent-name">${agent.name}</div>
-                    <div class="agent-personality">${agent.personality}</div>
-                    <div class="agent-intro-preview">
-                        EN: ${agent.introduction.en.substring(0, 50)}...
+        agentsList.innerHTML = this.settings.agents.map(agent => {
+            const introText = agent.introduction?.en || agent.introduction?.sv || 'No introduction set';
+            const introPreview = introText.length > 50 ? introText.substring(0, 50) + '...' : introText;
+            const defaultAvatar = this.getDefaultAvatar();
+            
+            return `
+                <div class="agent-card" data-agent-id="${agent.id}">
+                    <div class="agent-avatar">
+                        <img src="${agent.avatar || defaultAvatar}" alt="${agent.name}" onerror="this.src='${defaultAvatar}'" />
+                    </div>
+                    <div class="agent-info">
+                        <div class="agent-name">${agent.name || 'Unnamed Agent'}</div>
+                        <div class="agent-personality">${agent.personality || 'No personality set'}</div>
+                        <div class="agent-intro-preview">
+                            ${introPreview}
+                        </div>
+                    </div>
+                    <div class="agent-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="chatbotManager.editAgent('${agent.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="chatbotManager.deleteAgent('${agent.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </div>
-                <div class="agent-actions">
-                    <button class="btn btn-sm btn-secondary" onclick="chatbotManager.editAgent('${agent.id}')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="chatbotManager.deleteAgent('${agent.id}')">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     loadNodeFlow() {
@@ -4353,7 +4364,8 @@ class ChatbotManager {
 
         // Handle avatar upload and preview
         const avatarInput = document.getElementById('agentAvatar');
-        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarPreviewContainer = document.getElementById('avatarPreview');
+        const avatarPreviewImg = avatarPreviewContainer?.querySelector('img');
         const resetAvatarBtn = document.getElementById('resetAvatar');
 
         avatarInput.addEventListener('change', async (e) => {
@@ -4382,15 +4394,14 @@ class ChatbotManager {
                     // Compress image to reduce storage size
                     const compressedDataUrl = await this.compressImage(file);
                     
-                    const img = avatarPreview;
-                    if (img) {
-                        img.src = compressedDataUrl;
-                        img.onload = () => {
-                            this.showNotification('Avatar updated successfully!', 'success');
+                    if (avatarPreviewImg) {
+                        avatarPreviewImg.src = compressedDataUrl;
+                        avatarPreviewImg.onload = () => {
+                            this.showNotification('Avatar uploaded!', 'success');
                         };
-                        img.onerror = () => {
+                        avatarPreviewImg.onerror = () => {
                             this.showNotification('Failed to load image. Please try another file.', 'error');
-                            img.src = this.getDefaultAvatar();
+                            avatarPreviewImg.src = this.getDefaultAvatar();
                             avatarInput.value = '';
                         };
                     }
@@ -4403,8 +4414,9 @@ class ChatbotManager {
         });
 
         resetAvatarBtn.addEventListener('click', () => {
-            const img = avatarPreview;
-            img.src = this.getDefaultAvatar();
+            if (avatarPreviewImg) {
+                avatarPreviewImg.src = this.getDefaultAvatar();
+            }
             avatarInput.value = '';
         });
 
@@ -4451,19 +4463,19 @@ class ChatbotManager {
                 return false;
             }
 
-            // Get avatar safely
+            // Get avatar safely - get the img inside avatarPreview div
             let avatarSrc = '';
-            const avatarPreview = document.getElementById('avatarPreview');
-            console.log('avatarPreview element found:', !!avatarPreview);
+            const avatarPreviewContainer = document.getElementById('avatarPreview');
+            console.log('avatarPreview container found:', !!avatarPreviewContainer);
             
-            if (avatarPreview) {
-                const img = avatarPreview;
+            if (avatarPreviewContainer) {
+                const img = avatarPreviewContainer.querySelector('img');
                 console.log('Avatar img element found:', !!img);
-                avatarSrc = img.src || this.getDefaultAvatar();
+                avatarSrc = img?.src || this.getDefaultAvatar();
             } else {
                 avatarSrc = this.getDefaultAvatar();
             }
-            console.log('Avatar src:', avatarSrc);
+            console.log('Avatar src:', avatarSrc?.substring(0, 50) + '...');
 
             const agentData = {
                 id: agentId || 'agent-' + Date.now(),
