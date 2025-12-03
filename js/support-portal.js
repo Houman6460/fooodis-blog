@@ -23,6 +23,15 @@ class SupportPortal {
             });
         }
 
+        // Main ticket form (for authenticated users)
+        const ticketForm = document.getElementById('ticketForm');
+        if (ticketForm) {
+            ticketForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.submitAuthenticatedTicket(ticketForm);
+            });
+        }
+
         // Customer login form
         const loginForm = document.getElementById('customerLoginForm');
         if (loginForm) {
@@ -215,19 +224,20 @@ class SupportPortal {
             console.log('Response data:', result);
 
             if (result.success) {
+                const ticketNum = result.data?.ticket_number || result.data?.id || 'new';
                 this.showNotification(
-                    `Ticket #${result.data.id} created successfully! We'll respond within 24 hours.`,
+                    `Ticket #${ticketNum} created successfully! We'll respond within 24 hours.`,
                     'success'
                 );
                 form.reset();
                 // Refresh user tickets and stats
-                this.loadUserTickets();
+                await this.loadUserTickets();
                 this.updateUserStats();
                 // Switch to My Tickets tab
-                this.showTab('myTickets');
+                showTab('myTickets');
             } else {
                 console.error('API returned error:', result);
-                throw new Error(result.message || 'Failed to create ticket');
+                throw new Error(result.error || result.message || 'Failed to create ticket');
             }
         } catch (error) {
             console.error('Full error details:', error);
@@ -293,13 +303,17 @@ class SupportPortal {
         const ticketsHtml = this.customerTickets.map(ticket => {
             const statusClass = this.getStatusClass(ticket.status);
             const priorityClass = this.getPriorityClass(ticket.priority);
-            const createdDate = new Date(ticket.createdAt).toLocaleDateString();
-            const lastUpdate = new Date(ticket.updatedAt).toLocaleDateString();
+            // Support both camelCase and snake_case field names from API
+            const createdAt = ticket.createdAt || ticket.created_at;
+            const updatedAt = ticket.updatedAt || ticket.updated_at;
+            const ticketNumber = ticket.ticket_number || ticket.id;
+            const createdDate = createdAt ? new Date(createdAt).toLocaleDateString() : 'N/A';
+            const lastUpdate = updatedAt ? new Date(updatedAt).toLocaleDateString() : 'N/A';
             
             return `
                 <div class="ticket-card" data-ticket-id="${ticket.id}">
                     <div class="ticket-header">
-                        <div class="ticket-id">#${ticket.id}</div>
+                        <div class="ticket-id">#${ticketNumber}</div>
                         <div class="ticket-subject">${ticket.subject}</div>
                     </div>
                     
@@ -1331,17 +1345,23 @@ async function handleLogin(event) {
         
         const result = await response.json();
         
-        if (response.ok) {
+        if (response.ok && result.success) {
+            // API returns result.data.token and result.data.customer
+            const token = result.data?.token || result.token;
+            const customer = result.data?.customer || result.user;
+            
             // Store user data with consistent keys
-            localStorage.setItem('supportPortalToken', result.token);
-            localStorage.setItem('supportPortalUser', JSON.stringify(result.user));
+            localStorage.setItem('supportPortalToken', token);
+            localStorage.setItem('customer_token', token); // Also store for compatibility
+            localStorage.setItem('supportPortalUser', JSON.stringify(customer));
             
             // Update the support portal instance
             if (window.supportPortal) {
-                window.supportPortal.currentUser = result.user;
+                window.supportPortal.currentUser = customer;
                 window.supportPortal.showNotification('Successfully logged in!', 'success');
                 window.supportPortal.showUserDashboard();
                 window.supportPortal.loadUserTickets();
+                window.supportPortal.updateUserStats();
             }
             
             closeAuthModal();
@@ -1411,23 +1431,29 @@ async function handleRegister(event) {
         
         const result = await response.json();
         
-        if (response.ok) {
+        if (response.ok && result.success) {
+            // API returns result.data.token and result.data.customer
+            const token = result.data?.token || result.token;
+            const customer = result.data?.customer || result.user;
+            
             // Store user data with consistent keys
-            localStorage.setItem('supportPortalToken', result.token);
-            localStorage.setItem('supportPortalUser', JSON.stringify(result.user));
+            localStorage.setItem('supportPortalToken', token);
+            localStorage.setItem('customer_token', token);
+            localStorage.setItem('supportPortalUser', JSON.stringify(customer));
             
             // Update the support portal instance
             if (window.supportPortal) {
-                window.supportPortal.currentUser = result.user;
+                window.supportPortal.currentUser = customer;
                 window.supportPortal.showNotification('Account created successfully!', 'success');
                 window.supportPortal.showUserDashboard();
+                window.supportPortal.loadUserTickets();
             }
             
             closeAuthModal();
             
         } else {
             if (window.supportPortal) {
-                window.supportPortal.showNotification(result.message || 'Registration failed. Please try again.', 'error');
+                window.supportPortal.showNotification(result.error || result.message || 'Registration failed. Please try again.', 'error');
             }
         }
     } catch (error) {
