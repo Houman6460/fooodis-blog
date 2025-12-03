@@ -235,6 +235,48 @@
                     background: #e8f24c !important;
                     color: #26282f !important;
                 }
+                
+                /* Smart follow-up buttons */
+                .smart-followup-container {
+                    animation: fadeInUp 0.3s ease-out !important;
+                }
+                
+                .smart-followup {
+                    border-top: 1px solid rgba(232, 242, 76, 0.3) !important;
+                    padding-top: 8px !important;
+                    margin-top: 8px !important;
+                }
+                
+                .followup-label {
+                    display: block !important;
+                    font-size: 10px !important;
+                    color: #888 !important;
+                    margin-bottom: 6px !important;
+                    text-transform: uppercase !important;
+                    letter-spacing: 0.5px !important;
+                }
+                
+                .smart-suggestion {
+                    background: rgba(232, 242, 76, 0.1) !important;
+                    border-color: rgba(232, 242, 76, 0.5) !important;
+                    font-size: 11px !important;
+                }
+                
+                .smart-suggestion:hover {
+                    background: #e8f24c !important;
+                    border-color: #e8f24c !important;
+                }
+                
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
 
                 .chatbot-rating-buttons {
                     margin-top: 10px !important;

@@ -1735,6 +1735,122 @@
                     window.chatbotManager.getCurrentHandoffDepartment() : null;
                 this.performAgentHandoff(departmentId);
             }
+            
+            // Add smart follow-up buttons for assistant messages (after handoff)
+            if (sender === 'assistant' && this.handoffComplete && !content.includes('chatbot-quick-replies')) {
+                this.addSmartFollowUpButtons(messageDiv, content);
+            }
+        },
+        
+        // Generate smart follow-up buttons based on conversation context
+        addSmartFollowUpButtons: function(messageDiv, messageContent) {
+            // Get all available intents from node flow
+            const allIntents = this.getAllAvailableIntents();
+            if (!allIntents || allIntents.length === 0) return;
+            
+            // Analyze message content to suggest relevant follow-up topics
+            const suggestedIntents = this.analyzeAndSuggestIntents(messageContent, allIntents);
+            
+            if (suggestedIntents.length > 0) {
+                // Add delay before showing buttons (more human-like)
+                setTimeout(() => {
+                    const buttonsHtml = this.generateSmartButtons(suggestedIntents);
+                    const buttonsContainer = document.createElement('div');
+                    buttonsContainer.innerHTML = buttonsHtml;
+                    buttonsContainer.className = 'smart-followup-container';
+                    
+                    const contentDiv = messageDiv.querySelector('.message-content');
+                    if (contentDiv) {
+                        contentDiv.appendChild(buttonsContainer);
+                    }
+                }, 500); // Small delay for buttons to appear
+            }
+        },
+        
+        // Get all intents from node flow
+        getAllAvailableIntents: function() {
+            // First try to get from intent node
+            if (this.nodeFlow?.nodes) {
+                const intentNode = this.nodeFlow.nodes.find(n => n.type === 'intent');
+                if (intentNode?.data?.intents) {
+                    return intentNode.data.intents;
+                }
+            }
+            // Fallback to comprehensive list
+            return [
+                'menu-help', 'ordering-help', 'technical-support', 'billing-question',
+                'delivery-status', 'refund-request', 'account-help', 'feedback',
+                'pricing-info', 'opening-hours', 'location-info', 'contact-support'
+            ];
+        },
+        
+        // AI-like analysis to suggest relevant intents based on context
+        analyzeAndSuggestIntents: function(messageContent, allIntents) {
+            const lowerContent = messageContent.toLowerCase();
+            const suggested = [];
+            
+            // Context-based suggestions
+            const contextMap = {
+                'menu': ['ordering-help', 'pricing-info', 'allergens'],
+                'order': ['delivery-status', 'refund-request', 'payment-processing'],
+                'delivery': ['delivery-status', 'order-tracking', 'contact-support'],
+                'price': ['pricing-info', 'billing-question', 'refund-request'],
+                'payment': ['billing-question', 'refund-request', 'payment-processing'],
+                'help': ['technical-support', 'contact-support', 'feedback'],
+                'problem': ['technical-support', 'refund-request', 'contact-support'],
+                'account': ['account-help', 'billing-question', 'technical-support'],
+                'hours': ['opening-hours', 'location-info', 'contact-support'],
+                'location': ['location-info', 'delivery-status', 'opening-hours'],
+                'thank': ['feedback', 'contact-support'],
+                'how': ['menu-help', 'ordering-help', 'technical-support'],
+                'can i': ['ordering-help', 'account-help', 'menu-help']
+            };
+            
+            // Find relevant suggestions based on message content
+            for (const [keyword, intents] of Object.entries(contextMap)) {
+                if (lowerContent.includes(keyword)) {
+                    intents.forEach(intent => {
+                        if (allIntents.includes(intent) && !suggested.includes(intent)) {
+                            suggested.push(intent);
+                        }
+                    });
+                }
+            }
+            
+            // If no context match, suggest random relevant ones (excluding already discussed)
+            if (suggested.length === 0) {
+                const usedIntents = this.conversationIntents || [];
+                const available = allIntents.filter(i => !usedIntents.includes(i));
+                suggested.push(...available.slice(0, 3));
+            }
+            
+            // Limit to 3 suggestions
+            return suggested.slice(0, 3);
+        },
+        
+        // Generate HTML for smart buttons
+        generateSmartButtons: function(intents) {
+            const buttons = intents.map(intent => {
+                const label = this.formatIntentLabel(intent);
+                return `<button class="chatbot-quick-reply smart-suggestion" data-reply="${intent}">${label}</button>`;
+            }).join('');
+            
+            return `
+                <div class="chatbot-quick-replies smart-followup" style="margin-top: 10px;">
+                    <span class="followup-label">Related topics:</span>
+                    ${buttons}
+                </div>
+            `;
+        },
+        
+        // Format intent ID to readable label
+        formatIntentLabel: function(intent) {
+            return intent
+                .replace(/-/g, ' ')
+                .replace(/_/g, ' ')
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
         },
 
         showTyping: function() {
@@ -3021,6 +3137,10 @@
             console.log('🔄 currentNode:', this.currentNode?.type, this.currentNode?.id);
             console.log('🔄 messages.length:', this.messages.length);
             
+            // Human-like delay based on message complexity
+            const humanDelay = this.calculateHumanDelay(userMessage);
+            console.log('🕐 Human-like delay:', humanDelay, 'ms');
+            
             setTimeout(() => {
                 let currentNode = this.currentNode;
                 let nodeResult = null;
@@ -3047,7 +3167,28 @@
                     this.hideTyping();
                     this.addMessage('I\'m sorry, I didn\'t understand that. Could you please try again?', 'assistant');
                 }
-            }, Math.random() * 1000 + 500);
+            }, humanDelay);
+        },
+        
+        // Calculate human-like typing delay
+        calculateHumanDelay: function(message) {
+            // Base delay: 1-2 seconds (simulates reading the message)
+            let baseDelay = 1000 + Math.random() * 1000;
+            
+            // Add delay based on message length (longer messages = more reading time)
+            const wordCount = (message || '').split(/\s+/).length;
+            const readingTime = wordCount * 100; // ~100ms per word
+            
+            // Add typing simulation (response will take time to "type")
+            const typingTime = 500 + Math.random() * 1000;
+            
+            // Add occasional "thinking" pause (20% chance of extra pause)
+            const thinkingPause = Math.random() < 0.2 ? 1000 + Math.random() * 1500 : 0;
+            
+            // Total delay between 1.5s and 5s for realism
+            const totalDelay = Math.min(5000, Math.max(1500, baseDelay + readingTime + typingTime + thinkingPause));
+            
+            return totalDelay;
         },
 
         // Handle scenario execution results
