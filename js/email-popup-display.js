@@ -61,16 +61,26 @@ class EmailPopupDisplay {
                     this.config.countdown.endDate = apiConfig.countdown_end_date;
                 }
                 
-                // Also try to load countdown values from localStorage (set by enhancer)
+                // Also try to load settings from localStorage (set by enhancer)
                 const savedConfig = localStorage.getItem('fooodis-email-popup-config');
                 if (savedConfig) {
                     try {
                         const parsed = JSON.parse(savedConfig);
+                        // Load countdown values
                         if (parsed.countdown) {
                             if (parsed.countdown.days !== undefined) this.config.countdown.days = parsed.countdown.days;
                             if (parsed.countdown.hours !== undefined) this.config.countdown.hours = parsed.countdown.hours;
                             if (parsed.countdown.minutes !== undefined) this.config.countdown.minutes = parsed.countdown.minutes;
                             if (parsed.countdown.seconds !== undefined) this.config.countdown.seconds = parsed.countdown.seconds;
+                        }
+                        // Also load image settings from localStorage if not from API
+                        if (parsed.image && !this.config.image.url && parsed.image.url) {
+                            this.config.image.url = parsed.image.url;
+                            this.config.image.enabled = parsed.image.enabled;
+                        }
+                        // Also load layout from localStorage if not from API
+                        if (parsed.layout && !apiConfig.popup_layout) {
+                            this.config.layout = parsed.layout;
                         }
                     } catch (e) {}
                 }
