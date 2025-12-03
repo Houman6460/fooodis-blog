@@ -366,12 +366,19 @@ class NodeFlowBuilder {
     }
 
     handleMouseDown(e) {
+        console.log('🖱️ handleMouseDown triggered', e.target.className, e.target.tagName);
+        
         // Handle node dragging
         const nodeElement = e.target.closest('.flow-node');
+        console.log('🎯 nodeElement found:', nodeElement ? nodeElement.dataset.nodeId : 'none');
+        
         if (nodeElement && !e.target.closest('.node-controls') && !e.target.closest('.disconnect-btn')) {
             const nodeId = nodeElement.dataset.nodeId;
             const node = this.nodes.find(n => n.id === nodeId);
+            console.log('📦 node found:', node ? node.id : 'none');
+            
             if (node) {
+                console.log('✅ Starting drag for node:', nodeId);
                 this.draggedNode = node;
                 this.draggedNodeElement = nodeElement;
                 const canvasRect = this.canvas.getBoundingClientRect();
@@ -385,7 +392,6 @@ class NodeFlowBuilder {
                 nodeElement.classList.add('dragging');
                 
                 e.preventDefault();
-                e.stopPropagation();
                 return;
             }
         }
@@ -395,16 +401,9 @@ class NodeFlowBuilder {
             // Middle mouse button for panning
             e.preventDefault();
             this.startPanning(e);
-        } else if (e.button === 0) {
-            // Left click - check if clicking on empty canvas area
-            const isOnCanvas = e.target.classList.contains('node-flow-canvas');
-            const isOnWorkspace = e.target.classList.contains('flow-workspace');
-            const isOnNodesContainer = e.target.id === 'flow-nodes';
-            const isOnConnectionsContainer = e.target.id === 'flow-connections';
-            
-            if (isOnCanvas || isOnWorkspace || isOnNodesContainer || isOnConnectionsContainer) {
-                this.startPanning(e);
-            }
+        } else if (e.button === 0 && !nodeElement) {
+            // Left click on empty canvas for panning (only if not on a node)
+            this.startPanning(e);
         }
     }
 
