@@ -2708,17 +2708,24 @@
 
         // Execute intent recognition node
         executeIntentNode: function(node, userMessage) {
-            const detectedIntents = this.detectIntents(userMessage, node.data.intents);
+            console.log('🎯 executeIntentNode - node.data.intents:', node.data?.intents);
+            console.log('🎯 executeIntentNode - userMessage:', userMessage);
+            
+            const detectedIntents = this.detectIntents(userMessage, node.data?.intents || []);
+            console.log('🎯 executeIntentNode - detectedIntents:', detectedIntents);
             
             if (detectedIntents.length > 0) {
+                const nextAction = this.getNextNodeAction(node);
+                console.log('✅ Intent matched! nextAction:', nextAction);
                 // Intent matched, continue to next node
                 return {
                     type: 'intent_match',
                     content: null, // No message to display
-                    nextAction: this.getNextNodeAction(node),
+                    nextAction: nextAction,
                     detectedIntents: detectedIntents
                 };
             } else {
+                console.log('❌ No intent matched, asking for clarification');
                 // No intent matched, ask for clarification
                 return {
                     type: 'intent_no_match',
@@ -2964,23 +2971,33 @@
 
         // Process message in context of active scenario
         processScenarioMessage: function(userMessage) {
+            console.log('🔄 processScenarioMessage called with:', userMessage);
+            console.log('🔄 currentNode:', this.currentNode?.type, this.currentNode?.id);
+            console.log('🔄 messages.length:', this.messages.length);
+            
             setTimeout(() => {
                 let currentNode = this.currentNode;
                 let nodeResult = null;
 
                 // If this is the first message and we have a welcome node, execute it
-                if (this.messages.length <= 2 && currentNode.type === 'welcome') {
+                if (this.messages.length <= 2 && currentNode?.type === 'welcome') {
+                    console.log('🔄 Executing as welcome node (first message)');
                     nodeResult = this.executeScenarioNode(currentNode);
                 } else {
                     // Process user input through current node
+                    console.log('🔄 Executing with user message through node:', currentNode?.type);
                     nodeResult = this.executeScenarioNode(currentNode, userMessage);
                 }
 
+                console.log('🔄 nodeResult:', nodeResult);
+                
                 if (nodeResult) {
                     // Handle the node result
+                    console.log('🔄 Calling handleScenarioResult...');
                     this.handleScenarioResult(nodeResult, userMessage);
                 } else {
                     // No scenario result, fall back to default response
+                    console.log('🔄 No nodeResult, showing error');
                     this.hideTyping();
                     this.addMessage('I\'m sorry, I didn\'t understand that. Could you please try again?', 'assistant');
                 }
@@ -2989,6 +3006,9 @@
 
         // Handle scenario execution results
         handleScenarioResult: function(result, userMessage) {
+            console.log('📋 handleScenarioResult called with:', result);
+            console.log('📋 result.nextAction:', result?.nextAction);
+            
             // Add bot message if there's content
             if (result.content) {
                 this.addMessage(result.content, 'assistant');
