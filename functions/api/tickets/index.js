@@ -14,7 +14,7 @@ export async function onRequestGet(context) {
   const url = new URL(request.url);
   
   // Query parameters
-  const customer = url.searchParams.get('customer'); // Filter by customer email
+  let customer = url.searchParams.get('customer'); // Filter by customer email
   const customerId = url.searchParams.get('customer_id');
   const status = url.searchParams.get('status');
   const priority = url.searchParams.get('priority');
@@ -31,6 +31,25 @@ export async function onRequestGet(context) {
       status: 500,
       headers: { "Content-Type": "application/json" }
     });
+  }
+
+  // Validate customer token if requesting customer-specific tickets
+  const authHeader = request.headers.get('Authorization');
+  if (customer && authHeader?.startsWith('Bearer ') && env.KV) {
+    try {
+      const token = authHeader.substring(7);
+      const cached = await env.KV.get(`auth_${token}`);
+      if (cached) {
+        const tokenData = JSON.parse(cached);
+        // Security: Override customer filter with the token's email
+        // This ensures users can ONLY see their own tickets
+        if (tokenData.email) {
+          customer = tokenData.email.toLowerCase();
+        }
+      }
+    } catch (e) {
+      console.error('Token validation error:', e);
+    }
   }
 
   try {
