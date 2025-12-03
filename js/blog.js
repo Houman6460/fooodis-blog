@@ -277,13 +277,19 @@ function renderBlogPosts(customPosts = null) {
         
         // Create the image element with validated URL
         const img = document.createElement('img');
-        const validImageUrl = getValidImageUrl(post.imageUrl);
-        img.src = validImageUrl;
+        const validImageUrl = getValidImageUrl(post.imageUrl || post.image_url);
         img.alt = post.title;
         img.dataset.postId = post.id; // Store post ID for deterministic fallback
         img.onerror = function() { 
             loadCloudFallbackForImage(this, this.dataset.postId); 
         };
+        
+        // If no valid URL, immediately load cloud fallback instead of waiting for onerror
+        if (!validImageUrl) {
+            loadCloudFallbackForImage(img, post.id);
+        } else {
+            img.src = validImageUrl;
+        }
         imageContainer.appendChild(img);
         
         // Create the content container
@@ -600,11 +606,12 @@ function renderBanners() {
         banner.className = 'blog-banner';
         banner.dataset.id = post.id;
         
-        // Use validated image URL
-        const imageUrl = getValidImageUrl(post.imageUrl);
+        // Use validated image URL - check both field names
+        const imageUrl = getValidImageUrl(post.imageUrl || post.image_url);
+        const bannerImgSrc = imageUrl || 'about:invalid';
         
         banner.innerHTML = `
-            <img src="${imageUrl}" alt="${post.title}" data-post-id="${post.id}" onerror="loadCloudFallbackForImage(this, '${post.id}')" >
+            <img src="${bannerImgSrc}" alt="${post.title}" data-post-id="${post.id}" onerror="loadCloudFallbackForImage(this, '${post.id}')" >
             <div class="blog-banner-overlay">
                 <h2 class="blog-banner-title">${post.title}</h2>
                 <p class="blog-banner-description">${post.excerpt || post.content.substring(0, 150) + '...'}</p>
@@ -735,12 +742,14 @@ function openBlogPostModal(postId) {
     // Track page view for this post
     trackPostView(postId);
     
-    // Get a valid image URL for the post
-    const imageUrl = getValidImageUrl(post.imageUrl);
+    // Get a valid image URL for the post - check both field names
+    const imageUrl = getValidImageUrl(post.imageUrl || post.image_url);
     
+    // Build the modal HTML - use placeholder that will trigger onerror if no valid URL
+    const modalImgSrc = imageUrl || 'about:invalid';
     modalBody.innerHTML = `
         <div class="modal-image">
-            <img src="${imageUrl}" alt="${post.title}" data-post-id="${post.id}" onerror="loadCloudFallbackForImage(this, '${post.id}')" >
+            <img src="${modalImgSrc}" alt="${post.title}" data-post-id="${post.id}" onerror="loadCloudFallbackForImage(this, '${post.id}')" >
         </div>
         <div class="modal-header">
             <div class="modal-category">${post.category}${post.subcategory ? ` / ${post.subcategory}` : ''}</div>
