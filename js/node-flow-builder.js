@@ -153,11 +153,13 @@ class NodeFlowBuilder {
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
         this.canvas.innerHTML = `
-            <div class="flow-background">
-                <div class="flow-grid"></div>
+            <div class="flow-workspace" id="flow-workspace">
+                <div class="flow-background">
+                    <div class="flow-grid"></div>
+                </div>
+                <div class="flow-nodes" id="flow-nodes"></div>
+                <div class="flow-connections" id="flow-connections"></div>
             </div>
-            <div class="flow-nodes" id="flow-nodes"></div>
-            <div class="flow-connections" id="flow-connections"></div>
             <div class="canvas-zoom-controls">
                 <button class="canvas-zoom-btn" id="canvas-zoom-out" title="Zoom Out">
                     <i class="fas fa-search-minus"></i>
@@ -173,6 +175,9 @@ class NodeFlowBuilder {
         `;
         
         flowContainer.appendChild(this.canvas);
+        
+        // Store reference to workspace for zoom transforms
+        this.workspace = document.getElementById('flow-workspace');
         
         // Initialize zoom functionality with mouse wheel
         this.canvas.addEventListener('wheel', (e) => {
@@ -1695,10 +1700,20 @@ class NodeFlowBuilder {
     }
 
     updateZoom(delta) {
+        const oldZoom = this.zoom;
         this.zoom += delta;
-        this.zoom = Math.max(0.1, Math.min(this.zoom, 2));
-        this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
-        document.querySelector('.canvas-zoom-level').textContent = `${Math.round(this.zoom * 100)}%`;
+        this.zoom = Math.max(0.25, Math.min(this.zoom, 2));
+        
+        // Apply transform to workspace, not the entire canvas
+        if (this.workspace) {
+            this.workspace.style.transform = `scale(${this.zoom})`;
+            this.workspace.style.transformOrigin = '0 0';
+        }
+        
+        const zoomLevel = document.querySelector('.canvas-zoom-level');
+        if (zoomLevel) {
+            zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
+        }
     }
 
     handleCanvasMouseDown(e) {
@@ -1719,8 +1734,17 @@ class NodeFlowBuilder {
 
     resetZoom() {
         this.zoom = 1;
-        this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
-        document.querySelector('.canvas-zoom-level').textContent = `${Math.round(this.zoom * 100)}%`;
+        this.panOffset = { x: 0, y: 0 };
+        
+        if (this.workspace) {
+            this.workspace.style.transform = `scale(1)`;
+            this.workspace.style.transformOrigin = '0 0';
+        }
+        
+        const zoomLevel = document.querySelector('.canvas-zoom-level');
+        if (zoomLevel) {
+            zoomLevel.textContent = '100%';
+        }
     }
 
     autoSave() {
