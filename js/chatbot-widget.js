@@ -217,7 +217,8 @@
             // Only switch if user explicitly asks for different department
             const departmentKeywords = {
                 technical: ['technical', 'tech', 'bug', 'error', 'problem', 'broken', 'not working', 'teknisk', 'fel', 'fungerar inte'],
-                sales: ['price', 'cost', 'buy', 'purchase', 'billing', 'payment', 'pris', 'köpa', 'betalning'],
+                sales: ['price', 'cost', 'buy', 'purchase', 'pris', 'köpa'],
+                billing: ['billing', 'payment', 'invoice', 'subscription', 'betalning', 'faktura', 'prenumeration'],
                 support: ['help', 'support', 'assistance', 'question', 'hjälp', 'stöd', 'fråga']
             };
             
@@ -226,8 +227,8 @@
             // Check if user message contains department-specific keywords
             for (const [dept, keywords] of Object.entries(departmentKeywords)) {
                 if (keywords.some(keyword => messageWords.includes(keyword))) {
-                    // Only switch if current agent doesn't match the needed department
-                    const currentDept = this.currentAgent?.department || 'general';
+                    // Only switch if current agent doesn't match the needed department (case-insensitive)
+                    const currentDept = (this.currentAgent?.department || 'general').toLowerCase();
                     if (currentDept !== dept) {
                         console.log(`Agent switch needed: ${currentDept} -> ${dept}`);
                         return { shouldSwitch: true, targetDepartment: dept, reason: 'department_mismatch' };
@@ -400,13 +401,21 @@
         performAgentSwitch: function(targetDepartment, userMessage) {
             console.log(`Switching to ${targetDepartment} department`);
             
-            // Find agent for target department
+            // Find agent for target department (case-insensitive)
+            const normalizedTarget = targetDepartment.toLowerCase();
             const targetAgent = this.availableAgents.find(agent => 
-                agent.department === targetDepartment
+                agent.department?.toLowerCase() === normalizedTarget ||
+                agent.department?.toLowerCase().includes(normalizedTarget)
             );
             
             if (!targetAgent) {
                 console.warn(`No agent found for department: ${targetDepartment}`);
+                // Don't get stuck - hide typing and continue with current agent
+                this.hideTyping();
+                // Continue conversation with current agent instead of switching
+                if (userMessage) {
+                    this.continueConversationWithCurrentAgent(userMessage);
+                }
                 return;
             }
             
@@ -488,6 +497,14 @@
             this.conversationPhase = 'completed';
             
             console.log('Conversation ended by user request');
+        },
+
+        // Continue conversation with current agent (fallback when switch fails)
+        continueConversationWithCurrentAgent: function(message) {
+            console.log('Continuing with current agent:', this.currentAgent?.name);
+            this.showTyping();
+            // Use the existing continueConversation method
+            this.continueConversation(message);
         },
 
         // Continue conversation with proper context
