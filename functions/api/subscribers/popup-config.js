@@ -36,7 +36,12 @@ export async function onRequestGet(context) {
       // Logo settings
       "ALTER TABLE email_popup_config ADD COLUMN logo_enabled INTEGER DEFAULT 1",
       "ALTER TABLE email_popup_config ADD COLUMN logo_size INTEGER DEFAULT 100",
-      "ALTER TABLE email_popup_config ADD COLUMN logo_position TEXT DEFAULT 'center'"
+      "ALTER TABLE email_popup_config ADD COLUMN logo_position TEXT DEFAULT 'center'",
+      // Field settings (JSON: {enabled: bool, required: bool})
+      "ALTER TABLE email_popup_config ADD COLUMN field_name TEXT DEFAULT '{\"enabled\":false,\"required\":false}'",
+      "ALTER TABLE email_popup_config ADD COLUMN field_telephone TEXT DEFAULT '{\"enabled\":false,\"required\":false}'",
+      "ALTER TABLE email_popup_config ADD COLUMN field_restaurant TEXT DEFAULT '{\"enabled\":false,\"required\":false}'",
+      "ALTER TABLE email_popup_config ADD COLUMN field_address TEXT DEFAULT '{\"enabled\":false,\"required\":false}'"
     ];
     
     for (const sql of migrations) {
@@ -105,6 +110,11 @@ export async function onRequestGet(context) {
       logo_size: config.logo_size || 100,
       logo_position: config.logo_position || 'center',
       logo_image: config.logo_image || null,
+      // Field settings
+      field_name: JSON.parse(config.field_name || '{"enabled":false,"required":false}'),
+      field_telephone: JSON.parse(config.field_telephone || '{"enabled":false,"required":false}'),
+      field_restaurant: JSON.parse(config.field_restaurant || '{"enabled":false,"required":false}'),
+      field_address: JSON.parse(config.field_address || '{"enabled":false,"required":false}'),
       custom_css: config.custom_css || null,
       updated_at: config.updated_at
     };
@@ -151,6 +161,7 @@ export async function onRequestPut(context) {
       'design_background', 'design_text_background', 'design_text_bg_opacity',
       'design_button_background', 'design_button_text', 'design_animation',
       'logo_enabled', 'logo_size', 'logo_position',
+      'field_name', 'field_telephone', 'field_restaurant', 'field_address',
       'logo_image', 'custom_css'
     ];
 
@@ -160,6 +171,9 @@ export async function onRequestPut(context) {
         // Convert boolean to integer for SQLite
         if (field === 'enabled' || field === 'show_once' || field === 'popup_image_enabled' || field === 'countdown_enabled' || field === 'logo_enabled') {
           values.push(data[field] ? 1 : 0);
+        } else if (field.startsWith('field_')) {
+          // Stringify field settings objects
+          values.push(typeof data[field] === 'object' ? JSON.stringify(data[field]) : data[field]);
         } else {
           values.push(data[field]);
         }

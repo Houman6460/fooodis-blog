@@ -118,6 +118,15 @@ class EmailPopupDisplay {
                 
                 console.log('EmailPopupDisplay: Loaded logo settings', this.config.logo);
                 
+                // Load form field settings from cloud
+                this.config.fields = {
+                    name: apiConfig.field_name || { enabled: false, required: false },
+                    telephone: apiConfig.field_telephone || { enabled: false, required: false },
+                    restaurant: apiConfig.field_restaurant || { enabled: false, required: false },
+                    address: apiConfig.field_address || { enabled: false, required: false }
+                };
+                console.log('EmailPopupDisplay: Loaded field settings', this.config.fields);
+                
                 // Also try to load settings from localStorage (set by enhancer)
                 const savedConfig = localStorage.getItem('fooodis-email-popup-config');
                 if (savedConfig) {
@@ -201,6 +210,12 @@ class EmailPopupDisplay {
                 size: 100,
                 position: 'center'
             },
+            fields: {
+                name: { enabled: false, required: false },
+                telephone: { enabled: false, required: false },
+                restaurant: { enabled: false, required: false },
+                address: { enabled: false, required: false }
+            },
             customText: {
                 title: 'Subscribe to Our Newsletter',
                 description: 'Stay updated with our latest news and offers.',
@@ -275,13 +290,43 @@ class EmailPopupDisplay {
             popupContent += imageHtml;
         }
         
+        // Build form fields HTML based on config
+        const fields = this.config.fields || {};
+        let fieldsHtml = '';
+        
+        if (fields.name?.enabled) {
+            fieldsHtml += `
+                <div class="email-input-group">
+                    <input type="text" name="name" class="email-input" placeholder="Your Name" ${fields.name.required ? 'required' : ''}>
+                </div>`;
+        }
+        if (fields.telephone?.enabled) {
+            fieldsHtml += `
+                <div class="email-input-group">
+                    <input type="tel" name="telephone" class="email-input" placeholder="Phone Number" ${fields.telephone.required ? 'required' : ''}>
+                </div>`;
+        }
+        if (fields.restaurant?.enabled) {
+            fieldsHtml += `
+                <div class="email-input-group">
+                    <input type="text" name="restaurant_name" class="email-input" placeholder="Restaurant Name" ${fields.restaurant.required ? 'required' : ''}>
+                </div>`;
+        }
+        if (fields.address?.enabled) {
+            fieldsHtml += `
+                <div class="email-input-group">
+                    <input type="text" name="address" class="email-input" placeholder="Address" ${fields.address.required ? 'required' : ''}>
+                </div>`;
+        }
+        
         // Add text container with form
         popupContent += `
                 <div class="popup-text-container" style="${textBgStyle}">
                     <p class="email-popup-description">${this.config.customText.description}</p>
                     <form class="email-form">
+                        ${fieldsHtml}
                         <div class="email-input-group">
-                            <input type="email" class="email-input" placeholder="${this.config.customText.placeholder}" required>
+                            <input type="email" name="email" class="email-input" placeholder="${this.config.customText.placeholder}" required>
                         </div>
                         <button type="submit" class="email-submit-btn" style="background-color: ${this.config.colors.buttonBackground}; color: ${this.config.colors.buttonText};">
                             ${this.config.animation ? `<div class="anim-${this.config.animation}" style="display: none;"></div>` : ''}
@@ -567,13 +612,31 @@ class EmailPopupDisplay {
     
     async handleSubmit(e) {
         const form = e.target;
-        const emailInput = form.querySelector('.email-input');
+        const emailInput = form.querySelector('input[name="email"]');
         const submitBtn = form.querySelector('.email-submit-btn');
         const animElement = submitBtn.querySelector(`[class^="anim-"]`);
         
         if (!emailInput || !emailInput.value) return;
         
         const email = emailInput.value.trim();
+        
+        // Collect all form fields
+        const formData = {
+            email: email,
+            source: 'popup',
+            subscribed_from: window.location.href
+        };
+        
+        // Get additional fields if present
+        const nameInput = form.querySelector('input[name="name"]');
+        const telephoneInput = form.querySelector('input[name="telephone"]');
+        const restaurantInput = form.querySelector('input[name="restaurant_name"]');
+        const addressInput = form.querySelector('input[name="address"]');
+        
+        if (nameInput && nameInput.value) formData.name = nameInput.value.trim();
+        if (telephoneInput && telephoneInput.value) formData.telephone = telephoneInput.value.trim();
+        if (restaurantInput && restaurantInput.value) formData.restaurant_name = restaurantInput.value.trim();
+        if (addressInput && addressInput.value) formData.address = addressInput.value.trim();
         
         // Show loading animation
         if (animElement) {
@@ -594,11 +657,7 @@ class EmailPopupDisplay {
             const response = await fetch('/api/subscribers', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: email,
-                    source: 'popup',
-                    subscribed_from: window.location.href
-                })
+                body: JSON.stringify(formData)
             });
             
             const result = await response.json();

@@ -39,6 +39,10 @@ class SubscriberListManager {
                 const data = await response.json();
                 this.subscribers = (data.subscribers || []).map(sub => ({
                     email: sub.email,
+                    name: sub.name || '',
+                    telephone: sub.telephone || '',
+                    restaurant_name: sub.restaurant_name || '',
+                    address: sub.address || '',
                     date: new Date(sub.subscribed_at).toISOString(),
                     status: sub.status || 'active',
                     source: sub.source || 'popup',
@@ -117,6 +121,9 @@ class SubscriberListManager {
         
         item.innerHTML = `
             <span class="email-address">${subscriber.email}</span>
+            <span class="subscriber-name">${subscriber.name || '-'}</span>
+            <span class="subscriber-phone">${subscriber.telephone || '-'}</span>
+            <span class="subscriber-restaurant">${subscriber.restaurant_name || '-'}</span>
             <span class="signup-date">${formattedDate}</span>
             <span class="status ${subscriber.status}">${subscriber.status}</span>
             <div class="actions">

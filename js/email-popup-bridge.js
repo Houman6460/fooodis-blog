@@ -266,4 +266,99 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+    
+    // Form Fields Settings
+    function setupFormFieldsSettings() {
+        const fields = ['Name', 'Telephone', 'Restaurant', 'Address'];
+        
+        // Load saved settings from API
+        loadFieldSettings();
+        
+        // Add event listeners for each field
+        fields.forEach(field => {
+            const enabledEl = document.getElementById(`field${field}Enabled`);
+            const requiredEl = document.getElementById(`field${field}Required`);
+            
+            if (enabledEl) {
+                enabledEl.addEventListener('change', () => saveFieldSettings());
+            }
+            if (requiredEl) {
+                requiredEl.addEventListener('change', () => saveFieldSettings());
+            }
+        });
+        
+        async function loadFieldSettings() {
+            try {
+                const response = await fetch('/api/subscribers/popup-config');
+                if (response.ok) {
+                    const config = await response.json();
+                    
+                    // Apply field settings
+                    if (config.field_name) {
+                        const nameEnabled = document.getElementById('fieldNameEnabled');
+                        const nameRequired = document.getElementById('fieldNameRequired');
+                        if (nameEnabled) nameEnabled.checked = config.field_name.enabled;
+                        if (nameRequired) nameRequired.checked = config.field_name.required;
+                    }
+                    if (config.field_telephone) {
+                        const telEnabled = document.getElementById('fieldTelephoneEnabled');
+                        const telRequired = document.getElementById('fieldTelephoneRequired');
+                        if (telEnabled) telEnabled.checked = config.field_telephone.enabled;
+                        if (telRequired) telRequired.checked = config.field_telephone.required;
+                    }
+                    if (config.field_restaurant) {
+                        const restEnabled = document.getElementById('fieldRestaurantEnabled');
+                        const restRequired = document.getElementById('fieldRestaurantRequired');
+                        if (restEnabled) restEnabled.checked = config.field_restaurant.enabled;
+                        if (restRequired) restRequired.checked = config.field_restaurant.required;
+                    }
+                    if (config.field_address) {
+                        const addrEnabled = document.getElementById('fieldAddressEnabled');
+                        const addrRequired = document.getElementById('fieldAddressRequired');
+                        if (addrEnabled) addrEnabled.checked = config.field_address.enabled;
+                        if (addrRequired) addrRequired.checked = config.field_address.required;
+                    }
+                    
+                    console.log('Field settings loaded from API');
+                }
+            } catch (error) {
+                console.error('Error loading field settings:', error);
+            }
+        }
+        
+        async function saveFieldSettings() {
+            const fieldSettings = {
+                field_name: {
+                    enabled: document.getElementById('fieldNameEnabled')?.checked || false,
+                    required: document.getElementById('fieldNameRequired')?.checked || false
+                },
+                field_telephone: {
+                    enabled: document.getElementById('fieldTelephoneEnabled')?.checked || false,
+                    required: document.getElementById('fieldTelephoneRequired')?.checked || false
+                },
+                field_restaurant: {
+                    enabled: document.getElementById('fieldRestaurantEnabled')?.checked || false,
+                    required: document.getElementById('fieldRestaurantRequired')?.checked || false
+                },
+                field_address: {
+                    enabled: document.getElementById('fieldAddressEnabled')?.checked || false,
+                    required: document.getElementById('fieldAddressRequired')?.checked || false
+                }
+            };
+            
+            try {
+                await fetch('/api/subscribers/popup-config', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(fieldSettings)
+                });
+                console.log('Field settings saved:', fieldSettings);
+            } catch (error) {
+                console.error('Error saving field settings:', error);
+            }
+        }
+    }
+    
+    // Initialize form fields settings
+    setTimeout(setupFormFieldsSettings, 1200);
 });

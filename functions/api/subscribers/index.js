@@ -38,7 +38,11 @@ export async function onRequestGet(context) {
       "ALTER TABLE email_subscribers ADD COLUMN ip_address TEXT",
       "ALTER TABLE email_subscribers ADD COLUMN preferences TEXT",
       "ALTER TABLE email_subscribers ADD COLUMN tags TEXT",
-      "ALTER TABLE email_subscribers ADD COLUMN custom_fields TEXT"
+      "ALTER TABLE email_subscribers ADD COLUMN custom_fields TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN name TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN telephone TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN restaurant_name TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN address TEXT"
     ];
     
     for (const sql of migrations) {
@@ -150,7 +154,11 @@ export async function onRequestPost(context) {
       "ALTER TABLE email_subscribers ADD COLUMN ip_address TEXT",
       "ALTER TABLE email_subscribers ADD COLUMN preferences TEXT",
       "ALTER TABLE email_subscribers ADD COLUMN tags TEXT",
-      "ALTER TABLE email_subscribers ADD COLUMN custom_fields TEXT"
+      "ALTER TABLE email_subscribers ADD COLUMN custom_fields TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN name TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN telephone TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN restaurant_name TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN address TEXT"
     ];
     
     for (const sql of migrations) {
@@ -232,6 +240,9 @@ export async function onRequestPost(context) {
       id,
       email,
       name: data.name || null,
+      telephone: data.telephone || null,
+      restaurant_name: data.restaurant_name || null,
+      address: data.address || null,
       status: 'active',
       source: data.source || 'popup',
       ip_address: ip,
@@ -246,11 +257,12 @@ export async function onRequestPost(context) {
 
     await env.DB.prepare(`
       INSERT INTO email_subscribers (
-        id, email, name, status, source, ip_address, country,
+        id, email, name, telephone, restaurant_name, address, status, source, ip_address, country,
         subscribed_at, preferences, tags, custom_fields, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
-      subscriber.id, subscriber.email, subscriber.name, subscriber.status,
+      subscriber.id, subscriber.email, subscriber.name, subscriber.telephone, 
+      subscriber.restaurant_name, subscriber.address, subscriber.status,
       subscriber.source, subscriber.ip_address, subscriber.country,
       subscriber.subscribed_at, subscriber.preferences, subscriber.tags,
       subscriber.custom_fields, subscriber.created_at, subscriber.updated_at

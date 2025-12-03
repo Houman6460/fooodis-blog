@@ -1738,9 +1738,12 @@
                         <div class="email-subscriber-count">0 Active Subscribers</div>
                     </div>
 
-                    <div class="email-list-container">
+                    <div class="email-list-container subscriber-table-extended">
                         <div class="email-list-header">
                             <span>Email Address</span>
+                            <span>Name</span>
+                            <span>Phone</span>
+                            <span>Restaurant</span>
                             <span>Signup Date</span>
                             <span>Status</span>
                             <span>Actions</span>
@@ -1823,6 +1826,110 @@
                                         <div class="logo-size-control">
                                             <label class="control-label">Size: <span id="logoSizeValue">100</span>px</label>
                                             <input type="range" id="popupLogoSize" min="40" max="200" value="100" class="size-slider" title="Adjust logo size" aria-label="Logo size slider">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Form Fields Configuration -->
+                                <div class="customization-option form-fields-section">
+                                    <div class="email-section-header">
+                                        <h4 class="email-config-section-title">Form Fields</h4>
+                                        <p class="section-description-small">Configure which fields to collect from subscribers</p>
+                                    </div>
+                                    
+                                    <!-- Name Field -->
+                                    <div class="field-config-row">
+                                        <div class="field-info">
+                                            <i class="fas fa-user"></i>
+                                            <span class="field-name">Name</span>
+                                        </div>
+                                        <div class="field-toggles">
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldNameEnabled" title="Enable name field" aria-label="Enable name field">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Show</span>
+                                            </div>
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldNameRequired" title="Make name required" aria-label="Make name required">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Required</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Telephone Field -->
+                                    <div class="field-config-row">
+                                        <div class="field-info">
+                                            <i class="fas fa-phone"></i>
+                                            <span class="field-name">Telephone</span>
+                                        </div>
+                                        <div class="field-toggles">
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldTelephoneEnabled" title="Enable telephone field" aria-label="Enable telephone field">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Show</span>
+                                            </div>
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldTelephoneRequired" title="Make telephone required" aria-label="Make telephone required">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Required</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Restaurant Name Field -->
+                                    <div class="field-config-row">
+                                        <div class="field-info">
+                                            <i class="fas fa-utensils"></i>
+                                            <span class="field-name">Restaurant Name</span>
+                                        </div>
+                                        <div class="field-toggles">
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldRestaurantEnabled" title="Enable restaurant name field" aria-label="Enable restaurant name field">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Show</span>
+                                            </div>
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldRestaurantRequired" title="Make restaurant name required" aria-label="Make restaurant name required">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Required</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Address Field -->
+                                    <div class="field-config-row">
+                                        <div class="field-info">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span class="field-name">Address</span>
+                                        </div>
+                                        <div class="field-toggles">
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldAddressEnabled" title="Enable address field" aria-label="Enable address field">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Show</span>
+                                            </div>
+                                            <div class="toggle-group">
+                                                <label class="toggle-switch small">
+                                                    <input type="checkbox" id="fieldAddressRequired" title="Make address required" aria-label="Make address required">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label-small">Required</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
