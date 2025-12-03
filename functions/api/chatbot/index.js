@@ -140,6 +140,28 @@ export async function onRequestPost(context) {
       }
     }
 
+    // Fetch conversation history for context
+    let conversationHistory = [];
+    if (env.DB && convId) {
+      try {
+        const historyResult = await env.DB.prepare(`
+          SELECT role, content FROM chatbot_messages 
+          WHERE conversation_id = ? 
+          ORDER BY created_at DESC LIMIT 10
+        `).bind(convId).all();
+        
+        if (historyResult?.results) {
+          // Reverse to get chronological order and format for OpenAI
+          conversationHistory = historyResult.results.reverse().map(msg => ({
+            role: msg.role === 'assistant' ? 'assistant' : 'user',
+            content: msg.content
+          }));
+        }
+      } catch (historyError) {
+        console.error('Error fetching conversation history:', historyError);
+      }
+    }
+
     // Call OpenAI API
     let aiResponse = "I'm here to help! However, I'm currently unable to process your request. Please try again later.";
     let tokensUsed = 0;
@@ -154,8 +176,8 @@ export async function onRequestPost(context) {
           threadId = response.threadId;
           tokensUsed = response.tokens || 0;
         } else {
-          // Use Chat Completions API
-          const response = await callOpenAIChatCompletion(apiKey, systemPrompt, message, assistant?.model || 'gpt-4');
+          // Use Chat Completions API with conversation history
+          const response = await callOpenAIChatCompletion(apiKey, systemPrompt, message, assistant?.model || 'gpt-4', conversationHistory);
           aiResponse = response.message;
           tokensUsed = response.tokens || 0;
         }
@@ -218,7 +240,22 @@ export async function onRequestPost(context) {
 /**
  * Call OpenAI Chat Completion API
  */
-async function callOpenAIChatCompletion(apiKey, systemPrompt, userMessage, model) {
+async function callOpenAIChatCompletion(apiKey, systemPrompt, userMessage, model, conversationHistory = []) {
+  // Build messages array with system prompt, history, and current message
+  const messages = [
+    { role: 'system', content: systemPrompt }
+  ];
+  
+  // Add conversation history for context (last 10 messages)
+  if (conversationHistory && conversationHistory.length > 0) {
+    messages.push(...conversationHistory);
+  }
+  
+  // Add current user message
+  messages.push({ role: 'user', content: userMessage });
+  
+  console.log(`Calling OpenAI with ${messages.length} messages (including ${conversationHistory.length} history)`);
+  
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -227,10 +264,7 @@ async function callOpenAIChatCompletion(apiKey, systemPrompt, userMessage, model
     },
     body: JSON.stringify({
       model: model || 'gpt-4',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userMessage }
-      ],
+      messages: messages,
       max_tokens: 1000,
       temperature: 0.7
     })
