@@ -2300,14 +2300,29 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="widgetColor">Primary Color</label>
-                                        <input type="color" id="widgetColor" value="#e8f24c">
+                                        <div class="color-picker-wrapper">
+                                            <input type="color" id="widgetColor" value="#e8f24c" class="color-input-large">
+                                            <span class="color-value" id="widgetColorValue">#e8f24c</span>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label>Features</label>
-                                        <div class="checkbox-group">
-                                            <label><input type="checkbox" id="allowFileUpload" checked> Allow File Upload</label>
-                                            <label><input type="checkbox" id="showTypingIndicator" checked> Show Typing Indicator</label>
-                                            <label><input type="checkbox" id="enableMemory" checked> Enable Memory</label>
+                                        <div class="features-list">
+                                            <label class="feature-item">
+                                                <input type="checkbox" id="allowFileUpload" checked>
+                                                <span class="feature-checkbox"></span>
+                                                <span class="feature-text">Allow File Upload</span>
+                                            </label>
+                                            <label class="feature-item">
+                                                <input type="checkbox" id="showTypingIndicator" checked>
+                                                <span class="feature-checkbox"></span>
+                                                <span class="feature-text">Show Typing Indicator</span>
+                                            </label>
+                                            <label class="feature-item">
+                                                <input type="checkbox" id="enableMemory" checked>
+                                                <span class="feature-checkbox"></span>
+                                                <span class="feature-text">Enable Memory</span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>

@@ -1094,6 +1094,15 @@ class ChatbotManager {
                 temperatureValue.textContent = temperatureSlider.value;
             });
         }
+        
+        // Color picker value display
+        const widgetColor = document.getElementById('widgetColor');
+        const widgetColorValue = document.getElementById('widgetColorValue');
+        if (widgetColor && widgetColorValue) {
+            widgetColor.addEventListener('input', () => {
+                widgetColorValue.textContent = widgetColor.value.toUpperCase();
+            });
+        }
     }
 
     populateSettingsForm() {
@@ -1117,6 +1126,12 @@ class ChatbotManager {
         if (tempSlider && this.settings.temperature !== undefined) {
             tempSlider.value = this.settings.temperature;
             if (tempValue) tempValue.textContent = this.settings.temperature;
+        }
+        
+        // Handle color value display
+        const colorValue = document.getElementById('widgetColorValue');
+        if (colorValue && this.settings.widgetColor) {
+            colorValue.textContent = this.settings.widgetColor.toUpperCase();
         }
 
         fields.forEach(field => {
