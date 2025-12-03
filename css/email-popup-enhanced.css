@@ -415,38 +415,50 @@
 }
 
 /* Range/Opacity Slider */
-.color-control-group input[type="range"] {
+.color-control-group input[type="range"],
+.opacity-slider-group input[type="range"],
+input#textBackgroundOpacity {
     -webkit-appearance: none;
     appearance: none;
-    width: 100%;
+    width: 100% !important;
     height: 8px;
     border-radius: 4px;
-    background: linear-gradient(to right, transparent, var(--primary-color, #e8f24c));
+    background: linear-gradient(to right, rgba(232,242,76,0.2), var(--primary-color, #e8f24c)) !important;
     outline: none;
     margin: 8px 0;
-    cursor: pointer;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 100;
 }
 
-.color-control-group input[type="range"]::-webkit-slider-thumb {
+.color-control-group input[type="range"]::-webkit-slider-thumb,
+.opacity-slider-group input[type="range"]::-webkit-slider-thumb,
+input#textBackgroundOpacity::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--primary-color, #e8f24c);
-    cursor: pointer;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer !important;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 101;
 }
 
-.color-control-group input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+.color-control-group input[type="range"]::-moz-range-thumb,
+.opacity-slider-group input[type="range"]::-moz-range-thumb,
+input#textBackgroundOpacity::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--primary-color, #e8f24c);
-    cursor: pointer;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer !important;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .color-preview {
@@ -462,16 +474,25 @@
     flex-direction: column;
     gap: 4px;
     margin-top: 8px;
+    position: relative;
+    z-index: 50;
 }
 
 .opacity-slider-group label {
     font-size: 12px;
     color: var(--dark-text-secondary, #a0a0a0);
+    pointer-events: none;
 }
 
 .opacity-slider-group #opacityValue {
     color: var(--primary-color, #e8f24c);
     font-weight: 600;
+}
+
+/* Ensure color control group doesn't block */
+.color-control-group {
+    position: relative;
+    overflow: visible;
 }
 
 /* Enhancement Tab UI */
