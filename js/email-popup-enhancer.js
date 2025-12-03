@@ -215,6 +215,12 @@ class EmailPopupEnhancer {
                 }
             }
             
+            // Extract hex colors (in case they're stored as rgba)
+            const bgColor = this.extractHexColor(this.config.colors?.background) || '#252830';
+            const textBgColor = this.extractHexColor(this.config.colors?.textBackground) || '#000000';
+            const btnBgColor = this.extractHexColor(this.config.colors?.buttonBackground) || '#e8f24c';
+            const btnTextColor = this.extractHexColor(this.config.colors?.buttonText) || '#1e2127';
+            
             const apiData = {
                 popup_image: this.config.image.url || null,
                 popup_image_enabled: this.config.image.enabled,
@@ -223,13 +229,22 @@ class EmailPopupEnhancer {
                 countdown_message: this.config.countdown?.message || 'Offer ends in:',
                 countdown_end_date: countdownEndDate,
                 // Design settings
-                design_background: this.config.colors?.background || '#252830',
-                design_text_background: this.config.colors?.textBackground || '#000000',
+                design_background: bgColor,
+                design_text_background: textBgColor,
                 design_text_bg_opacity: this.config.colors?.textBackgroundOpacity ?? 50,
-                design_button_background: this.config.colors?.buttonBackground || '#e8f24c',
-                design_button_text: this.config.colors?.buttonText || '#1e2127',
+                design_button_background: btnBgColor,
+                design_button_text: btnTextColor,
                 design_animation: this.config.animation || 'spinner'
             };
+            
+            console.log('EmailPopupEnhancer: Design settings to save', {
+                background: bgColor,
+                textBackground: textBgColor,
+                opacity: this.config.colors?.textBackgroundOpacity,
+                buttonBg: btnBgColor,
+                buttonText: btnTextColor,
+                animation: this.config.animation
+            });
             
             console.log('EmailPopupEnhancer: Saving to API', apiData);
             
@@ -638,23 +653,8 @@ class EmailPopupEnhancer {
                         this.config.colors.background = color;
                         break;
                     case 'textBackgroundColor':
-                        // Handle opacity separately
-                        const opacity = document.getElementById('textBackgroundOpacity').value / 100;
-                        // Convert hex to rgba
-                        const hexToRgb = (hex) => {
-                            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                            return result ? {
-                                r: parseInt(result[1], 16),
-                                g: parseInt(result[2], 16),
-                                b: parseInt(result[3], 16)
-                            } : null;
-                        };
-                        
-                        const rgb = hexToRgb(color);
-                        if (rgb) {
-                            color = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
-                            this.config.colors.textBackground = color;
-                        }
+                        // Store hex color separately, opacity is handled by slider
+                        this.config.colors.textBackground = color;
                         break;
                     case 'buttonBackgroundColor':
                         this.config.colors.buttonBackground = color;
@@ -679,34 +679,10 @@ class EmailPopupEnhancer {
         const opacitySlider = document.getElementById('textBackgroundOpacity');
         if (opacitySlider) {
             opacitySlider.addEventListener('input', (e) => {
-                const opacity = e.target.value / 100;
-                const colorInput = document.getElementById('textBackgroundColor');
-                const hexColor = colorInput.value;
-                
-                // Convert hex to rgba
-                const hexToRgb = (hex) => {
-                    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                    return result ? {
-                        r: parseInt(result[1], 16),
-                        g: parseInt(result[2], 16),
-                        b: parseInt(result[3], 16)
-                    } : null;
-                };
-                
-                const rgb = hexToRgb(hexColor);
-                if (rgb) {
-                    const color = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
-                    this.config.colors.textBackground = color;
-                    
-                    // Update color preview
-                    const preview = colorInput.parentNode.querySelector('.color-preview');
-                    if (preview) {
-                        preview.style.backgroundColor = color;
-                    }
-                    
-                    this.saveConfig();
-                    this.updatePreview();
-                }
+                // Store opacity as percentage (0-100)
+                this.config.colors.textBackgroundOpacity = parseInt(e.target.value);
+                this.saveConfig();
+                this.updatePreview();
             });
         }
         
