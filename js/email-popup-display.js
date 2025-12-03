@@ -249,12 +249,12 @@ class EmailPopupDisplay {
         // Popup background color
         const popupBgColor = this.config.colors.background || '#252830';
         
-        // Logo HTML - always left aligned with title below
+        // Logo HTML - always left aligned with title below, matching popup padding
         const logoEnabled = this.config.logo && this.config.logo.enabled;
         const logoSize = this.config.logo?.size || 100;
         const logoHtml = logoEnabled ? `
-            <div class="popup-logo-container" style="text-align: left; padding: 15px 20px 0;">
-                <img src="/images/Artboard17copy9.svg" alt="Fooodis" class="popup-logo" style="width: ${logoSize}px; height: auto; margin-bottom: 10px;">
+            <div class="popup-logo-container" style="text-align: left; margin: -25px -25px 0 -25px; padding: 20px 25px 10px 25px; border-bottom: none;">
+                <img src="/images/Artboard17copy9.svg" alt="Fooodis" class="popup-logo" style="width: ${logoSize}px; height: auto; display: block;">
             </div>
         ` : '';
         
@@ -262,8 +262,8 @@ class EmailPopupDisplay {
             <div class="email-popup layout-${layout}" style="background-color: ${popupBgColor};">
                 <button class="email-popup-close" style="position: absolute; top: 15px; right: 15px; z-index: 10;">&times;</button>
                 ${logoHtml}
-                <div class="email-popup-header" style="padding-top: ${logoEnabled ? '0' : '15px'};">
-                    <h2 class="email-popup-title">${this.config.customText.title}</h2>
+                <div class="email-popup-header" style="border-bottom: 1px solid rgba(50,54,63,0.5); padding-bottom: 10px; margin-bottom: 15px;">
+                    <h2 class="email-popup-title" style="margin: 0;">${this.config.customText.title}</h2>
                 </div>
                 <div class="email-popup-content">
         `;
