@@ -51,7 +51,12 @@ class EmailPopupDisplay {
                 
                 // Cache locally
                 localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
-                console.log('EmailPopupDisplay: Config loaded from API');
+                console.log('EmailPopupDisplay: Config loaded from API', {
+                    imageUrl: this.config.image.url,
+                    imageEnabled: this.config.image.enabled,
+                    layout: this.config.layout,
+                    apiResponse: apiConfig
+                });
                 return;
             }
         } catch (error) {
@@ -126,7 +131,13 @@ class EmailPopupDisplay {
         `;
         
         // Add image if enabled
+        console.log('EmailPopupDisplay: Image check', {
+            hasImageConfig: !!this.config.image,
+            imageEnabled: this.config.image?.enabled,
+            imageUrl: this.config.image?.url
+        });
         if (this.config.image && this.config.image.enabled && this.config.image.url) {
+            console.log('EmailPopupDisplay: Adding image to popup');
             popupContent += `
                 <div class="popup-image-container">
                     <img src="${this.config.image.url}" alt="" class="popup-image">
