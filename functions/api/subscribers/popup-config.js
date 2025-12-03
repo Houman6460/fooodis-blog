@@ -22,7 +22,10 @@ export async function onRequestGet(context) {
     const migrations = [
       "ALTER TABLE email_popup_config ADD COLUMN popup_image TEXT",
       "ALTER TABLE email_popup_config ADD COLUMN popup_image_enabled INTEGER DEFAULT 0",
-      "ALTER TABLE email_popup_config ADD COLUMN popup_layout TEXT DEFAULT 'standard'"
+      "ALTER TABLE email_popup_config ADD COLUMN popup_layout TEXT DEFAULT 'standard'",
+      "ALTER TABLE email_popup_config ADD COLUMN countdown_enabled INTEGER DEFAULT 0",
+      "ALTER TABLE email_popup_config ADD COLUMN countdown_message TEXT DEFAULT 'Offer ends in:'",
+      "ALTER TABLE email_popup_config ADD COLUMN countdown_end_date TEXT"
     ];
     
     for (const sql of migrations) {
@@ -76,6 +79,9 @@ export async function onRequestGet(context) {
       popup_image: config.popup_image || null,
       popup_image_enabled: config.popup_image_enabled ? true : false,
       popup_layout: config.popup_layout || 'standard',
+      countdown_enabled: config.countdown_enabled ? true : false,
+      countdown_message: config.countdown_message || 'Offer ends in:',
+      countdown_end_date: config.countdown_end_date || null,
       logo_image: config.logo_image || null,
       custom_css: config.custom_css || null,
       updated_at: config.updated_at
@@ -119,6 +125,7 @@ export async function onRequestPut(context) {
       'success_message', 'trigger_type', 'trigger_delay', 'trigger_scroll_percent',
       'show_once', 'show_every_days', 'background_color', 'text_color',
       'button_color', 'popup_image', 'popup_image_enabled', 'popup_layout',
+      'countdown_enabled', 'countdown_message', 'countdown_end_date',
       'logo_image', 'custom_css'
     ];
 
@@ -126,7 +133,7 @@ export async function onRequestPut(context) {
       if (data[field] !== undefined) {
         updates.push(`${field} = ?`);
         // Convert boolean to integer for SQLite
-        if (field === 'enabled' || field === 'show_once' || field === 'popup_image_enabled') {
+        if (field === 'enabled' || field === 'show_once' || field === 'popup_image_enabled' || field === 'countdown_enabled') {
           values.push(data[field] ? 1 : 0);
         } else {
           values.push(data[field]);

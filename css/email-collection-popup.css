@@ -944,3 +944,63 @@ input:checked + .slider:before {
         max-height: 150px;
     }
 }
+
+/* ============================================
+   COUNTDOWN TIMER STYLES
+   ============================================ */
+
+.countdown-container {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.countdown-message {
+    font-size: 14px;
+    color: #a0a0a0;
+    margin-bottom: 10px;
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.countdown-item {
+    background: rgba(232, 242, 76, 0.1);
+    border: 1px solid rgba(232, 242, 76, 0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    min-width: 55px;
+    text-align: center;
+}
+
+.countdown-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #e8f24c;
+    line-height: 1;
+}
+
+.countdown-label {
+    font-size: 10px;
+    color: #a0a0a0;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+/* Responsive countdown */
+@media (max-width: 480px) {
+    .countdown-item {
+        padding: 8px 10px;
+        min-width: 45px;
+    }
+    
+    .countdown-value {
+        font-size: 18px;
+    }
+    
+    .countdown-label {
+        font-size: 9px;
+    }
+}

@@ -50,6 +50,17 @@ class EmailPopupDisplay {
                     this.config.layout = apiConfig.popup_layout;
                 }
                 
+                // Load countdown settings
+                if (apiConfig.countdown_enabled !== undefined) {
+                    this.config.countdown.enabled = Boolean(apiConfig.countdown_enabled);
+                }
+                if (apiConfig.countdown_message) {
+                    this.config.countdown.message = apiConfig.countdown_message;
+                }
+                if (apiConfig.countdown_end_date) {
+                    this.config.countdown.endDate = apiConfig.countdown_end_date;
+                }
+                
                 // Cache locally
                 localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
                 console.log('EmailPopupDisplay: Config loaded from API', {
@@ -247,6 +258,48 @@ class EmailPopupDisplay {
                 this.closePopup();
             }
         });
+        
+        // Start countdown timer if enabled
+        if (this.config.countdown && this.config.countdown.enabled && this.config.countdown.endDate) {
+            this.startCountdown();
+        }
+    }
+    
+    startCountdown() {
+        const endDate = new Date(this.config.countdown.endDate);
+        
+        const updateTimer = () => {
+            const now = new Date();
+            const diff = endDate - now;
+            
+            if (diff <= 0) {
+                // Timer expired
+                document.getElementById('countdown-days').textContent = '00';
+                document.getElementById('countdown-hours').textContent = '00';
+                document.getElementById('countdown-minutes').textContent = '00';
+                document.getElementById('countdown-seconds').textContent = '00';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            const daysEl = document.getElementById('countdown-days');
+            const hoursEl = document.getElementById('countdown-hours');
+            const minutesEl = document.getElementById('countdown-minutes');
+            const secondsEl = document.getElementById('countdown-seconds');
+            
+            if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
+            if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+            if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+            if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
+        };
+        
+        // Update immediately and then every second
+        updateTimer();
+        this.countdownInterval = setInterval(updateTimer, 1000);
     }
     
     setupTriggers() {

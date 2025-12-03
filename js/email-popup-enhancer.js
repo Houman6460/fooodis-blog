@@ -112,6 +112,26 @@ class EmailPopupEnhancer {
                     this.config.layout = apiConfig.popup_layout;
                 }
                 
+                // Load countdown settings
+                if (apiConfig.countdown_enabled !== undefined) {
+                    this.config.countdown.enabled = Boolean(apiConfig.countdown_enabled);
+                }
+                if (apiConfig.countdown_message) {
+                    this.config.countdown.message = apiConfig.countdown_message;
+                }
+                if (apiConfig.countdown_end_date) {
+                    // Calculate remaining time from end date
+                    const endDate = new Date(apiConfig.countdown_end_date);
+                    const now = new Date();
+                    const diff = endDate - now;
+                    if (diff > 0) {
+                        this.config.countdown.days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        this.config.countdown.hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        this.config.countdown.minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        this.config.countdown.seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    }
+                }
+                
                 // Also cache to localStorage
                 localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
                 return;
@@ -149,10 +169,25 @@ class EmailPopupEnhancer {
     
     async saveConfigToAPI() {
         try {
+            // Calculate countdown end date from days/hours/minutes/seconds
+            let countdownEndDate = null;
+            if (this.config.countdown && this.config.countdown.enabled) {
+                const now = new Date();
+                const days = parseInt(this.config.countdown.days) || 0;
+                const hours = parseInt(this.config.countdown.hours) || 0;
+                const minutes = parseInt(this.config.countdown.minutes) || 0;
+                const seconds = parseInt(this.config.countdown.seconds) || 0;
+                const totalMs = ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
+                countdownEndDate = new Date(now.getTime() + totalMs).toISOString();
+            }
+            
             const apiData = {
                 popup_image: this.config.image.url || null,
                 popup_image_enabled: this.config.image.enabled,
-                popup_layout: this.config.layout || 'standard'
+                popup_layout: this.config.layout || 'standard',
+                countdown_enabled: this.config.countdown?.enabled || false,
+                countdown_message: this.config.countdown?.message || 'Offer ends in:',
+                countdown_end_date: countdownEndDate
             };
             
             console.log('EmailPopupEnhancer: Saving to API', apiData);
