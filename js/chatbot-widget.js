@@ -46,6 +46,12 @@
             this.conversationPhase = 'welcome'; // welcome -> handoff -> agent -> personalized
             this.userName = localStorage.getItem('fooodis-user-name') || null;
             this.handoffComplete = false;
+            
+            // Generate conversation ID immediately so messages are stored from the start
+            if (!this.conversationId) {
+                this.conversationId = 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                console.log('🆔 Generated conversation ID:', this.conversationId);
+            }
 
             // Load saved settings and prepare agents
             this.loadSavedSettings();
