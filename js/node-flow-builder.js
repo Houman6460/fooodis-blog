@@ -2179,4 +2179,10 @@ let nodeFlowBuilder;
 // Export for global access
 if (typeof window !== 'undefined') {
     window.NodeFlowBuilder = NodeFlowBuilder;
+    
+    // Make nodeFlowBuilder accessible globally for onclick handlers
+    Object.defineProperty(window, 'nodeFlowBuilder', {
+        get: function() { return nodeFlowBuilder; },
+        set: function(val) { nodeFlowBuilder = val; }
+    });
 }
