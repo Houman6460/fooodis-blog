@@ -1395,9 +1395,8 @@
             console.log('Current agent:', this.currentAgent);
             console.log('Assigned assistant ID:', this.currentAgent?.assignedAssistantId);
             
-            // FORCE EXTERNAL API: Skip ChatbotManager to use working backend API
-            // Backend is now fast (1.6s) and error-free after null safety fixes
-            if (false && window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
+            // Use ChatbotManager which routes through backend API (avoids CORS)
+            if (window.chatbotManager && typeof window.chatbotManager.generateAgentResponse === 'function') {
                 console.log('Using local ChatbotManager for response generation');
                 // Check if agent switch is needed before generating response
                 const switchAnalysis = this.shouldSwitchAgent(message, this.getConversationContext());
