@@ -3786,20 +3786,11 @@ class ChatbotManager {
                 });
             }
 
-            // If no valid assistant found, use agent's system prompt directly with Chat API
-            console.log('💡 AI ASSISTANT DEBUG - No specific assistant, using agent system prompt directly');
+            // If no valid assistant found, use backend API (to avoid CORS issues)
+            console.log('💡 AI ASSISTANT DEBUG - No specific assistant, calling backend API');
             
-            // Create a virtual assistant from agent config
-            const virtualAssistant = {
-                id: agent.id || 'agent-fallback',
-                name: agent.name || 'Support Agent',
-                systemPrompt: agent.systemPrompt || `You are ${agent.name || 'a helpful support agent'} for Fooodis. Help customers with their questions in a friendly and professional manner.`,
-                model: agent.model || 'gpt-4',
-                personality: agent.personality || 'Friendly and helpful'
-            };
-            
-            console.log('🔧 AI ASSISTANT DEBUG - Using virtual assistant:', virtualAssistant.name);
-            return await this.callOpenAIChat(message, virtualAssistant, null, language, conversationId);
+            // Call backend API which handles OpenAI communication
+            return await this.callBackendChatAPI(message, agent, language, conversationId);
             
         } catch (error) {
             console.error('Error generating agent response:', error);
@@ -4011,6 +4002,56 @@ class ChatbotManager {
         } catch (error) {
             console.error('OpenAI Chat API error:', error);
             throw error;
+        }
+    }
+
+    /**
+     * Call Backend Chat API (avoids CORS issues with OpenAI)
+     * Routes through our Cloudflare Functions which handle OpenAI communication
+     */
+    async callBackendChatAPI(message, agent, language, conversationId) {
+        try {
+            console.log('🌐 Calling backend API for chat response...');
+            
+            const apiEndpoint = '/api/chatbot';
+            
+            const response = await fetch(apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    conversationId: conversationId,
+                    language: language,
+                    agentName: agent?.name,
+                    agentSystemPrompt: agent?.systemPrompt,
+                    assistantId: agent?.assignedAssistantId
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Backend API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('✅ Backend API response received');
+                return {
+                    success: true,
+                    message: data.message,
+                    conversationId: data.conversationId || conversationId,
+                    assistantUsed: agent?.name || 'Backend Assistant'
+                };
+            } else {
+                throw new Error(data.error || 'Unknown backend error');
+            }
+
+        } catch (error) {
+            console.error('Backend Chat API error:', error);
+            // Return a helpful fallback response
+            return this.enhancedFallbackResponse(message, agent, language, conversationId);
         }
     }
 

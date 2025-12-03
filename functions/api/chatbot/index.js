@@ -71,7 +71,7 @@ export async function onRequestPost(context) {
 
   try {
     const data = await request.json();
-    const { message, conversationId, visitorId, assistantId, language } = data;
+    const { message, conversationId, visitorId, assistantId, language, agentName, agentSystemPrompt } = data;
 
     if (!message) {
       return new Response(JSON.stringify({ success: false, error: "Message is required" }), {
@@ -125,9 +125,12 @@ export async function onRequestPost(context) {
 
     // Get assistant configuration
     let assistant = null;
-    let systemPrompt = 'You are a helpful assistant for Fooodis, a food delivery and restaurant management platform. Help users with their questions about food, restaurants, and the platform.';
+    let systemPrompt = agentSystemPrompt || 'You are a helpful assistant for Fooodis, a food delivery and restaurant management platform. Help users with their questions about food, restaurants, and the platform.';
     
-    if (env.DB && assistantId) {
+    // If agent system prompt provided, use it directly
+    if (agentSystemPrompt) {
+      console.log('Using agent system prompt for:', agentName);
+    } else if (env.DB && assistantId) {
       assistant = await env.DB.prepare(
         "SELECT * FROM ai_assistants WHERE id = ? OR openai_assistant_id = ?"
       ).bind(assistantId, assistantId).first();
