@@ -3258,11 +3258,36 @@
             }
         },
 
+        // Generate localized welcome response based on detected language
+        getLocalizedWelcomeResponse: function() {
+            const language = this.getCurrentLanguage();
+            console.log('🌐 Generating localized welcome for:', language);
+            
+            const welcomeMessages = {
+                'swedish': 'Hej! Jag är din Fooodis-assistent. Hur kan jag hjälpa dig idag?',
+                'english': "Hello! I'm your Fooodis assistant. How can I help you today?"
+            };
+            
+            const message = welcomeMessages[language] || welcomeMessages['english'];
+            
+            return {
+                type: 'message',
+                content: message,
+                nextAction: 'continue'
+            };
+        },
+
         // Process message in context of active scenario
         processScenarioMessage: function(userMessage) {
             console.log('🔄 processScenarioMessage called with:', userMessage);
             console.log('🔄 currentNode:', this.currentNode?.type, this.currentNode?.id);
             console.log('🔄 messages.length:', this.messages.length);
+            
+            // Detect language from first user message
+            if (!this.languageDetected && userMessage) {
+                this.detectLanguage(userMessage);
+                console.log('🌐 Language detected from first message:', this.currentLanguage);
+            }
             
             // Quick processing delay (500-800ms) - human delays applied at agent response level
             const processingDelay = 500 + Math.random() * 300;
@@ -3275,7 +3300,8 @@
                 // If this is the first message and we have a welcome node, execute it
                 if (this.messages.length <= 2 && currentNode?.type === 'welcome') {
                     console.log('🔄 Executing as welcome node (first message)');
-                    nodeResult = this.executeScenarioNode(currentNode);
+                    // Generate localized welcome response instead of default
+                    nodeResult = this.getLocalizedWelcomeResponse();
                 } else {
                     // Process user input through current node
                     console.log('🔄 Executing with user message through node:', currentNode?.type);
@@ -3337,8 +3363,15 @@
                                 this.hideTyping();
                             }, 800);
                         } else if (nextNode.type === 'intent') {
-                            // For intent nodes, wait for user input
+                            // For intent nodes, show intent buttons and wait for user input
                             console.log('📋 Waiting for user input for intent node:', nextNode.id);
+                            
+                            // Show intent buttons for the user to click
+                            if (nextNode.data?.intents && nextNode.data.intents.length > 0) {
+                                const buttonsHtml = this.generateSmartButtons(nextNode.data.intents);
+                                this.addMessage(buttonsHtml, 'assistant');
+                            }
+                            
                             this.hideTyping();
                         } else {
                             console.log('📋 Unknown next node type:', nextNode.type);
