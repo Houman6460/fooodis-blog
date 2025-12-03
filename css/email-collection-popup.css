@@ -772,3 +772,152 @@ input:checked + .slider:before {
     margin-bottom: 25px;
     padding: 5px 0;
 }
+
+/* ============================================
+   LAYOUT STYLES FOR POPUP WITH IMAGES
+   ============================================ */
+
+/* Standard layout - text only, centered */
+.layout-standard .email-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Image Left layout */
+.layout-image-left .email-popup-content {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.layout-image-left {
+    max-width: 550px;
+}
+
+/* Image Right layout */
+.layout-image-right .email-popup-content {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    gap: 20px;
+    align-items: start;
+}
+
+.layout-image-right {
+    max-width: 550px;
+}
+
+/* Image Top layout */
+.layout-image-top .email-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-image-top .popup-image-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.layout-image-top .popup-image {
+    max-height: 180px;
+    width: auto;
+}
+
+/* Image Bottom layout */
+.layout-image-bottom .email-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-image-bottom .popup-image-container {
+    order: 2;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.layout-image-bottom .popup-text-container {
+    order: 1;
+}
+
+.layout-image-bottom .popup-image {
+    max-height: 180px;
+    width: auto;
+}
+
+/* Image Background layout */
+.layout-image-background {
+    position: relative;
+    overflow: hidden;
+}
+
+.layout-image-background .email-popup-content {
+    position: relative;
+}
+
+.layout-image-background .popup-image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.layout-image-background .popup-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.25;
+}
+
+.layout-image-background .popup-text-container {
+    position: relative;
+    z-index: 1;
+    background: rgba(37, 40, 48, 0.85);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Image container and image styles */
+.popup-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.popup-image {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* Text container */
+.popup-text-container {
+    flex: 1;
+}
+
+/* Responsive adjustments for layouts */
+@media (max-width: 576px) {
+    .layout-image-left .email-popup-content,
+    .layout-image-right .email-popup-content {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .layout-image-left .popup-image-container,
+    .layout-image-right .popup-image-container {
+        margin-bottom: 15px;
+    }
+    
+    .layout-image-left,
+    .layout-image-right {
+        max-width: 420px;
+    }
+    
+    .popup-image {
+        max-height: 150px;
+    }
+}

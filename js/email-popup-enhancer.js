@@ -181,9 +181,20 @@ class EmailPopupEnhancer {
                 <div class="customization-option">
                     <label class="option-label" for="popupImage">Upload Image (PNG, GIF, JPG supported)</label>
                     <input type="file" id="popupImage" class="option-input" accept=".png,.gif,.jpg,.jpeg">
+                    <button type="button" class="btn btn-secondary btn-sm choose-media-btn" id="chooseFromMediaBtn">
+                        <i class="fas fa-images"></i> Choose from Media Library
+                    </button>
                     <p class="input-help">Transparent PNG files will maintain transparency</p>
-                    <div class="image-upload-preview ${this.config.image.url ? 'has-image' : ''}">
-                        ${this.config.image.url ? `<img src="${this.config.image.url}" alt="Preview">` : ''}
+                    <div class="image-upload-preview ${this.config.image.url ? 'has-image' : ''}" id="imageUploadPreview">
+                        ${this.config.image.url ? `
+                            <button type="button" class="image-remove-btn" id="removeImageBtn" title="Remove image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <img src="${this.config.image.url}" alt="Preview">
+                            <div class="image-info">
+                                <span class="image-name">${this.config.image.name || 'Uploaded image'}</span>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -404,18 +415,50 @@ class EmailPopupEnhancer {
                 reader.onload = (event) => {
                     this.config.image.url = event.target.result;
                     this.config.image.type = file.type;
+                    this.config.image.name = file.name;
                     
-                    // Update preview
-                    const preview = document.querySelector('.image-upload-preview');
-                    if (preview) {
-                        preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
-                        preview.classList.add('has-image');
-                    }
+                    // Update preview with remove button
+                    this.updateImagePreview();
                     
                     this.saveConfig();
                     this.updatePreview();
                 };
                 reader.readAsDataURL(file);
+            });
+        }
+        
+        // Bind remove image button (use event delegation)
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#removeImageBtn') || e.target.closest('.image-remove-btn')) {
+                e.preventDefault();
+                this.removeImage();
+            }
+        });
+        
+        // Choose from media library button
+        const chooseMediaBtn = document.getElementById('chooseFromMediaBtn');
+        if (chooseMediaBtn) {
+            chooseMediaBtn.addEventListener('click', () => {
+                // Open media library modal if available
+                if (window.openMediaLibraryModal) {
+                    window.openMediaLibraryModal((selectedImage) => {
+                        if (selectedImage && selectedImage.url) {
+                            this.config.image.url = selectedImage.url || selectedImage.r2_url;
+                            this.config.image.name = selectedImage.name || selectedImage.original_name || 'Media Library Image';
+                            this.config.image.type = selectedImage.type || 'image/jpeg';
+                            this.updateImagePreview();
+                            this.saveConfig();
+                            this.updatePreview();
+                        }
+                    });
+                } else {
+                    // Fallback - show media library section
+                    const mediaSection = document.querySelector('[data-section="media-library"]');
+                    if (mediaSection) {
+                        mediaSection.click();
+                        this.showNotification('Select an image from the Media Library, then return to Email Subscribers.');
+                    }
+                }
             });
         }
         
@@ -616,6 +659,47 @@ class EmailPopupEnhancer {
     
     padZero(num) {
         return num < 10 ? `0${num}` : num;
+    }
+    
+    updateImagePreview() {
+        const preview = document.getElementById('imageUploadPreview');
+        if (!preview) return;
+        
+        if (this.config.image.url) {
+            preview.innerHTML = `
+                <button type="button" class="image-remove-btn" id="removeImageBtn" title="Remove image">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="${this.config.image.url}" alt="Preview">
+                <div class="image-info">
+                    <span class="image-name">${this.config.image.name || 'Uploaded image'}</span>
+                </div>
+            `;
+            preview.classList.add('has-image');
+        } else {
+            preview.innerHTML = '';
+            preview.classList.remove('has-image');
+        }
+    }
+    
+    removeImage() {
+        // Clear image config
+        this.config.image.url = '';
+        this.config.image.type = '';
+        this.config.image.name = '';
+        
+        // Update preview
+        this.updateImagePreview();
+        
+        // Clear file input
+        const fileInput = document.getElementById('popupImage');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        // Save and notify
+        this.saveConfig();
+        this.showNotification('Image removed successfully.');
     }
     
     updatePreview() {
