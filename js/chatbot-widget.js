@@ -1315,10 +1315,13 @@
             this.showTyping();
 
             // Check if scenario is active and process accordingly
+            console.log('📨 sendMessage - scenarioActive:', this.scenarioActive, 'currentNode:', this.currentNode?.type, this.currentNode?.id);
             if (this.scenarioActive && this.currentNode) {
+                console.log('📨 Routing to processScenarioMessage');
                 this.processScenarioMessage(message);
                 return;
             }
+            console.log('📨 Scenario NOT active, using fallback flow');
             
             // Trigger agent handoff after first user message if not done (fallback behavior)
             if (this.conversationPhase === 'welcome' && !this.handoffComplete) {
@@ -3018,10 +3021,13 @@
             switch (result.nextAction) {
                 case 'continue':
                     // Move to next node automatically
+                    console.log('📋 Case: continue - moving to next node from:', this.currentNode?.id);
                     const nextNode = this.moveToNextNode(this.currentNode.id, userMessage);
+                    console.log('📋 nextNode found:', nextNode?.type, nextNode?.id);
                     if (nextNode) {
                         // Auto-execute next node based on its type
                         if (nextNode.type === 'message' || nextNode.type === 'welcome') {
+                            console.log('📋 Auto-executing message/welcome node');
                             setTimeout(() => {
                                 const nextResult = this.executeScenarioNode(nextNode);
                                 if (nextResult && nextResult.content) {
@@ -3031,9 +3037,10 @@
                             }, 800);
                         } else if (nextNode.type === 'handoff') {
                             // Auto-execute handoff node
-                            console.log('Auto-executing handoff node:', nextNode.id);
+                            console.log('📋 Auto-executing handoff node:', nextNode.id);
                             setTimeout(() => {
                                 const nextResult = this.executeScenarioNode(nextNode);
+                                console.log('📋 Handoff node result:', nextResult);
                                 if (nextResult && nextResult.content) {
                                     this.addMessage(nextResult.content, 'assistant');
                                 }
@@ -3041,12 +3048,14 @@
                             }, 800);
                         } else if (nextNode.type === 'intent') {
                             // For intent nodes, wait for user input
-                            console.log('Waiting for user input for intent node:', nextNode.id);
+                            console.log('📋 Waiting for user input for intent node:', nextNode.id);
                             this.hideTyping();
                         } else {
+                            console.log('📋 Unknown next node type:', nextNode.type);
                             this.hideTyping();
                         }
                     } else {
+                        console.log('📋 No next node found, hiding typing');
                         this.hideTyping();
                     }
                     break;
