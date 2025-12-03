@@ -1,0 +1,812 @@
+/* Landing Page & User Section Responsive Design Fixes */
+/* Comprehensive mobile-first responsive improvements for blog.html, support.html */
+
+/* ============================================
+   BASE RESPONSIVE FIXES
+   ============================================ */
+
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Mobile nav overlay */
+.mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.mobile-nav-overlay.active {
+    display: block;
+}
+
+/* ============================================
+   LARGE TABLETS (max-width: 1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+    /* Blog container */
+    .blog-container {
+        padding: 0 15px;
+    }
+    
+    /* Blog sidebar */
+    .blog-sidebar {
+        width: 280px;
+    }
+    
+    /* Support container */
+    .support-container {
+        padding: 0 20px;
+    }
+    
+    /* Header adjustments */
+    .header-container {
+        padding: 0 15px;
+    }
+    
+    /* Nav spacing */
+    .nav-list {
+        gap: 10px;
+    }
+    
+    .nav-item {
+        margin: 0 5px;
+    }
+    
+    .nav-item a {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+}
+
+/* ============================================
+   TABLETS (max-width: 992px)
+   ============================================ */
+@media (max-width: 992px) {
+    /* Blog layout - stack sidebar below content */
+    .blog-container {
+        flex-direction: column;
+    }
+    
+    .blog-main {
+        width: 100%;
+    }
+    
+    .blog-sidebar {
+        width: 100%;
+        position: static;
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    
+    /* Blog posts grid */
+    .blog-posts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Modal adjustments */
+    .modal-content {
+        width: 90%;
+        max-width: 700px;
+    }
+    
+    /* Support sections */
+    .ticket-section {
+        padding: 25px;
+    }
+    
+    /* Dashboard stats grid */
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================================
+   SMALL TABLETS / LARGE PHONES (max-width: 768px)
+   ============================================ */
+@media (max-width: 768px) {
+    /* Header - show hamburger, hide nav */
+    .main-nav {
+        display: none !important;
+    }
+    
+    .hamburger-menu {
+        display: flex !important;
+        flex-direction: column;
+    }
+    
+    .header-container {
+        padding: 0 15px;
+    }
+    
+    .fooodis-logo {
+        height: 35px;
+    }
+    
+    .language-selector {
+        margin-right: 10px;
+        gap: 6px;
+    }
+    
+    .flag-icon {
+        width: 18px;
+    }
+    
+    /* Header spacer */
+    .header-spacer {
+        height: 65px;
+    }
+    
+    /* Blog title */
+    .blog-title {
+        font-size: 28px;
+    }
+    
+    .blog-subtitle {
+        font-size: 14px;
+    }
+    
+    /* Blog posts grid */
+    .blog-posts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    
+    /* Blog banner */
+    .blog-banner-container {
+        padding: 0 15px;
+    }
+    
+    .blog-banner {
+        height: 280px;
+    }
+    
+    .blog-banner-title {
+        font-size: 22px;
+    }
+    
+    .blog-banner-description {
+        font-size: 13px;
+    }
+    
+    /* Blog sidebar - single column on tablets */
+    .blog-sidebar {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Blog post card */
+    .blog-post-card {
+        margin-bottom: 15px;
+    }
+    
+    /* Pagination */
+    .blog-pagination {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .pagination-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    
+    .pagination-numbers {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    /* Modal */
+    .modal-content,
+    .blog-post-modal .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .modal-title {
+        font-size: 22px;
+    }
+    
+    .modal-image {
+        height: 250px;
+    }
+    
+    /* Support page */
+    .support-main {
+        padding: 20px 15px;
+    }
+    
+    .support-container {
+        padding: 0;
+    }
+    
+    .support-header {
+        padding: 25px 20px;
+        margin-bottom: 25px;
+    }
+    
+    .support-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .support-header p {
+        font-size: 1rem;
+    }
+    
+    /* Ticket sections */
+    .ticket-section {
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    /* Form grid - single column */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    /* Form actions */
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-actions button,
+    .form-actions .btn {
+        width: 100%;
+    }
+    
+    /* Auth buttons */
+    .auth-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .auth-buttons .btn-primary,
+    .auth-buttons .btn-secondary {
+        width: 100%;
+    }
+    
+    /* Dashboard header */
+    .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .user-info {
+        justify-content: space-between;
+    }
+    
+    /* Dashboard stats - single column */
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Ticket cards */
+    .ticket-card {
+        padding: 15px;
+    }
+    
+    .ticket-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .ticket-card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    /* Ticket list */
+    .tickets-list {
+        gap: 15px;
+    }
+    
+    /* Language toggle */
+    .language-toggle {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .language-tab {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
+
+/* ============================================
+   MOBILE PHONES (max-width: 576px)
+   ============================================ */
+@media (max-width: 576px) {
+    /* Header */
+    .fooodis-header {
+        padding: 8px 0;
+    }
+    
+    .fooodis-logo {
+        height: 30px;
+    }
+    
+    .hamburger-menu {
+        padding: 8px;
+    }
+    
+    .hamburger-line {
+        width: 22px;
+        height: 2px;
+        margin: 4px 0;
+    }
+    
+    /* Header spacer */
+    .header-spacer {
+        height: 55px;
+    }
+    
+    /* Mobile nav enhancements */
+    .mobile-nav {
+        width: 85%;
+        max-width: 300px;
+    }
+    
+    .mobile-nav-item a {
+        font-size: 16px;
+        padding: 12px 0;
+    }
+    
+    /* Blog title */
+    .blog-title {
+        font-size: 24px;
+    }
+    
+    .blog-subtitle {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+    
+    /* Blog posts - single column */
+    .blog-posts-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    /* Blog banner */
+    .blog-banner {
+        height: 220px;
+    }
+    
+    .blog-banner-overlay {
+        padding: 15px;
+    }
+    
+    .blog-banner-title {
+        font-size: 18px;
+    }
+    
+    .blog-banner-description {
+        font-size: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* Blog post card */
+    .blog-post-image {
+        height: 180px;
+    }
+    
+    .blog-post-title {
+        font-size: 16px;
+    }
+    
+    .blog-post-excerpt {
+        font-size: 13px;
+    }
+    
+    /* Pagination */
+    .pagination-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .page-number {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+    
+    /* Modal */
+    .modal-content,
+    .blog-post-modal .modal-content {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+        height: 100vh;
+    }
+    
+    .modal-close {
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+    }
+    
+    .modal-image {
+        height: 200px;
+    }
+    
+    .modal-content-text {
+        font-size: 14px;
+    }
+    
+    /* Modal share buttons */
+    .modal-share {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .modal-share-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    /* Support page */
+    .support-main {
+        padding: 15px 10px;
+    }
+    
+    .support-header {
+        padding: 20px 15px;
+        border-radius: 10px;
+    }
+    
+    .support-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .support-header h1 i {
+        font-size: 1.3rem;
+    }
+    
+    .support-header p {
+        font-size: 0.9rem;
+    }
+    
+    /* Ticket section */
+    .ticket-section {
+        padding: 15px;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+    }
+    
+    /* Form elements */
+    .form-group label {
+        font-size: 13px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    /* Buttons */
+    .btn,
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 16px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+    
+    /* Dashboard stats */
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+    }
+    
+    /* Ticket cards */
+    .ticket-card {
+        padding: 12px;
+    }
+    
+    .ticket-id {
+        font-size: 12px;
+    }
+    
+    .ticket-subject {
+        font-size: 14px;
+    }
+    
+    /* Tabs */
+    .tabs-container {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        min-width: calc(50% - 4px);
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    /* Auth modal */
+    .auth-modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    /* Chatbot widget */
+    #fooodis-chatbot.bottom-right {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+    
+    .chatbot-button {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    /* Conversation/reply area */
+    .conversation-history {
+        max-height: 200px;
+    }
+    
+    .reply-textarea {
+        min-height: 80px;
+    }
+    
+    .reply-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .reply-actions button {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   VERY SMALL PHONES (max-width: 375px)
+   ============================================ */
+@media (max-width: 375px) {
+    .fooodis-logo {
+        height: 26px;
+    }
+    
+    .flag-icon {
+        width: 16px;
+    }
+    
+    .blog-title {
+        font-size: 20px;
+    }
+    
+    .blog-subtitle {
+        font-size: 12px;
+    }
+    
+    .blog-banner {
+        height: 180px;
+    }
+    
+    .blog-banner-title {
+        font-size: 16px;
+    }
+    
+    .blog-post-image {
+        height: 150px;
+    }
+    
+    .support-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .ticket-section {
+        padding: 12px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .nav-item a,
+    .mobile-nav-item a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .btn,
+    button,
+    .btn-primary,
+    .btn-secondary {
+        min-height: 44px;
+    }
+    
+    input,
+    select,
+    textarea {
+        min-height: 44px;
+        font-size: 16px; /* Prevents iOS zoom */
+    }
+    
+    /* Remove hover effects */
+    .blog-post-card:hover {
+        transform: none;
+    }
+    
+    .nav-item a:hover {
+        transform: none;
+    }
+    
+    /* Always show card overlays on touch */
+    .blog-post-overlay {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   LANDSCAPE PHONE ORIENTATION
+   ============================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header-spacer {
+        height: 50px;
+    }
+    
+    .fooodis-header {
+        padding: 5px 0;
+    }
+    
+    .fooodis-logo {
+        height: 28px;
+    }
+    
+    .modal-content {
+        margin: 2% auto;
+        max-height: 96vh;
+    }
+    
+    .modal-image {
+        height: 150px;
+    }
+    
+    .mobile-nav {
+        padding-top: 40px;
+    }
+    
+    .blog-banner {
+        height: 200px;
+    }
+}
+
+/* ============================================
+   FOOTER RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .footer-section {
+        width: 100%;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .footer-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-content {
+        padding: 30px 15px;
+    }
+    
+    .footer-logo {
+        height: 30px;
+    }
+    
+    .footer-description {
+        font-size: 13px;
+    }
+    
+    .footer-title {
+        font-size: 16px;
+    }
+    
+    .footer-link {
+        font-size: 13px;
+    }
+    
+    .social-icons a {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+    .fooodis-header,
+    .hamburger-menu,
+    .mobile-nav,
+    .mobile-nav-overlay,
+    .blog-sidebar,
+    .blog-pagination,
+    .auth-buttons,
+    .chatbot-button,
+    #fooodis-chatbot,
+    .footer {
+        display: none !important;
+    }
+    
+    .header-spacer {
+        height: 0;
+    }
+    
+    .blog-container,
+    .support-container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .modal-content {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+    }
+}

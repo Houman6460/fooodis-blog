@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="css/enhanced-banner.css">
     <link rel="stylesheet" href="css/email-popup-enhanced.css">
     <link rel="stylesheet" href="css/email-collection-popup.css">
+    <link rel="stylesheet" href="css/landing-responsive-fix.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <!-- Chatbot Widget Styles -->
@@ -478,6 +479,9 @@
             </div>
         </div>
     </header>
+    <!-- Mobile navigation overlay -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    
     <!-- Mobile navigation menu (hidden by default) -->
     <div class="mobile-nav">
         <div class="mobile-nav-close">×</div>
@@ -647,20 +651,50 @@
             const hamburgerMenu = document.querySelector('.hamburger-menu');
             const mobileNav = document.querySelector('.mobile-nav');
             const closeBtn = document.querySelector('.mobile-nav-close');
-
-            if (hamburgerMenu && mobileNav) {
-                hamburgerMenu.addEventListener('click', function() {
+            const overlay = document.getElementById('mobileNavOverlay');
+            
+            function openMobileNav() {
+                if (mobileNav) {
                     mobileNav.classList.add('show');
-                    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
-                });
+                    if (overlay) overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            function closeMobileNav() {
+                if (mobileNav) {
+                    mobileNav.classList.remove('show');
+                    if (overlay) overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
             }
 
-            if (closeBtn && mobileNav) {
-                closeBtn.addEventListener('click', function() {
-                    mobileNav.classList.remove('show');
-                    document.body.style.overflow = ''; // Re-enable scrolling
-                });
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', openMobileNav);
             }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeMobileNav);
+            }
+            
+            if (overlay) {
+                overlay.addEventListener('click', closeMobileNav);
+            }
+            
+            // Close on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileNav && mobileNav.classList.contains('show')) {
+                    closeMobileNav();
+                }
+            });
+            
+            // Close when clicking a nav link
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-item a');
+            mobileNavLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    setTimeout(closeMobileNav, 100);
+                });
+            });
 
             // Language switching is now handled in blog.js
         });
