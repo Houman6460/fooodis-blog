@@ -2964,14 +2964,37 @@
             this.conversationPhase = 'agent';
             this.handoffComplete = true;
             
-            // Show handoff confirmation message (language-aware)
-            const handoffMessage = this.getLocalizedAgentIntroduction();
-            this.addMessage(handoffMessage, 'assistant');
-            
             // Update UI to show current agent
             this.updateAgentDisplay();
             
-            console.log('Agent assigned:', this.currentAgent);
+            // Human-like delay for agent typing their introduction
+            const typingDelay = this.calculateAgentTypingDelay();
+            console.log('🕐 Agent typing delay:', typingDelay, 'ms');
+            
+            this.showTyping();
+            
+            setTimeout(() => {
+                this.hideTyping();
+                // Show handoff confirmation message (language-aware)
+                const handoffMessage = this.getLocalizedAgentIntroduction();
+                this.addMessage(handoffMessage, 'assistant');
+                console.log('Agent assigned:', this.currentAgent);
+            }, typingDelay);
+        },
+        
+        // Calculate human-like typing delay for agent responses
+        calculateAgentTypingDelay: function() {
+            // Base delay: 1.5-2.5 seconds (agent reading/preparing)
+            let baseDelay = 1500 + Math.random() * 1000;
+            
+            // Add typing simulation
+            const typingTime = 800 + Math.random() * 1200;
+            
+            // Occasional "thinking" pause (30% chance)
+            const thinkingPause = Math.random() < 0.3 ? 500 + Math.random() * 1000 : 0;
+            
+            // Total delay between 2-4 seconds
+            return Math.min(4000, Math.max(2000, baseDelay + typingTime + thinkingPause));
         },
 
         // Get next node action based on connections
@@ -3137,9 +3160,9 @@
             console.log('🔄 currentNode:', this.currentNode?.type, this.currentNode?.id);
             console.log('🔄 messages.length:', this.messages.length);
             
-            // Human-like delay based on message complexity
-            const humanDelay = this.calculateHumanDelay(userMessage);
-            console.log('🕐 Human-like delay:', humanDelay, 'ms');
+            // Quick processing delay (500-800ms) - human delays applied at agent response level
+            const processingDelay = 500 + Math.random() * 300;
+            console.log('🕐 Processing delay:', processingDelay, 'ms');
             
             setTimeout(() => {
                 let currentNode = this.currentNode;
@@ -3167,30 +3190,9 @@
                     this.hideTyping();
                     this.addMessage('I\'m sorry, I didn\'t understand that. Could you please try again?', 'assistant');
                 }
-            }, humanDelay);
+            }, processingDelay);
         },
         
-        // Calculate human-like typing delay
-        calculateHumanDelay: function(message) {
-            // Base delay: 1-2 seconds (simulates reading the message)
-            let baseDelay = 1000 + Math.random() * 1000;
-            
-            // Add delay based on message length (longer messages = more reading time)
-            const wordCount = (message || '').split(/\s+/).length;
-            const readingTime = wordCount * 100; // ~100ms per word
-            
-            // Add typing simulation (response will take time to "type")
-            const typingTime = 500 + Math.random() * 1000;
-            
-            // Add occasional "thinking" pause (20% chance of extra pause)
-            const thinkingPause = Math.random() < 0.2 ? 1000 + Math.random() * 1500 : 0;
-            
-            // Total delay between 1.5s and 5s for realism
-            const totalDelay = Math.min(5000, Math.max(1500, baseDelay + readingTime + typingTime + thinkingPause));
-            
-            return totalDelay;
-        },
-
         // Handle scenario execution results
         handleScenarioResult: function(result, userMessage) {
             console.log('📋 handleScenarioResult called with:', result);
