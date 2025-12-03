@@ -172,16 +172,36 @@ class EmailPopupDisplay {
             popupContent += imageHtml;
         }
         
-        // Add text container
+        // Add text container with form
         popupContent += `
                 <div class="popup-text-container" style="${textBgStyle}">
                     <p class="email-popup-description">${this.config.customText.description}</p>
+                    <form class="email-form">
+                        <div class="email-input-group">
+                            <input type="email" class="email-input" placeholder="${this.config.customText.placeholder}" required>
+                        </div>
+                        <button type="submit" class="email-submit-btn" style="background-color: ${this.config.colors.buttonBackground}; color: ${this.config.colors.buttonText};">
+                            ${this.config.animation ? `<div class="anim-${this.config.animation}" style="display: none;"></div>` : ''}
+                            ${this.config.customText.buttonText}
+                        </button>
+                    </form>
+                </div>
         `;
         
-        // Add countdown if enabled
+        // For image-right and image-bottom: add image after text
+        if (layout === 'image-right' || layout === 'image-bottom') {
+            console.log('EmailPopupDisplay: Adding image for', layout, 'imageHtml length:', imageHtml.length);
+            popupContent += imageHtml;
+        }
+        
+        // Close email-popup-content
+        popupContent += `</div>`;
+        
+        // Add countdown at bottom if enabled (full width, aligned with content)
         if (this.config.countdown && this.config.countdown.enabled) {
+            console.log('EmailPopupDisplay: Adding countdown, endDate:', this.config.countdown.endDate);
             popupContent += `
-                <div class="countdown-container">
+                <div class="countdown-section">
                     <p class="countdown-message">${this.config.countdown.message || 'Offer ends in:'}</p>
                     <div class="countdown-timer">
                         <div class="countdown-item">
@@ -205,28 +225,7 @@ class EmailPopupDisplay {
             `;
         }
         
-        // Add email form
         popupContent += `
-                    <form class="email-form">
-                        <div class="email-input-group">
-                            <input type="email" class="email-input" placeholder="${this.config.customText.placeholder}" required>
-                        </div>
-                        <button type="submit" class="email-submit-btn" style="background-color: ${this.config.colors.buttonBackground}; color: ${this.config.colors.buttonText};">
-                            ${this.config.animation ? `<div class="anim-${this.config.animation}" style="display: none;"></div>` : ''}
-                            ${this.config.customText.buttonText}
-                        </button>
-                    </form>
-                </div>
-        `;
-        
-        // For image-right and image-bottom: add image after text
-        if (layout === 'image-right' || layout === 'image-bottom') {
-            console.log('EmailPopupDisplay: Adding image for', layout, 'imageHtml length:', imageHtml.length);
-            popupContent += imageHtml;
-        }
-        
-        popupContent += `
-            </div>
             <div class="email-popup-footer">
                 <p>We respect your privacy. Unsubscribe at any time.</p>
             </div>
@@ -260,13 +259,34 @@ class EmailPopupDisplay {
         });
         
         // Start countdown timer if enabled
-        if (this.config.countdown && this.config.countdown.enabled && this.config.countdown.endDate) {
+        if (this.config.countdown && this.config.countdown.enabled) {
             this.startCountdown();
         }
     }
     
     startCountdown() {
-        const endDate = new Date(this.config.countdown.endDate);
+        let endDate;
+        
+        // Try to get end date from config
+        if (this.config.countdown.endDate) {
+            endDate = new Date(this.config.countdown.endDate);
+        } else {
+            // Calculate from days/hours/minutes/seconds if available
+            const days = parseInt(this.config.countdown.days) || 0;
+            const hours = parseInt(this.config.countdown.hours) || 0;
+            const minutes = parseInt(this.config.countdown.minutes) || 0;
+            const seconds = parseInt(this.config.countdown.seconds) || 0;
+            
+            if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
+                const totalMs = ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
+                endDate = new Date(Date.now() + totalMs);
+            } else {
+                // Default: 1 day from now
+                endDate = new Date(Date.now() + (24 * 60 * 60 * 1000));
+            }
+        }
+        
+        console.log('EmailPopupDisplay: Starting countdown to', endDate);
         
         const updateTimer = () => {
             const now = new Date();
@@ -278,6 +298,9 @@ class EmailPopupDisplay {
                 document.getElementById('countdown-hours').textContent = '00';
                 document.getElementById('countdown-minutes').textContent = '00';
                 document.getElementById('countdown-seconds').textContent = '00';
+                if (this.countdownInterval) {
+                    clearInterval(this.countdownInterval);
+                }
                 return;
             }
             
