@@ -25,7 +25,14 @@ export async function onRequestGet(context) {
       "ALTER TABLE email_popup_config ADD COLUMN popup_layout TEXT DEFAULT 'standard'",
       "ALTER TABLE email_popup_config ADD COLUMN countdown_enabled INTEGER DEFAULT 0",
       "ALTER TABLE email_popup_config ADD COLUMN countdown_message TEXT DEFAULT 'Offer ends in:'",
-      "ALTER TABLE email_popup_config ADD COLUMN countdown_end_date TEXT"
+      "ALTER TABLE email_popup_config ADD COLUMN countdown_end_date TEXT",
+      // Design settings
+      "ALTER TABLE email_popup_config ADD COLUMN design_background TEXT DEFAULT '#252830'",
+      "ALTER TABLE email_popup_config ADD COLUMN design_text_background TEXT DEFAULT '#000000'",
+      "ALTER TABLE email_popup_config ADD COLUMN design_text_bg_opacity INTEGER DEFAULT 50",
+      "ALTER TABLE email_popup_config ADD COLUMN design_button_background TEXT DEFAULT '#e8f24c'",
+      "ALTER TABLE email_popup_config ADD COLUMN design_button_text TEXT DEFAULT '#1e2127'",
+      "ALTER TABLE email_popup_config ADD COLUMN design_animation TEXT DEFAULT 'spinner'"
     ];
     
     for (const sql of migrations) {
@@ -82,6 +89,13 @@ export async function onRequestGet(context) {
       countdown_enabled: config.countdown_enabled ? true : false,
       countdown_message: config.countdown_message || 'Offer ends in:',
       countdown_end_date: config.countdown_end_date || null,
+      // Design settings
+      design_background: config.design_background || '#252830',
+      design_text_background: config.design_text_background || '#000000',
+      design_text_bg_opacity: config.design_text_bg_opacity !== undefined ? config.design_text_bg_opacity : 50,
+      design_button_background: config.design_button_background || '#e8f24c',
+      design_button_text: config.design_button_text || '#1e2127',
+      design_animation: config.design_animation || 'spinner',
       logo_image: config.logo_image || null,
       custom_css: config.custom_css || null,
       updated_at: config.updated_at
@@ -126,6 +140,8 @@ export async function onRequestPut(context) {
       'show_once', 'show_every_days', 'background_color', 'text_color',
       'button_color', 'popup_image', 'popup_image_enabled', 'popup_layout',
       'countdown_enabled', 'countdown_message', 'countdown_end_date',
+      'design_background', 'design_text_background', 'design_text_bg_opacity',
+      'design_button_background', 'design_button_text', 'design_animation',
       'logo_image', 'custom_css'
     ];
 

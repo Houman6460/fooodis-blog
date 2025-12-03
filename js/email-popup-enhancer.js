@@ -132,6 +132,31 @@ class EmailPopupEnhancer {
                     }
                 }
                 
+                // Load design settings
+                if (apiConfig.design_background) {
+                    this.config.colors.background = apiConfig.design_background;
+                }
+                if (apiConfig.design_text_background) {
+                    this.config.colors.textBackground = apiConfig.design_text_background;
+                }
+                if (apiConfig.design_text_bg_opacity !== undefined) {
+                    this.config.colors.textBackgroundOpacity = apiConfig.design_text_bg_opacity;
+                }
+                if (apiConfig.design_button_background) {
+                    this.config.colors.buttonBackground = apiConfig.design_button_background;
+                }
+                if (apiConfig.design_button_text) {
+                    this.config.colors.buttonText = apiConfig.design_button_text;
+                }
+                if (apiConfig.design_animation) {
+                    this.config.animation = apiConfig.design_animation;
+                }
+                
+                console.log('EmailPopupEnhancer: Loaded design from API', {
+                    colors: this.config.colors,
+                    animation: this.config.animation
+                });
+                
                 // Also cache to localStorage
                 localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
                 return;
@@ -196,7 +221,14 @@ class EmailPopupEnhancer {
                 popup_layout: this.config.layout || 'standard',
                 countdown_enabled: this.config.countdown?.enabled || false,
                 countdown_message: this.config.countdown?.message || 'Offer ends in:',
-                countdown_end_date: countdownEndDate
+                countdown_end_date: countdownEndDate,
+                // Design settings
+                design_background: this.config.colors?.background || '#252830',
+                design_text_background: this.config.colors?.textBackground || '#000000',
+                design_text_bg_opacity: this.config.colors?.textBackgroundOpacity ?? 50,
+                design_button_background: this.config.colors?.buttonBackground || '#e8f24c',
+                design_button_text: this.config.colors?.buttonText || '#1e2127',
+                design_animation: this.config.animation || 'spinner'
             };
             
             console.log('EmailPopupEnhancer: Saving to API', apiData);

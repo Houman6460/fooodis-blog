@@ -68,6 +68,31 @@ class EmailPopupDisplay {
                     console.log('EmailPopupDisplay: Loaded cloud endDate:', apiConfig.countdown_end_date);
                 }
                 
+                // Load design settings from cloud
+                if (apiConfig.design_background) {
+                    this.config.colors.background = apiConfig.design_background;
+                }
+                if (apiConfig.design_text_background) {
+                    this.config.colors.textBackground = apiConfig.design_text_background;
+                }
+                if (apiConfig.design_text_bg_opacity !== undefined) {
+                    this.config.colors.textBackgroundOpacity = apiConfig.design_text_bg_opacity;
+                }
+                if (apiConfig.design_button_background) {
+                    this.config.colors.buttonBackground = apiConfig.design_button_background;
+                }
+                if (apiConfig.design_button_text) {
+                    this.config.colors.buttonText = apiConfig.design_button_text;
+                }
+                if (apiConfig.design_animation) {
+                    this.config.animation = apiConfig.design_animation;
+                }
+                
+                console.log('EmailPopupDisplay: Loaded design from cloud', {
+                    colors: this.config.colors,
+                    animation: this.config.animation
+                });
+                
                 // Also try to load settings from localStorage (set by enhancer)
                 const savedConfig = localStorage.getItem('fooodis-email-popup-config');
                 if (savedConfig) {
@@ -139,7 +164,8 @@ class EmailPopupDisplay {
             },
             colors: {
                 background: '#252830',
-                textBackground: 'rgba(0, 0, 0, 0.5)',
+                textBackground: '#000000',
+                textBackgroundOpacity: 50,
                 buttonBackground: '#e8f24c',
                 buttonText: '#1e2127'
             },
@@ -184,12 +210,17 @@ class EmailPopupDisplay {
             </div>
         ` : '';
         
-        // Text background style
-        const textBgStyle = this.config.colors.textBackground ? 
-            `background-color:${this.config.colors.textBackground};padding:15px;border-radius:6px;` : '';
+        // Calculate text background with opacity
+        const textBgColor = this.config.colors.textBackground || '#000000';
+        const textBgOpacity = (this.config.colors.textBackgroundOpacity ?? 50) / 100;
+        const textBgRgba = this.hexToRgba(textBgColor, textBgOpacity);
+        const textBgStyle = `background-color:${textBgRgba};padding:15px;border-radius:6px;`;
+        
+        // Popup background color
+        const popupBgColor = this.config.colors.background || '#252830';
         
         let popupContent = `
-            <div class="email-popup layout-${layout}">
+            <div class="email-popup layout-${layout}" style="background-color: ${popupBgColor};">
                 <div class="email-popup-header">
                     <h2 class="email-popup-title">${this.config.customText.title}</h2>
                     <button class="email-popup-close">&times;</button>
@@ -378,6 +409,30 @@ class EmailPopupDisplay {
         updateTimer();
         this.countdownInterval = setInterval(updateTimer, 1000);
         console.log('EmailPopupDisplay: Countdown timer started successfully');
+    }
+    
+    // Helper function to convert hex color to rgba with opacity
+    hexToRgba(hex, opacity) {
+        if (!hex) return `rgba(0, 0, 0, ${opacity})`;
+        
+        // Remove # if present
+        hex = hex.replace('#', '');
+        
+        // Parse hex values
+        let r, g, b;
+        if (hex.length === 3) {
+            r = parseInt(hex[0] + hex[0], 16);
+            g = parseInt(hex[1] + hex[1], 16);
+            b = parseInt(hex[2] + hex[2], 16);
+        } else if (hex.length === 6) {
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+        } else {
+            return `rgba(0, 0, 0, ${opacity})`;
+        }
+        
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
     
     setupTriggers() {
