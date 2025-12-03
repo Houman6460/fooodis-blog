@@ -231,11 +231,22 @@ class NodeFlowBuilder {
             this.updateZoom(delta);
         });
         
-        // Setup node dragging functionality
-        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        // Setup node dragging functionality using document-level event delegation
+        // This ensures events work even with transformed elements
+        document.addEventListener('mousedown', (e) => {
+            // Only handle if within our canvas
+            if (this.canvas && this.canvas.contains(e.target)) {
+                this.handleMouseDown(e);
+            }
+        });
         document.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
         document.addEventListener('mouseup', (e) => this.handleCanvasMouseUp(e));
-        document.addEventListener('click', (e) => this.handleCanvasClick(e));
+        document.addEventListener('click', (e) => {
+            // Only handle if within our canvas
+            if (this.canvas && this.canvas.contains(e.target)) {
+                this.handleCanvasClick(e);
+            }
+        });
     }
 
     setupToolbar() {
@@ -409,31 +420,38 @@ class NodeFlowBuilder {
 
     handleClick(e) {
         const target = e.target;
+        console.log('🔘 handleClick triggered', target.className, target.tagName);
         
         // Handle connection points
         if (target.classList.contains('connection-point')) {
+            console.log('📌 Connection point clicked');
             this.handleConnectionPoint(target, e);
             e.stopPropagation();
             return;
         }
         
-        // Handle node edit button
-        if (target.classList.contains('node-edit-btn') || target.closest('.node-edit-btn')) {
+        // Handle node edit button (check for icon inside button too)
+        const editBtn = target.closest('.node-edit-btn');
+        if (editBtn || target.classList.contains('fa-edit')) {
+            console.log('✏️ Edit button clicked');
             const nodeElement = target.closest('.flow-node');
             if (nodeElement) {
                 const nodeId = nodeElement.dataset.nodeId;
                 const node = this.nodes.find(n => n.id === nodeId);
                 if (node) {
+                    console.log('✏️ Editing node:', nodeId);
                     this.editNode(node);
                 }
             }
             e.stopPropagation();
+            e.preventDefault();
             return;
         }
         
-        // Handle node delete button
-        if (target.classList.contains('node-delete-btn') || target.closest('.node-delete-btn') || 
-            target.classList.contains('fa-trash') || target.closest('.fa-trash')) {
+        // Handle node delete button (check for icon inside button too)
+        const deleteBtn = target.closest('.node-delete-btn');
+        if (deleteBtn || target.classList.contains('fa-trash')) {
+            console.log('🗑️ Delete button clicked');
             const nodeElement = target.closest('.flow-node');
             if (nodeElement) {
                 const nodeId = nodeElement.dataset.nodeId;
@@ -442,6 +460,7 @@ class NodeFlowBuilder {
                 }
             }
             e.stopPropagation();
+            e.preventDefault();
             return;
         }
         
@@ -706,8 +725,7 @@ class NodeFlowBuilder {
 
         nodeDiv.innerHTML = this.getNodeHTML(node);
 
-        // Make draggable
-        nodeDiv.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        // No need for individual event listeners - using document-level delegation
 
         return nodeDiv;
     }
