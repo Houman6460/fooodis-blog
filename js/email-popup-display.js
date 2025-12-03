@@ -50,7 +50,13 @@ class EmailPopupDisplay {
                     this.config.layout = apiConfig.popup_layout;
                 }
                 
-                // Load countdown settings
+                // Load countdown settings from cloud
+                console.log('EmailPopupDisplay: API countdown data', {
+                    countdown_enabled: apiConfig.countdown_enabled,
+                    countdown_message: apiConfig.countdown_message,
+                    countdown_end_date: apiConfig.countdown_end_date
+                });
+                
                 if (apiConfig.countdown_enabled !== undefined) {
                     this.config.countdown.enabled = Boolean(apiConfig.countdown_enabled);
                 }
@@ -59,6 +65,7 @@ class EmailPopupDisplay {
                 }
                 if (apiConfig.countdown_end_date) {
                     this.config.countdown.endDate = apiConfig.countdown_end_date;
+                    console.log('EmailPopupDisplay: Loaded cloud endDate:', apiConfig.countdown_end_date);
                 }
                 
                 // Also try to load settings from localStorage (set by enhancer)
@@ -294,27 +301,20 @@ class EmailPopupDisplay {
         
         console.log('EmailPopupDisplay: Countdown config', this.config.countdown);
         
-        // Try to get end date from config
+        // MUST use cloud-saved end date (from API)
         if (this.config.countdown.endDate) {
             endDate = new Date(this.config.countdown.endDate);
-            console.log('EmailPopupDisplay: Using saved endDate', endDate);
-        } else {
-            // Calculate from days/hours/minutes/seconds if available
-            const days = parseInt(this.config.countdown.days) || 0;
-            const hours = parseInt(this.config.countdown.hours) || 0;
-            const minutes = parseInt(this.config.countdown.minutes) || 0;
-            const seconds = parseInt(this.config.countdown.seconds) || 0;
+            console.log('EmailPopupDisplay: Using cloud endDate', endDate);
             
-            console.log('EmailPopupDisplay: Calculating from values', { days, hours, minutes, seconds });
-            
-            if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
-                const totalMs = ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
-                endDate = new Date(Date.now() + totalMs);
-            } else {
-                // Default: 1 hour from now for testing
-                console.log('EmailPopupDisplay: No values set, using default 1 hour');
-                endDate = new Date(Date.now() + (60 * 60 * 1000));
+            // Check if end date is valid and in the future
+            if (isNaN(endDate.getTime()) || endDate <= new Date()) {
+                console.log('EmailPopupDisplay: Cloud endDate expired or invalid');
+                // Show expired state
+                return;
             }
+        } else {
+            console.log('EmailPopupDisplay: No cloud endDate found - countdown not configured');
+            return; // Don't show countdown without cloud data
         }
         
         console.log('EmailPopupDisplay: Starting countdown to', endDate);

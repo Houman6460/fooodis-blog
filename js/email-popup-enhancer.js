@@ -178,7 +178,16 @@ class EmailPopupEnhancer {
                 const minutes = parseInt(this.config.countdown.minutes) || 0;
                 const seconds = parseInt(this.config.countdown.seconds) || 0;
                 const totalMs = ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
-                countdownEndDate = new Date(now.getTime() + totalMs).toISOString();
+                
+                console.log('EmailPopupEnhancer: Countdown values', { days, hours, minutes, seconds, totalMs });
+                
+                // Only set end date if there's actually time to count down
+                if (totalMs > 0) {
+                    countdownEndDate = new Date(now.getTime() + totalMs).toISOString();
+                    console.log('EmailPopupEnhancer: Calculated end date', countdownEndDate);
+                } else {
+                    console.log('EmailPopupEnhancer: No countdown duration set');
+                }
             }
             
             const apiData = {
