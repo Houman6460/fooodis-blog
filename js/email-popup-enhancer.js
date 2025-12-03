@@ -469,9 +469,17 @@ class EmailPopupEnhancer {
             });
         });
         
-        // Layout selection
-        document.querySelectorAll('.layout-option').forEach(option => {
-            option.addEventListener('click', () => {
+        // Layout selection - use event delegation for reliability
+        const layoutOptions = document.querySelectorAll('.layout-option');
+        console.log('EmailPopupEnhancer: Found', layoutOptions.length, 'layout options');
+        
+        // Use event delegation on the parent container
+        const layoutContainer = document.querySelector('.popup-layout');
+        if (layoutContainer) {
+            layoutContainer.addEventListener('click', (e) => {
+                const option = e.target.closest('.layout-option');
+                if (!option) return;
+                
                 console.log('Layout option clicked:', option.dataset.layout);
                 document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
                 option.classList.add('active');
@@ -481,7 +489,9 @@ class EmailPopupEnhancer {
                 this.updatePreview();
                 this.showNotification('Layout changed to: ' + option.dataset.layout);
             });
-        });
+        } else {
+            console.error('EmailPopupEnhancer: Layout container not found!');
+        }
         
         // Bind remove image button (use event delegation)
         document.addEventListener('click', (e) => {
