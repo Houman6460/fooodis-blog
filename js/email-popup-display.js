@@ -61,12 +61,27 @@ class EmailPopupDisplay {
                     this.config.countdown.endDate = apiConfig.countdown_end_date;
                 }
                 
+                // Also try to load countdown values from localStorage (set by enhancer)
+                const savedConfig = localStorage.getItem('fooodis-email-popup-config');
+                if (savedConfig) {
+                    try {
+                        const parsed = JSON.parse(savedConfig);
+                        if (parsed.countdown) {
+                            if (parsed.countdown.days !== undefined) this.config.countdown.days = parsed.countdown.days;
+                            if (parsed.countdown.hours !== undefined) this.config.countdown.hours = parsed.countdown.hours;
+                            if (parsed.countdown.minutes !== undefined) this.config.countdown.minutes = parsed.countdown.minutes;
+                            if (parsed.countdown.seconds !== undefined) this.config.countdown.seconds = parsed.countdown.seconds;
+                        }
+                    } catch (e) {}
+                }
+                
                 // Cache locally
                 localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
                 console.log('EmailPopupDisplay: Config loaded from API', {
                     imageUrl: this.config.image.url,
                     imageEnabled: this.config.image.enabled,
                     layout: this.config.layout,
+                    countdown: this.config.countdown,
                     apiResponse: apiConfig
                 });
                 return;
@@ -267,9 +282,12 @@ class EmailPopupDisplay {
     startCountdown() {
         let endDate;
         
+        console.log('EmailPopupDisplay: Countdown config', this.config.countdown);
+        
         // Try to get end date from config
         if (this.config.countdown.endDate) {
             endDate = new Date(this.config.countdown.endDate);
+            console.log('EmailPopupDisplay: Using saved endDate', endDate);
         } else {
             // Calculate from days/hours/minutes/seconds if available
             const days = parseInt(this.config.countdown.days) || 0;
@@ -277,12 +295,15 @@ class EmailPopupDisplay {
             const minutes = parseInt(this.config.countdown.minutes) || 0;
             const seconds = parseInt(this.config.countdown.seconds) || 0;
             
+            console.log('EmailPopupDisplay: Calculating from values', { days, hours, minutes, seconds });
+            
             if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
                 const totalMs = ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
                 endDate = new Date(Date.now() + totalMs);
             } else {
-                // Default: 1 day from now
-                endDate = new Date(Date.now() + (24 * 60 * 60 * 1000));
+                // Default: 1 hour from now for testing
+                console.log('EmailPopupDisplay: No values set, using default 1 hour');
+                endDate = new Date(Date.now() + (60 * 60 * 1000));
             }
         }
         
