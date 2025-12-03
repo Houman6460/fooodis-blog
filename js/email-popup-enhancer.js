@@ -440,8 +440,11 @@ class EmailPopupEnhancer {
                     <div class="color-control-group">
                         <label for="textBackgroundColor">Text Background Color</label>
                         <input type="color" id="textBackgroundColor" value="${this.extractHexColor(this.config.colors.textBackground)}">
-                        <input type="range" id="textBackgroundOpacity" min="0" max="100" value="${this.config.colors.textBackgroundOpacity || 50}">
-                        <div class="color-preview" style="background-color: ${this.config.colors.textBackground}"></div>
+                        <div class="opacity-slider-group">
+                            <label>Opacity: <span id="opacityValue">${this.config.colors.textBackgroundOpacity || 50}%</span></label>
+                            <input type="range" id="textBackgroundOpacity" min="0" max="100" value="${this.config.colors.textBackgroundOpacity || 50}" style="width: 100%; cursor: pointer;">
+                        </div>
+                        <div class="color-preview" id="textBgPreview"></div>
                     </div>
                     <div class="color-control-group">
                         <label for="buttonBackgroundColor">Button Background</label>
@@ -679,11 +682,25 @@ class EmailPopupEnhancer {
         const opacitySlider = document.getElementById('textBackgroundOpacity');
         if (opacitySlider) {
             opacitySlider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
                 // Store opacity as percentage (0-100)
-                this.config.colors.textBackgroundOpacity = parseInt(e.target.value);
+                this.config.colors.textBackgroundOpacity = value;
+                
+                // Update the displayed value
+                const opacityValue = document.getElementById('opacityValue');
+                if (opacityValue) {
+                    opacityValue.textContent = value + '%';
+                }
+                
+                // Update preview with rgba
+                this.updateTextBgPreview();
+                
                 this.saveConfig();
                 this.updatePreview();
             });
+            
+            // Initial preview update
+            this.updateTextBgPreview();
         }
         
         // Animation selection
@@ -758,6 +775,22 @@ class EmailPopupEnhancer {
     
     padZero(num) {
         return num < 10 ? `0${num}` : num;
+    }
+    
+    updateTextBgPreview() {
+        const preview = document.getElementById('textBgPreview');
+        if (preview) {
+            const hexColor = this.extractHexColor(this.config.colors.textBackground);
+            const opacity = (this.config.colors.textBackgroundOpacity ?? 50) / 100;
+            
+            // Convert hex to rgba for preview
+            const hex = hexColor.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            
+            preview.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        }
     }
     
     updateImagePreview() {
