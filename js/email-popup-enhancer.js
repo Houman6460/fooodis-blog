@@ -107,8 +107,29 @@ class EmailPopupEnhancer {
     saveConfig() {
         try {
             localStorage.setItem('fooodis-email-popup-config', JSON.stringify(this.config));
+            
+            // Also save to API for frontend access
+            this.saveConfigToAPI();
         } catch (error) {
             console.error('Error saving email popup configuration:', error);
+        }
+    }
+    
+    async saveConfigToAPI() {
+        try {
+            const apiData = {
+                popup_image: this.config.image.url || null,
+                popup_image_enabled: this.config.image.enabled,
+                popup_layout: this.config.layout || 'standard'
+            };
+            
+            await fetch('/api/subscribers/popup-config', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(apiData)
+            });
+        } catch (error) {
+            console.error('Error saving to API:', error);
         }
     }
     

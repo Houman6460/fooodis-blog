@@ -59,6 +59,8 @@ export async function onRequestGet(context) {
       text_color: config.text_color || '#e0e0e0',
       button_color: config.button_color || '#e8f24c',
       popup_image: config.popup_image || null,
+      popup_image_enabled: config.popup_image_enabled ? true : false,
+      popup_layout: config.popup_layout || 'standard',
       logo_image: config.logo_image || null,
       custom_css: config.custom_css || null,
       updated_at: config.updated_at
@@ -101,14 +103,15 @@ export async function onRequestPut(context) {
       'enabled', 'title', 'description', 'button_text', 'placeholder_text',
       'success_message', 'trigger_type', 'trigger_delay', 'trigger_scroll_percent',
       'show_once', 'show_every_days', 'background_color', 'text_color',
-      'button_color', 'popup_image', 'logo_image', 'custom_css'
+      'button_color', 'popup_image', 'popup_image_enabled', 'popup_layout',
+      'logo_image', 'custom_css'
     ];
 
     allowedFields.forEach(field => {
       if (data[field] !== undefined) {
         updates.push(`${field} = ?`);
         // Convert boolean to integer for SQLite
-        if (field === 'enabled' || field === 'show_once') {
+        if (field === 'enabled' || field === 'show_once' || field === 'popup_image_enabled') {
           values.push(data[field] ? 1 : 0);
         } else {
           values.push(data[field]);

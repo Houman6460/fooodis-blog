@@ -41,7 +41,12 @@ class EmailPopupDisplay {
                 if (apiConfig.button_color) this.config.colors.buttonBackground = apiConfig.button_color;
                 if (apiConfig.popup_image) {
                     this.config.image.url = apiConfig.popup_image;
-                    this.config.image.enabled = true;
+                }
+                if (apiConfig.popup_image_enabled !== undefined) {
+                    this.config.image.enabled = apiConfig.popup_image_enabled;
+                }
+                if (apiConfig.popup_layout) {
+                    this.config.layout = apiConfig.popup_layout;
                 }
                 
                 // Cache locally
