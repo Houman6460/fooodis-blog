@@ -88,6 +88,7 @@ export async function onRequestGet(context) {
       config: {
         enabled: settings.enabled !== false,
         chatbotName: settings.chatbot_name || 'Fooodis Assistant',
+        avatar: settings.chatbot_avatar || '',
         welcomeMessage: settings.welcome_message || 'Hello! How can I help you today?',
         defaultModel: settings.default_model || 'gpt-4o',
         temperature: parseFloat(settings.temperature) || 0.7,
@@ -138,6 +139,7 @@ export async function onRequestPost(context) {
     const settingsToSave = {
       enabled: { value: data.enabled ? 'true' : 'false', type: 'boolean', category: 'general' },
       chatbot_name: { value: data.chatbotName || 'Fooodis Assistant', type: 'string', category: 'general' },
+      chatbot_avatar: { value: data.avatar || '', type: 'string', category: 'general' },
       welcome_message: { value: data.welcomeMessage || '', type: 'string', category: 'general' },
       default_model: { value: data.defaultModel || 'gpt-4o', type: 'string', category: 'ai' },
       temperature: { value: String(data.temperature || 0.7), type: 'number', category: 'ai' },

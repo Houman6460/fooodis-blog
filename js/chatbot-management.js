@@ -151,14 +151,24 @@ class ChatbotManager {
                             ...this.getDefaultSettings(),
                             enabled: result.config.enabled,
                             chatbotName: result.config.chatbotName,
+                            avatar: result.config.avatar || '',
                             welcomeMessage: result.config.welcomeMessage,
                             defaultModel: result.config.defaultModel,
+                            temperature: result.config.temperature || 0.7,
+                            maxTokens: result.config.maxTokens || 1024,
                             widgetPosition: result.config.widgetPosition,
                             widgetColor: result.config.widgetColor,
                             languages: result.config.languages,
                             allowFileUpload: result.config.allowFileUpload,
-                            showTypingIndicator: result.config.showTypingIndicator
+                            showTypingIndicator: result.config.showTypingIndicator,
+                            enableMemory: result.config.enableMemory,
+                            enableMultipleAgents: result.config.enableMultipleAgents
                         };
+                        
+                        // Load avatar from cloud if available
+                        if (result.config.avatar) {
+                            console.log('✅ Avatar loaded from cloud');
+                        }
                     }
                 }
             }
@@ -2834,6 +2844,14 @@ class ChatbotManager {
             const img = avatarPreview;
             img.src = this.getDefaultAvatar();
             avatarInput.value = '';
+            
+            // Clear avatar from settings and sync to cloud
+            this.settings.avatar = '';
+            localStorage.removeItem('chatbot-avatar');
+            localStorage.removeItem('fooodis-chatbot-avatar');
+            this.saveData();
+            this.syncAvatarToCloud('');
+            this.showNotification('Avatar removed', 'success');
         });
 
         // Load saved avatar
@@ -2857,6 +2875,9 @@ class ChatbotManager {
             
             // Save all settings data
             this.saveData();
+            
+            // Sync avatar to cloud
+            this.syncAvatarToCloud(avatarUrl);
 
             // Update widget code
             this.updateWidgetCode();
@@ -2877,6 +2898,30 @@ class ChatbotManager {
         } catch (error) {
             console.error('Error saving avatar:', error);
             throw error;
+        }
+    }
+    
+    /**
+     * Sync avatar to cloud storage
+     */
+    async syncAvatarToCloud(avatarUrl) {
+        try {
+            const response = await fetch('/api/chatbot/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...this.settings,
+                    avatar: avatarUrl
+                })
+            });
+            
+            if (response.ok) {
+                console.log('✅ Avatar synced to cloud');
+            } else {
+                console.warn('⚠️ Failed to sync avatar to cloud');
+            }
+        } catch (error) {
+            console.error('❌ Error syncing avatar to cloud:', error);
         }
     }
 
