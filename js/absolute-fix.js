@@ -104,6 +104,17 @@
             // Skip if already fixed with a placeholder
             if (img.getAttribute('data-placeholder-fixed')) return;
             
+            // SKIP blog post images - they have their own cloud fallback system
+            // This prevents racing conditions where we replace images before they load
+            if (img.closest('.blog-post-card, .blog-post-image, .modal-image, .blog-banner')) {
+                return;
+            }
+            
+            // Skip images with data-post-id (they use cloud fallback system)
+            if (img.hasAttribute('data-post-id')) {
+                return;
+            }
+            
             // Mark as fixed
             img.setAttribute('data-placeholder-fixed', 'true');
             
