@@ -179,12 +179,11 @@ class EmailPopupEnhancer {
                 </div>
                 
                 <div class="customization-option">
-                    <label class="option-label" for="popupImage">Upload Image (PNG, GIF, JPG supported)</label>
-                    <input type="file" id="popupImage" class="option-input" accept=".png,.gif,.jpg,.jpeg">
-                    <button type="button" class="btn btn-secondary btn-sm choose-media-btn" id="chooseFromMediaBtn">
+                    <label class="option-label">Select Image from Media Library</label>
+                    <button type="button" class="btn btn-primary choose-media-btn" id="chooseFromMediaBtn">
                         <i class="fas fa-images"></i> Choose from Media Library
                     </button>
-                    <p class="input-help">Transparent PNG files will maintain transparency</p>
+                    <p class="input-help">Select an image from your uploaded media to display in the popup</p>
                     <div class="image-upload-preview ${this.config.image.url ? 'has-image' : ''}" id="imageUploadPreview">
                         ${this.config.image.url ? `
                             <button type="button" class="image-remove-btn" id="removeImageBtn" title="Remove image">
@@ -192,7 +191,7 @@ class EmailPopupEnhancer {
                             </button>
                             <img src="${this.config.image.url}" alt="Preview">
                             <div class="image-info">
-                                <span class="image-name">${this.config.image.name || 'Uploaded image'}</span>
+                                <span class="image-name">${this.config.image.name || 'Selected image'}</span>
                             </div>
                         ` : ''}
                     </div>
@@ -399,34 +398,6 @@ class EmailPopupEnhancer {
             });
         });
         
-        // Image upload
-        const imageInput = document.getElementById('popupImage');
-        if (imageInput) {
-            imageInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                if (file.type !== 'image/png' && file.type !== 'image/gif' && file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-                    alert('Please upload a PNG, GIF, or JPG file only.');
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    this.config.image.url = event.target.result;
-                    this.config.image.type = file.type;
-                    this.config.image.name = file.name;
-                    
-                    // Update preview with remove button
-                    this.updateImagePreview();
-                    
-                    this.saveConfig();
-                    this.updatePreview();
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-        
         // Bind remove image button (use event delegation)
         document.addEventListener('click', (e) => {
             if (e.target.closest('#removeImageBtn') || e.target.closest('.image-remove-btn')) {
@@ -439,26 +410,7 @@ class EmailPopupEnhancer {
         const chooseMediaBtn = document.getElementById('chooseFromMediaBtn');
         if (chooseMediaBtn) {
             chooseMediaBtn.addEventListener('click', () => {
-                // Open media library modal if available
-                if (window.openMediaLibraryModal) {
-                    window.openMediaLibraryModal((selectedImage) => {
-                        if (selectedImage && selectedImage.url) {
-                            this.config.image.url = selectedImage.url || selectedImage.r2_url;
-                            this.config.image.name = selectedImage.name || selectedImage.original_name || 'Media Library Image';
-                            this.config.image.type = selectedImage.type || 'image/jpeg';
-                            this.updateImagePreview();
-                            this.saveConfig();
-                            this.updatePreview();
-                        }
-                    });
-                } else {
-                    // Fallback - show media library section
-                    const mediaSection = document.querySelector('[data-section="media-library"]');
-                    if (mediaSection) {
-                        mediaSection.click();
-                        this.showNotification('Select an image from the Media Library, then return to Email Subscribers.');
-                    }
-                }
+                this.openMediaSelector();
             });
         }
         
@@ -691,15 +643,304 @@ class EmailPopupEnhancer {
         // Update preview
         this.updateImagePreview();
         
-        // Clear file input
-        const fileInput = document.getElementById('popupImage');
-        if (fileInput) {
-            fileInput.value = '';
-        }
-        
         // Save and notify
         this.saveConfig();
         this.showNotification('Image removed successfully.');
+    }
+    
+    async openMediaSelector() {
+        // Fetch media from API
+        let mediaItems = [];
+        try {
+            const response = await fetch('/api/media?limit=100');
+            if (response.ok) {
+                const data = await response.json();
+                mediaItems = data.media || data.items || data || [];
+            }
+        } catch (error) {
+            console.error('Error fetching media:', error);
+        }
+        
+        // Also fetch folders
+        let folders = [];
+        try {
+            const foldersResponse = await fetch('/api/media/folders');
+            if (foldersResponse.ok) {
+                const foldersData = await foldersResponse.json();
+                folders = foldersData.folders || foldersData || [];
+            }
+        } catch (error) {
+            console.error('Error fetching folders:', error);
+        }
+        
+        // Create modal
+        const modal = document.createElement('div');
+        modal.className = 'email-media-selector-modal';
+        modal.innerHTML = `
+            <div class="email-media-selector-content">
+                <div class="email-media-selector-header">
+                    <h3>Select Media</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="email-media-selector-body">
+                    <div class="media-sidebar">
+                        <input type="text" class="media-search" placeholder="Search media...">
+                        <div class="media-tabs">
+                            <button class="media-tab active" data-filter="all">All Media</button>
+                            <button class="media-tab" data-filter="images">Images</button>
+                        </div>
+                        <div class="folder-header">FOLDERS</div>
+                        <div class="folder-list">
+                            <div class="folder-item active" data-folder="all">
+                                <i class="fas fa-images"></i> All Media
+                                <span class="count">${mediaItems.length}</span>
+                            </div>
+                            ${folders.map(f => `
+                                <div class="folder-item" data-folder="${f.id || f.name}">
+                                    <i class="fas fa-folder"></i> ${f.name}
+                                    <span class="count">${f.count || 0}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="media-grid-container">
+                        <div class="media-grid">
+                            ${mediaItems.length === 0 ? `
+                                <div class="no-media">
+                                    <i class="fas fa-images"></i>
+                                    <p>No media found. Upload images in the Media Library section first.</p>
+                                </div>
+                            ` : mediaItems.map(item => `
+                                <div class="media-item" data-url="${item.r2_url || item.url}" data-name="${item.original_name || item.name || 'Image'}" data-folder="${item.folder || 'uncategorized'}">
+                                    <img src="${item.r2_url || item.url}" alt="${item.original_name || item.name || ''}" loading="lazy">
+                                    <div class="media-item-name">${item.original_name || item.name || 'Image'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal styles
+        this.addMediaSelectorStyles();
+        
+        // Add to document
+        document.body.appendChild(modal);
+        
+        // Handle close
+        modal.querySelector('.close-btn').addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+        
+        // Handle folder filter
+        modal.querySelectorAll('.folder-item').forEach(folder => {
+            folder.addEventListener('click', () => {
+                modal.querySelectorAll('.folder-item').forEach(f => f.classList.remove('active'));
+                folder.classList.add('active');
+                const folderId = folder.dataset.folder;
+                modal.querySelectorAll('.media-item').forEach(item => {
+                    if (folderId === 'all' || item.dataset.folder === folderId) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Handle search
+        modal.querySelector('.media-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            modal.querySelectorAll('.media-item').forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                item.style.display = name.includes(query) ? '' : 'none';
+            });
+        });
+        
+        // Handle selection
+        modal.querySelectorAll('.media-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const url = item.dataset.url;
+                const name = item.dataset.name;
+                
+                this.config.image.url = url;
+                this.config.image.name = name;
+                this.config.image.type = 'image/jpeg';
+                
+                this.updateImagePreview();
+                this.saveConfig();
+                this.showNotification('Image selected: ' + name);
+                
+                modal.remove();
+            });
+        });
+    }
+    
+    addMediaSelectorStyles() {
+        if (document.getElementById('email-media-selector-styles')) return;
+        
+        const style = document.createElement('style');
+        style.id = 'email-media-selector-styles';
+        style.textContent = `
+            .email-media-selector-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.7);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .email-media-selector-content {
+                background: #1e2127;
+                border-radius: 12px;
+                width: 90%;
+                max-width: 900px;
+                max-height: 80vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .email-media-selector-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                border-bottom: 1px solid #32363f;
+            }
+            .email-media-selector-header h3 {
+                margin: 0;
+                color: #fff;
+            }
+            .email-media-selector-header .close-btn {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 24px;
+                cursor: pointer;
+            }
+            .email-media-selector-body {
+                display: flex;
+                flex: 1;
+                overflow: hidden;
+            }
+            .media-sidebar {
+                width: 200px;
+                background: #171a1f;
+                padding: 15px;
+                overflow-y: auto;
+            }
+            .media-search {
+                width: 100%;
+                padding: 8px 12px;
+                background: #252830;
+                border: 1px solid #32363f;
+                border-radius: 6px;
+                color: #fff;
+                margin-bottom: 15px;
+            }
+            .media-tabs {
+                display: flex;
+                gap: 5px;
+                margin-bottom: 15px;
+            }
+            .media-tab {
+                flex: 1;
+                padding: 8px;
+                background: #252830;
+                border: none;
+                border-radius: 6px;
+                color: #a0a0a0;
+                cursor: pointer;
+                font-size: 12px;
+            }
+            .media-tab.active {
+                background: #e8f24c;
+                color: #1e2127;
+            }
+            .folder-header {
+                font-size: 11px;
+                color: #a0a0a0;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+            .folder-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                border-radius: 6px;
+                cursor: pointer;
+                color: #e0e0e0;
+                font-size: 13px;
+                margin-bottom: 4px;
+            }
+            .folder-item:hover {
+                background: rgba(232,242,76,0.1);
+            }
+            .folder-item.active {
+                background: rgba(232,242,76,0.2);
+                color: #e8f24c;
+            }
+            .folder-item .count {
+                margin-left: auto;
+                background: #32363f;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 11px;
+            }
+            .media-grid-container {
+                flex: 1;
+                overflow-y: auto;
+                padding: 15px;
+            }
+            .media-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+            }
+            .media-item {
+                background: #252830;
+                border-radius: 8px;
+                overflow: hidden;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+            .media-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            }
+            .media-item img {
+                width: 100%;
+                height: 100px;
+                object-fit: cover;
+            }
+            .media-item-name {
+                padding: 8px;
+                font-size: 11px;
+                color: #a0a0a0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .no-media {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 40px;
+                color: #a0a0a0;
+            }
+            .no-media i {
+                font-size: 48px;
+                margin-bottom: 15px;
+                opacity: 0.5;
+            }
+        `;
+        document.head.appendChild(style);
     }
     
     updatePreview() {
