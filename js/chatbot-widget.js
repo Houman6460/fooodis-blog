@@ -1248,9 +1248,21 @@
                 messagesContainer.addEventListener('click', (e) => {
                     const quickReplyBtn = e.target.closest('.chatbot-quick-reply');
                     if (quickReplyBtn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Prevent double-click processing
+                        if (this.processingQuickReply) return;
+                        this.processingQuickReply = true;
+                        
                         const reply = quickReplyBtn.dataset.reply;
                         console.log('🔘 Quick reply clicked:', reply);
                         this.handleQuickReply(reply);
+                        
+                        // Reset after short delay
+                        setTimeout(() => {
+                            this.processingQuickReply = false;
+                        }, 1000);
                     }
                 });
             }

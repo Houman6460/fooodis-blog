@@ -33,19 +33,8 @@
 
     // Fix for missing event handlers
     function attachMissingEventHandlers() {
-        // Handle quick reply buttons
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('chatbot-quick-reply')) {
-                const reply = e.target.getAttribute('data-reply');
-                if (reply && window.FoodisChatbot) {
-                    const messageInput = document.getElementById('chatbot-message-input');
-                    if (messageInput) {
-                        messageInput.value = reply;
-                        window.FoodisChatbot.sendMessage();
-                    }
-                }
-            }
-        });
+        // Quick reply buttons are now handled in chatbot-widget.js
+        // Removed duplicate handler to prevent double messages
 
         // Handle rating buttons
         document.addEventListener('click', function(e) {
