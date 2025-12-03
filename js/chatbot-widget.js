@@ -2961,26 +2961,28 @@
                 }
             }
             
-            // Final fallback - create a default agent and assign directly
-            console.log('No specific agent found, creating default agent');
-            const defaultAgent = {
-                id: 'default-agent',
-                name: this.getRandomAgentName(),
+            // Final fallback - use a configured agent from availableAgents
+            console.log('No specific agent found, using configured agent from availableAgents');
+            
+            // Try to find a configured agent
+            if (this.availableAgents && this.availableAgents.length > 0) {
+                // Pick a random configured agent
+                const randomAgent = this.availableAgents[Math.floor(Math.random() * this.availableAgents.length)];
+                console.log('Using configured agent:', randomAgent.name);
+                this.assignSpecificAgent(randomAgent);
+                return;
+            }
+            
+            // Ultimate fallback - create agent with general-inquiries assistant
+            console.log('No configured agents, creating fallback agent');
+            const fallbackAgent = {
+                id: 'fallback-agent',
+                name: 'Support Agent',
                 department: department || 'customer-support',
                 avatar: '/images/agents/default-avatar.png',
-                assignedAssistantId: null
+                assignedAssistantId: 'general-assistant'
             };
-            this.assignSpecificAgent(defaultAgent);
-        },
-        
-        // Get a random agent name for default agent
-        getRandomAgentName: function() {
-            const names = [
-                'Lisa Anderson', 'Michael Chen', 'Sarah Johnson', 
-                'David Martinez', 'Emily Wilson', 'James Taylor',
-                'Elena Rodriguez', 'Robert Kim', 'Anna Peterson'
-            ];
-            return names[Math.floor(Math.random() * names.length)];
+            this.assignSpecificAgent(fallbackAgent);
         },
 
         // Assign a specific agent during scenario handoff
