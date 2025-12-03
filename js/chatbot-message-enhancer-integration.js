@@ -9,40 +9,55 @@
     
     console.log('🎨 Initializing ChatbotMessageEnhancer integration...');
     
+    let integrationAttempts = 0;
+    const MAX_ATTEMPTS = 10;
+    let integrationComplete = false;
+    
     function integrateMessageEnhancer() {
-        // Wait for chatbot widget to be available
-        if (!window.chatbotWidget || typeof window.chatbotWidget.addMessage !== 'function') {
-            console.log('⏳ Waiting for chatbot widget...');
-            setTimeout(integrateMessageEnhancer, 500);
+        // Avoid duplicate integration
+        if (integrationComplete) {
             return;
         }
         
+        integrationAttempts++;
+        
+        // Check for fooodisWidget (actual name) or chatbotWidget
+        const widget = window.fooodisWidget || window.chatbotWidget;
+        
+        // Wait for chatbot widget to be available (with max attempts)
+        if (!widget || typeof widget.addMessage !== 'function') {
+            if (integrationAttempts < MAX_ATTEMPTS) {
+                setTimeout(integrateMessageEnhancer, 1000);
+            } else {
+                console.log('🎨 ChatbotMessageEnhancer: Max attempts reached, integration skipped');
+            }
+            return;
+        }
+        
+        // Mark as complete to prevent further attempts
+        integrationComplete = true;
+        
         // Store the original addMessage function
-        const originalAddMessage = window.chatbotWidget.addMessage;
+        const originalAddMessage = widget.addMessage.bind(widget);
         
         // Override addMessage with enhanced version
-        window.chatbotWidget.addMessage = function(content, isFromUser = false, agentName = null, agentAvatar = null, isHandoff = false) {
-            console.log('🎨 Processing message through enhanced addMessage:', content);
-            
+        widget.addMessage = function(content, sender, isHandoff = false) {
             // Process content with ChatbotMessageEnhancer if available
             let processedContent = content;
             if (window.ChatbotMessageEnhancer && typeof window.ChatbotMessageEnhancer.processMessageContent === 'function') {
                 try {
                     processedContent = window.ChatbotMessageEnhancer.processMessageContent(content);
-                    console.log('✅ Message enhanced successfully:', processedContent);
                 } catch (error) {
                     console.error('❌ Error enhancing message content:', error);
                     processedContent = content; // Fallback to original content
                 }
-            } else {
-                console.warn('⚠️ ChatbotMessageEnhancer not available - using raw content');
             }
             
             // Call the original addMessage function with processed content
-            return originalAddMessage.call(this, processedContent, isFromUser, agentName, agentAvatar, isHandoff);
+            return originalAddMessage(processedContent, sender, isHandoff);
         };
         
-        console.log('✅ ChatbotMessageEnhancer integration complete - addMessage function overridden');
+        console.log('✅ ChatbotMessageEnhancer integration complete');
     }
     
     // Start integration when DOM is ready
@@ -51,8 +66,5 @@
     } else {
         integrateMessageEnhancer();
     }
-    
-    // Also try integration after a delay to handle async loading
-    setTimeout(integrateMessageEnhancer, 2000);
     
 })();

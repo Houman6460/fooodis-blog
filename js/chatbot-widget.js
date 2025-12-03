@@ -3000,7 +3000,7 @@
                     // Move to next node automatically
                     const nextNode = this.moveToNextNode(this.currentNode.id, userMessage);
                     if (nextNode) {
-                        // Auto-execute next node if it's a message node
+                        // Auto-execute next node based on its type
                         if (nextNode.type === 'message' || nextNode.type === 'welcome') {
                             setTimeout(() => {
                                 const nextResult = this.executeScenarioNode(nextNode);
@@ -3009,6 +3009,20 @@
                                 }
                                 this.hideTyping();
                             }, 800);
+                        } else if (nextNode.type === 'handoff') {
+                            // Auto-execute handoff node
+                            console.log('Auto-executing handoff node:', nextNode.id);
+                            setTimeout(() => {
+                                const nextResult = this.executeScenarioNode(nextNode);
+                                if (nextResult && nextResult.content) {
+                                    this.addMessage(nextResult.content, 'assistant');
+                                }
+                                this.hideTyping();
+                            }, 800);
+                        } else if (nextNode.type === 'intent') {
+                            // For intent nodes, wait for user input
+                            console.log('Waiting for user input for intent node:', nextNode.id);
+                            this.hideTyping();
                         } else {
                             this.hideTyping();
                         }

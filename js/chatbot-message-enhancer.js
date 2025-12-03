@@ -71,13 +71,19 @@
 
         // Add interactive elements based on message content
         addInteractiveElements: function(message) {
+            // Skip if message already has quick replies (prevent duplicates)
+            if (message.includes('chatbot-quick-replies') || message.includes('chatbot-quick-reply')) {
+                return message;
+            }
+            
             // Add quick reply buttons for common questions
             if (this.containsQuestionPrompt(message)) {
                 message += this.generateQuickReplyButtons();
             }
 
-            // Add rating buttons for satisfaction surveys
-            if (message.toLowerCase().includes('how was') || message.toLowerCase().includes('rate')) {
+            // Add rating buttons for satisfaction surveys (skip if already has rating)
+            if (!message.includes('chatbot-rating') && 
+                (message.toLowerCase().includes('how was') || message.toLowerCase().includes('rate'))) {
                 message += this.generateRatingButtons();
             }
 
