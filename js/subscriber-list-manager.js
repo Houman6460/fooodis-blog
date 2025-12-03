@@ -270,15 +270,30 @@ class SubscriberListManager {
     }
     
     exportSubscribers() {
-        // Create CSV content
+        // Create CSV content with all fields
         let csvContent = 'data:text/csv;charset=utf-8,';
-        csvContent += 'Email Address,Signup Date,Status\n';
+        csvContent += 'Email Address,Name,Phone,Restaurant Name,Address,Signup Date,Status,Source\n';
         
         this.subscribers.forEach(subscriber => {
+            // Escape fields that might contain commas
+            const escapeCsv = (val) => {
+                if (!val) return '';
+                const str = String(val);
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return `"${str.replace(/"/g, '""')}"`;
+                }
+                return str;
+            };
+            
             const row = [
-                subscriber.email,
+                escapeCsv(subscriber.email),
+                escapeCsv(subscriber.name),
+                escapeCsv(subscriber.telephone),
+                escapeCsv(subscriber.restaurant_name),
+                escapeCsv(subscriber.address),
                 new Date(subscriber.date).toISOString(),
-                subscriber.status
+                subscriber.status || 'active',
+                subscriber.source || 'popup'
             ].join(',');
             csvContent += row + '\n';
         });
@@ -297,53 +312,95 @@ class SubscriberListManager {
         document.body.removeChild(link);
     }
     
-    importSubscribers(file) {
+    async importSubscribers(file) {
         if (!file) return;
         
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             const content = e.target.result;
             const rows = content.split('\n');
             
             // Skip header row
-            rows.shift();
+            const header = rows.shift().toLowerCase();
+            const hasAllFields = header.includes('name') && header.includes('phone');
             
-            const newSubscribers = [];
-            rows.forEach(row => {
-                if (!row.trim()) return;
-                
-                const [email, date, status] = row.split(',');
-                if (email) {
-                    newSubscribers.push({
-                        email: email.trim(),
-                        date: date ? date.trim() : new Date().toISOString(),
-                        status: status ? status.trim() : 'active'
-                    });
-                }
-            });
+            let importedCount = 0;
+            let skippedCount = 0;
             
-            if (newSubscribers.length > 0) {
-                // Merge with existing subscribers (avoid duplicates)
-                const emailSet = new Set(this.subscribers.map(s => s.email));
+            for (const row of rows) {
+                if (!row.trim()) continue;
                 
-                newSubscribers.forEach(subscriber => {
-                    if (!emailSet.has(subscriber.email)) {
-                        this.subscribers.push(subscriber);
-                        emailSet.add(subscriber.email);
+                // Parse CSV row (handling quoted fields)
+                const parseRow = (str) => {
+                    const result = [];
+                    let current = '';
+                    let inQuotes = false;
+                    for (let i = 0; i < str.length; i++) {
+                        const char = str[i];
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            result.push(current.trim());
+                            current = '';
+                        } else {
+                            current += char;
+                        }
                     }
-                });
+                    result.push(current.trim());
+                    return result;
+                };
                 
-                // Save changes
-                this.saveSubscribers();
+                const fields = parseRow(row);
                 
-                // Update UI
-                this.renderSubscriberList();
-                this.updateSubscriberCount();
-                
-                alert(`Successfully imported ${newSubscribers.length} subscribers.`);
-            } else {
-                alert('No valid subscribers found in the file.');
+                if (hasAllFields) {
+                    // Full format: Email,Name,Phone,Restaurant,Address,Date,Status,Source
+                    const [email, name, telephone, restaurant_name, address, date, status, source] = fields;
+                    if (email) {
+                        try {
+                            await fetch('/api/subscribers', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    email: email.trim(),
+                                    name: name || null,
+                                    telephone: telephone || null,
+                                    restaurant_name: restaurant_name || null,
+                                    address: address || null,
+                                    source: source || 'import'
+                                })
+                            });
+                            importedCount++;
+                        } catch (err) {
+                            skippedCount++;
+                        }
+                    }
+                } else {
+                    // Simple format: Email only or Email,Date,Status
+                    const [email] = fields;
+                    if (email && email.includes('@')) {
+                        try {
+                            await fetch('/api/subscribers', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    email: email.trim(),
+                                    source: 'import'
+                                })
+                            });
+                            importedCount++;
+                        } catch (err) {
+                            skippedCount++;
+                        }
+                    }
+                }
             }
+            
+            // Refresh the list
+            await this.loadSubscribers();
+            this.renderSubscriberList();
+            this.updateSubscriberCount();
+            
+            alert(`Import complete!\n\nImported: ${importedCount}\nSkipped (duplicates/errors): ${skippedCount}`);
         };
         
         reader.readAsText(file);
