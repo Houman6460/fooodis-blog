@@ -395,11 +395,16 @@ class NodeFlowBuilder {
             // Middle mouse button for panning
             e.preventDefault();
             this.startPanning(e);
-        } else if (e.button === 0 && (e.target.classList.contains('node-flow-canvas') || 
-                                       e.target.classList.contains('flow-workspace') ||
-                                       e.target.classList.contains('flow-background'))) {
-            // Left click on empty canvas for panning
-            this.startPanning(e);
+        } else if (e.button === 0) {
+            // Left click - check if clicking on empty canvas area
+            const isOnCanvas = e.target.classList.contains('node-flow-canvas');
+            const isOnWorkspace = e.target.classList.contains('flow-workspace');
+            const isOnNodesContainer = e.target.id === 'flow-nodes';
+            const isOnConnectionsContainer = e.target.id === 'flow-connections';
+            
+            if (isOnCanvas || isOnWorkspace || isOnNodesContainer || isOnConnectionsContainer) {
+                this.startPanning(e);
+            }
         }
     }
 
