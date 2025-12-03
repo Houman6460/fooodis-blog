@@ -2622,48 +2622,7 @@
             }
         },
 
-        addMessage: function(content, sender, isHandoff = false) {
-            const messagesContainer = document.getElementById('chatbot-messages');
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-
-            if (sender === 'assistant') {
-                // Use current agent info if available
-                const agentName = this.currentAgent ? this.currentAgent.name : 'Fooodis Assistant';
-                const agentAvatar = this.currentAgent ? this.currentAgent.avatar : this.config.avatar || this.getDefaultAvatar();
-
-                messageDiv.innerHTML = `
-                    <div class="message-avatar">
-                        <img src="${agentAvatar}" alt="${agentName} Avatar" />
-                    </div>
-                    <div class="message-content">${content}</div>
-                `;
-                // Play receive sound
-                this.playSound('receive');
-            } else {
-                messageDiv.innerHTML = `
-                    <div class="message-content">${content}</div>
-                `;
-                // Play send sound
-                this.playSound('send');
-            }
-
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            this.messages.push({ content, sender, timestamp: new Date() });
-
-            // Auto-save conversation after every message
-            this.autoSaveConversation();
-
-            // Perform agent handoff after initial welcome message
-            if (isHandoff && this.conversationPhase === 'welcome') {
-                const departmentId = window.chatbotManager ? 
-                    window.chatbotManager.getCurrentHandoffDepartment() : null;
-                this.performAgentHandoff(departmentId);
-            }
-        },
+        // NOTE: addMessage function is defined earlier in the file - no duplicate needed
 
         onNodeFlowUpdated: function(flowData) {
             // Handle node flow updates from ChatbotManager
@@ -2887,19 +2846,57 @@
             return null;
         },
 
-        // Simple intent detection (can be enhanced with NLP)
+        // Enhanced intent detection with keyword mapping
         detectIntents: function(userMessage, targetIntents) {
             if (!userMessage || !targetIntents || targetIntents.length === 0) return [];
             
             const lowerMessage = userMessage.toLowerCase();
             const detectedIntents = [];
             
+            // Keyword mappings for better intent detection
+            const intentKeywords = {
+                'menu-help': ['menu', 'food', 'dish', 'dishes', 'eat', 'restaurant', 'cuisine', 'meal', 'meals'],
+                'ordering-help': ['order', 'ordering', 'buy', 'purchase', 'checkout', 'cart', 'delivery'],
+                'technical-support': ['support', 'help', 'issue', 'problem', 'error', 'bug', 'fix', 'broken', 'not working', 'technical'],
+                'billing-question': ['billing', 'payment', 'invoice', 'charge', 'refund', 'money', 'price', 'cost', 'pay'],
+                'customer-support': ['service', 'services', 'information', 'info', 'know', 'question', 'questions', 'contact', 'speak', 'talk'],
+                'sales': ['sales', 'pricing', 'plans', 'subscription', 'demo', 'trial'],
+                'general-inquiries': ['general', 'other', 'hello', 'hi', 'hey', 'help me']
+            };
+            
             targetIntents.forEach(intent => {
                 const lowerIntent = intent.toLowerCase();
-                if (lowerMessage.includes(lowerIntent)) {
+                
+                // Check direct match
+                if (lowerMessage.includes(lowerIntent.replace('-', ' ')) || lowerMessage.includes(lowerIntent)) {
                     detectedIntents.push(intent);
+                    return;
+                }
+                
+                // Check keyword mappings
+                const keywords = intentKeywords[lowerIntent] || [];
+                for (const keyword of keywords) {
+                    if (lowerMessage.includes(keyword)) {
+                        detectedIntents.push(intent);
+                        return;
+                    }
                 }
             });
+            
+            // If no intents matched but message is a question or greeting, match to first available intent
+            if (detectedIntents.length === 0 && targetIntents.length > 0) {
+                const isQuestion = lowerMessage.includes('?') || 
+                                   lowerMessage.startsWith('what') || 
+                                   lowerMessage.startsWith('how') || 
+                                   lowerMessage.startsWith('can') ||
+                                   lowerMessage.startsWith('could') ||
+                                   lowerMessage.startsWith('i need') ||
+                                   lowerMessage.startsWith('i want');
+                if (isQuestion) {
+                    // Default to first intent (usually customer-support or general)
+                    detectedIntents.push(targetIntents[0]);
+                }
+            }
             
             return detectedIntents;
         },
