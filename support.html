@@ -465,14 +465,14 @@
                                 <div class="ticket-list-panel">
                                     <!-- Filters -->
                                     <div class="ticket-controls">
-                                        <select id="statusFilter" onchange="filterUserTickets()">
+                                        <select id="statusFilter" onchange="filterUserTickets()" title="Filter by status" aria-label="Filter tickets by status">
                                             <option value="all" data-lang-en="All Status" data-lang-sv="Alla Status">All Status</option>
                                             <option value="open" data-lang-en="Open" data-lang-sv="Öppet">Open</option>
                                             <option value="in-progress" data-lang-en="In Progress" data-lang-sv="Pågående">In Progress</option>
                                             <option value="resolved" data-lang-en="Resolved" data-lang-sv="Löst">Resolved</option>
                                             <option value="closed" data-lang-en="Closed" data-lang-sv="Stängt">Closed</option>
                                         </select>
-                                        <select id="priorityFilter" onchange="filterUserTickets()">
+                                        <select id="priorityFilter" onchange="filterUserTickets()" title="Filter by priority" aria-label="Filter tickets by priority">
                                             <option value="all" data-lang-en="All Priority" data-lang-sv="All Prioritet">All Priority</option>
                                             <option value="low" data-lang-en="Low" data-lang-sv="Låg">Low</option>
                                             <option value="medium" data-lang-en="Medium" data-lang-sv="Medium">Medium</option>
@@ -583,7 +583,9 @@
                                                         <div class="file-upload-area">
                                                             <input type="file" id="replyAttachments" name="attachments" multiple 
                                                                    accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif" 
-                                                                   onchange="handleFileSelection(this)">
+                                                                   onchange="handleFileSelection(this)"
+                                                                   title="Select files to attach"
+                                                                   aria-label="Select files to attach to reply">
                                                             <div class="file-upload-text">
                                                                 <i class="fas fa-cloud-upload-alt"></i>
                                                                 <span data-lang-en="Click to select files or drag and drop" data-lang-sv="Klicka för att välja filer eller dra och släpp">Click to select files or drag and drop</span>
@@ -850,7 +852,7 @@
                        placeholder="Type your message..." 
                        data-lang-en-placeholder="Type your message..." 
                        data-lang-sv-placeholder="Skriv ditt meddelande...">
-                <button id="chatbot-send" class="chatbot-send-btn">
+                <button id="chatbot-send" class="chatbot-send-btn" title="Send message" aria-label="Send message">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
