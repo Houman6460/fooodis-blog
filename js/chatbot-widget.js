@@ -729,6 +729,10 @@
                         personality: 'Friendly assistant'
                     };
                 }
+                
+                // Load node flow from cloud
+                this.loadNodeFlowFromCloud();
+                
             } catch (error) {
                 console.error('Error loading saved settings:', error);
                 // Fallback to default
@@ -737,6 +741,48 @@
                     avatar: this.getDefaultAvatar(),
                     personality: 'Friendly assistant'
                 };
+            }
+        },
+        
+        /**
+         * Load node flow from cloud storage
+         */
+        loadNodeFlowFromCloud: async function() {
+            try {
+                const language = this.currentLanguage === 'swedish' ? 'sv' : 'en';
+                const response = await fetch(`/api/chatbot/flows?language=${language}`);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success && result.flows && result.flows.length > 0) {
+                        const flow = result.flows[0];
+                        this.nodeFlow = {
+                            nodes: flow.nodes || [],
+                            connections: flow.connections || []
+                        };
+                        this.initializeScenarioState();
+                        console.log('✅ Node flow loaded from cloud:', this.nodeFlow.nodes.length, 'nodes');
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.warn('⚠️ Could not load flow from cloud:', error.message);
+            }
+            
+            // Fallback: Load from localStorage
+            try {
+                const savedFlow = localStorage.getItem('fooodis-node-flow');
+                if (savedFlow) {
+                    const flowData = JSON.parse(savedFlow);
+                    this.nodeFlow = {
+                        nodes: flowData.nodes || [],
+                        connections: flowData.connections || []
+                    };
+                    this.initializeScenarioState();
+                    console.log('✅ Node flow loaded from localStorage:', this.nodeFlow.nodes.length, 'nodes');
+                }
+            } catch (e) {
+                console.warn('Could not load flow from localStorage');
             }
         },
 
@@ -2727,23 +2773,48 @@
         handleScenarioHandoff: function(department, selectedAgent) {
             console.log('Scenario handoff initiated:', { department, selectedAgent });
             
-            if (selectedAgent && window.chatbotManager) {
-                // Find the specific agent from ChatbotManager settings
-                const agent = window.chatbotManager.settings.agents?.find(a => a.id === selectedAgent);
-                if (agent && agent.active !== false) {
-                    console.log('Handing off to specific agent:', agent.name);
-                    this.assignSpecificAgent(agent);
-                    return;
+            // First try: Find specific agent by ID
+            if (selectedAgent) {
+                // Try chatbotManager first
+                if (window.chatbotManager?.settings?.agents) {
+                    const agent = window.chatbotManager.settings.agents.find(a => a.id === selectedAgent);
+                    if (agent && agent.active !== false) {
+                        console.log('Handing off to specific agent (from chatbotManager):', agent.name);
+                        this.assignSpecificAgent(agent);
+                        return;
+                    }
+                }
+                // Try widget's own availableAgents
+                if (this.availableAgents?.length > 0) {
+                    const agent = this.availableAgents.find(a => a.id === selectedAgent);
+                    if (agent) {
+                        console.log('Handing off to specific agent (from widget):', agent.name);
+                        this.assignSpecificAgent(agent);
+                        return;
+                    }
                 }
             }
             
-            // Auto-assign based on department or fall back to default
-            if (department && window.chatbotManager) {
-                const departmentAgents = window.chatbotManager.getAgentsByDepartment(department);
-                if (departmentAgents.length > 0) {
-                    console.log('Auto-assigning from department:', department);
-                    this.performAgentHandoff(department);
-                    return;
+            // Second try: Find agent by department
+            if (department) {
+                if (window.chatbotManager) {
+                    const departmentAgents = window.chatbotManager.getAgentsByDepartment?.(department) || [];
+                    if (departmentAgents.length > 0) {
+                        console.log('Auto-assigning from department (chatbotManager):', department);
+                        this.performAgentHandoff(department);
+                        return;
+                    }
+                }
+                // Try widget's availableAgents by department
+                if (this.availableAgents?.length > 0) {
+                    const deptAgent = this.availableAgents.find(a => 
+                        a.department === department || a.departmentId === department
+                    );
+                    if (deptAgent) {
+                        console.log('Auto-assigning from department (widget):', department);
+                        this.assignSpecificAgent(deptAgent);
+                        return;
+                    }
                 }
             }
             
