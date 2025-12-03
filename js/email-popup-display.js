@@ -210,6 +210,7 @@ class EmailPopupDisplay {
         
         // For image-right and image-bottom: add image after text
         if (layout === 'image-right' || layout === 'image-bottom') {
+            console.log('EmailPopupDisplay: Adding image for', layout, 'imageHtml length:', imageHtml.length);
             popupContent += imageHtml;
         }
         
