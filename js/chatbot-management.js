@@ -162,6 +162,17 @@ class ChatbotManager {
                     }
                 }
             }
+            
+            // Load agents from cloud API
+            const agentsResponse = await fetch('/api/chatbot/agents');
+            if (agentsResponse.ok) {
+                const agentsResult = await agentsResponse.json();
+                if (agentsResult.success && agentsResult.agents?.length > 0) {
+                    this.settings.agents = agentsResult.agents;
+                    this.settings.enableMultipleAgents = true;
+                    console.log('✅ AGENTS FROM CLOUD - Loaded', agentsResult.agents.length, 'agents');
+                }
+            }
         } catch (error) {
             console.warn('⚠️ BACKEND CONFIG - Could not load from API, trying fallbacks:', error.message);
         }
@@ -681,6 +692,11 @@ class ChatbotManager {
             localStorage.setItem('fooodis-chatbot-analytics', JSON.stringify(this.analytics));
             
             console.log('Data saved successfully');
+            
+            // Sync agents to cloud API
+            if (this.settings.agents && this.settings.agents.length > 0) {
+                this.syncAgentsToCloud(this.settings.agents);
+            }
             
         } catch (error) {
             console.error('Save data error:', error);
@@ -3428,6 +3444,45 @@ class ChatbotManager {
             console.log(`${type.toUpperCase()}: ${message}`);
         }
     }
+    
+    /**
+     * Sync agents to cloud API
+     */
+    async syncAgentsToCloud(agents) {
+        try {
+            const response = await fetch('/api/chatbot/agents', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ agents: agents })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ AGENTS SYNCED TO CLOUD:', result.message);
+            } else {
+                console.warn('⚠️ Failed to sync agents to cloud');
+            }
+        } catch (error) {
+            console.error('❌ Error syncing agents to cloud:', error);
+        }
+    }
+    
+    /**
+     * Delete agent from cloud
+     */
+    async deleteAgentFromCloud(agentId) {
+        try {
+            const response = await fetch(`/api/chatbot/agents?id=${agentId}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                console.log('✅ Agent deleted from cloud:', agentId);
+            }
+        } catch (error) {
+            console.error('❌ Error deleting agent from cloud:', error);
+        }
+    }
 
     getActiveAssistants() {
         return this.assistants.filter(assistant => assistant.status === 'active');
@@ -4522,6 +4577,7 @@ class ChatbotManager {
         if (confirm('Are you sure you want to delete this agent?')) {
             this.settings.agents = this.settings.agents.filter(a => a.id !== agentId);
             this.saveData();
+            this.deleteAgentFromCloud(agentId); // Also delete from cloud
             this.renderAgents();
             this.showNotification('Agent deleted successfully!', 'success');
         }
