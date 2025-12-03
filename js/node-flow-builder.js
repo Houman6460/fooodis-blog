@@ -740,7 +740,26 @@ class NodeFlowBuilder {
 
         nodeDiv.innerHTML = this.getNodeHTML(node);
 
-        // No need for individual event listeners - using document-level delegation
+        // Direct mousedown handler for dragging
+        nodeDiv.addEventListener('mousedown', (e) => {
+            // Skip if clicking on controls or buttons
+            if (e.target.closest('.node-controls') || e.target.closest('.disconnect-btn')) {
+                return;
+            }
+            
+            console.log('🎯 Node mousedown:', node.id);
+            this.draggedNode = node;
+            this.draggedNodeElement = nodeDiv;
+            const canvasRect = this.canvas.getBoundingClientRect();
+            
+            this.draggedNode.dragOffset = {
+                x: (e.clientX - canvasRect.left - this.panOffset.x) / this.zoom - node.position.x,
+                y: (e.clientY - canvasRect.top - this.panOffset.y) / this.zoom - node.position.y
+            };
+            
+            nodeDiv.classList.add('dragging');
+            e.preventDefault();
+        });
 
         return nodeDiv;
     }
@@ -750,10 +769,10 @@ class NodeFlowBuilder {
             <div class="node-header">
                 <span class="node-title">${node.data.title}</span>
                 <div class="node-controls">
-                    <button class="node-btn node-edit-btn" title="Edit">
+                    <button class="node-btn node-edit-btn" title="Edit" onclick="event.stopPropagation(); nodeFlowBuilder.editNodeById('${node.id}')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="node-btn node-delete-btn" title="Delete">
+                    <button class="node-btn node-delete-btn" title="Delete" onclick="event.stopPropagation(); nodeFlowBuilder.deleteNodeById('${node.id}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -1639,6 +1658,25 @@ class NodeFlowBuilder {
 
     editNode(node) {
         this.showEditNodeModal(node);
+    }
+    
+    // Helper method for onclick handlers
+    editNodeById(nodeId) {
+        console.log('✏️ editNodeById called:', nodeId);
+        const node = this.nodes.find(n => n.id === nodeId);
+        if (node) {
+            this.editNode(node);
+        } else {
+            console.error('Node not found:', nodeId);
+        }
+    }
+    
+    // Helper method for onclick handlers
+    deleteNodeById(nodeId) {
+        console.log('🗑️ deleteNodeById called:', nodeId);
+        if (confirm('Are you sure you want to delete this node?')) {
+            this.deleteNode(nodeId);
+        }
     }
 
     showEditNodeModal(node) {
