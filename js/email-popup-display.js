@@ -291,30 +291,35 @@ class EmailPopupDisplay {
         });
         
         // Start countdown timer if enabled
-        if (this.config.countdown && this.config.countdown.enabled) {
-            this.startCountdown();
+        if (this.config.countdown && this.config.countdown.enabled && this.config.countdown.endDate) {
+            console.log('EmailPopupDisplay: Will start countdown with endDate:', this.config.countdown.endDate);
+            // Small delay to ensure DOM is ready
+            setTimeout(() => this.startCountdown(), 100);
         }
     }
     
     startCountdown() {
-        let endDate;
+        console.log('EmailPopupDisplay: startCountdown called');
         
-        console.log('EmailPopupDisplay: Countdown config', this.config.countdown);
+        const endDateStr = this.config.countdown.endDate;
+        if (!endDateStr) {
+            console.log('EmailPopupDisplay: No endDate string found');
+            return;
+        }
         
-        // MUST use cloud-saved end date (from API)
-        if (this.config.countdown.endDate) {
-            endDate = new Date(this.config.countdown.endDate);
-            console.log('EmailPopupDisplay: Using cloud endDate', endDate);
-            
-            // Check if end date is valid and in the future
-            if (isNaN(endDate.getTime()) || endDate <= new Date()) {
-                console.log('EmailPopupDisplay: Cloud endDate expired or invalid');
-                // Show expired state
-                return;
-            }
-        } else {
-            console.log('EmailPopupDisplay: No cloud endDate found - countdown not configured');
-            return; // Don't show countdown without cloud data
+        const endDate = new Date(endDateStr);
+        console.log('EmailPopupDisplay: Parsed endDate:', endDate, 'Valid:', !isNaN(endDate.getTime()));
+        
+        // Check if end date is valid
+        if (isNaN(endDate.getTime())) {
+            console.log('EmailPopupDisplay: Invalid endDate');
+            return;
+        }
+        
+        // Check if end date is in the future
+        if (endDate <= new Date()) {
+            console.log('EmailPopupDisplay: endDate is in the past');
+            return;
         }
         
         console.log('EmailPopupDisplay: Starting countdown to', endDate);
