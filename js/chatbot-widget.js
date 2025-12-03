@@ -1865,6 +1865,9 @@
         
         // Generate HTML for smart buttons
         generateSmartButtons: function(intents) {
+            const language = this.getCurrentLanguage();
+            const relatedLabel = language === 'swedish' ? 'Relaterade ämnen:' : 'Related topics:';
+            
             const buttons = intents.map(intent => {
                 const label = this.formatIntentLabel(intent);
                 return `<button class="chatbot-quick-reply smart-suggestion" data-reply="${intent}">${label}</button>`;
@@ -1872,14 +1875,41 @@
             
             return `
                 <div class="chatbot-quick-replies smart-followup" style="margin-top: 10px;">
-                    <span class="followup-label">Related topics:</span>
+                    <span class="followup-label">${relatedLabel}</span>
                     ${buttons}
                 </div>
             `;
         },
         
-        // Format intent ID to readable label
+        // Format intent ID to readable label with language support
         formatIntentLabel: function(intent) {
+            const language = this.getCurrentLanguage();
+            
+            // Localized intent labels
+            const labels = {
+                'menu-help': { english: 'Menu Help', swedish: 'Menyhjälp' },
+                'ordering-help': { english: 'Ordering Help', swedish: 'Beställningshjälp' },
+                'technical-support': { english: 'Technical Support', swedish: 'Teknisk Support' },
+                'billing-question': { english: 'Billing Question', swedish: 'Faktureringsfråga' },
+                'pricing-info': { english: 'Pricing Info', swedish: 'Prisinformation' },
+                'allergens': { english: 'Allergens', swedish: 'Allergener' },
+                'refund-request': { english: 'Refund Request', swedish: 'Återbetalning' },
+                'payment-processing': { english: 'Payment Processing', swedish: 'Betalningshantering' },
+                'contact-support': { english: 'Contact Support', swedish: 'Kontakta Support' },
+                'feedback': { english: 'Feedback', swedish: 'Feedback' },
+                'account-help': { english: 'Account Help', swedish: 'Kontohjälp' },
+                'delivery-tracking': { english: 'Delivery Tracking', swedish: 'Leveransspårning' },
+                'restaurant-info': { english: 'Restaurant Info', swedish: 'Restauranginformation' },
+                'promotions': { english: 'Promotions', swedish: 'Erbjudanden' },
+                'opening-hours': { english: 'Opening Hours', swedish: 'Öppettider' }
+            };
+            
+            // Return localized label if available
+            if (labels[intent]) {
+                return labels[intent][language] || labels[intent]['english'];
+            }
+            
+            // Fallback: format the intent ID nicely
             return intent
                 .replace(/-/g, ' ')
                 .replace(/_/g, ' ')
