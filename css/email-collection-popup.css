@@ -786,62 +786,47 @@ input:checked + .slider:before {
 /* Image Left layout */
 .layout-image-left .email-popup-content {
     display: grid;
-    grid-template-columns: 140px 1fr;
+    grid-template-columns: 180px 1fr;
     gap: 20px;
-    align-items: start;
+    align-items: stretch;
 }
 
 .layout-image-left {
-    max-width: 550px;
+    max-width: 600px;
 }
 
 /* Image Right layout */
 .layout-image-right .email-popup-content {
     display: grid;
-    grid-template-columns: 1fr 140px;
+    grid-template-columns: 1fr 180px;
     gap: 20px;
-    align-items: start;
+    align-items: stretch;
 }
 
 .layout-image-right {
-    max-width: 550px;
+    max-width: 600px;
 }
 
 /* Image Top layout */
 .layout-image-top .email-popup-content {
     display: flex;
     flex-direction: column;
+    gap: 15px;
 }
 
 .layout-image-top .popup-image-container {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.layout-image-top .popup-image {
-    max-height: 180px;
-    width: auto;
+    margin-bottom: 5px;
 }
 
 /* Image Bottom layout */
 .layout-image-bottom .email-popup-content {
     display: flex;
     flex-direction: column;
+    gap: 15px;
 }
 
 .layout-image-bottom .popup-image-container {
-    order: 2;
-    margin-top: 20px;
-    text-align: center;
-}
-
-.layout-image-bottom .popup-text-container {
-    order: 1;
-}
-
-.layout-image-bottom .popup-image {
-    max-height: 180px;
-    width: auto;
+    margin-top: 5px;
 }
 
 /* Image Background layout */
@@ -886,29 +871,44 @@ input:checked + .slider:before {
     overflow: hidden;
     border-radius: 8px;
     flex-shrink: 0;
+    background: #1a1a1f;
 }
 
 .popup-image {
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
 }
 
-/* Side layouts - constrain image size */
+/* Side layouts (left/right) - fixed width, match text height */
+.layout-image-left .popup-image-container,
+.layout-image-right .popup-image-container {
+    width: 180px;
+    min-height: 200px;
+    max-height: 280px;
+    align-self: stretch;
+}
+
 .layout-image-left .popup-image,
 .layout-image-right .popup-image {
-    max-height: 180px;
-    width: 140px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
-/* Top/bottom layouts - full width, shorter height */
+/* Top/bottom layouts - full width, fixed height */
+.layout-image-top .popup-image-container,
+.layout-image-bottom .popup-image-container {
+    width: 100%;
+    height: 160px;
+    margin: 0 auto;
+}
+
 .layout-image-top .popup-image,
 .layout-image-bottom .popup-image {
-    max-height: 160px;
-    max-width: 280px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
