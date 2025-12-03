@@ -865,9 +865,7 @@ input:checked + .slider:before {
 
 /* Image container and image styles */
 .popup-image-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     overflow: hidden;
     border-radius: 8px;
     flex-shrink: 0;
@@ -875,9 +873,11 @@ input:checked + .slider:before {
 }
 
 .popup-image {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     border-radius: 8px;
 }
 
@@ -885,15 +885,20 @@ input:checked + .slider:before {
 .layout-image-left .popup-image-container,
 .layout-image-right .popup-image-container {
     width: 180px;
-    min-height: 200px;
-    max-height: 280px;
-    align-self: stretch;
+    height: 100%;
+    min-height: 220px;
+}
+
+.layout-image-left .email-popup-content,
+.layout-image-right .email-popup-content {
+    align-items: stretch;
 }
 
 .layout-image-left .popup-image,
 .layout-image-right .popup-image {
     width: 100%;
     height: 100%;
+    min-height: 220px;
     object-fit: cover;
 }
 
