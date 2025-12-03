@@ -2961,26 +2961,33 @@
                 }
             }
             
-            // Final fallback - use a configured agent from availableAgents
-            console.log('No specific agent found, using configured agent from availableAgents');
+            // Final fallback - use a configured agent from availableAgents (v2 fix)
+            console.log('🔍 Final fallback - checking availableAgents:', this.availableAgents?.length || 0);
             
-            // Try to find a configured agent
+            // Try to find a configured agent with valid assistantId
             if (this.availableAgents && this.availableAgents.length > 0) {
-                // Pick a random configured agent
+                // Find an agent with a valid assignedAssistantId
+                const agentWithAssistant = this.availableAgents.find(a => a.assignedAssistantId && a.assignedAssistantId !== '');
+                if (agentWithAssistant) {
+                    console.log('✅ Using configured agent with assistant:', agentWithAssistant.name, agentWithAssistant.assignedAssistantId);
+                    this.assignSpecificAgent(agentWithAssistant);
+                    return;
+                }
+                // Otherwise pick any random configured agent
                 const randomAgent = this.availableAgents[Math.floor(Math.random() * this.availableAgents.length)];
-                console.log('Using configured agent:', randomAgent.name);
+                console.log('✅ Using random configured agent:', randomAgent.name);
                 this.assignSpecificAgent(randomAgent);
                 return;
             }
             
-            // Ultimate fallback - create agent with general-inquiries assistant
-            console.log('No configured agents, creating fallback agent');
+            // Ultimate fallback - create agent with billing-assistant (known working)
+            console.log('⚠️ No configured agents found, creating fallback');
             const fallbackAgent = {
                 id: 'fallback-agent',
                 name: 'Support Agent',
                 department: department || 'customer-support',
                 avatar: '/images/agents/default-avatar.png',
-                assignedAssistantId: 'general-assistant'
+                assignedAssistantId: 'billing-assistant'
             };
             this.assignSpecificAgent(fallbackAgent);
         },
