@@ -249,22 +249,21 @@ class EmailPopupDisplay {
         // Popup background color
         const popupBgColor = this.config.colors.background || '#252830';
         
-        // Logo HTML
+        // Logo HTML - always left aligned with title below
         const logoEnabled = this.config.logo && this.config.logo.enabled;
         const logoSize = this.config.logo?.size || 100;
-        const logoPosition = this.config.logo?.position || 'center';
         const logoHtml = logoEnabled ? `
-            <div class="popup-logo-container" style="text-align: ${logoPosition}; padding: 15px 20px 0;">
-                <img src="/images/Artboard17copy9.svg" alt="Fooodis" class="popup-logo" style="width: ${logoSize}px; height: auto;">
+            <div class="popup-logo-container" style="text-align: left; padding: 15px 20px 0;">
+                <img src="/images/Artboard17copy9.svg" alt="Fooodis" class="popup-logo" style="width: ${logoSize}px; height: auto; margin-bottom: 10px;">
             </div>
         ` : '';
         
         let popupContent = `
             <div class="email-popup layout-${layout}" style="background-color: ${popupBgColor};">
+                <button class="email-popup-close" style="position: absolute; top: 15px; right: 15px; z-index: 10;">&times;</button>
                 ${logoHtml}
-                <div class="email-popup-header">
+                <div class="email-popup-header" style="padding-top: ${logoEnabled ? '0' : '15px'};">
                     <h2 class="email-popup-title">${this.config.customText.title}</h2>
-                    <button class="email-popup-close">&times;</button>
                 </div>
                 <div class="email-popup-content">
         `;
