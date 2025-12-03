@@ -43,7 +43,8 @@ class EmailPopupDisplay {
                     this.config.image.url = apiConfig.popup_image;
                 }
                 if (apiConfig.popup_image_enabled !== undefined) {
-                    this.config.image.enabled = apiConfig.popup_image_enabled;
+                    // Ensure boolean conversion (API might return 0/1 or true/false)
+                    this.config.image.enabled = Boolean(apiConfig.popup_image_enabled);
                 }
                 if (apiConfig.popup_layout) {
                     this.config.layout = apiConfig.popup_layout;
@@ -124,10 +125,13 @@ class EmailPopupDisplay {
         const layout = this.config.layout || 'standard';
         const hasImage = this.config.image && this.config.image.enabled && this.config.image.url;
         
-        console.log('EmailPopupDisplay: Layout and Image', {
+        console.log('EmailPopupDisplay: Creating popup', {
             layout: layout,
             hasImage: hasImage,
-            imageUrl: this.config.image?.url
+            imageUrl: this.config.image?.url,
+            imageEnabled: this.config.image?.enabled,
+            imageConfig: this.config.image,
+            fullConfig: this.config
         });
         
         // Build image HTML
