@@ -366,8 +366,9 @@ class NodeFlowBuilder {
     }
 
     handleMouseDown(e) {
+        // Handle node dragging
         const nodeElement = e.target.closest('.flow-node');
-        if (nodeElement && !e.target.closest('.node-controls')) {
+        if (nodeElement && !e.target.closest('.node-controls') && !e.target.closest('.disconnect-btn')) {
             const nodeId = nodeElement.dataset.nodeId;
             const node = this.nodes.find(n => n.id === nodeId);
             if (node) {
@@ -384,7 +385,21 @@ class NodeFlowBuilder {
                 nodeElement.classList.add('dragging');
                 
                 e.preventDefault();
+                e.stopPropagation();
+                return;
             }
+        }
+        
+        // Handle canvas panning (if not clicking on node)
+        if (e.button === 1) {
+            // Middle mouse button for panning
+            e.preventDefault();
+            this.startPanning(e);
+        } else if (e.button === 0 && (e.target.classList.contains('node-flow-canvas') || 
+                                       e.target.classList.contains('flow-workspace') ||
+                                       e.target.classList.contains('flow-background'))) {
+            // Left click on empty canvas for panning
+            this.startPanning(e);
         }
     }
 
@@ -953,11 +968,12 @@ class NodeFlowBuilder {
                 this.removeConnection(connection.id);
             };
             
-            // Add to the workspace (which zooms with nodes) so buttons stay attached
-            if (this.workspace) {
+            // Add to flow-nodes container (same level as nodes, inside workspace)
+            const nodesContainer = document.getElementById('flow-nodes');
+            if (nodesContainer) {
+                nodesContainer.appendChild(btn);
+            } else if (this.workspace) {
                 this.workspace.appendChild(btn);
-            } else if (this.canvas) {
-                this.canvas.appendChild(btn);
             }
         });
     }
