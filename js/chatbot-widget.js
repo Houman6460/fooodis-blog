@@ -227,9 +227,17 @@
             // Check if user message contains department-specific keywords
             for (const [dept, keywords] of Object.entries(departmentKeywords)) {
                 if (keywords.some(keyword => messageWords.includes(keyword))) {
-                    // Only switch if current agent doesn't match the needed department (case-insensitive)
+                    // Only switch if current agent doesn't match the needed department
+                    // Use includes() to handle cases like "Customer Support" containing "support"
                     const currentDept = (this.currentAgent?.department || 'general').toLowerCase();
-                    if (currentDept !== dept) {
+                    const currentId = (this.currentAgent?.id || '').toLowerCase();
+                    
+                    // Don't switch if current department already covers this area
+                    const alreadyCovered = currentDept.includes(dept) || 
+                                          dept.includes(currentDept) || 
+                                          currentId.includes(dept);
+                    
+                    if (!alreadyCovered) {
                         console.log(`Agent switch needed: ${currentDept} -> ${dept}`);
                         return { shouldSwitch: true, targetDepartment: dept, reason: 'department_mismatch' };
                     }
