@@ -144,6 +144,23 @@ export async function onRequestPost(context) {
   }
 
   try {
+    // Ensure all columns exist (safe migration)
+    const migrations = [
+      "ALTER TABLE email_subscribers ADD COLUMN country TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN ip_address TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN preferences TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN tags TEXT",
+      "ALTER TABLE email_subscribers ADD COLUMN custom_fields TEXT"
+    ];
+    
+    for (const sql of migrations) {
+      try {
+        await env.DB.prepare(sql).run();
+      } catch (e) {
+        // Column may already exist - safe to ignore
+      }
+    }
+
     const data = await request.json();
 
     // Validate email
