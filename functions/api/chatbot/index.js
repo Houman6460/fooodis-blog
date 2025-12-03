@@ -127,17 +127,28 @@ export async function onRequestPost(context) {
     let assistant = null;
     let systemPrompt = agentSystemPrompt || 'You are a helpful assistant for Fooodis, a food delivery and restaurant management platform. Help users with their questions about food, restaurants, and the platform.';
     
+    // Add language instruction based on detected language
+    const languageInstruction = language === 'swedish' || language === 'sv' 
+      ? '\n\nIMPORTANT: The user is communicating in Swedish. You MUST respond ONLY in Swedish (Svenska). All your responses should be in Swedish.'
+      : '\n\nIMPORTANT: The user is communicating in English. You MUST respond ONLY in English. All your responses should be in English.';
+    
     // If agent system prompt provided, use it directly
     if (agentSystemPrompt) {
       console.log('Using agent system prompt for:', agentName);
+      systemPrompt = agentSystemPrompt + languageInstruction;
     } else if (env.DB && assistantId) {
       assistant = await env.DB.prepare(
         "SELECT * FROM ai_assistants WHERE id = ? OR openai_assistant_id = ?"
       ).bind(assistantId, assistantId).first();
       
       if (assistant?.instructions) {
-        systemPrompt = assistant.instructions;
+        systemPrompt = assistant.instructions + languageInstruction;
+      } else {
+        systemPrompt = systemPrompt + languageInstruction;
       }
+    } else {
+      // No agent prompt and no assistant - add language to default prompt
+      systemPrompt = systemPrompt + languageInstruction;
     }
 
     // Fetch conversation history for context
