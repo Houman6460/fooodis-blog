@@ -161,6 +161,11 @@
                 
                 this.handoffComplete = true;
                 
+                // IMPORTANT: Disable scenario mode - now in agent chat mode
+                this.scenarioActive = false;
+                this.currentNode = null;
+                console.log('✅ Handoff complete - scenario mode disabled');
+                
             }, 2500); // 2.5 second delay for realistic handoff
         },
 
@@ -1272,6 +1277,11 @@
         
         // Handle quick reply button clicks
         handleQuickReply: function(intentId) {
+            // Track this topic in conversation history
+            if (!this.conversationTopics) this.conversationTopics = [];
+            this.conversationTopics.push(intentId);
+            console.log('📝 Conversation topics:', this.conversationTopics);
+            
             // Get the formatted label for display
             const label = intentId
                 .replace(/-/g, ' ')
@@ -1807,10 +1817,16 @@
             };
             
             // Find relevant suggestions based on message content
+            // Get already discussed topics to exclude
+            const discussedTopics = this.conversationTopics || [];
+            
             for (const [keyword, intents] of Object.entries(contextMap)) {
                 if (lowerContent.includes(keyword)) {
                     intents.forEach(intent => {
-                        if (allIntents.includes(intent) && !suggested.includes(intent)) {
+                        // Exclude already discussed topics
+                        if (allIntents.includes(intent) && 
+                            !suggested.includes(intent) && 
+                            !discussedTopics.includes(intent)) {
                             suggested.push(intent);
                         }
                     });
@@ -1819,8 +1835,7 @@
             
             // If no context match, suggest random relevant ones (excluding already discussed)
             if (suggested.length === 0) {
-                const usedIntents = this.conversationIntents || [];
-                const available = allIntents.filter(i => !usedIntents.includes(i));
+                const available = allIntents.filter(i => !discussedTopics.includes(i));
                 suggested.push(...available.slice(0, 3));
             }
             
@@ -2963,6 +2978,11 @@
             
             this.conversationPhase = 'agent';
             this.handoffComplete = true;
+            
+            // IMPORTANT: Disable scenario mode after handoff - now it's agent chat
+            this.scenarioActive = false;
+            this.currentNode = null;
+            console.log('✅ Handoff complete - scenario mode disabled, now in agent chat mode');
             
             // Update UI to show current agent
             this.updateAgentDisplay();
