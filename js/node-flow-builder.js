@@ -16,6 +16,9 @@ class NodeFlowBuilder {
         this.panOffset = { x: 0, y: 0 };
         this.isDragging = false;
         this.isConnecting = false;
+        this.isPanning = false;
+        this.panStart = { x: 0, y: 0 };
+        this.panStartOffset = { x: 0, y: 0 };
         this.connectionStart = null;
         this.tempConnectionStart = null;
         this.masterTemplate = this.getMasterTemplate();
@@ -928,18 +931,11 @@ class NodeFlowBuilder {
                 this.removeConnection(connection.id);
             };
             
-            // Add to the actual canvas element (this.canvas with class node-flow-canvas)
-            if (this.canvas) {
+            // Add to the workspace (which zooms with nodes) so buttons stay attached
+            if (this.workspace) {
+                this.workspace.appendChild(btn);
+            } else if (this.canvas) {
                 this.canvas.appendChild(btn);
-                console.log('Added disconnect button to canvas for connection:', connection.id);
-            } else {
-                console.log('Canvas not found! Using fallback container');
-                // Fallback to flow container
-                const container = document.getElementById('node-flow-container');
-                if (container) {
-                    container.appendChild(btn);
-                    console.log('Added disconnect button to container for connection:', connection.id);
-                }
             }
         });
     }
@@ -1807,17 +1803,22 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseMove(e) {
-        if (this.isDragging) {
-            this.panOffset.x = e.clientX;
-            this.panOffset.y = e.clientY;
-            this.canvas.style.transform = `scale(${this.zoom}) translate(${this.panOffset.x}px, ${this.panOffset.y}px)`;
+        // Handle canvas panning (middle mouse or space+drag)
+        if (this.isPanning) {
+            const dx = e.clientX - this.panStart.x;
+            const dy = e.clientY - this.panStart.y;
+            
+            this.panOffset.x = this.panStartOffset.x + dx;
+            this.panOffset.y = this.panStartOffset.y + dy;
+            
+            this.updateWorkspaceTransform();
         }
         
         // Handle node dragging
         if (this.draggedNode) {
             const rect = this.canvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / this.zoom;
-            const y = (e.clientY - rect.top) / this.zoom;
+            const x = (e.clientX - rect.left - this.panOffset.x) / this.zoom;
+            const y = (e.clientY - rect.top - this.panOffset.y) / this.zoom;
             
             this.draggedNode.position.x = x - this.draggedNode.dragOffset.x;
             this.draggedNode.position.y = y - this.draggedNode.dragOffset.y;
@@ -1848,6 +1849,11 @@ class NodeFlowBuilder {
     }
 
     handleCanvasMouseUp(e) {
+        // Stop panning
+        if (this.isPanning) {
+            this.stopPanning();
+        }
+        
         this.isDragging = false;
         if (this.draggedNode) {
             this.draggedNode = null;
@@ -1946,28 +1952,55 @@ class NodeFlowBuilder {
     }
 
     updateZoom(delta) {
-        const oldZoom = this.zoom;
         this.zoom += delta;
         this.zoom = Math.max(0.25, Math.min(this.zoom, 2));
         
-        // Apply transform to workspace, not the entire canvas
-        if (this.workspace) {
-            this.workspace.style.transform = `scale(${this.zoom})`;
-            this.workspace.style.transformOrigin = '0 0';
-        }
+        this.updateWorkspaceTransform();
         
         const zoomLevel = document.querySelector('.canvas-zoom-level');
         if (zoomLevel) {
             zoomLevel.textContent = `${Math.round(this.zoom * 100)}%`;
         }
     }
+    
+    /**
+     * Update workspace transform with current zoom and pan
+     */
+    updateWorkspaceTransform() {
+        if (this.workspace) {
+            this.workspace.style.transform = `translate(${this.panOffset.x}px, ${this.panOffset.y}px) scale(${this.zoom})`;
+            this.workspace.style.transformOrigin = '0 0';
+        }
+    }
 
     handleCanvasMouseDown(e) {
+        // Middle mouse button for panning
         if (e.button === 1) {
-            this.isDragging = true;
-            this.panOffset.x = e.clientX;
-            this.panOffset.y = e.clientY;
+            e.preventDefault();
+            this.startPanning(e);
         }
+        // Left click on empty canvas for panning (not on nodes)
+        if (e.button === 0 && e.target.classList.contains('node-flow-canvas')) {
+            this.startPanning(e);
+        }
+    }
+    
+    /**
+     * Start panning the canvas
+     */
+    startPanning(e) {
+        this.isPanning = true;
+        this.panStart = { x: e.clientX, y: e.clientY };
+        this.panStartOffset = { x: this.panOffset.x, y: this.panOffset.y };
+        this.canvas.classList.add('panning');
+    }
+    
+    /**
+     * Stop panning the canvas
+     */
+    stopPanning() {
+        this.isPanning = false;
+        this.canvas?.classList.remove('panning');
     }
 
     zoomIn() {
@@ -1982,10 +2015,7 @@ class NodeFlowBuilder {
         this.zoom = 1;
         this.panOffset = { x: 0, y: 0 };
         
-        if (this.workspace) {
-            this.workspace.style.transform = `scale(1)`;
-            this.workspace.style.transformOrigin = '0 0';
-        }
+        this.updateWorkspaceTransform();
         
         const zoomLevel = document.querySelector('.canvas-zoom-level');
         if (zoomLevel) {

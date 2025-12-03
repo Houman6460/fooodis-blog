@@ -125,26 +125,29 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background: #1a1a1a;
     cursor: grab;
     overflow: hidden;
+    -webkit-user-select: none;
     user-select: none;
-}
-
-/* Workspace - this is what gets zoomed */
-.flow-workspace {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform-origin: 0 0;
-    will-change: transform;
-    background: 
+    /* Grid pattern stays fixed on canvas */
+    background-color: #1a1a1a;
+    background-image: 
         linear-gradient(90deg, #333 1px, transparent 1px),
         linear-gradient(180deg, #333 1px, transparent 1px);
     background-size: 20px 20px;
     background-position: -1px -1px;
+    background-attachment: local;
+}
+
+/* Workspace - this is what gets zoomed (no grid here) */
+.flow-workspace {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3000px;
+    height: 3000px;
+    transform-origin: 0 0;
+    will-change: transform;
 }
 
 .node-flow-canvas:active {
