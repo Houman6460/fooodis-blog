@@ -21,11 +21,22 @@ class NodeFlowBuilder {
         this.masterTemplate = this.getMasterTemplate();
         this.autoSaveTimeout = null;
         
+        // Multi-language flow storage
+        this.flowsByLanguage = { en: null, sv: null };
+        
+        // Undo/Redo history
+        this.history = [];
+        this.historyIndex = -1;
+        this.maxHistorySize = 50;
+        
+        // Configured agents from ChatbotManager
+        this.configuredAgents = [];
+        
         // Sync with ChatbotManager if available
         this.syncWithChatbotManager();
         
-        // Load saved flow data from localStorage
-        this.loadFlow();
+        // Load saved flow data from cloud then localStorage
+        this.loadFlowFromCloud();
         
         this.init();
     }
@@ -121,17 +132,48 @@ class NodeFlowBuilder {
             if (agentDepartments && agentDepartments.length > 0) {
                 console.log('🔄 Syncing Node Flow Builder with ChatbotManager departments:', agentDepartments);
                 this.masterTemplate.departments = agentDepartments;
-                this.showToast('Departments synced with agent settings', 'success');
             }
-        } else {
-            console.log('⚠️ ChatbotManager not available, using default departments');
+        }
+        
+        // Get configured agents from ChatbotManager
+        if (window.chatbotManager && window.chatbotManager.settings?.agents) {
+            this.configuredAgents = window.chatbotManager.settings.agents;
+            console.log('🔄 Loaded configured agents:', this.configuredAgents.length);
+        }
+        
+        // Get AI assistants from ChatbotManager
+        if (window.chatbotManager && window.chatbotManager.assistants) {
+            this.assistants = window.chatbotManager.assistants;
+            console.log('🔄 Loaded AI assistants:', this.assistants.length);
         }
     }
 
     updateDepartments() {
         // Method to refresh departments from ChatbotManager
         this.syncWithChatbotManager();
-        this.showToast('Department list updated', 'info');
+        this.showToast('Settings synced', 'info');
+    }
+    
+    /**
+     * Get available agents for handoff nodes
+     */
+    getAvailableAgents() {
+        if (this.configuredAgents && this.configuredAgents.length > 0) {
+            return this.configuredAgents.map(agent => ({
+                id: agent.id,
+                name: agent.name,
+                department: agent.department,
+                avatar: agent.avatar,
+                assignedAssistantId: agent.assignedAssistantId
+            }));
+        }
+        // Fallback to department-based agents
+        return this.masterTemplate.departments.map(dept => ({
+            id: dept.id,
+            name: dept.name,
+            department: dept.name,
+            color: dept.color
+        }));
     }
 
     init() {
@@ -216,6 +258,14 @@ class NodeFlowBuilder {
                 </button>
             </div>
             <div class="toolbar-section">
+                <button class="toolbar-btn" id="undo-btn" title="Undo (Ctrl+Z)">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button class="toolbar-btn" id="redo-btn" title="Redo (Ctrl+Y)">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+            <div class="toolbar-section">
                 <button class="toolbar-btn" id="save-flow-btn" title="Save Flow">
                     <i class="fas fa-save"></i> Save
                 </button>
@@ -274,13 +324,40 @@ class NodeFlowBuilder {
         // Node interaction events
         document.addEventListener('click', (e) => this.handleClick(e));
         
-        // Language selector
+        // Undo/Redo buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'undo-btn' || e.target.closest('#undo-btn')) {
+                this.undo();
+            } else if (e.target.id === 'redo-btn' || e.target.closest('#redo-btn')) {
+                this.redo();
+            }
+        });
+        
+        // Keyboard shortcuts for undo/redo
+        document.addEventListener('keydown', (e) => {
+            // Only handle if flow builder is visible
+            const flowContainer = document.getElementById('node-flow-container');
+            if (!flowContainer || flowContainer.offsetParent === null) return;
+            
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'z' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.undo();
+                } else if (e.key === 'y' || (e.key === 'z' && e.shiftKey)) {
+                    e.preventDefault();
+                    this.redo();
+                } else if (e.key === 's') {
+                    e.preventDefault();
+                    this.saveFlow();
+                }
+            }
+        });
+        
+        // Language selector - now switches flow
         const languageSelector = document.getElementById('nodeLanguageSelector');
         if (languageSelector) {
             languageSelector.addEventListener('change', (e) => {
-                this.currentLanguage = e.target.value;
-                this.renderNodes();
-                this.showToast(`Language switched to ${e.target.value === 'en' ? 'English' : 'Swedish'}`, 'info');
+                this.switchLanguage(e.target.value);
             });
         }
     }
@@ -1100,34 +1177,120 @@ class NodeFlowBuilder {
     }
 
     saveFlow() {
+        const language = document.getElementById('nodeLanguageSelector')?.value || this.currentLanguage;
+        
         const flowData = {
             nodes: this.nodes,
             connections: this.connections,
+            language: language,
             metadata: {
                 version: '1.0',
                 created: new Date().toISOString(),
-                language: document.getElementById('nodeLanguageSelector').value
+                language: language
             }
         };
 
-        // Save to localStorage
-        localStorage.setItem('fooodis-node-flow', JSON.stringify(flowData));
+        // Save to multi-language storage
+        this.flowsByLanguage[language] = flowData;
+        
+        // Save to localStorage (with language key)
+        localStorage.setItem(`fooodis-node-flow-${language}`, JSON.stringify(flowData));
+        localStorage.setItem('fooodis-node-flow', JSON.stringify(flowData)); // Keep for backwards compat
 
         // Also save to chatbot manager to integrate with existing system
         if (window.chatbotManager) {
             window.chatbotManager.updateNodeFlow(flowData);
         }
+        
+        // Save to cloud
+        this.saveFlowToCloud(flowData);
+        
+        // Add to undo history
+        this.addToHistory();
 
-        this.showToast('Flow saved successfully', 'success');
+        this.showToast(`Flow saved (${language.toUpperCase()})`, 'success');
+    }
+    
+    /**
+     * Save flow to cloud storage
+     */
+    async saveFlowToCloud(flowData) {
+        try {
+            const response = await fetch('/api/chatbot/flows', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    language: flowData.language || this.currentLanguage,
+                    name: `${(flowData.language || 'en').toUpperCase()} Flow`,
+                    nodes: flowData.nodes,
+                    connections: flowData.connections,
+                    isActive: true
+                })
+            });
+            
+            if (response.ok) {
+                console.log('✅ Flow saved to cloud');
+            } else {
+                console.warn('⚠️ Failed to save flow to cloud');
+            }
+        } catch (error) {
+            console.error('❌ Error saving flow to cloud:', error);
+        }
+    }
+    
+    /**
+     * Load flow from cloud storage
+     */
+    async loadFlowFromCloud() {
+        try {
+            const response = await fetch('/api/chatbot/flows');
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success && result.flowsByLanguage) {
+                    // Store all language flows
+                    if (result.flowsByLanguage.en) {
+                        this.flowsByLanguage.en = result.flowsByLanguage.en;
+                    }
+                    if (result.flowsByLanguage.sv) {
+                        this.flowsByLanguage.sv = result.flowsByLanguage.sv;
+                    }
+                    
+                    // Load current language flow
+                    const currentFlow = this.flowsByLanguage[this.currentLanguage];
+                    if (currentFlow) {
+                        this.nodes = currentFlow.nodes || [];
+                        this.connections = currentFlow.connections || [];
+                        console.log('✅ Flow loaded from cloud:', this.nodes.length, 'nodes');
+                        return true;
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn('⚠️ Could not load from cloud, using localStorage:', error.message);
+        }
+        
+        // Fallback to localStorage
+        this.loadFlow();
+        return false;
     }
 
     loadFlow() {
-        const savedFlow = localStorage.getItem('fooodis-node-flow');
+        const language = this.currentLanguage;
+        let savedFlow = localStorage.getItem(`fooodis-node-flow-${language}`);
+        
+        // Fallback to default key
+        if (!savedFlow) {
+            savedFlow = localStorage.getItem('fooodis-node-flow');
+        }
+        
         if (savedFlow) {
             try {
                 const flowData = JSON.parse(savedFlow);
                 this.nodes = flowData.nodes || [];
                 this.connections = flowData.connections || [];
+                
+                // Store in language-specific storage
+                this.flowsByLanguage[language] = flowData;
                 
                 // Set language if language selector exists
                 const languageSelector = document.getElementById('nodeLanguageSelector');
@@ -1137,14 +1300,97 @@ class NodeFlowBuilder {
                 
                 this.renderNodes();
                 this.renderConnections();
-                this.showToast('Flow loaded from saved state', 'info');
                 console.log('Loaded flow with', this.nodes.length, 'nodes and', this.connections.length, 'connections');
             } catch (error) {
                 console.error('Error loading saved flow:', error);
-                this.showToast('Error loading saved flow', 'error');
             }
         } else {
             console.log('No saved flow found, starting with default nodes');
+        }
+    }
+    
+    /**
+     * Switch language and load appropriate flow
+     */
+    switchLanguage(language) {
+        // Save current flow first
+        const currentLanguage = this.currentLanguage;
+        this.flowsByLanguage[currentLanguage] = {
+            nodes: this.nodes,
+            connections: this.connections,
+            language: currentLanguage
+        };
+        
+        // Switch to new language
+        this.currentLanguage = language;
+        
+        // Load the flow for new language
+        const newFlow = this.flowsByLanguage[language];
+        if (newFlow) {
+            this.nodes = newFlow.nodes || [];
+            this.connections = newFlow.connections || [];
+        } else {
+            // Create empty flow for this language
+            this.nodes = [];
+            this.connections = [];
+            this.createDefaultFlow();
+        }
+        
+        this.renderNodes();
+        this.renderConnections();
+        this.showToast(`Switched to ${language.toUpperCase()} flow`, 'info');
+    }
+    
+    /**
+     * Add current state to undo history
+     */
+    addToHistory() {
+        // Remove any future states if we're in the middle of history
+        if (this.historyIndex < this.history.length - 1) {
+            this.history = this.history.slice(0, this.historyIndex + 1);
+        }
+        
+        // Add current state
+        this.history.push({
+            nodes: JSON.parse(JSON.stringify(this.nodes)),
+            connections: JSON.parse(JSON.stringify(this.connections))
+        });
+        
+        // Limit history size
+        if (this.history.length > this.maxHistorySize) {
+            this.history.shift();
+        }
+        
+        this.historyIndex = this.history.length - 1;
+    }
+    
+    /**
+     * Undo last action
+     */
+    undo() {
+        if (this.historyIndex > 0) {
+            this.historyIndex--;
+            const state = this.history[this.historyIndex];
+            this.nodes = JSON.parse(JSON.stringify(state.nodes));
+            this.connections = JSON.parse(JSON.stringify(state.connections));
+            this.renderNodes();
+            this.renderConnections();
+            this.showToast('Undo', 'info');
+        }
+    }
+    
+    /**
+     * Redo last undone action
+     */
+    redo() {
+        if (this.historyIndex < this.history.length - 1) {
+            this.historyIndex++;
+            const state = this.history[this.historyIndex];
+            this.nodes = JSON.parse(JSON.stringify(state.nodes));
+            this.connections = JSON.parse(JSON.stringify(state.connections));
+            this.renderNodes();
+            this.renderConnections();
+            this.showToast('Redo', 'info');
         }
     }
 
