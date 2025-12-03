@@ -322,22 +322,30 @@ class NodeFlowBuilder {
         document.addEventListener('click', (e) => {
             // Node creation buttons
             if (e.target.id === 'add-welcome-node' || e.target.closest('#add-welcome-node')) {
+                console.log('🏠 Add Welcome Node clicked');
                 this.addNode('welcome');
             } else if (e.target.id === 'add-intent-node' || e.target.closest('#add-intent-node')) {
+                console.log('💡 Add Intent Node clicked');
                 this.addNode('intent');
             } else if (e.target.id === 'add-handoff-node' || e.target.closest('#add-handoff-node')) {
+                console.log('👔 Add Handoff Node clicked');
                 this.addNode('handoff');
             } else if (e.target.id === 'add-condition-node' || e.target.closest('#add-condition-node')) {
+                console.log('🔀 Add Condition Node clicked');
                 this.addNode('condition');
             } else if (e.target.id === 'add-message-node' || e.target.closest('#add-message-node')) {
+                console.log('💬 Add Message Node clicked');
                 this.addNode('message');
             }
             // Flow control buttons
             else if (e.target.id === 'save-flow-btn' || e.target.closest('#save-flow-btn')) {
+                console.log('💾 Save Flow clicked');
                 this.saveFlow();
             } else if (e.target.id === 'test-flow-btn' || e.target.closest('#test-flow-btn')) {
+                console.log('▶️ Test Flow clicked');
                 this.testFlow();
             } else if (e.target.id === 'clear-flow-btn' || e.target.closest('#clear-flow-btn')) {
+                console.log('🗑️ Clear Flow clicked');
                 this.clearFlow();
             }
         });
@@ -1278,26 +1286,36 @@ class NodeFlowBuilder {
      * Save flow to cloud storage
      */
     async saveFlowToCloud(flowData) {
+        console.log('☁️ saveFlowToCloud called with:', flowData.nodes?.length, 'nodes,', flowData.connections?.length, 'connections');
         try {
+            const payload = {
+                language: flowData.language || this.currentLanguage,
+                name: `${(flowData.language || 'en').toUpperCase()} Flow`,
+                nodes: flowData.nodes,
+                connections: flowData.connections,
+                isActive: true
+            };
+            console.log('☁️ Sending to /api/chatbot/flows:', payload);
+            
             const response = await fetch('/api/chatbot/flows', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    language: flowData.language || this.currentLanguage,
-                    name: `${(flowData.language || 'en').toUpperCase()} Flow`,
-                    nodes: flowData.nodes,
-                    connections: flowData.connections,
-                    isActive: true
-                })
+                body: JSON.stringify(payload)
             });
             
-            if (response.ok) {
-                console.log('✅ Flow saved to cloud');
+            const result = await response.json();
+            console.log('☁️ Response from server:', result);
+            
+            if (response.ok && result.success) {
+                console.log('✅ Flow saved to cloud successfully');
+                this.showToast('Flow saved to cloud!', 'success');
             } else {
-                console.warn('⚠️ Failed to save flow to cloud');
+                console.warn('⚠️ Failed to save flow to cloud:', result.error);
+                this.showToast('Cloud save failed: ' + (result.error || 'Unknown error'), 'warning');
             }
         } catch (error) {
             console.error('❌ Error saving flow to cloud:', error);
+            this.showToast('Cloud save error: ' + error.message, 'error');
         }
     }
     
