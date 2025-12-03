@@ -293,43 +293,66 @@ class EmailPopupDisplay {
         // Start countdown timer if enabled
         if (this.config.countdown && this.config.countdown.enabled && this.config.countdown.endDate) {
             console.log('EmailPopupDisplay: Will start countdown with endDate:', this.config.countdown.endDate);
-            // Small delay to ensure DOM is ready
-            setTimeout(() => this.startCountdown(), 100);
+            // Small delay to ensure DOM is ready, store reference for binding
+            const self = this;
+            setTimeout(function() {
+                self.startCountdown();
+            }, 200);
         }
     }
     
     startCountdown() {
-        console.log('EmailPopupDisplay: startCountdown called');
-        
-        const endDateStr = this.config.countdown.endDate;
-        if (!endDateStr) {
-            console.log('EmailPopupDisplay: No endDate string found');
-            return;
-        }
-        
-        const endDate = new Date(endDateStr);
-        console.log('EmailPopupDisplay: Parsed endDate:', endDate, 'Valid:', !isNaN(endDate.getTime()));
-        
-        // Check if end date is valid
-        if (isNaN(endDate.getTime())) {
-            console.log('EmailPopupDisplay: Invalid endDate');
-            return;
-        }
-        
-        // Check if end date is in the future
-        if (endDate <= new Date()) {
-            console.log('EmailPopupDisplay: endDate is in the past');
-            return;
-        }
-        
-        console.log('EmailPopupDisplay: Starting countdown to', endDate);
-        
-        const updateTimer = () => {
-            const now = new Date();
-            const diff = endDate - now;
+        try {
+            console.log('EmailPopupDisplay: startCountdown called');
             
-            if (diff <= 0) {
-                // Timer expired
+            const endDateStr = this.config.countdown.endDate;
+            if (!endDateStr) {
+                console.log('EmailPopupDisplay: No endDate string found');
+                return;
+            }
+            
+            const endDate = new Date(endDateStr);
+            console.log('EmailPopupDisplay: Parsed endDate:', endDate, 'Valid:', !isNaN(endDate.getTime()));
+            
+            // Check if end date is valid
+            if (isNaN(endDate.getTime())) {
+                console.log('EmailPopupDisplay: Invalid endDate');
+                return;
+            }
+            
+            // Check if end date is in the future
+            if (endDate <= new Date()) {
+                console.log('EmailPopupDisplay: endDate is in the past');
+                return;
+            }
+            
+            // Check if countdown elements exist
+            const daysEl = document.getElementById('countdown-days');
+            const hoursEl = document.getElementById('countdown-hours');
+            const minutesEl = document.getElementById('countdown-minutes');
+            const secondsEl = document.getElementById('countdown-seconds');
+            
+            console.log('EmailPopupDisplay: Countdown elements found:', {
+                days: !!daysEl,
+                hours: !!hoursEl,
+                minutes: !!minutesEl,
+                seconds: !!secondsEl
+            });
+            
+            if (!daysEl || !hoursEl || !minutesEl || !secondsEl) {
+                console.log('EmailPopupDisplay: Some countdown elements missing, retrying...');
+                setTimeout(() => this.startCountdown(), 500);
+                return;
+            }
+            
+            console.log('EmailPopupDisplay: Starting countdown to', endDate);
+            
+            const updateTimer = () => {
+                const now = new Date();
+                const diff = endDate - now;
+                
+                if (diff <= 0) {
+                    // Timer expired
                 document.getElementById('countdown-days').textContent = '00';
                 document.getElementById('countdown-hours').textContent = '00';
                 document.getElementById('countdown-minutes').textContent = '00';
@@ -359,6 +382,9 @@ class EmailPopupDisplay {
         // Update immediately and then every second
         updateTimer();
         this.countdownInterval = setInterval(updateTimer, 1000);
+        } catch (error) {
+            console.error('EmailPopupDisplay: Error in startCountdown:', error);
+        }
     }
     
     setupTriggers() {
