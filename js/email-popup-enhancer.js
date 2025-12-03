@@ -124,11 +124,16 @@ class EmailPopupEnhancer {
                 popup_layout: this.config.layout || 'standard'
             };
             
-            await fetch('/api/subscribers/popup-config', {
+            console.log('EmailPopupEnhancer: Saving to API', apiData);
+            
+            const response = await fetch('/api/subscribers/popup-config', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(apiData)
             });
+            
+            const result = await response.json();
+            console.log('EmailPopupEnhancer: API response', result);
         } catch (error) {
             console.error('Error saving to API:', error);
         }
@@ -436,11 +441,14 @@ class EmailPopupEnhancer {
         // Layout selection
         document.querySelectorAll('.layout-option').forEach(option => {
             option.addEventListener('click', () => {
+                console.log('Layout option clicked:', option.dataset.layout);
                 document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
                 option.classList.add('active');
                 this.config.layout = option.dataset.layout;
+                console.log('Layout set to:', this.config.layout);
                 this.saveConfig();
                 this.updatePreview();
+                this.showNotification('Layout changed to: ' + option.dataset.layout);
             });
         });
         
