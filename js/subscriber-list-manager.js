@@ -12,31 +12,38 @@ class SubscriberListManager {
         this.init();
     }
     
-    init() {
-        this.loadSubscribers();
+    async init() {
+        await this.loadSubscribers();
         this.renderSubscriberList();
         this.updateSubscriberCount();
         this.bindEvents();
         this.setupBroadcastChannel();
         
-        // Set up auto-refresh to check for new subscribers every 3 seconds
-        this.refreshInterval = setInterval(() => {
-            this.loadSubscribers();
+        // Set up auto-refresh to check for new subscribers every 10 seconds
+        this.refreshInterval = setInterval(async () => {
+            await this.loadSubscribers();
             this.renderSubscriberList();
             this.updateSubscriberCount();
-        }, 3000);
+        }, 10000);
         
         // Log initialization success for troubleshooting
         console.log('Subscriber List Manager initialized');
         console.log('Current subscribers:', this.subscribers.length);
     }
     
-    loadSubscribers() {
+    async loadSubscribers() {
         try {
-            // Load from localStorage
-            const storedSubscribers = localStorage.getItem('subscriber-emails');
-            if (storedSubscribers) {
-                this.subscribers = JSON.parse(storedSubscribers);
+            // Load from API (cloud-based)
+            const response = await fetch('/api/subscribers');
+            if (response.ok) {
+                const data = await response.json();
+                this.subscribers = (data.subscribers || []).map(sub => ({
+                    email: sub.email,
+                    date: new Date(sub.subscribed_at).toISOString(),
+                    status: sub.status || 'active',
+                    source: sub.source || 'popup',
+                    id: sub.id
+                }));
                 
                 // Sort by date, newest first
                 this.subscribers.sort((a, b) => {
@@ -50,9 +57,19 @@ class SubscriberListManager {
                 if (this.currentPage > this.totalPages) {
                     this.currentPage = this.totalPages;
                 }
+                
+                // Update stats display
+                if (data.stats) {
+                    const countEl = document.querySelector('.email-subscriber-count');
+                    if (countEl) {
+                        countEl.textContent = `${data.stats.active} Active Subscribers`;
+                    }
+                }
+                
+                console.log('Loaded', this.subscribers.length, 'subscribers from API');
             }
         } catch (error) {
-            console.error('Error loading subscribers:', error);
+            console.error('Error loading subscribers from API:', error);
             this.subscribers = [];
         }
     }
