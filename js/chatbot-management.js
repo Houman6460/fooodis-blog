@@ -1065,22 +1065,33 @@ class ChatbotManager {
             });
         }
 
-        // API key visibility toggle
-        const toggleVisibility = document.querySelector('.toggle-visibility');
+        // API key visibility toggle - use the new button ID
+        const toggleVisibility = document.getElementById('toggleApiKeyVisibility');
         if (toggleVisibility) {
             toggleVisibility.addEventListener('click', () => {
                 const apiKeyInput = document.getElementById('openaiApiKey');
-                const icon = toggleVisibility.querySelector('i');
+                const icon = document.getElementById('apiKeyEyeIcon');
 
-                if (apiKeyInput.type === 'password') {
-                    apiKeyInput.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    apiKeyInput.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+                if (apiKeyInput && icon) {
+                    if (apiKeyInput.type === 'password') {
+                        apiKeyInput.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        apiKeyInput.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
                 }
+            });
+        }
+        
+        // Temperature slider
+        const temperatureSlider = document.getElementById('aiTemperature');
+        const temperatureValue = document.getElementById('temperatureValue');
+        if (temperatureSlider && temperatureValue) {
+            temperatureSlider.addEventListener('input', () => {
+                temperatureValue.textContent = temperatureSlider.value;
             });
         }
     }
@@ -1096,8 +1107,17 @@ class ChatbotManager {
             'allowFileUpload',
             'showTypingIndicator',
             'enableMemory',
-            'enableMultipleAgents'
+            'enableMultipleAgents',
+            'maxTokens'
         ];
+        
+        // Handle temperature slider separately
+        const tempSlider = document.getElementById('aiTemperature');
+        const tempValue = document.getElementById('temperatureValue');
+        if (tempSlider && this.settings.temperature !== undefined) {
+            tempSlider.value = this.settings.temperature;
+            if (tempValue) tempValue.textContent = this.settings.temperature;
+        }
 
         fields.forEach(field => {
             const element = document.getElementById(field);
@@ -1135,9 +1155,11 @@ class ChatbotManager {
             const chatbotName = document.getElementById('chatbotName')?.value?.trim();
             const welcomeMessage = document.getElementById('welcomeMessage')?.value?.trim();
             const openaiApiKey = document.getElementById('openaiApiKey')?.value?.trim();
-            const defaultModel = document.getElementById('defaultModel')?.value || 'gpt-4';
+            const defaultModel = document.getElementById('defaultModel')?.value || 'gpt-4o';
             const widgetPosition = document.getElementById('widgetPosition')?.value || 'bottom-right';
             const widgetColor = document.getElementById('widgetColor')?.value || '#e8f24c';
+            const temperature = parseFloat(document.getElementById('aiTemperature')?.value) || 0.7;
+            const maxTokens = parseInt(document.getElementById('maxTokens')?.value) || 1024;
 
             // Validate required fields
             if (!chatbotName) {
@@ -1152,6 +1174,8 @@ class ChatbotManager {
             this.settings.defaultModel = defaultModel;
             this.settings.widgetPosition = widgetPosition;
             this.settings.widgetColor = widgetColor;
+            this.settings.temperature = temperature;
+            this.settings.maxTokens = maxTokens;
             this.settings.allowFileUpload = document.getElementById('allowFileUpload')?.checked || false;
             this.settings.showTypingIndicator = document.getElementById('showTypingIndicator')?.checked || false;
             this.settings.enableMemory = document.getElementById('enableMemory')?.checked || false;

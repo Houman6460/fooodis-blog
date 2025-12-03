@@ -89,14 +89,18 @@ export async function onRequestGet(context) {
         enabled: settings.enabled !== false,
         chatbotName: settings.chatbot_name || 'Fooodis Assistant',
         welcomeMessage: settings.welcome_message || 'Hello! How can I help you today?',
-        defaultModel: settings.default_model || 'gpt-4',
+        defaultModel: settings.default_model || 'gpt-4o',
+        temperature: parseFloat(settings.temperature) || 0.7,
+        maxTokens: parseInt(settings.max_tokens) || 1024,
         widgetPosition: settings.widget_position || 'bottom-right',
         widgetColor: settings.widget_color || '#e8f24c',
         languages: settings.supported_languages || ['en', 'sv'],
         enableRating: settings.enable_rating !== false,
         enableLeadCapture: settings.enable_lead_capture !== false,
         allowFileUpload: settings.enable_file_upload !== false,
-        showTypingIndicator: settings.enable_typing_indicator !== false
+        showTypingIndicator: settings.enable_typing_indicator !== false,
+        enableMemory: settings.enable_memory !== false,
+        enableMultipleAgents: settings.enable_multiple_agents === true
       },
       assistants: formattedAssistants,
       scenarios: formattedScenarios
@@ -135,11 +139,15 @@ export async function onRequestPost(context) {
       enabled: { value: data.enabled ? 'true' : 'false', type: 'boolean', category: 'general' },
       chatbot_name: { value: data.chatbotName || 'Fooodis Assistant', type: 'string', category: 'general' },
       welcome_message: { value: data.welcomeMessage || '', type: 'string', category: 'general' },
-      default_model: { value: data.defaultModel || 'gpt-4', type: 'string', category: 'ai' },
+      default_model: { value: data.defaultModel || 'gpt-4o', type: 'string', category: 'ai' },
+      temperature: { value: String(data.temperature || 0.7), type: 'number', category: 'ai' },
+      max_tokens: { value: String(data.maxTokens || 1024), type: 'number', category: 'ai' },
       widget_position: { value: data.widgetPosition || 'bottom-right', type: 'string', category: 'widget' },
       widget_color: { value: data.widgetColor || '#e8f24c', type: 'string', category: 'widget' },
       enable_file_upload: { value: data.allowFileUpload ? 'true' : 'false', type: 'boolean', category: 'features' },
       enable_typing_indicator: { value: data.showTypingIndicator ? 'true' : 'false', type: 'boolean', category: 'features' },
+      enable_memory: { value: data.enableMemory ? 'true' : 'false', type: 'boolean', category: 'features' },
+      enable_multiple_agents: { value: data.enableMultipleAgents ? 'true' : 'false', type: 'boolean', category: 'features' },
       supported_languages: { value: JSON.stringify(data.languages || ['en', 'sv']), type: 'json', category: 'general' }
     };
 

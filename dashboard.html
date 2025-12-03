@@ -2238,22 +2238,51 @@
                                 </div>
 
                                 <div class="form-section">
-                                    <h4>OpenAI Configuration</h4>
+                                    <h4>AI Configuration</h4>
                                     <div class="form-group">
                                         <label for="openaiApiKey">OpenAI API Key</label>
-                                        <div class="input-group">
-                                            <input type="password" id="openaiApiKey" placeholder="Enter OpenAI API key">
-                                            <button type="button" class="toggle-visibility" aria-label="Toggle password visibility" title="Toggle password visibility">
-                                                <i class="fas fa-eye"></i>
+                                        <div class="input-group api-key-group">
+                                            <input type="password" id="openaiApiKey" placeholder="sk-proj-...">
+                                            <button type="button" class="btn-toggle-visibility" id="toggleApiKeyVisibility" aria-label="Toggle password visibility" title="Show/Hide API Key">
+                                                <i class="fas fa-eye" id="apiKeyEyeIcon"></i>
                                             </button>
                                         </div>
+                                        <small class="help-text">Your API key is stored securely in the cloud</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="defaultModel">Default Model</label>
                                         <select id="defaultModel">
-                                            <option value="gpt-4">GPT-4</option>
-                                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                            <optgroup label="GPT-4 Models">
+                                                <option value="gpt-4o">GPT-4o (Recommended)</option>
+                                                <option value="gpt-4o-mini">GPT-4o Mini (Fast & Cheap)</option>
+                                                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                                                <option value="gpt-4">GPT-4</option>
+                                            </optgroup>
+                                            <optgroup label="GPT-3.5 Models">
+                                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                                <option value="gpt-3.5-turbo-16k">GPT-3.5 Turbo 16K</option>
+                                            </optgroup>
+                                            <optgroup label="Other Models">
+                                                <option value="gpt-4-vision-preview">GPT-4 Vision</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="aiTemperature">Temperature</label>
+                                        <div class="range-with-value">
+                                            <input type="range" id="aiTemperature" min="0" max="2" step="0.1" value="0.7">
+                                            <span id="temperatureValue">0.7</span>
+                                        </div>
+                                        <small class="help-text">Higher = more creative, Lower = more focused</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="maxTokens">Max Response Tokens</label>
+                                        <select id="maxTokens">
+                                            <option value="256">256 (Short)</option>
+                                            <option value="512">512</option>
+                                            <option value="1024" selected>1024 (Default)</option>
+                                            <option value="2048">2048</option>
+                                            <option value="4096">4096 (Long)</option>
                                         </select>
                                     </div>
                                 </div>

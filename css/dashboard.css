@@ -2542,3 +2542,78 @@ body.dashboard-body {
     border-radius: 10px;
     border: 1px solid var(--dark-border, #32363f);
 }
+
+/* API Key Toggle Button */
+.api-key-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.api-key-group input {
+    flex: 1;
+    padding-right: 50px;
+}
+
+.btn-toggle-visibility {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #a0a0a0);
+    cursor: pointer;
+    padding: 8px;
+    transition: color 0.2s;
+}
+
+.btn-toggle-visibility:hover {
+    color: var(--primary-color, #e8f24c);
+}
+
+.btn-toggle-visibility i {
+    font-size: 16px;
+}
+
+/* Range with Value */
+.range-with-value {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.range-with-value input[type="range"] {
+    flex: 1;
+    height: 6px;
+    background: var(--dark-border, #32363f);
+    border-radius: 3px;
+    -webkit-appearance: none;
+}
+
+.range-with-value input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color, #e8f24c);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.range-with-value span {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary-color, #e8f24c);
+}
+
+/* Optgroup Styling */
+select optgroup {
+    background: var(--dark-card, #252830);
+    color: var(--primary-color, #e8f24c);
+    font-weight: 600;
+}
+
+select option {
+    background: var(--darker-bg, #171a1f);
+    color: var(--text-light, #ffffff);
+    padding: 8px;
+}
