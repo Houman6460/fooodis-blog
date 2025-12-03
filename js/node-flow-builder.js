@@ -180,15 +180,22 @@ class NodeFlowBuilder {
     }
 
     init() {
+        console.log('🚀 NodeFlowBuilder init() called');
         this.setupCanvas();
         this.setupEventListeners();
         this.setupToolbar();
         this.createDefaultFlow();
+        console.log('✅ NodeFlowBuilder initialization complete');
     }
 
     setupCanvas() {
+        console.log('📐 setupCanvas() called');
         const flowContainer = document.getElementById('node-flow-container');
-        if (!flowContainer) return;
+        if (!flowContainer) {
+            console.error('❌ node-flow-container not found!');
+            return;
+        }
+        console.log('📐 flowContainer found:', flowContainer);
 
         // Create canvas
         this.canvas = document.createElement('div');
