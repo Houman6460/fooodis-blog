@@ -2961,9 +2961,26 @@
                 }
             }
             
-            // Final fallback - perform general handoff
-            console.log('Performing general handoff');
-            this.performAgentHandoff();
+            // Final fallback - create a default agent and assign directly
+            console.log('No specific agent found, creating default agent');
+            const defaultAgent = {
+                id: 'default-agent',
+                name: this.getRandomAgentName(),
+                department: department || 'customer-support',
+                avatar: '/images/agents/default-avatar.png',
+                assignedAssistantId: null
+            };
+            this.assignSpecificAgent(defaultAgent);
+        },
+        
+        // Get a random agent name for default agent
+        getRandomAgentName: function() {
+            const names = [
+                'Lisa Anderson', 'Michael Chen', 'Sarah Johnson', 
+                'David Martinez', 'Emily Wilson', 'James Taylor',
+                'Elena Rodriguez', 'Robert Kim', 'Anna Peterson'
+            ];
+            return names[Math.floor(Math.random() * names.length)];
         },
 
         // Assign a specific agent during scenario handoff
