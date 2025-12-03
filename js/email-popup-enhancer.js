@@ -29,7 +29,8 @@ class EmailPopupEnhancer {
             },
             colors: {
                 background: '#252830',
-                textBackground: '#80000000', // Semi-transparent black in hex format
+                textBackground: '#000000',
+                textBackgroundOpacity: 50,
                 buttonBackground: '#e8f24c',
                 buttonText: '#1e2127'
             },
@@ -131,6 +132,30 @@ class EmailPopupEnhancer {
         } catch (error) {
             console.error('Error saving to API:', error);
         }
+    }
+    
+    // Extract hex color from rgba or hex string
+    extractHexColor(color) {
+        if (!color) return '#000000';
+        
+        // Already hex format
+        if (color.startsWith('#')) {
+            // Handle 8-char hex (with alpha) - return just the first 7 chars
+            if (color.length === 9) return color.substring(0, 7);
+            if (color.length === 7) return color;
+            return '#000000';
+        }
+        
+        // Parse rgba format
+        const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (rgbaMatch) {
+            const r = parseInt(rgbaMatch[1]).toString(16).padStart(2, '0');
+            const g = parseInt(rgbaMatch[2]).toString(16).padStart(2, '0');
+            const b = parseInt(rgbaMatch[3]).toString(16).padStart(2, '0');
+            return `#${r}${g}${b}`;
+        }
+        
+        return '#000000';
     }
     
     createEnhancedUI() {
@@ -287,8 +312,8 @@ class EmailPopupEnhancer {
                     </div>
                     <div class="color-control-group">
                         <label for="textBackgroundColor">Text Background Color</label>
-                        <input type="color" id="textBackgroundColor" value="${this.config.colors.textBackground}">
-                        <input type="range" id="textBackgroundOpacity" min="0" max="100" value="50">
+                        <input type="color" id="textBackgroundColor" value="${this.extractHexColor(this.config.colors.textBackground)}">
+                        <input type="range" id="textBackgroundOpacity" min="0" max="100" value="${this.config.colors.textBackgroundOpacity || 50}">
                         <div class="color-preview" style="background-color: ${this.config.colors.textBackground}"></div>
                     </div>
                     <div class="color-control-group">

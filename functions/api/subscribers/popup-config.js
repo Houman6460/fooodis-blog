@@ -18,13 +18,19 @@ export async function onRequestGet(context) {
   }
 
   try {
-    // Ensure new columns exist (safe migration)
-    try {
-      await env.DB.prepare("ALTER TABLE email_popup_config ADD COLUMN popup_image_enabled INTEGER DEFAULT 0").run();
-    } catch (e) { /* Column may already exist */ }
-    try {
-      await env.DB.prepare("ALTER TABLE email_popup_config ADD COLUMN popup_layout TEXT DEFAULT 'standard'").run();
-    } catch (e) { /* Column may already exist */ }
+    // Ensure new columns exist (safe migration) - wrap each in try/catch
+    const migrations = [
+      "ALTER TABLE email_popup_config ADD COLUMN popup_image_enabled INTEGER DEFAULT 0",
+      "ALTER TABLE email_popup_config ADD COLUMN popup_layout TEXT DEFAULT 'standard'"
+    ];
+    
+    for (const sql of migrations) {
+      try {
+        await env.DB.prepare(sql).run();
+      } catch (e) {
+        // Column may already exist - this is expected and safe to ignore
+      }
+    }
 
     let config = await env.DB.prepare(
       "SELECT * FROM email_popup_config WHERE id = 'default'"
