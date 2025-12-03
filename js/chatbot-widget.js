@@ -545,11 +545,6 @@
                         const responseMessage = this.getPersonalizedResponse(data.message, conversationContext);
                         this.addMessage(responseMessage, 'assistant');
                         
-                        // Trigger post-chat automation after assistant response
-                        setTimeout(() => {
-                            this.triggerEndOfConversationCheck();
-                        }, 3000);
-                        
                         // Log conversation activity for real-time tracking
                         this.logConversationActivity('agent_response', {
                             agentName: this.currentAgent?.name,
@@ -1461,11 +1456,6 @@
                         const responseMessage = this.getPersonalizedResponse(data.message);
                         this.addMessage(responseMessage, 'assistant');
 
-                        // Trigger post-chat automation after assistant response
-                        setTimeout(() => {
-                            this.triggerEndOfConversationCheck();
-                        }, 3000);
-
                         // CRITICAL: Also call backend API to persist conversation data
                         // This ensures conversations are saved even with local response generation
                         fetch(this.config.apiEndpoint, {
@@ -1550,11 +1540,6 @@
                         // Add personalized assistant response
                         const responseMessage = this.getPersonalizedResponse(data.message);
                         this.addMessage(responseMessage, 'assistant');
-
-                        // Trigger post-chat automation after assistant response
-                        setTimeout(() => {
-                            this.triggerEndOfConversationCheck();
-                        }, 3000);
 
                         // Occasionally rotate agent during conversation (after handoff)
                         if (this.handoffComplete && this.conversationPhase === 'agent') {
