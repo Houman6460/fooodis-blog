@@ -3071,8 +3071,49 @@
                     break;
                     
                 case 'branch':
-                    // Decision point - wait for user input to determine path
-                    this.hideTyping();
+                    // Decision point - if we have detected intents, follow the matching path
+                    console.log('📋 Case: branch - result.detectedIntents:', result.detectedIntents);
+                    if (result.detectedIntents && result.detectedIntents.length > 0) {
+                        // Find the connection that matches the detected intent
+                        const matchedIntent = result.detectedIntents[0];
+                        console.log('📋 Following branch for intent:', matchedIntent);
+                        
+                        // Move to the next node based on the intent
+                        const branchNode = this.moveToNextNode(this.currentNode.id, matchedIntent);
+                        console.log('📋 Branch node found:', branchNode?.type, branchNode?.id);
+                        
+                        if (branchNode) {
+                            if (branchNode.type === 'handoff') {
+                                console.log('📋 Auto-executing handoff from branch');
+                                setTimeout(() => {
+                                    const branchResult = this.executeScenarioNode(branchNode);
+                                    console.log('📋 Handoff result:', branchResult);
+                                    if (branchResult && branchResult.content) {
+                                        this.addMessage(branchResult.content, 'assistant');
+                                    }
+                                    this.hideTyping();
+                                }, 800);
+                            } else if (branchNode.type === 'message') {
+                                setTimeout(() => {
+                                    const branchResult = this.executeScenarioNode(branchNode);
+                                    if (branchResult && branchResult.content) {
+                                        this.addMessage(branchResult.content, 'assistant');
+                                    }
+                                    this.hideTyping();
+                                }, 800);
+                            } else {
+                                this.hideTyping();
+                            }
+                        } else {
+                            // No specific branch found, perform general handoff
+                            console.log('📋 No branch found, performing general handoff');
+                            this.hideTyping();
+                            this.performAgentHandoff();
+                        }
+                    } else {
+                        // No detected intents, wait for user input
+                        this.hideTyping();
+                    }
                     break;
                     
                 case 'end':
