@@ -172,6 +172,10 @@
 .flow-node.dragging {
     z-index: 1000;
     cursor: move !important;
+    opacity: 0.9;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    /* Prevent any animation during drag */
+    transition: none !important;
 }
 
 .flow-node .node-controls {

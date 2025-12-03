@@ -372,13 +372,16 @@ class NodeFlowBuilder {
             const node = this.nodes.find(n => n.id === nodeId);
             if (node) {
                 this.draggedNode = node;
-                const rect = nodeElement.getBoundingClientRect();
+                this.draggedNodeElement = nodeElement;
                 const canvasRect = this.canvas.getBoundingClientRect();
                 
                 this.draggedNode.dragOffset = {
-                    x: (e.clientX - canvasRect.left) / this.zoom - node.position.x,
-                    y: (e.clientY - canvasRect.top) / this.zoom - node.position.y
+                    x: (e.clientX - canvasRect.left - this.panOffset.x) / this.zoom - node.position.x,
+                    y: (e.clientY - canvasRect.top - this.panOffset.y) / this.zoom - node.position.y
                 };
+                
+                // Add dragging class
+                nodeElement.classList.add('dragging');
                 
                 e.preventDefault();
             }
@@ -641,14 +644,33 @@ class NodeFlowBuilder {
     }
 
     renderNodes() {
+        // Don't re-render while dragging to prevent ghost nodes
+        if (this.draggedNode) return;
+        
         const nodesContainer = document.getElementById('flow-nodes');
         if (!nodesContainer) return;
 
+        // Clear ALL existing nodes to prevent duplicates
         nodesContainer.innerHTML = '';
 
         this.nodes.forEach(node => {
             const nodeElement = this.createNodeElement(node);
             nodesContainer.appendChild(nodeElement);
+        });
+    }
+    
+    /**
+     * Clear any duplicate node elements (ghost cleanup)
+     */
+    cleanupDuplicateNodes() {
+        const nodeIds = new Set();
+        document.querySelectorAll('.flow-node').forEach(el => {
+            const nodeId = el.dataset.nodeId;
+            if (nodeIds.has(nodeId)) {
+                el.remove(); // Remove duplicate
+            } else {
+                nodeIds.add(nodeId);
+            }
         });
     }
 
@@ -1856,8 +1878,22 @@ class NodeFlowBuilder {
         
         this.isDragging = false;
         if (this.draggedNode) {
+            // Remove dragging class
+            if (this.draggedNodeElement) {
+                this.draggedNodeElement.classList.remove('dragging');
+            }
+            
             this.draggedNode = null;
-            this.autoSave(); // 🔧 FIX 3: Auto-save when node moved
+            this.draggedNodeElement = null;
+            
+            // Clean up any ghost/duplicate nodes
+            this.cleanupDuplicateNodes();
+            
+            // Re-render to ensure clean state
+            this.renderNodes();
+            this.renderConnections();
+            
+            this.autoSave();
         }
     }
 
