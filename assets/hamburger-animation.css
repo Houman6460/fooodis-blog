@@ -4,7 +4,7 @@
 .hamburger-menu {
   background: none;
   border: none;
-  display: flex;
+  display: none; /* Hidden by default on desktop */
   align-items: center;
   justify-content: center;
   padding: 0;
@@ -78,16 +78,20 @@ button.hamburger-menu .ham .line {
   stroke-dashoffset: -138px;
 }
 
-/* Mobile adaptations */
-@media (max-width: 768px) {
+/* Mobile adaptations - show hamburger on mobile/tablet */
+@media (max-width: 991px) {
   .hamburger-menu {
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
     margin-left: 15px;
-    display: flex; /* Show on mobile */
+    display: flex !important; /* Show on mobile */
     align-items: center;
     justify-content: center;
+  }
+  
+  .main-nav {
+    display: none !important; /* Hide desktop nav on mobile */
   }
 }
