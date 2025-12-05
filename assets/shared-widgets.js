@@ -1,8 +1,58 @@
 /**
- * Shared Widgets - Chatbot Button & Back to Top
+ * Shared Widgets - Chatbot & Back to Top
  * Shows on all pages
  */
+
+// Load chatbot scripts dynamically
+function loadChatbotScripts() {
+    const chatbotScripts = [
+        'js/chatbot-management.js',
+        'js/chatbot-message-enhancer.js',
+        'js/chatbot-widget.js',
+        'js/chatbot-integration-fixes.js',
+        'js/chatbot-integration-patch.js'
+    ];
+    
+    let loaded = 0;
+    chatbotScripts.forEach(function(src) {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = function() {
+            loaded++;
+            if (loaded === chatbotScripts.length) {
+                initializeChatbot();
+            }
+        };
+        script.onerror = function() {
+            loaded++;
+        };
+        document.head.appendChild(script);
+    });
+}
+
+// Initialize chatbot after scripts loaded
+function initializeChatbot() {
+    setTimeout(function() {
+        if (typeof window.FoodisChatbot !== 'undefined') {
+            try {
+                window.FoodisChatbot.init({
+                    apiEndpoint: window.location.origin + '/api/chatbot',
+                    position: 'bottom-right'
+                });
+                console.log('Chatbot initialized on this page');
+            } catch (e) {
+                console.log('Chatbot init error:', e);
+            }
+        }
+    }, 500);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Load chatbot scripts if not already loaded
+    if (typeof window.FoodisChatbot === 'undefined' && !document.querySelector('#fooodis-chatbot')) {
+        loadChatbotScripts();
+    }
     
     // Add CSS for widgets
     const widgetStyles = document.createElement('style');
@@ -114,12 +164,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add click handler
         document.getElementById('shared-chatbot-btn').addEventListener('click', function() {
-            // Check if FoodisChatbot exists
-            if (typeof window.FoodisChatbot !== 'undefined' && window.FoodisChatbot.toggle) {
-                window.FoodisChatbot.toggle();
+            // Check if FoodisChatbot exists and toggle it
+            if (typeof window.FoodisChatbot !== 'undefined') {
+                if (window.FoodisChatbot.toggle) {
+                    window.FoodisChatbot.toggle();
+                } else if (window.FoodisChatbot.open) {
+                    window.FoodisChatbot.open();
+                }
             } else {
-                // Redirect to blog page with chat
-                window.location.href = 'blog.html?openchat=true';
+                // Try to find and click existing chatbot button
+                const existingBtn = document.querySelector('#fooodis-chatbot .chatbot-toggle, .chatbot-toggle-btn');
+                if (existingBtn) {
+                    existingBtn.click();
+                }
             }
         });
     }
