@@ -78,3 +78,35 @@
     top: 100vh;
     left: 0;
 }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .fooodis-footer {
+        min-height: 10rem;
+    }
+    
+    .footer-container {
+        padding: 1.5rem 1rem;
+    }
+    
+    .footer-top {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .fooodis-footer {
+        min-height: 8rem;
+    }
+    
+    .footer-container {
+        padding: 1rem;
+    }
+}

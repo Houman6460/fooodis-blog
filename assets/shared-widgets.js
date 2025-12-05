@@ -144,6 +144,36 @@ document.addEventListener('DOMContentLoaded', function() {
             fill: none;
             stroke-width: 2;
         }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .chatbot-widget {
+                bottom: 80px !important;
+                right: 15px !important;
+            }
+            
+            .chatbot-button {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .chatbot-button svg {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .back-to-top {
+                bottom: 15px !important;
+                right: 15px !important;
+                width: 45px;
+                height: 45px;
+            }
+            
+            .back-to-top svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
     `;
     document.head.appendChild(widgetStyles);
     

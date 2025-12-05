@@ -396,6 +396,39 @@ body {
     .footer-nav-item {
         margin: 5px;
     }
+    
+    .footer-nav-list {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-nav-item a {
+        font-size: 13px;
+    }
+    
+    .footer-social {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .social-link {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logoland-container {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .logoland-logo {
+        height: 35px;
+    }
+    
+    .footer-powered-by p {
+        font-size: 12px;
+        text-align: center;
+    }
 }
 
 /* Back to top button styles */
