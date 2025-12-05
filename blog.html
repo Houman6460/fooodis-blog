@@ -1,615 +1,458 @@
-<!DOCTYPE html><html lang="en" data-autogen-89=""><head>
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<meta charset="utf-8">
-<meta content="​​Digital Mastery, Design Perfection" name="keywords">
-<meta content="" name="description">
-<title>Blog</title>
-<link href="nicepage.css" media="screen" rel="stylesheet">
-<link href="Blog.css" media="screen" rel="stylesheet">
-<script class="u-script" defer="" src="jquery.js" type="text/javascript"></script>
-<script class="u-script" defer="" src="nicepage.js" type="text/javascript"></script>
-<script src="assets/header-injection.js" defer></script>
-<link href="assets/hamburger-animation.css" rel="stylesheet">
-<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
-<meta content="origin" name="referrer">
-<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
-<script type="application/ld+json">{
-		"@context": "http://schema.org",
-		"@type": "Organization",
-		"name": "Fooodis",
-		"logo": "images/Artboard17copy9.svg",
-		"sameAs": [
-				"https://facebook.com/name",
-				"https://twitter.com/name",
-				"https://instagram.com/name"
-		]
-}</script>
-<meta content="#478ac9" name="theme-color">
-<meta content="@" name="twitter:site">
-<meta content="summary_large_image" name="twitter:card">
-<meta content="Blog" name="twitter:title">
-<meta content="" name="twitter:description">
-<meta content="Blog" property="og:title">
-<meta content="" property="og:description">
-<meta content="website" property="og:type">
-<script>
-    function gdprConfirmed() {
-        return true;
-    }
-    function dynamicLoadScript() {
-        var script = document.createElement('script');
-        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
-        script.async = true;
-        document.body.appendChild(script);
-        script.onload = function() {
-            let event = new CustomEvent("recaptchaLoaded");
-            document.dispatchEvent(event);
-        };
-    }
-    function showRecaptchaError(error) {
-        error = error || '';
-        var formError = document.querySelector('.u-form-send-error');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8"/>
+    <meta content="Fooodis Blog - Restaurant Management Tips and Insights" name="keywords"/>
+    <meta content="Discover the latest restaurant management tips, industry insights, and Fooodis platform updates." name="description"/>
+    <title>Fooodis Blog</title>
 
-        if (formError) {
-            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
-            formError.style.display = 'block';
+    <!-- EMERGENCY FIX: Core browser functions interception -->
+    <script src="js/core-intercept.js"></script>
+
+    <!-- TEMPLATE FIX: Replaces hardcoded default template -->
+    <script src="js/template-replacement.js"></script>
+
+    <!-- Storage Manager - Must be loaded before all other scripts -->
+    <script src="js/storage-manager.js"></script>
+
+    <!-- Markdown Renderer - Enables proper formatting of blog content -->
+    <script src="js/markdown-renderer.js"></script>
+
+    <!-- Modal Markdown Fix - Direct fix for popup content rendering -->
+    <script src="js/modal-markdown-fix.js"></script>
+
+    <!-- Modal Title Fix - Prevents duplicate titles in blog post modals -->
+    <script src="js/modal-title-fix.js"></script>
+
+    <!-- Custom scripts -->
+    <script src="js/cloud-image-fallback.js"></script>
+    <script src="js/blog.js?v=3"></script>
+
+    <!-- Force Unique Content - Complete override of content generation -->
+    <script src="js/force-unique-content.js"></script>
+
+    <link href="css/nicepage.css" media="screen" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/blog.css">
+    <link rel="stylesheet" href="css/social-sharing.css">
+    <link rel="stylesheet" href="css/markdown-fix.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/footer-bubbles.css">
+    <link rel="stylesheet" href="css/advertising-banners.css">
+    <link rel="stylesheet" href="css/enhanced-banner.css">
+    <link rel="stylesheet" href="css/email-popup-enhanced.css">
+    <link rel="stylesheet" href="css/email-collection-popup.css">
+    <link rel="stylesheet" href="css/landing-responsive-fix.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- New Header/Footer Styles -->
+    <link rel="stylesheet" href="assets/nicepage-header-footer.css">
+    <link rel="stylesheet" href="assets/hamburger-animation.css">
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <script src="assets/header-scroll-effect.js" defer></script>
+    
+    <!-- Chatbot Widget Styles -->
+    <style>
+        /* Ensure chatbot widget appears above all other elements */
+        #fooodis-chatbot {
+            position: fixed !important;
+            z-index: 999999 !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         }
-
-        console.error('Error in grecaptcha: ', error);
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
-        if (confirmButton) {
-            confirmButton.onclick = dynamicLoadScript;
+        
+        #fooodis-chatbot.bottom-right {
+            bottom: 20px !important;
+            right: 20px !important;
         }
-    });
-    </script>
-<script>
-        document.addEventListener("DOMContentLoaded", function(){
-            if (!gdprConfirmed()) {
-                return;
-            }
-            dynamicLoadScript();
-        });
-    </script>
-<script>
-        document.addEventListener("recaptchaLoaded", function() {
-            if (!gdprConfirmed()) {
-                return;
-            }
+        
+        .chatbot-button {
+            width: 60px !important;
+            height: 60px !important;
+            border-radius: 50% !important;
+            background: #e8f24c !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+        }
+        
+        .chatbot-button:hover {
+            transform: scale(1.1) !important;
+        }
+    </style>
+    <!-- Main scripts -->
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/nicepage.js" type="text/javascript"></script>
+    <!-- blog.js already loaded above, don't load twice -->
 
-            (function (grecaptcha, sitekey, actions) {
-                var recaptcha = {
-                    execute: function (action, submitFormCb) {
-                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
-                            showRecaptchaError('reCAPTCHA script failed to load.');
-                            return;
+    <!-- Fooodis AI Chatbot Widget -->
+    <!-- ChatbotManager must be loaded BEFORE the widget for local OpenAI integration -->
+    <script src="js/chatbot-management.js"></script>
+    <script src="js/chatbot-message-enhancer.js"></script>
+    <script src="js/chatbot-widget.js"></script>
+    <script src="js/chatbot-integration-fixes.js"></script>
+    <script src="js/chatbot-integration-patch.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Blog: Initializing chatbot widget...');
+        
+        // Check if FoodisChatbot is available
+        if (typeof window.FoodisChatbot !== 'undefined') {
+          try {
+            window.FoodisChatbot.init({
+              apiEndpoint: window.location.origin + '/api/chatbot',
+              position: 'bottom-right',
+              primaryColor: '#e8f24c',
+              language: 'en',
+              assistants: [{
+                id: 'fooodis-assistant',
+                name: 'Fooodis Assistant',
+                assistantId: ''
+              }]
+            });
+            console.log('Blog: Chatbot initialized successfully');
+          } catch (error) {
+            console.error('Blog: Error initializing chatbot:', error);
+          }
+        } else {
+          console.error('Blog: FoodisChatbot not found');
+          
+          // Retry after a short delay
+          setTimeout(function() {
+            if (typeof window.FoodisChatbot !== 'undefined') {
+              window.FoodisChatbot.init({
+                apiEndpoint: window.location.origin + '/api/chatbot',
+                position: 'bottom-right',
+                primaryColor: '#e8f24c',
+                language: 'en'
+              });
+              console.log('Blog: Chatbot initialized on retry');
+            }
+          }, 1000);
+        }
+      });
+    </script>
+    <!-- Remove duplicate blog.js reference as it's already loaded above -->
+    <script class="u-script" defer="" src="js/footer-bubbles.js" type="text/javascript"></script>
+    <script class="u-script" defer="" src="js/advertising-banners.js" type="text/javascript"></script>
+    <script class="u-script" defer="" src="js/enhanced-banner.js" type="text/javascript"></script>
+    <!-- Social Icons Fix - Ensures all blog post cards have social icons -->
+    <script src="js/social-icons-fix.js" type="text/javascript"></script>
+    <meta content="Nicepage 7.8.6, nicepage.com" name="generator"/>
+    <meta content="origin" name="referrer"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet"/>
+    <script type="application/ld+json">{
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "Fooodis",
+        "url": "/",
+        "logo": "images/Artboard17copy9.svg",
+        "sameAs": [
+            "https://facebook.com/name",
+            "https://twitter.com/name",
+            "https://instagram.com/name"
+        ]
+    }</script>
+    <!-- Theme colors for various browsers -->
+    <!-- Using manifest.json for theme color which is more widely supported -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#478ac9"/>
+    <link rel="apple-touch-icon" href="images/favicon.png"/>
+    <link href="/" rel="canonical"/>
+    <meta content="@" name="twitter:site"/>
+    <meta content="summary_large_image" name="twitter:card"/>
+    <meta content="Fooodis Blog" name="twitter:title"/>
+    <meta content="Discover the latest restaurant management tips, industry insights, and Fooodis platform updates." name="twitter:description"/>
+    <meta content="Fooodis Blog" property="og:title"/>
+    <meta content="Discover the latest restaurant management tips, industry insights, and Fooodis platform updates." property="og:description"/>
+    <meta content="website" property="og:type"/>
+    <!-- Blog Image Fix - Comprehensive image repair -->
+    <script src="js/blog-image-fix.js"></script>
+
+    <!-- NOTE: blog-data-manager.js removed - it was conflicting with blog.js -->
+    <!-- blog.js handles all blog display independently using API -->
+
+    <!-- Cross-window sync for real-time updates -->
+    <script>
+        // Listen for post deletions from dashboard
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'postDeletionBroadcast' && e.newValue) {
+                try {
+                    const event = JSON.parse(e.newValue);
+                    if (event && event.type === 'postDeleted') {
+                        console.log('Blog: Received deletion broadcast for post:', event.postId);
+
+                        // Remove from current view immediately
+                        const postElement = document.querySelector(`[data-id="${event.postId}"]`);
+                        if (postElement) {
+                            postElement.remove();
+                            console.log('Blog: Removed deleted post from view');
                         }
 
-                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
-                            if (!token) {
-                                throw new Error('Empty token received from reCAPTCHA');
-                            }
-
-                            var forms = document.getElementsByTagName('form');
-
-                            for (var i = 0; i < forms.length; i++) {
-                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
-
-                                if (!response) {
-                                    response = document.createElement('input');
-                                    response.setAttribute('type', 'hidden');
-                                    response.setAttribute('name', 'recaptchaResponse');
-                                    forms[i].appendChild(response);
-                                }
-
-                                response.value = token;
-                            }
-
-                            submitFormCb();
-                        }).catch((e) => {
-                            showRecaptchaError(e.message);
-                        });
-                    },
-
-                    executeContact: function (submitFormCb) {
-                        recaptcha.execute(actions['contact'], submitFormCb);
+                        // Reload blog posts to ensure consistency
+                        if (typeof window.loadBlogPosts === 'function') {
+                            setTimeout(() => {
+                                window.loadBlogPosts();
+                            }, 500);
+                        }
                     }
-                };
+                } catch (error) {
+                    console.error('Blog: Error processing deletion broadcast:', error);
+                }
+            }
 
-                window.recaptchaObject = recaptcha;
-            })(
-                
-                grecaptcha.enterprise,
-                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
-                {'contact': 'contact'}
-            );
+            // Also listen for general blog updates
+            if (e.key === 'fooodis-blog-posts') {
+                console.log('Blog: Posts updated in storage, refreshing...');
+                if (typeof window.loadBlogPosts === 'function') {
+                    setTimeout(() => {
+                        window.loadBlogPosts();
+                    }, 300);
+                }
+            }
+        });
+
+        // Force refresh when page becomes visible (user switches back to tab)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && typeof window.loadBlogPosts === 'function') {
+                console.log('Blog: Page became visible, refreshing posts...');
+                setTimeout(() => {
+                    window.loadBlogPosts();
+                }, 200);
+            }
         });
     </script>
-<meta data-intl-tel-input-cdn-path="intlTelInput/"><!-- Fooodis Header CSS and JS -->
-<link href="assets/nicepage-header-footer.css" rel="stylesheet">
-<script defer="" src="assets/header.js"></script>
-<script defer="" src="assets/header-include.js"></script>
-    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Inline Footer Styles -->
-    <style>
-/* Combined footer styles for inline embedding */
 
-/* Bubble Footer Animation CSS */
-.fooodis-footer {
-    z-index: 1;
-    --footer-background: #1e2127;
-    display: grid;
-    position: relative;
-    min-height: 12rem;
-    background-color: #1e2127;
-}
+    <!-- Blog Image Diversifier - Ensures each post has a different image -->
+    <script src="js/blog-image-diversify.js"></script>
+    <!-- Content Diversifier - Ensures unique content for each post -->
+    <script src="js/content-diversifier.js"></script>
+    <!-- Content-Title Match Fix - Ensures content matches the post title theme -->
+    <script src="js/content-title-match-fix.js"></script>
 
-.bubbles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1rem;
-    background: #1e2127;
-    filter: url("#blob");
-    z-index: 1;
-}
+    <!-- Auto Hashtags - Automatically adds relevant hashtags to each post -->
+    <script src="js/auto-hashtags.js"></script>
 
-.bubble {
-    position: absolute;
-    left: var(--position, 50%);
-    background: #1e2127;
-    border-radius: 100%;
-    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
-        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
-    transform: translate(-50%, 100%);
-}
+    <!-- Remove Duplicate Hashtags - Ensures only one set of hashtags appears -->
+    <script src="js/remove-duplicate-hashtags.js"></script>
 
-.footer-container {
-    z-index: 15;
-    position: relative;
-    padding: 2rem;
-    background: #1e2127;
-    max-width: 1200px;
-    margin: 0 auto;
-    box-sizing: border-box;
-}
+    <!-- Media Gallery - Tabbed gallery for images and videos -->
+    <script src="js/media-gallery.js"></script>
 
-/* Footer layout and components */
-.footer-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.footer-logo {
-    margin-right: 2rem;
-}
-
-.fooodis-logo-footer {
-    max-width: 120px;
-    height: auto;
-}
-
-.footer-nav-list {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    flex-wrap: wrap;
-}
-
-.footer-nav-item {
-    margin-right: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.footer-nav-item a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.footer-nav-item a:hover {
-    color: #f8bb86;
-}
-
-.footer-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.footer-powered-by {
-    display: flex;
-    align-items: center;
-}
-
-.logoland-container {
-    display: flex;
-    align-items: center;
-}
-
-.logoland-logo {
-    height: 30px;
-    margin-right: 10px;
-}
-
-.footer-powered-by p {
-    color: #fff;
-    margin: 0;
-}
-
-.footer-social {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 20px 0;
-    position: relative;
-    z-index: 15;
-}
-
-.social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.social-link:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px);
-}
-
-.social-link i {
-    font-size: 18px;
-}
-
-/* Back to top button */
-.back-to-top-button {
-    height: 64px;
-    width: 64px;
-    margin-left: 0px;
-    margin-right: auto;
-    margin-top: 0px;
-    right: 20px;
-    bottom: 20px;
-    padding: 20px;
-    background-image: none;
-    position: fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.back-to-top-button.visible {
-    opacity: 0.85;
-}
-
-.back-to-top-button img {
-    width: 24px;
-    height: 24px;
-}
-
-/* SVG filters */
-.svg-filters {
-    position: absolute;
-    width: 0;
-    height: 0;
-}
-
-/* Animations */
-@keyframes bubble-size {
-    0%, 75% {
-        width: var(--size, 4rem);
-        height: var(--size, 4rem);
-    }
-    100% {
-        width: 0rem;
-        height: 0rem;
-    }
-}
-
-@keyframes bubble-move {
-    0% {
-        bottom: -4rem;
-    }
-    100% {
-        bottom: var(--distance, 10rem);
-    }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .footer-top {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    <!-- Blog Media Integration - Connects media gallery with blog editing -->
+    <script src="js/blog-media-integration.js"></script>
     
-    .footer-logo {
-        margin-bottom: 1rem;
-        margin-right: 0;
-    }
-    
-    .footer-nav-list {
-        flex-direction: column;
-    }
-    
-    .footer-nav-item {
-        margin-bottom: 0.8rem;
-    }
-    
-    .footer-bottom {
-        flex-direction: column;
-    }
-    
-    .footer-powered-by {
-        margin-bottom: 1rem;
-    }
-}
-    </style>
-    <link rel="stylesheet" href="assets/mobile-footer.css">
-<link href="footer-gradient.css" rel="stylesheet">
-<link rel="stylesheet" href="assets/auto-generated-styles.css"><link rel="stylesheet" href="/assets/auto-generated-styles-final.css">
-<link rel="stylesheet" href="assets/gallery-text-fix.css">
-<link rel="stylesheet" href="assets/mobile-header-fix.css">
-<link rel="stylesheet" href="assets/hamburger-animation.css">
-<script src="assets/header-scroll-effect.js" defer></script>
-    <link rel="stylesheet" href="assets/cookie-consent.css">
-    <script src="assets/cookie-consent.js" defer></script>
+    <!-- Chatbot Message Enhancer Integration - Fixes button link generation -->
+    <script src="js/chatbot-message-enhancer-integration.js"></script>
+
+    <!-- Popup Media Integration - Connects existing media library with popups -->
+    <script src="js/popup-media-integration.js"></script>
+
+    <!-- Post Stats Display - DISABLED: Consolidated into blog-card-stats.js -->
+    <!-- <script src="js/post-stats-display.js"></script> -->
+
+    <!-- Blog Stats Dashboard - Tracks post views, ratings, and shares for dashboard reporting -->
+    <script src="js/blog-stats-dashboard.js"></script>
+
+    <!-- Email Popup Display - Shows the configured email popup on the blog -->
+    <script src="js/email-popup-display.js"></script>
+
+    <!-- Force Popup Display - Guarantees popup shows up on the page -->
+    <script src="js/force-popup-display.js"></script>
 </head>
-<body class="u-body u-xl-mode" data-include-products="true" data-lang="en" data-path-to-root="./">
-<!-- Header will be injected by header-injection.js -->
-<!-- Original Fooodis Header - Exact Copy -->
-<style>
-/* Reset and base styles */
-.fooodis-header *, .mobile-nav * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
 
-/* Header styles */
-.fooodis-header {
-    background-color: #1e2127;
-    color: #fff;
-    padding: 10px 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
+<body class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-home-page="https://sweedtaset.nicepage.io/Fooodis.html?version=487c2819-ec2d-4d07-3d04-c9739ff0c4c2" data-home-page-title="Fooodis" data-include-products="true" data-lang="en" data-path-to-root="./">
+    <!-- Original Fooodis Header - Exact Copy -->
+    <style>
+        /* Reset and base styles */
+        .fooodis-header *, .mobile-nav * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+        /* Header styles */
+        .fooodis-header {
+            background-color: #1e2127;
+            color: #fff;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
 
-.logo-container {
-    display: block;
-}
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-.fooodis-logo {
-    height: 45px;
-    width: auto;
-}
+        .logo-container {
+            display: block;
+        }
 
-.header-right {
-    display: flex;
-    align-items: center;
-}
+        .fooodis-logo {
+            height: 45px;
+            width: auto;
+        }
 
-
-/* Language flags */
-.language-selector {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-right: 20px;
-    margin-top: 2px; /* Add a small top margin to align with menu */
-}
-
-.flag-icon {
-    width: 20px;
-    height: auto;
-    border-radius: 2px;
-    vertical-align: middle; /* Ensure vertical alignment */
-}
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
 
 
-/* Navigation */
-.main-nav {
-    display: flex;
-}
+        /* Language flags */
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 20px;
+            margin-top: 2px; /* Add a small top margin to align with menu */
+        }
 
-.nav-list {
-    display: flex;
-    list-style: none;
-    gap: 15px;
-    margin: 0;
-    padding: 0;
-}
+        .flag-icon {
+            width: 20px;
+            height: auto;
+            border-radius: 2px;
+            vertical-align: middle; /* Ensure vertical alignment */
+        }
 
-.nav-item {
-    margin: 0 10px;
-}
 
-.nav-item a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.3s;
-}
+        /* Navigation */
+        .main-nav {
+            display: flex;
+        }
 
-.nav-item a:hover {
-    color: #e8f24c;
-}
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
 
-/* Hamburger menu */
-.hamburger-menu {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    margin-left: 15px;
-}
+        .nav-item {
+            margin: 0 10px;
+        }
 
-.hamburger-line {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: #e8f24c;
-    margin: 5px 0;
-    border-radius: 3px;
-}
+        .nav-item a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
 
-/* Mobile navigation */
-.mobile-nav {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 80%;
-    height: 100vh;
-    background-color: rgba(30, 33, 39, 0.9);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    z-index: 1001;
-    transition: left 0.3s ease;
-    padding: 50px 20px;
-    overflow-y: auto;
-}
+        .nav-item a:hover {
+            color: #e8f24c;
+        }
 
-.mobile-nav.show {
-    left: 0;
-}
+        /* Hamburger menu */
+        .hamburger-menu {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            margin-left: 15px;
+        }
 
-.mobile-nav-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #e8f24c;
-    font-size: 30px;
-    font-weight: bold;
-}
+        .hamburger-line {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #e8f24c;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
 
-.mobile-nav-list {
-    list-style: none;
-    padding: 0;
-    margin-top: 50px;
-}
+        /* Mobile navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            height: 100vh;
+            background-color: rgba(30, 33, 39, 0.9);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            transition: left 0.3s ease;
+            padding: 50px 20px;
+            overflow-y: auto;
+        }
 
-.mobile-nav-item {
-    margin: 15px 0;
-}
+        .mobile-nav.show {
+            left: 0;
+        }
 
-.mobile-nav-item a {
-    color: #e8f24c;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: 500;
-    display: block;
-    padding: 10px 0;
-    text-transform: uppercase;
-}
+        .mobile-nav-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e8f24c;
+            font-size: 30px;
+            font-weight: bold;
+        }
 
-.mobile-nav-item a:hover {
-    color: #fff;
-}
+        .mobile-nav-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 50px;
+        }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-    .main-nav {
-        display: none;
-    }
-    
-    .hamburger-menu {
-        display: block;
-    }
-}
+        .mobile-nav-item {
+            margin: 15px 0;
+        }
 
-/* Spacer to prevent content from being hidden under fixed header */
-.header-spacer {
-    height: 80px;
-}
+        .mobile-nav-item a {
+            color: #e8f24c;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            display: block;
+            padding: 10px 0;
+            text-transform: uppercase;
+        }
 
-/* Additional header styles to match index.html exactly */
-.fooodis-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: rgba(30, 33, 39, 0.96);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    height: 80px; /* Fixed header height for desktop */
-    transition: background-color 0.3s ease;
-}
+        .mobile-nav-item a:hover {
+            color: #fff;
+        }
 
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 20px;
-    height: 100%;
-}
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
 
-/* Mobile specific styles */
-@media (max-width: 768px) {
-    /* Fix header height on mobile */
-    .fooodis-header {
-        height: 60px; /* Fixed header height */
-    }
-    
-    .header-container {
-        height: 100%;
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-    
-    /* Ensure logo fits in the fixed header */
-    .fooodis-logo {
-        height: 35px; /* Slightly smaller logo on mobile */
-    }
-    
-    /* Move logo 20px to the right on mobile */
-    .logo-container {
-        margin-left: 20px;
-    }
-}
-</style>
-<header class="fooodis-header" style="padding: 20px 0;">
+            .hamburger-menu {
+                display: block;
+            }
+        }
+
+        /* Spacer to prevent content from being hidden under fixed header */
+        .header-spacer {
+            height: 80px;
+        }
+    </style>
+    <header class="fooodis-header" style="padding: 20px 0;">
         <div class="header-container">
             <a href="https://fooodis.com/" class="logo-container">
                 <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo">
@@ -630,1017 +473,309 @@
                         <li class="nav-item"><a href="Support.html">Support</a></li>
                         <li class="nav-item"><a href="blog.html">Blog</a></li>
                         <li class="nav-item"><a href="Blog.html">F.E.Blog</a></li>
-                        <li class="nav-item"><a href="index.html#limited-time-offer-en" data-lang-en="Price" data-lang-sv="Pris">Price</a></li>
+                        <li class="nav-item"><a href="index.html#limited-time-offer-en">Price</a></li>
                         <li class="nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">Registrar</a></li>
                         <li class="nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">Demo</a></li>
-                        <li class="nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener" data-lang-en="Login" data-lang-sv="Logga in">Login</a></li>
+                        <li class="nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">Login</a></li>
                     </ul>
                 </nav>
                 
                 <!-- Hamburger menu for mobile -->
                 <button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
                     <svg class="ham hamRotate ham1" viewBox="0 0 100 100">
-                      <path
-                            class="line top"
-                            d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
-                      <path
-                            class="line middle"
-                            d="m 30,50 h 40" />
-                      <path
-                            class="line bottom"
-                            d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+                      <path class="line top" d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+                      <path class="line middle" d="m 30,50 h 40" />
+                      <path class="line bottom" d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
                     </svg>
                 </button>
             </div>
         </div>
     </header>
-<!-- Mobile navigation menu (hidden by default) -->
-<!-- Mobile navigation menu (hidden by default) -->
+    
+    <!-- Mobile navigation menu (hidden by default) -->
     <div class="mobile-nav">
-        <!-- Mobile menu logo -->
         <div class="mobile-nav-logo">
             <a href="https://fooodis.com/">
                 <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo-mobile">
             </a>
         </div>
         <ul class="mobile-nav-list">
-            <li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener" target="_blank">SERVICE</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html">CONTACT</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="SUPPORT" data-lang-sv="SUPPORT" href="Support.html">SUPPORT</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="blog.html">BLOG</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="F.E.BLOG" data-lang-sv="F.E.BLOGG" href="Blog.html">F.E.BLOG</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="index.html#limited-time-offer-en">PRICE</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank">REGISTRAR</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener" target="_blank">DEMO</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/new/restaurant/login" rel="noopener" target="_blank">LOGIN</a></li>
+            <li class="mobile-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener">SERVICE</a></li>
+            <li class="mobile-nav-item"><a href="Contact.html">CONTACT</a></li>
+            <li class="mobile-nav-item"><a href="Support.html">SUPPORT</a></li>
+            <li class="mobile-nav-item"><a href="blog.html">BLOG</a></li>
+            <li class="mobile-nav-item"><a href="Blog.html">F.E.BLOG</a></li>
+            <li class="mobile-nav-item"><a href="index.html#limited-time-offer-en">PRICE</a></li>
+            <li class="mobile-nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">REGISTRAR</a></li>
+            <li class="mobile-nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">DEMO</a></li>
+            <li class="mobile-nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">LOGIN</a></li>
         </ul>
     </div>
-<!-- Mobile navigation menu (hidden by default) -->
-<!-- Mobile navigation menu (hidden by default) -->
-<!-- Spacer to prevent content from being hidden under fixed header -->
+    <!-- Spacer to prevent content from being hidden under fixed header -->
+    <div class="header-spacer"></div>
 
-<script>
-// Initialize header functionality when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Header shadow and transparency on scroll
-    const header = document.querySelector('.fooodis-header');
-    
-    function handleScroll() {
-        if (window.scrollY > 50) {
-            // When scrolled, make header semi-transparent with blur effect
-            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
-            header.style.backdropFilter = 'blur(10px)';
-            header.style.WebkitBackdropFilter = 'blur(10px)';
-            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
-        } else {
-            // When at top, restore original background
-            header.style.backgroundColor = '#1e2127';
-            header.style.backdropFilter = '';
-            header.style.WebkitBackdropFilter = '';
-            header.style.boxShadow = '';
-        }
-    }
-    
-    // Initial check and add scroll listener
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Mobile menu toggle
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const mobileNav = document.querySelector('.mobile-nav');
-    // X icon removed from sidebar
-    
-    if (hamburgerMenu && mobileNav) {
-        hamburgerMenu.addEventListener('click', function() {
-            mobileNav.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
-        });
-    }
-    
-    if (closeBtn && mobileNav) {
-        closeBtn.addEventListener('click', function() {
-            mobileNav.classList.remove('show');
-            document.body.style.overflow = ''; // Re-enable scrolling
-        });
-    }
-    
-    // Language switching functionality
-    const translations = {
-        'en': {
-            'Service': 'Service',
-            'Contact': 'Contact',
-            'Blog': 'Blog',
-            'Price': 'Price',
-            'Registrar': 'Registrar',
-            'Demo': 'Demo',
-            'Login': 'Login'
-        },
-        'sv': {
-            'Service': 'Tjänst',
-            'Contact': 'Kontakt',
-            'Blog': 'Blogg',
-            'Price': 'Pris',
-            'Registrar': 'Registrera',
-            'Demo': 'Demo',
-            'Login': 'Logga in'
-        }
-    };
-    
-    // Function to update all text elements with translations
-    function updateLanguage(lang) {
-        // Update menu items in header
-        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
-            const langAttr = `data-lang-${lang}`;
-            if (el.hasAttribute(langAttr)) {
-                el.textContent = el.getAttribute(langAttr);
-            }
-        });
+    <!-- Blog Banner Section -->
+    <section class="blog-banner-section">
+        <div class="blog-banner-container">
+            <!-- Banner content will be dynamically inserted here from the dashboard -->
+        </div>
+    </section>
+
+    <!-- Main Blog Content -->
+    <section class="blog-content-section">
+        <div class="blog-container">
+            <div class="blog-main">
+                <h1 class="blog-title">Fooodis Blog</h1>
+                <p class="blog-subtitle">Latest insights, tips, and updates for restaurant management</p>
+
+                <!-- Blog Posts Grid -->
+                <div class="blog-posts-grid" id="blogPostsGrid">
+                    <!-- Blog posts will be dynamically inserted here -->
+                </div>
+
+                <!-- Blog Pagination -->
+                <div class="blog-pagination" id="blogPagination">
+                    <button class="pagination-btn" id="prevPageBtn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+                    <div class="pagination-numbers" id="paginationNumbers">
+                        <!-- Page numbers will be dynamically inserted here -->
+                    </div>
+                    <button class="pagination-btn" id="nextPageBtn">Next <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div class="blog-sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Categories</h3>
+                    <ul class="category-list" id="categoryList">
+                        <!-- Categories will be dynamically inserted here -->
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Subcategories</h3>
+                    <ul class="subcategory-list" id="subcategoryList">
+                        <!-- Subcategories will be dynamically inserted here -->
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Tags</h3>
+                    <div class="tags-container" id="tagsContainer">
+                        <!-- Tags will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Post Modal -->
+    <div class="blog-post-modal" id="blogPostModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body" id="modalBody">
+                <!-- Full blog post content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Advertising Banner Container -->
+    <div id="advertisingBannerContainer" class="advertising-banner-container full-width-container"></div>
+
+    <!-- Fooodis Footer with Bubble Animation -->
+    <footer class="fooodis-footer">
+        <!-- Bubbles animation container -->
+        <div class="bubbles">
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const bubblesContainer = document.querySelector('.bubbles');
+                    for (let i = 0; i < 128; i++) {
+                        const size = 2 + Math.random() * 4;
+                        const distance = 6 + Math.random() * 4;
+                        const position = -5 + Math.random() * 110;
+                        const time = 2 + Math.random() * 2;
+                        const delay = -1 * (2 + Math.random() * 2);
+                        const bubble = document.createElement('div');
+                        bubble.classList.add('bubble');
+                        bubble.style.cssText = `--size:${size}rem; --distance:${distance}rem; --position:${position}%; --time:${time}s; --delay:${delay}s;`;
+                        bubblesContainer.appendChild(bubble);
+                    }
+                });
+            </script>
+        </div>
         
-        // Store the selected language in localStorage
-        localStorage.setItem('fooodis_language', lang);
-        
-        // Redirect to language-specific version if needed
-        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
-            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
-        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
-            window.location.href = '../' + window.location.pathname.split('/').pop();
-        }
-    }
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <a href="https://fooodis.com/">
+                        <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo-footer" style="max-width: 120px; height: auto;">
+                    </a>
+                </div>
+                <nav class="footer-nav">
+                    <ul class="footer-nav-list">
+                        <li class="footer-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener">Service</a></li>
+                        <li class="footer-nav-item"><a href="Contact.html">Contact</a></li>
+                        <li class="footer-nav-item"><a href="Support.html">Support</a></li>
+                        <li class="footer-nav-item"><a href="blog.html">Blog</a></li>
+                        <li class="footer-nav-item"><a href="Blog.html">F.E.Blog</a></li>
+                        <li class="footer-nav-item"><a href="index.html#limited-time-offer-en">Price</a></li>
+                        <li class="footer-nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">Registrar</a></li>
+                        <li class="footer-nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">Demo</a></li>
+                        <li class="footer-nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">Login</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-powered-by">
+                    <div class="logoland-container">
+                        <a href="https://logoland.se/" target="_blank" rel="noopener">
+                            <img src="images/Artboard1.svg" alt="LogoLand" class="logoland-logo">
+                        </a>
+                        <p>Powered by LogoLand with ❤️</p>
+                    </div>
+                </div>
+                <div class="footer-social" style="position: relative; z-index: 15;">
+                    <a href="https://www.linkedin.com/company/102443279/" target="_blank" rel="noopener noreferrer" class="social-link linkedin" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61552797450099" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/fooodis.se/" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://x.com/Fooodis" target="_blank" rel="noopener noreferrer" class="social-link twitter" title="X (Twitter)">
+                        <img src="assets/icons8-x-logo.svg" alt="X" class="x-logo" width="18" height="18">
+                    </a>
+                    <a href="https://www.youtube.com/@Fooodis" target="_blank" rel="noopener noreferrer" class="social-link youtube" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
     
-    // Add click event listeners to language flags
-    const flagLinks = document.querySelectorAll('.flag-link');
-    flagLinks.forEach(flag => {
-        flag.addEventListener('click', function(e) {
-            e.preventDefault();
-            const lang = this.getAttribute('data-lang');
-            if (lang) {
-                updateLanguage(lang);
-            }
-        });
-    });
+    <!-- SVG Filter for bubble effect -->
+    <svg class="svg-filters" aria-hidden="true" focusable="false" role="presentation">
+        <defs>
+            <filter id="blob" aria-hidden="true">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="blob"></feColorMatrix>
+            </filter>
+        </defs>
+    </svg>
     
-    // Check if there's a stored language preference
-    const storedLang = localStorage.getItem('fooodis_language');
-    if (storedLang) {
-        updateLanguage(storedLang);
-    }
-});
-</script>
-<!-- Mobile navigation menu (hidden by default) -->
-<!-- Spacer to prevent content from being hidden under fixed header -->
-<!-- Header JavaScript - Inline to avoid external dependencies -->
-<style>
-@media (min-width: 992px) {
-  #sec-3f49 {
-    min-height: calc(100vh - 200px) !important;
-    height: calc(100vh - 200px) !important;
-  }
-}
-</style>
-<section class="skrollable u-align-center u-clearfix u-container-align-center u-image u-shading u-section-1" data-image-height="3000" data-image-width="4500" id="sec-3f49" src="">
-<div class="u-clearfix u-sheet u-valign-middle u-sheet-1"></div>
-</section>
-<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-xl u-custom-color-2 u-section-2" id="sec-0021">
-<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
-<img alt="" class="custom-expanded u-image u-image-contain u-image-default u-image-1" data-image-height="52" data-image-width="300" src="images/Artboard17.svg">
-<h1 class="u-text u-text-1">Fooodis' Expertblog<br>
-</h1>
-<p class="u-text u-text-2"> Unlocking the Potential of Digital Meals<br>
-</p>
-<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" title="View Our Plans"> View Our Plans<br>
-</a>
-</div>
-</section>
-<section class="u-clearfix u-custom-color-2 u-section-3" id="sec-8091">
-<div class="u-clearfix u-sheet u-valign-middle-xs u-sheet-1">
-<h3 class="u-align-center u-text u-text-1"> Elevate Your Restaurant with Fooodis Blog<br>
-</h3>
-<p class="u-align-center u-text u-text-2"> Discover our blog for essential tips and guides on how to use Foodis to boost your restaurant's success. From digital menus to online orders, we provide everything you need to thrive in the digital era.<br>
-</p>
-</div>
-</section>
-<section class="u-align-center u-clearfix u-container-align-center u-section-4" id="sec-dd39">
-<div class="u-clearfix u-sheet u-sheet-1">
-<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="https://demo.fooodis.com/login" target="_blank" rel="noopener noreferrer" title="Explore Demo Now"> Explore Demo Now<br>
-</a>
-</div>
-</section>
-<section class="u-align-center u-clearfix u-container-align-center u-custom-color-2 u-section-5" id="sec-a448">
-<div class="u-clearfix u-sheet u-sheet-1">
-<div class="u-expanded-width u-gallery u-layout-grid u-lightbox u-show-text-always u-gallery-1">
-<style>
-@media (max-width: 991px) {
-  .u-gallery-filter-1 {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 5px;
-    scrollbar-width: thin;
-    max-width: 100%;
-  }
-  .u-gallery-filter-1::-webkit-scrollbar {
-    height: 4px;
-  }
-  .u-gallery-filter-1::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.2);
-    border-radius: 4px;
-  }
-  .u-gallery-filter-1 .u-filter-item {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    margin-right: 10px;
-  }
-}
-/* Gallery item hover light effect */
-.u-gallery-item {
-  position: relative;
-  overflow: hidden;
-}
-
-.u-gallery-item::before {
-  content: '';
-  position: absolute;
-  top: -150%;
-  left: -100%;
-  width: 15%;
-  height: 400%;
-  opacity: 0;
-  transform: rotate(45deg);
-  background: linear-gradient(
-    to right, 
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.05) 20%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.05) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  pointer-events: none;
-  z-index: 2;
-}
-
-.u-gallery-item:hover::before {
-  opacity: 1;
-  animation: shine 5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  animation-iteration-count: 1;
-}
-
-/* Change title color on hover */
-.u-gallery-item:hover .u-gallery-heading {
-  color: #e8f24c !important;
-  transition: color 0.3s ease;
-}
-
-@keyframes shine {
-  0% {
-    opacity: 0;
-    left: -100%;
-  }
-  5% {
-    opacity: 0.1;
-  }
-  15% {
-    opacity: 0.2;
-  }
-  25% {
-    opacity: 0.3;
-  }
-  75% {
-    opacity: 0.3;
-  }
-  85% {
-    opacity: 0.2;
-  }
-  95% {
-    opacity: 0.1;
-  }
-  100% {
-    opacity: 0;
-    left: 200%;
-  }
-}
-</style>
-<div class="u-gallery-controls">
-<div class="u-gallery-filter u-gallery-filter-1">
-<div class="active u-filter-item">
-<a href="#" title="ALL">ALL</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="QR Codes">QR Codes</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Payments">Payments</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Orders">Orders</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Kitchen">Kitchen</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Customers">Customers</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Social">Social</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Customize">Customize</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Tech">Tech</a>
-</div>
-<div class="u-filter-item">
-<a href="#" title="Drivers">Drivers</a>
-</div>
-</div>
-</div>
-<div class="u-gallery-inner u-gallery-inner-1">
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Payments" data-href="Pos.html" data-page-id="81644953">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="POS- och betalsystem" class="u-back-image u-expanded" src="images/Screenshot2024-04-09at22.49copy.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-1">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-90"> POS and Payment System</h3>
-<p class="u-align-left u-gallery-text auto-gen-91"> Seamlessly manage orders and process secure payments swiftly, all within one convenient system.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="QR Codes" data-href="Qr-cod.html" data-page-id="447503433">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Skapa QR-koder" class="u-back-image u-expanded" src="images/QR.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-2">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-92">Create QR</h3>
-<p class="u-align-left u-gallery-text auto-gen-93">Generate bespoke QR codes for menus and tables, essential for a contactless and modern dining experience.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Orders" data-href="Dine-in.html" data-page-id="91165571">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Acceptera lokala beställningar" class="u-back-image u-expanded" src="images/localorder.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-3">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-94"> Accept Local Orders</h3>
-<p class="u-align-left u-gallery-text auto-gen-95">Empower customers to place orders directly from smartphones with real-time alerts for continuous order flow</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Orders" data-href="WhatsApp.html" data-page-id="1832811011">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Beställning via WhatsApp" class="u-back-image u-expanded" src="images/whatsaap.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-4">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-96">Ordering on WhatsApp</h3>
-<p class="u-align-left u-gallery-text auto-gen-97">Integrate a direct, chat-based ordering system through WhatsApp, offering convenience and a personal touch.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kitchen" data-href="Kitchen-Disply-System.html" data-page-id="660520108">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Köksdisplay-system" class="u-back-image u-expanded" src="images/kitchen.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-5">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-98">Kitchen Display System</h3>
-<p class="u-align-left u-gallery-text auto-gen-99">Streamline kitchen operations with a system that organizes and displays orders for efficient preparation and delivery.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Orders" data-href="Order-Time.html" data-page-id="40171233">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Tid för beställningsförberedelse" class="u-back-image u-expanded" src="images/time-1.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-6">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-100">Order Preparation Time</h3>
-<p class="u-align-left u-gallery-text auto-gen-101">Optimize kitchen efficiency by setting and managing preparation times for each dish, ensuring timely service.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customers" data-href="Add-staff.html" data-page-id="940329865">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Personalhantering" class="u-back-image u-expanded" src="images/staff-1.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-7">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-102">Staff Management</h3>
-<p class="u-align-left u-gallery-text auto-gen-103">Provide system access for staff to manage orders, enhancing operational efficiency and customer service.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customers" data-href="Loyalty-program.html" data-page-id="18324005">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Lojalitetsprogram" class="u-back-image u-expanded" src="images/loyal-1.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-8">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-104">Loyalty Program</h3>
-<p class="u-align-left u-gallery-text auto-gen-105">Encourage repeat business by rewarding loyal customers and paying them for their continuous use.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customers" data-href="Coupons.html" data-page-id="75715845">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Kuponger" class="u-back-image u-expanded" src="images/coupon-1.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-9">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-106">Coupons</h3>
-<p class="u-align-left u-gallery-text auto-gen-107">Attract and retain customers with promotional discount codes, driving sales and loyalty.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Social" data-href="Tips.html" data-page-id="38117499">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Dricksfunktion" class="u-back-image u-expanded" src="images/tips-1.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-10">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-108">Tips Feature</h3>
-<p class="u-align-left u-gallery-text auto-gen-109">Allow customers to show appreciation for excellent service with an easy-to-use tipping option.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Social" data-href="Social-Profile.html" data-page-id="92921286">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Sociala profiler" class="u-back-image u-expanded" src="images/social.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-11">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-110">Social Profiles</h3>
-<p class="u-align-left u-gallery-text auto-gen-111">Enhance your online presence and engage with customers through prominent social media links.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customers" data-href="Customer-login.html" data-page-id="272124068">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Kundlogg" class="u-back-image u-expanded" src="images/customlog.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-12">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-112">Customer Log</h3>
-<p class="u-align-left u-gallery-text auto-gen-113">Maintain a compliant, detailed record of customer visits with an easy-to-use, efficient digital log system.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kitchen" data-href="Allergen.html" data-page-id="2056324307">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Allergeninformationn" class="u-back-image u-expanded" src="images/alergy.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-13">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-114">Allergens Information</h3>
-<p class="u-align-left u-gallery-text auto-gen-115">Display critical allergen information for each menu item, ensuring customer safety and informed choices.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customize" data-href="Theme-Switcher.html" data-page-id="269583563">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Temaväxlare" class="u-back-image u-expanded" src="images/themeswicher.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-14">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-116">Theme Switcher</h3>
-<p class="u-align-left u-gallery-text auto-gen-117">Offer vendors the flexibility to select and switch between various website templates for brand consistency.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customize" data-href="Multilingual.html" data-page-id="88105815">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Flerspråkiga menyer" class="u-back-image u-expanded" src="images/multilangual.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-15">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-118">Multilingual Menus</h3>
-<p class="u-align-left u-gallery-text auto-gen-119">Utilize the Google Translate Plugin to cater to an international clientele with menus in multiple languages.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customize" data-href="Time-Zone.html" data-page-id="2262614969">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Anpassade tidszonsinställningar" class="u-back-image u-expanded" src="images/timezoon.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-16">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-120">Custom Timezone Settings</h3>
-<p class="u-align-left u-gallery-text auto-gen-121">Enable accurate timing for offers and order processing with customizable restaurant timezone settings.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customize" data-href="Impressum.html" data-page-id="666724704">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Impressum-visning" class="u-back-image u-expanded" src="images/ImpressumDisplay.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-17">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-122">Impressum Display</h3>
-<p class="u-align-left u-gallery-text auto-gen-123">Provide comprehensive legal transparency with an Impressum displayed on the digital menu.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Payments" data-href="Print.html" data-page-id="51501912">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Automatisk kvittoutskrift" class="u-back-image u-expanded" src="images/AutomatedReceiptPrinting.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-18">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-124">Automated Receipt Printing</h3>
-<p class="u-align-left u-gallery-text auto-gen-125">Utilize Print Templ for scalable and reliable automated receipt printing, enhancing transaction efficiency.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customize" data-href="Settings.html" data-image-height="1869" data-image-width="1627" data-page-id="140216514">
-<div class="u-back-slide">
-<img alt="Klona menyer och inställningar" class="u-back-image u-expanded" src="images/MenuandSettingsCloner.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-19">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-126">Menu and Settings Cloner</h3>
-<p class="u-align-left u-gallery-text auto-gen-127">Quickly set up new branches or replicate restaurant settings with a cloning feature for menus and configurations.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Tech" data-href="Webhooks.html" data-image-height="1869" data-image-width="1627" data-page-id="16131721">
-<div class="u-back-slide">
-<img alt="WebHooks i realtid" class="u-back-image u-expanded" src="images/webhook-1.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-20">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-128">Real-time WebHooks</h3>
-<p class="u-align-left u-gallery-text auto-gen-129">Receive order data instantly with WebHooks, allowing for advanced system integration and responsiveness.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Orders" data-href="Daily-Menu.html" data-image-height="1869" data-image-width="1627" data-page-id="3065713596">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Hantera dagens meny" class="u-back-image u-expanded" src="images/Dailymenu.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-21">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-130">Daily Menu Management</h3>
-<p class="u-align-left u-gallery-text auto-gen-131">Simplify and streamline your restaurant's daily menu management with Fooodis' intuitive tools and features.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Customize" data-href="Custom-Domain.html" data-image-height="1869" data-image-width="1627" data-page-id="2887426515">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Anpassad domäninställning" class="u-back-image u-expanded" src="images/customdomain.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-22">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-132">Custom Domain Setup</h3>
-<p class="u-align-left u-gallery-text auto-gen-133">Connect your restaurant's custom domain for a professional and branded online presence.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-23" data-category="Drivers" data-href="Delivery.html" data-image-height="1869" data-image-width="1627" data-page-id="19101433">
-<div class="u-back-slide">
-<img alt="LEVERANTÖRSCHAUFFÖRER" class="u-back-image u-expanded" src="images/delivery-3.jpg">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-23">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-134">VENDOR DRIVERS</h3>
-<p class="u-align-left u-gallery-text auto-gen-135">Efficiently manage delivery drivers with our Vendor Drivers module, tailored for seamless coordination across vendors.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-24" data-category="Tech" data-href="Custom-CSS-and-JS.html" data-image-height="1869" data-image-width="1627" data-page-id="32736228">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Customizing with JS &amp;amp; CSS" class="u-back-image u-expanded" src="images/Coding.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-24">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-136">Customizing with JS &amp; CSS</h3>
-<p class="u-align-left u-gallery-text auto-gen-137">For advanced users looking to tailor the design and functionality of their restaurant's online menu, the Custom JS and CSS feature allows you to implement custom styles and scripts.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-25" data-category="Customize" data-href="Menu.html" data-image-height="1869" data-image-width="1627" data-page-id="126192526">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="CREATE MENU" class="u-back-image u-expanded" src="images/Menu.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-25">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-138">CREATE MENU</h3>
-<p class="u-align-left u-gallery-text auto-gen-139">Easily design and organize your restaurant’s menu with our intuitive interface. Add, edit, and categorize dishes to provide a seamless browsing experience for your customers.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-26" data-category="Tech" data-href="Settings.html" data-image-height="1869" data-image-width="1627" data-page-id="140216514">
-<div class="u-back-slide">
-<img alt="Settings" class="u-back-image u-expanded" src="images/Settings.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-26">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-140">Settings</h3>
-<p class="u-align-left u-gallery-text auto-gen-141">Manage all essential details for your restaurant, from name and contact info to service features and visual branding. Customize settings to reflect your unique offerings and improve operational efficiency.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-27" data-category="Tech" data-href="Apps.html" data-image-height="1869" data-image-width="1627" data-page-id="120421751">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Apps" class="u-back-image u-expanded" src="images/Apps.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-27">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-142">Apps</h3>
-<p class="u-align-left u-gallery-text auto-gen-143">Access all essential features in one convenient application to streamline your restaurant's operations.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-28" data-category="Payments" data-href="Expenses.html" data-image-height="1869" data-image-width="1627" data-page-id="216419831">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Expenses" class="u-back-image u-expanded" src="images/Inventory-2.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-28">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-144">Expenses</h3>
-<p class="u-align-left u-gallery-text auto-gen-145">Monitor and manage your restaurant’s expenses with ease for better financial control.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-29" data-category="Payments" data-href="Payment-setting.html" data-image-height="1869" data-image-width="1627" data-page-id="506421435">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Send Status" class="u-back-image u-expanded" src="images/SendStatus.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-29">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-146">Send Status</h3>
-<p class="u-align-left u-gallery-text auto-gen-147">Notify customers and staff about order statuses in real-time for a seamless experience.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-30" data-category="Tech" data-href="Dashboard.html" data-image-height="1869" data-image-width="1627" data-page-id="1288019282">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Dashboard" class="u-back-image u-expanded" src="images/Dashboard.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-30">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-148">Dashboard</h3>
-<p class="u-align-left u-gallery-text auto-gen-149">Get an overview of your restaurant’s performance with customizable analytics and reports.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-31" data-category="Tech" data-href="Tax.html" data-image-height="1869" data-image-width="1627" data-page-id="32325464">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Tax" class="u-back-image u-expanded" src="images/Tax.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-31">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-150">Tax</h3>
-<p class="u-align-left u-gallery-text auto-gen-151">Simplify tax calculations and reporting to stay compliant with local regulations.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-32" data-category="Customize" data-href="./#carousel_667d" data-image-height="1869" data-image-width="1627" data-page-id="262025306">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Pricing plan" class="u-back-image u-expanded" src="images/Pricingplan.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-32">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-152">Pricing plan</h3>
-<p class="u-align-left u-gallery-text auto-gen-153">Explore flexible subscription plans tailored to your restaurant’s unique needs.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-33" data-category="Customers" data-href="Support.html" data-image-height="1869" data-image-width="1627" data-page-id="83317237">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Support" class="u-back-image u-expanded" src="images/Support.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-33">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-154">Support</h3>
-<p class="u-align-left u-gallery-text auto-gen-155">Receive expert assistance anytime to resolve technical issues or questions.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-34" data-category="Payments" data-href="Payment-setting.html" data-image-height="1869" data-image-width="1627" data-page-id="506421435">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="payments Setting" class="u-back-image u-expanded" src="images/payments.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-34">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-156">payments Setting</h3>
-<p class="u-align-left u-gallery-text auto-gen-157">Configure secure payment methods to provide convenience for your customers.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-35" data-category="Orders" data-href="Live-order.html" data-image-height="1869" data-image-width="1627" data-page-id="231717215">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="Live order" class="u-back-image u-expanded" src="images/Liveorder.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-35">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-158">Live order</h3>
-<p class="u-align-left u-gallery-text auto-gen-159">Track live orders and ensure smooth communication between your team and customers.</p>
-</div>
-</div>
-<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-36" data-category="Tech" data-href="Registration.html" data-image-height="1869" data-image-width="1627" data-page-id="486328548">
-<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
-<img alt="How to register" class="u-back-image u-expanded" src="images/Howtoregister.png">
-</div>
-<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-36">
-<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-160">How to register</h3>
-<p class="u-align-left u-gallery-text auto-gen-161">Follow our step-by-step guide to join the Fooodis platform and start your journey today.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="u-clearfix u-custom-color-2 u-section-6" id="carousel_a0ff">
-<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-<h3 class="u-align-center u-text u-text-1"> Logo Land Design - Your Gateway to Digital Excellence</h3>
-<h6 class="u-align-center u-text u-text-2"> Experience Fooodis.com in Action<br>
-</h6>
-<p class="u-align-center u-text u-text-3"> Discover the power of unified social media campaigns, tailored content design, and creative digital storytelling with Logo Land Design. Our expert team specializes in designing, executing, and monitoring digital ad campaigns for maximum ROI. We craft a unique brand voice and strategy, create dynamic animations, produce captivating video narratives, capture stunning photography, and generate engaging, plagiarism-free content. Elevate your brand presence with our customized digital solutions.<br>
-</p>
-</div>
-</section>
-<section class="u-align-center u-clearfix u-container-align-center u-custom-color-2 u-section-7" id="carousel_5c4a">
-<div class="u-clearfix u-sheet u-sheet-1">
-<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="LEARN More!">LEARN More!</a>
-</div>
-</section>
-<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-8" id="sec-7fa1">
-<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
-<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="images/Artboard1.svg">
-<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1"> Empower Your Brand with Our Comprehensive Digital Services</h3>
-</div>
-</section>
-<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-9" id="sec-aff1">
-<div class="u-clearfix u-sheet u-sheet-1">
-<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit Logoland website"><span class="translate-gpt-translated auto-gen-162">visit Logoland website</span>
-</a>
-</div>
-</section>
-<section class="u-clearfix u-custom-color-1 u-section-10" id="sec-8a9a">
-<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
-<h3 class="u-align-center u-text u-text-1"> Logo Land Design - Your Gateway to Digital Excellence</h3>
-<p class="u-align-center u-text u-text-2"> Discover the power of unified social media campaigns, custom content design, and creative digital storytelling at Logo Land Design. Our expert team specializes in designing, executing, and monitoring digital ad campaigns for maximum ROI. We craft a unique brand voice and strategy, create dynamic animations, produce compelling video narratives, capture stunning photography, and generate engaging, plagiarism-free content. Elevate your brand's presence with our tailored digital solutions.</p>
-</div>
-</section>
-<section class="u-clearfix u-custom-color-1 u-section-11" id="sec-3437">
-<div class="u-clearfix u-sheet u-sheet-1">
-<div class="u-expanded-width u-list u-list-1">
-<div class="u-repeater u-repeater-1">
-<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
-<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
-<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"> Unified Social Media <sider-trans></sider-trans>
-</p>
-<p class="u-text u-text-body-alt-color u-text-2"> Designing, executing, and monitoring digital ad campaigns for maximum ROI<sider-trans></sider-trans>
-<br>
-<br>
-<br>
-</p>
-<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
-</a>
-</div>
-</div>
-<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
-<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
-<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"> Custom Content Design<sider-trans></sider-trans>
-</p>
-<p class="u-text u-text-body-alt-color u-text-4"> Crafting a unique brand voice and strategy to ensure consistent and impactful messaging across all platforms.</p>
-<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
-</a>
-</div>
-</div>
-<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
-<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
-<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"> Animation Services<sider-trans></sider-trans>
-</p>
-<p class="u-text u-text-body-alt-color u-text-6"> Creating dynamic animations and graphics to convey messages in an engaging manner.<br>
-<br>
-</p>
-<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
-</a>
-</div>
-</div>
-<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
-<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
-<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"> Video Editing<sider-trans></sider-trans>
-</p>
-<p class="u-text u-text-body-alt-color u-text-8"> Crafting compelling video narratives for promotions, brand stories, or advertisements.<br>
-<br>
-</p>
-<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
-</div>
-</div>
-<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
-<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
-<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">Photography<sider-trans></sider-trans>
-</p>
-<p class="u-text u-text-body-alt-color u-text-10"> Capturing high-quality visuals and designing graphics to enhance advertisements and promotional materials.<br>
-<br>
-</p>
-<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
-</div>
-</div>
-<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
-<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
-<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"> Creation &amp; Copywriting<sider-trans></sider-trans>
-</p>
-<p class="u-text u-text-body-alt-color u-text-12"> Using AI and human expertise to generate engaging, plagiarism-free content tailored for advertising needs.</p>
-<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-12" id="sec-cc83">
-<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
-<h5 class="u-align-center u-text u-text-1 auto-gen-163"> We Have More for You</h5>
-</div>
-</section>
-<section class="u-clearfix u-custom-color-1 u-section-13" id="sec-2b12">
-<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-<h3 class="u-align-center u-text u-text-1"> Explore More with Logo Land Design</h3>
-<p class="u-align-center u-text u-text-2"> Your journey with Logo Land Design doesn't end here. Explore our additional offerings by visiting the dedicated websites for our specialized products: the Website Builder, Email Marketing Program, and Webshop Builder. Each one is designed to enhance your digital experience and success. Discover more now!</p>
-</div>
-</section>
-<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-14" id="sec-61a5">
-<div class="u-clearfix u-sheet u-sheet-1">
-<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit Logoland website"><span class="translate-gpt-translated auto-gen-164">visit Logoland website</span>
-</a>
-</div>
-</section>
-<style class="u-overlap-style">.u-overlap:not(.u-sticky-scroll) .u-header {
-background-color: #1d2029 !important; opacity: 0.45 !important
-}</style>
-    
-    
+    <!-- Hamburger Menu JavaScript -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add a complete override for the gallery height adjustment
-        function fixGalleryHeight() {
-            // Target section and gallery elements
-            const gallerySection = document.getElementById('sec-a448');
-            const gallery = document.querySelector('.u-gallery-1');
-            const galleryItems = document.querySelectorAll('.u-gallery-item');
-            const footer = document.querySelector('.fooodis-footer') || document.querySelector('.footer-wrapper') || document.querySelector('footer');
-            
-            if (!gallerySection || !gallery) {
-                console.log('Gallery section or gallery not found');
-                return;
-            }
-            
-            // Find which filter is active
-            const activeFilter = document.querySelector('.u-filter-item.active a');
-            const activeCategory = activeFilter ? activeFilter.textContent.trim() : 'ALL';
-            
-            // Count visible items based on the active category
-            let visibleCount = 0;
-            galleryItems.forEach(item => {
-                if (activeCategory === 'ALL' || 
-                    item.getAttribute('data-category') === activeCategory) {
-                    item.style.display = '';  // Explicitly show matching items
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none'; // Explicitly hide non-matching items
-                }
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const mobileNav = document.querySelector('.mobile-nav');
+        if (hamburgerMenu && mobileNav) {
+            hamburgerMenu.addEventListener('click', function() {
+                this.querySelector('.ham').classList.toggle('active');
+                mobileNav.classList.toggle('show');
+                document.body.style.overflow = mobileNav.classList.contains('show') ? 'hidden' : '';
             });
-            
-            console.log('Active category:', activeCategory, 'Visible items:', visibleCount);
-            
-            // Calculate required height based on visible items
-            // (Items are in a 3-column grid on desktop)
-            const screenWidth = window.innerWidth;
-            const itemsPerRow = screenWidth > 992 ? 3 : (screenWidth > 768 ? 2 : 1);
-            const rowCount = Math.ceil(visibleCount / itemsPerRow);
-            
-            // Each row is approximately 450px tall
-            const filterHeaderHeight = 100; // Height of the filter buttons
-            const rowHeight = 450;  
-            const totalHeight = filterHeaderHeight + (rowCount * rowHeight);
-            
-            // Set both heights to ensure proper resizing
-            gallerySection.style.height = totalHeight + 'px';
-            gallerySection.style.minHeight = totalHeight + 'px';
-            gallery.style.height = (totalHeight - filterHeaderHeight) + 'px';
-            
-            // Find the next section after the gallery to fix spacing
-            const sections = document.querySelectorAll('section');
-            let nextSection = null;
-            let foundGallery = false;
-            
-            for (let i = 0; i < sections.length; i++) {
-                if (foundGallery) {
-                    nextSection = sections[i];
-                    break;
-                }
-                if (sections[i] === gallerySection) {
-                    foundGallery = true;
-                }
-            }
-            
-            // Reset margin of the next section to prevent layout flow issues
-            if (nextSection) {
-                nextSection.style.marginTop = '0';
-            }
-            
-            // Fix footer to prevent extra space and ensure it extends to bottom of viewport
-            if (footer) {
-                footer.style.position = 'relative';
-                footer.style.bottom = '0';
-                footer.style.width = '100%';
-                footer.style.marginBottom = '0';
-                
-                // Add a background element that extends to the bottom if needed
-                let footerBackground = document.getElementById('footer-background-fix');
-                if (!footerBackground) {
-                    footerBackground = document.createElement('div');
-                    footerBackground.id = 'footer-background-fix';
-                    footerBackground.style.position = 'fixed';
-                    footerBackground.style.bottom = '0';
-                    footerBackground.style.left = '0';
-                    footerBackground.style.width = '100%';
-                    footerBackground.style.zIndex = '-1';
-                    footerBackground.style.backgroundColor = getComputedStyle(footer).backgroundColor || '#1d2029';
-                    document.body.appendChild(footerBackground);
-                }
-                
-                // Calculate if we need to show the background filler
-                const viewportHeight = window.innerHeight;
-                const footerBottom = footer.getBoundingClientRect().bottom;
-                const needsFiller = footerBottom < viewportHeight;
-                
-                if (needsFiller) {
-                    const fillerHeight = viewportHeight - footerBottom;
-                    footerBackground.style.height = fillerHeight + 'px';
-                    footerBackground.style.display = 'block';
-                } else {
-                    footerBackground.style.display = 'none';
-                }
-            }
-            
-            // Fix overall body and html height to prevent extra space
-            document.body.style.height = 'auto';
-            document.documentElement.style.height = 'auto';
-            document.body.style.overflow = 'auto';
-            document.documentElement.style.overflow = 'auto';
-            
-            // Force a browser reflow
-            void(document.body.offsetHeight);
-            window.scrollTo(window.scrollX, window.scrollY);
-            
-            console.log('Setting height to', totalHeight, 'px for', rowCount, 'rows');
         }
-        
-        // Apply the fix immediately and after any filter changes with multiple timing checks
-        const filterItems = document.querySelectorAll('.u-filter-item');
-        filterItems.forEach(item => {
-            item.addEventListener('click', function() {
-                // Apply immediately for initial effect
-                fixGalleryHeight();
-                
-                // Need multiple delayed calls to catch asynchronous DOM updates
-                setTimeout(fixGalleryHeight, 50);
-                setTimeout(fixGalleryHeight, 100);
-                setTimeout(fixGalleryHeight, 250);
-                setTimeout(fixGalleryHeight, 500);
-                setTimeout(fixGalleryHeight, 750);
+        document.querySelectorAll('.mobile-nav-list a').forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNav.classList.remove('show');
+                document.body.style.overflow = '';
+                if (hamburgerMenu && hamburgerMenu.querySelector('.ham')) {
+                    hamburgerMenu.querySelector('.ham').classList.remove('active');
+                }
             });
         });
-        
-        // Apply on window resize with immediate and delayed calls
-        window.addEventListener('resize', function() {
-            fixGalleryHeight(); // Immediate application
-            setTimeout(fixGalleryHeight, 100); // Delayed application after layout settles
-        });
-        
-        // Apply on page load and when images finish loading
-        window.addEventListener('load', fixGalleryHeight);
-        fixGalleryHeight(); // Initial application
-        
-        // Add a forced update every 500ms for 2 seconds to catch any late changes
-        let updateCount = 0;
-        const forceUpdateInterval = setInterval(function() {
-            fixGalleryHeight();
-            updateCount++;
-            if (updateCount >= 4) clearInterval(forceUpdateInterval);
-        }, 500);
     });
     </script>
-  <!-- Unified Footer Loader -->  
-  <script src="assets/include-footer.js"></script>
-  
-  <!-- Direct Footer Fallback -->
-  <script>
-  // Fallback direct footer injection - executes after a delay to ensure other methods had a chance
-  setTimeout(function() {
-    // Only inject if no footer exists yet
-    if (!document.querySelector('.fooodis-footer')) {
-      console.log('No footer found after delay - injecting direct footer');
-      
-      // Create footer container
-      const footerContainer = document.createElement('div');
-      footerContainer.className = 'fooodis-footer';
-      footerContainer.style.cssText = 'position:relative; display:block; width:100%; background:#1d2029; color:white; padding:40px 0 20px; text-align:center; margin-top:50px;';
-      
-      // Simple footer content
-      footerContainer.innerHTML = `
-        <div style="max-width:1200px; margin:0 auto; padding:0 20px;">
-          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; margin-bottom:30px;">
-            <div style="flex:1; min-width:250px; margin:10px;">
-              <h3>Fooodis</h3>
-              <p>Your complete restaurant solution</p>
-            </div>
-            <div style="flex:1; min-width:250px; margin:10px;">
-              <h3>Contact</h3>
-              <p>info@fooodis.com</p>
-            </div>
-            <div style="flex:1; min-width:250px; margin:10px;">
-              <h3>Follow us</h3>
-              <div>
-                <a href="#" style="color:white; margin:0 10px;">Facebook</a>
-                <a href="#" style="color:white; margin:0 10px;">Instagram</a>
-              </div>
-            </div>
-          </div>
-          <div style="padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
-            <p>&copy; ${new Date().getFullYear()} Fooodis. All rights reserved.</p>
-          </div>
-        </div>
-      `;
-      
-      // Add to body
-      document.body.appendChild(footerContainer);
-      
-      // Ensure it's at the bottom by fixing layout
-      document.body.style.minHeight = '100vh';
-      document.body.style.display = 'flex';
-      document.body.style.flexDirection = 'column';
-      
-      // Also fix any gallery height issues that might be affecting footer placement
-      const fixGallery = function() {
-        const gallerySection = document.getElementById('sec-a448');
-        if (gallerySection) {
-          const nextSection = gallerySection.nextElementSibling;
-          if (nextSection) {
-            nextSection.style.marginTop = '0';
-          }
-          document.body.style.height = 'auto';
-          document.documentElement.style.height = 'auto';
-        }
-      };
-      fixGallery();
-    }
-  }, 1500);
 
-  // Make gallery items clickable
-  document.addEventListener('DOMContentLoaded', function() {
-    const galleryItems = document.querySelectorAll('.u-gallery-item[data-href]');
-    galleryItems.forEach(item => {
-      item.style.cursor = 'pointer';
-      item.addEventListener('click', function() {
-        const href = this.getAttribute('data-href');
-        if (href) {
-          if (href.startsWith('http')) {
-            window.open(href, '_blank');
-          } else {
-            window.location.href = href;
-          }
-        }
-      });
-    });
-  });
-  </script>
+    <script>
+        // Initialize header functionality when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header shadow and transparency on scroll
+            const header = document.querySelector('.fooodis-header');
 
-</body></html>
+            function handleScroll() {
+                if (window.scrollY > 50) {
+                    // When scrolled, make header semi-transparent with blur effect
+                    header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+                    header.style.backdropFilter = 'blur(10px)';
+                    header.style.WebkitBackdropFilter = 'blur(10px)';
+                    header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+                } else {
+                    // When at top, restore original background
+                    header.style.backgroundColor = '#1e2127';
+                    header.style.backdropFilter = '';
+                    header.style.WebkitBackdropFilter = '';
+                    header.style.boxShadow = '';
+                }
+            }
+
+            // Initial check and add scroll listener
+            handleScroll();
+            window.addEventListener('scroll', handleScroll, { passive: true });
+
+            // Mobile menu toggle
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const mobileNav = document.querySelector('.mobile-nav');
+            const closeBtn = document.querySelector('.mobile-nav-close');
+            const overlay = document.getElementById('mobileNavOverlay');
+            
+            function openMobileNav() {
+                if (mobileNav) {
+                    mobileNav.classList.add('show');
+                    if (overlay) overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            function closeMobileNav() {
+                if (mobileNav) {
+                    mobileNav.classList.remove('show');
+                    if (overlay) overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', openMobileNav);
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeMobileNav);
+            }
+            
+            if (overlay) {
+                overlay.addEventListener('click', closeMobileNav);
+            }
+            
+            // Close on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileNav && mobileNav.classList.contains('show')) {
+                    closeMobileNav();
+                }
+            });
+            
+            // Close when clicking a nav link
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-item a');
+            mobileNavLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    setTimeout(closeMobileNav, 100);
+                });
+            });
+
+            // Language switching is now handled in blog.js
+        });
+    </script>
+
+    <!-- Fix console errors -->
+    <script src="js/console-error-fixer.js"></script>
+
+    <!-- Enhanced blog card stats for accurate view counts -->
+    <script src="js/blog-card-stats.js"></script>
+    <!-- <script src="js/card-stats-enhancer.js"></script> DISABLED: Duplicate -->
+
+    <!-- Live Banner Integration -->
+    <script src="js/blog-banner-live.js"></script>
+</body>
+</html>
