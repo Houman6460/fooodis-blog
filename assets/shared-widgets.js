@@ -9,23 +9,23 @@ document.addEventListener('DOMContentLoaded', function() {
     widgetStyles.textContent = `
         /* Chatbot Button */
         .chatbot-widget {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            z-index: 9999;
+            position: fixed !important;
+            bottom: 90px !important;
+            right: 25px !important;
+            z-index: 999999 !important;
         }
         
         .chatbot-button {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: #e8f24c;
+            background: #e8f24c !important;
             border: none;
             cursor: pointer;
-            display: flex;
+            display: flex !important;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
         }
@@ -59,10 +59,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         /* Back to Top Button */
         .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9998;
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 25px !important;
+            z-index: 999998 !important;
             width: 50px;
             height: 50px;
             border-radius: 50%;
