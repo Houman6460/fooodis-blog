@@ -113,8 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(chatbotWidget);
     }
     
-    // Create Back to Top Button (if not exists)
-    if (!document.querySelector('.back-to-top')) {
+    // Create Back to Top Button (if not exists) - check multiple selectors
+    const existingBackToTop = document.querySelector('.back-to-top, .u-back-to-top, [class*="back-to-top"]');
+    if (!existingBackToTop) {
         const backToTop = document.createElement('button');
         backToTop.className = 'back-to-top';
         backToTop.title = 'Back to top';
