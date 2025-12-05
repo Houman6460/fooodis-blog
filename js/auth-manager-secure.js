@@ -197,7 +197,7 @@ const AuthManager = {
                 
                 // Redirect to dashboard or intended page
                 const urlParams = new URLSearchParams(window.location.search);
-                const redirectUrl = urlParams.get('redirect') || 'dashboard.html';
+                const redirectUrl = urlParams.get('redirect') || 'admin-dashboard.html';
                 window.location.href = redirectUrl;
             } else {
                 this.showError(errorElement, data.error || 'Login failed. Please try again.');
@@ -236,7 +236,7 @@ const AuthManager = {
         this.clearLocalSession();
         
         // Redirect to login page
-        window.location.href = 'login.html';
+        window.location.href = 'admin-login.html';
     },
     
     /**
@@ -371,7 +371,7 @@ const AuthManager = {
      */
     isProtectedPage: function() {
         const protectedPages = [
-            'dashboard.html',
+            'admin-dashboard.html',
             'profile.html',
             'settings.html'
         ];
