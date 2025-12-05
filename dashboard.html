@@ -2,6 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
+    
+    <!-- SECURITY: Authentication check - MUST be first script -->
+    <script>
+    (async function() {
+        // Check for auth token
+        const token = localStorage.getItem('fooodis-admin-token');
+        
+        if (!token) {
+            console.log('🔒 No auth token found, redirecting to login...');
+            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+            return;
+        }
+        
+        // Validate token with backend
+        try {
+            const response = await fetch('/api/admin/auth', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            
+            const data = await response.json();
+            
+            if (!data.success || !data.authenticated) {
+                console.log('🔒 Session invalid, redirecting to login...');
+                localStorage.removeItem('fooodis-admin-token');
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+                return;
+            }
+            
+            // Store user info for use in dashboard
+            window.currentAdminUser = data.user;
+            console.log('✅ Authenticated as:', data.user.email);
+            
+        } catch (error) {
+            console.error('🔒 Auth check failed:', error);
+            // On network error, allow access but show warning (for offline mode)
+            console.warn('⚠️ Could not verify session - working offline');
+        }
+    })();
+    </script>
+    
     <!-- CRITICAL: Global post management functions - must be defined FIRST -->
     <script>
     console.log('🚀 Early script loading...');
