@@ -98,11 +98,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(widgetStyles);
     
     // Create Chatbot Button (if not exists)
-    if (!document.querySelector('.chatbot-widget')) {
+    if (!document.querySelector('.chatbot-widget') && !document.querySelector('#fooodis-chatbot')) {
         const chatbotWidget = document.createElement('div');
         chatbotWidget.className = 'chatbot-widget';
         chatbotWidget.innerHTML = `
-            <button class="chatbot-button" title="Chat with us" onclick="window.open('https://fooodis.com/chat', '_blank')">
+            <button class="chatbot-button" title="Chat with us" id="shared-chatbot-btn">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="8" r="4"/>
                     <path d="M12 14c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/>
@@ -111,6 +111,17 @@ document.addEventListener('DOMContentLoaded', function() {
             </button>
         `;
         document.body.appendChild(chatbotWidget);
+        
+        // Add click handler
+        document.getElementById('shared-chatbot-btn').addEventListener('click', function() {
+            // Check if FoodisChatbot exists
+            if (typeof window.FoodisChatbot !== 'undefined' && window.FoodisChatbot.toggle) {
+                window.FoodisChatbot.toggle();
+            } else {
+                // Redirect to blog page with chat
+                window.location.href = 'blog.html?openchat=true';
+            }
+        });
     }
     
     // Create Back to Top Button (if not exists) - check multiple selectors
