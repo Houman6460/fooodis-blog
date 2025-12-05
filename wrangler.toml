@@ -35,6 +35,10 @@ ENVIRONMENT = "production"
 MAX_UPLOAD_SIZE = "10485760"  # 10MB in bytes
 ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 
+# Cloudflare Turnstile (set via Cloudflare dashboard secrets for production)
+# TURNSTILE_SECRET_KEY = "your-secret-key"  # Set in Cloudflare dashboard
+# TURNSTILE_SITE_KEY = "0x4AAAAAAA"  # Update in login.html
+
 # Note: For Pages deployment, use pages_build_output_dir instead of [site]
 
 # NOTE: Cron triggers are not supported in Cloudflare Pages

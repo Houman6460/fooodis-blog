@@ -140,12 +140,14 @@ const AuthManager = {
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const rememberMeInput = document.getElementById('rememberMe');
+        const turnstileInput = document.getElementById('turnstileToken');
         const errorElement = document.getElementById('login-error');
         const submitBtn = document.querySelector('#loginForm button[type="submit"]');
         
         const username = usernameInput?.value.trim();
         const password = passwordInput?.value;
         const rememberMe = rememberMeInput?.checked || false;
+        const turnstileToken = turnstileInput?.value || '';
         
         // Reset error message
         if (errorElement) {
@@ -175,7 +177,8 @@ const AuthManager = {
                 body: JSON.stringify({
                     email: username,
                     password: password,
-                    rememberMe: rememberMe
+                    rememberMe: rememberMe,
+                    turnstileToken: turnstileToken
                 })
             });
             

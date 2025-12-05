@@ -1,9 +1,20 @@
 /**
- * Customer Authentication API
- * POST /api/customers/auth - Login
+ * Customer Authentication API with Cloudflare Protection
+ * POST /api/customers/auth - Login (with rate limiting, Turnstile)
  * DELETE /api/customers/auth - Logout
  * GET /api/customers/auth - Validate token
  */
+
+import {
+  checkRateLimit,
+  recordFailedLogin,
+  clearFailedLogins,
+  checkAccountLock,
+  verifyTurnstile,
+  getClientIP,
+  logSecurityEvent,
+  getSecurityHeaders
+} from '../../lib/security.js';
 
 /**
  * GET /api/customers/auth - Validate auth token
@@ -77,29 +88,81 @@ export async function onRequestGet(context) {
 }
 
 /**
- * POST /api/customers/auth - Login
+ * POST /api/customers/auth - Login with security protection
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
+  const clientIP = getClientIP(request);
+  const userAgent = request.headers.get('User-Agent') || 'unknown';
+  const securityHeaders = { ...getSecurityHeaders(), "Content-Type": "application/json" };
 
   if (!env.DB) {
     return new Response(JSON.stringify({ success: false, error: "Database not configured" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" }
+      headers: securityHeaders
     });
   }
 
   try {
+    // Check rate limit first
+    const rateLimit = await checkRateLimit(env, clientIP, 'login');
+    if (!rateLimit.allowed) {
+      await logSecurityEvent(env, 'rate_limit_blocked', { ip: clientIP, userAgent, type: 'customer_login' });
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: rateLimit.message || 'Too many login attempts. Please try again later.',
+        retryAfter: Math.ceil((rateLimit.resetAt - Date.now()) / 1000)
+      }), {
+        status: 429,
+        headers: { 
+          ...securityHeaders,
+          'Retry-After': Math.ceil((rateLimit.resetAt - Date.now()) / 1000).toString()
+        }
+      });
+    }
+
     const data = await request.json();
+    const { turnstileToken } = data;
 
     if (!data.email) {
       return new Response(JSON.stringify({ success: false, error: "Email is required" }), {
         status: 400,
-        headers: { "Content-Type": "application/json" }
+        headers: securityHeaders
       });
     }
 
+    // Verify Turnstile if configured
+    if (env.TURNSTILE_SECRET_KEY) {
+      const turnstileResult = await verifyTurnstile(turnstileToken, clientIP, env.TURNSTILE_SECRET_KEY);
+      if (!turnstileResult.success) {
+        await logSecurityEvent(env, 'turnstile_failed', { ip: clientIP, userAgent, email: data.email });
+        return new Response(JSON.stringify({ 
+          success: false, 
+          error: turnstileResult.error || 'Security verification failed. Please try again.',
+          requiresTurnstile: true
+        }), {
+          status: 403,
+          headers: securityHeaders
+        });
+      }
+    }
+
     const email = data.email.toLowerCase().trim();
+
+    // Check if account is locked
+    const lockStatus = await checkAccountLock(env, email);
+    if (lockStatus.locked) {
+      await logSecurityEvent(env, 'locked_account_attempt', { ip: clientIP, userAgent, email });
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: lockStatus.message || 'Account is temporarily locked.',
+        locked: true,
+        retryAfter: Math.ceil((lockStatus.lockedUntil - Date.now()) / 1000)
+      }), {
+        status: 423,
+        headers: securityHeaders
+      });
+    }
 
     // Find customer
     const customer = await env.DB.prepare(
@@ -149,9 +212,18 @@ export async function onRequestPost(context) {
     if (customer.password_hash && data.password) {
       const passwordHash = await hashPassword(data.password);
       if (passwordHash !== customer.password_hash) {
-        return new Response(JSON.stringify({ success: false, error: "Invalid password" }), {
+        // Record failed attempt
+        const failResult = await recordFailedLogin(env, email, clientIP);
+        await logSecurityEvent(env, 'failed_login', { ip: clientIP, userAgent, email, reason: 'invalid_password', type: 'customer' });
+        
+        return new Response(JSON.stringify({ 
+          success: false, 
+          error: "Invalid password",
+          remainingAttempts: failResult.remainingAttempts,
+          locked: failResult.locked
+        }), {
           status: 401,
-          headers: { "Content-Type": "application/json" }
+          headers: securityHeaders
         });
       }
     }

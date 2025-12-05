@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
     <link rel="icon" type="image/png" href="images/New images/favicon.png">
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="auth-page">
     <!-- Animated background elements -->
@@ -50,6 +52,17 @@
                         <label class="form-check-label" for="rememberMe">Remember me</label>
                     </div>
                     
+                    <!-- Cloudflare Turnstile Widget -->
+                    <div class="form-group turnstile-container">
+                        <div class="cf-turnstile" 
+                             data-sitekey="0x4AAAAAAA" 
+                             data-callback="onTurnstileSuccess"
+                             data-error-callback="onTurnstileError"
+                             data-theme="auto">
+                        </div>
+                        <input type="hidden" id="turnstileToken" name="cf-turnstile-response">
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary btn-block">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </button>
@@ -69,6 +82,21 @@
     <!-- Use secure auth manager with backend authentication -->
     <script src="js/auth-manager-secure.js"></script>
     <script>
+        // Turnstile callback functions (must be global)
+        function onTurnstileSuccess(token) {
+            document.getElementById('turnstileToken').value = token;
+            console.log('Turnstile verified');
+        }
+        
+        function onTurnstileError() {
+            console.error('Turnstile verification failed');
+            const errorElement = document.getElementById('login-error');
+            if (errorElement) {
+                errorElement.textContent = 'Security verification failed. Please refresh and try again.';
+                errorElement.style.display = 'block';
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Toggle password visibility
             const togglePassword = document.querySelector('.toggle-password');
