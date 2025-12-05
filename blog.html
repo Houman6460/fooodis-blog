@@ -45,6 +45,12 @@
     <link rel="stylesheet" href="css/landing-responsive-fix.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
+    <!-- New Header/Footer Styles -->
+    <link rel="stylesheet" href="assets/nicepage-header-footer.css">
+    <link rel="stylesheet" href="assets/hamburger-animation.css">
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <script src="assets/header-scroll-effect.js" defer></script>
+    
     <!-- Chatbot Widget Styles -->
     <style>
         /* Ensure chatbot widget appears above all other elements */
@@ -446,54 +452,70 @@
             height: 80px;
         }
     </style>
-    <header class="fooodis-header">
+    <header class="fooodis-header" style="padding: 20px 0;">
         <div class="header-container">
-            <a class="logo-container" href="https://fooodis.com/">
-                <img alt="Fooodis Logo" class="fooodis-logo" src="images/Artboard17copy9.svg"/>
+            <a href="https://fooodis.com/" class="logo-container">
+                <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo">
             </a>
+            
             <div class="header-right">
                 <!-- Language flags -->
                 <div class="language-selector">
-                    <a class="flag-link" data-lang="en" href="#"><img alt="English" class="flag-icon" src="images/330425.png"/></a>
-                    <a class="flag-link" data-lang="sv" href="#"><img alt="Swedish" class="flag-icon" src="images/555606.png"/></a>
+                    <a href="#" class="flag-link" data-lang="en"><img src="assets/flags/uk-flag.svg" alt="English" class="flag-icon"></a>
+                    <a href="#" class="flag-link" data-lang="sv"><img src="assets/flags/sweden-flag.svg" alt="Swedish" class="flag-icon"></a>
                 </div>
+                
                 <!-- Navigation for desktop -->
                 <nav class="main-nav">
                     <ul class="nav-list">
-                        <li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener" target="_blank">Service</a></li>
-                        <li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html">Contact</a></li>
-                        <li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="blog.html">Blog</a></li>
-                        <li class="nav-item"><a data-lang-en="Support" data-lang-sv="Support" href="support.html">Support</a></li>
-                        <li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="Prices.html">Price</a></li>
-                        <li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank">Registrar</a></li>
-                        <li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener" target="_blank">Demo</a></li>
-                        <li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/login" rel="noopener" target="_blank">Login</a></li>
+                        <li class="nav-item"><a href="https://logoland.se" target="_blank" rel="noopener">Service</a></li>
+                        <li class="nav-item"><a href="Contact.html">Contact</a></li>
+                        <li class="nav-item"><a href="Support.html">Support</a></li>
+                        <li class="nav-item"><a href="blog.html">Blog</a></li>
+                        <li class="nav-item"><a href="FEBlog.html">F.E.Blog</a></li>
+                        <li class="nav-item"><a href="index.html#limited-time-offer-en">Price</a></li>
+                        <li class="nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">Registrar</a></li>
+                        <li class="nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">Demo</a></li>
+                        <li class="nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">Login</a></li>
                     </ul>
                 </nav>
+                
                 <!-- Hamburger menu for mobile -->
-                <button aria-label="Toggle menu" class="hamburger-menu">
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
+                <button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+                    <svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+                      <path
+                            class="line top"
+                            d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+                      <path
+                            class="line middle"
+                            d="m 30,50 h 40" />
+                      <path
+                            class="line bottom"
+                            d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+                    </svg>
                 </button>
             </div>
         </div>
     </header>
-    <!-- Mobile navigation overlay -->
-    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
     
     <!-- Mobile navigation menu (hidden by default) -->
     <div class="mobile-nav">
-        <div class="mobile-nav-close">×</div>
+        <!-- Mobile menu logo -->
+        <div class="mobile-nav-logo">
+            <a href="https://fooodis.com/">
+                <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo-mobile">
+            </a>
+        </div>
         <ul class="mobile-nav-list">
             <li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener" target="_blank">SERVICE</a></li>
             <li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html">CONTACT</a></li>
+            <li class="mobile-nav-item"><a data-lang-en="SUPPORT" data-lang-sv="SUPPORT" href="Support.html">SUPPORT</a></li>
             <li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="blog.html">BLOG</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="SUPPORT" data-lang-sv="SUPPORT" href="support.html">SUPPORT</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html">PRICE</a></li>
+            <li class="mobile-nav-item"><a data-lang-en="F.E.BLOG" data-lang-sv="F.E.BLOGG" href="FEBlog.html">F.E.BLOG</a></li>
+            <li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="index.html#limited-time-offer-en">PRICE</a></li>
             <li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank">REGISTRAR</a></li>
             <li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener" target="_blank">DEMO</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/login" rel="noopener" target="_blank">LOGIN</a></li>
+            <li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/new/restaurant/login" rel="noopener" target="_blank">LOGIN</a></li>
         </ul>
     </div>
     <!-- Spacer to prevent content from being hidden under fixed header -->
@@ -570,56 +592,128 @@
     <footer class="fooodis-footer">
         <!-- Bubbles animation container -->
         <div class="bubbles">
-            <!-- Bubbles will be dynamically generated by JavaScript -->
+            <script>
+                // Generate 128 bubbles dynamically as in the CodePen example
+                document.addEventListener('DOMContentLoaded', function() {
+                    const bubblesContainer = document.querySelector('.bubbles');
+                    for (let i = 0; i < 128; i++) {
+                        const size = 2 + Math.random() * 4;
+                        const distance = 6 + Math.random() * 4;
+                        const position = -5 + Math.random() * 110;
+                        const time = 2 + Math.random() * 2;
+                        const delay = -1 * (2 + Math.random() * 2);
+                        
+                        const bubble = document.createElement('div');
+                        bubble.classList.add('bubble');
+                        bubble.style.cssText = `--size:${size}rem; --distance:${distance}rem; --position:${position}%; --time:${time}s; --delay:${delay}s;`;
+                        bubblesContainer.appendChild(bubble);
+                    }
+                });
+            </script>
         </div>
-
+        
         <div class="footer-container">
             <div class="footer-top">
                 <div class="footer-logo">
-                    <a href="#">
-                        <img src="images/Artboard17copy9.svg" alt="Fooodis Logo" class="fooodis-logo-footer">
+                    <a href="https://fooodis.com/">
+                        <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo-footer" style="max-width: 120px; height: auto;">
                     </a>
                 </div>
                 <nav class="footer-nav">
                     <ul class="footer-nav-list">
-                        <li class="footer-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener" data-lang-en="Service" data-lang-sv="Tjänst">Service</a></li>
-                        <li class="footer-nav-item"><a href="#" data-lang-en="Contact" data-lang-sv="Kontakt">Contact</a></li>
-                        <li class="footer-nav-item"><a href="#" data-lang-en="Blog" data-lang-sv="Blogg">Blog</a></li>
-                        <li class="footer-nav-item"><a href="support.html" data-lang-en="Support" data-lang-sv="Support">Support</a></li>
-                        <li class="footer-nav-item"><a href="dashboard.html" data-lang-en="Dashboard" data-lang-sv="Instrumentpanel">Dashboard</a></li>
+                        <li class="footer-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener">Service</a></li>
+                        <li class="footer-nav-item"><a href="Contact.html">Contact</a></li>
+                        <li class="footer-nav-item"><a href="Support.html">Support</a></li>
+                        <li class="footer-nav-item"><a href="blog.html">Blog</a></li>
+                        <li class="footer-nav-item"><a href="FEBlog.html">F.E.Blog</a></li>
+                        <li class="footer-nav-item"><a href="index.html#limited-time-offer-en">Price</a></li>
+                        <li class="footer-nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">Registrar</a></li>
+                        <li class="footer-nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">Demo</a></li>
+                        <li class="footer-nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">Login</a></li>
                     </ul>
                 </nav>
             </div>
-
+            
             <div class="footer-bottom">
                 <div class="footer-powered-by">
                     <div class="logoland-container">
                         <a href="https://logoland.se/" target="_blank" rel="noopener">
                             <img src="images/Artboard1.svg" alt="LogoLand" class="logoland-logo">
                         </a>
-                        <p data-lang-en="Powered by LogoLand with ❤️" data-lang-sv="Drivs av LogoLand med ❤️">Powered by LogoLand with ❤️</p>
+                        <p>Powered by LogoLand with ❤️</p>
                     </div>
                 </div>
-                <div class="footer-social">
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link linkedin" title="Visit Fooodis on LinkedIn">
+                <div class="footer-social" style="position: relative; z-index: 15;">
+                    <a href="https://www.linkedin.com/company/102443279/admin/dashboard/" target="_blank" rel="noopener noreferrer" class="social-link linkedin" title="Visit Fooodis on LinkedIn">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Visit Fooodis on Facebook">
+                    <a href="https://www.facebook.com/profile.php?id=61552797450099" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Visit Fooodis on Facebook">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Visit Fooodis on Instagram">
+                    <a href="https://www.instagram.com/fooodis.se/" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Visit Fooodis on Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link twitter" title="Visit Fooodis on X (Twitter)">
-                        <i class="fab fa-twitter"></i>
+                    <a href="https://x.com/Fooodis" target="_blank" rel="noopener noreferrer" class="social-link twitter" title="Visit Fooodis on X (Twitter)">
+                        <img src="assets/icons8-x-logo.svg" alt="X (Twitter)" class="x-logo" width="18" height="18">
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link youtube" title="Visit Fooodis on YouTube">
+                    <a href="https://www.youtube.com/@Fooodis" target="_blank" rel="noopener noreferrer" class="social-link youtube" title="Visit Fooodis on YouTube">
                         <i class="fab fa-youtube"></i>
                     </a>
                 </div>
             </div>
         </div>
     </footer>
+    
+    <!-- Back to top button -->
+    <a href="#" class="u-back-to-top u-border-2 u-custom-color-2 u-icon-circle u-opacity u-opacity-85 u-text-white" title="Back to top of page">
+        <img src="images/e923cce1.png" alt="Back to top">
+    </a>
+    <!-- SVG Filter for bubble effect -->
+    <svg class="svg-filters" aria-hidden="true" focusable="false" role="presentation">
+        <defs>
+            <filter id="blob" aria-hidden="true">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="blob"></feColorMatrix>
+            </filter>
+        </defs>
+    </svg>
+    <!-- Hamburger Menu JavaScript -->
+    <script>
+    // Initialize hamburger menu functionality when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const mobileNav = document.querySelector('.mobile-nav');
+        
+        if (hamburgerMenu && mobileNav) {
+            hamburgerMenu.addEventListener('click', function() {
+                // Toggle the active class on the hamburger icon for animation
+                this.querySelector('.ham').classList.toggle('active');
+                
+                // Toggle mobile nav visibility
+                if (mobileNav.classList.contains('show')) {
+                    mobileNav.classList.remove('show');
+                    document.body.style.overflow = ''; // Re-enable scrolling
+                } else {
+                    mobileNav.classList.add('show');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+                }
+            });
+        }
+        
+        // Close mobile menu when clicking on a link
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-list a');
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNav.classList.remove('show');
+                document.body.style.overflow = ''; // Re-enable scrolling
+                if (hamburgerMenu && hamburgerMenu.querySelector('.ham')) {
+                    hamburgerMenu.querySelector('.ham').classList.remove('active');
+                }
+            });
+        });
+    });
+    </script>
 
     <script>
         // Initialize header functionality when the DOM is loaded
