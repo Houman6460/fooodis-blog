@@ -1,0 +1,1707 @@
+<!DOCTYPE html><html lang="en" class="Loyalty-program-extracted-1"><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="​​Digital Mastery, Design Perfection" name="keywords">
+<meta content="" name="description">
+<title>Loyalty program</title>
+<link href="nicepage.css" media="screen" rel="stylesheet">
+<link href="Loyalty-program.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Loyalty program" name="twitter:title">
+<meta content="" name="twitter:description">
+<meta content="Loyalty program" property="og:title">
+<meta content="" property="og:description">
+<meta content="website" property="og:type">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
+
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
+        }
+
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
+        }
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
+            }
+            dynamicLoadScript();
+        });
+    </script>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
+            }
+
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
+
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
+
+                            var forms = document.getElementsByTagName('form');
+
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<meta data-intl-tel-input-cdn-path="intlTelInput/"><!-- Fooodis Header CSS and JS -->
+<link href="assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="assets/header.js"></script>
+<script defer="" src="assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style data-parsed="true">
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fooodis-footer {
+        text-align: center;
+    }
+    
+    .footer-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .footer-logo {
+        margin-bottom: 2rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 1.2rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-item a {
+        font-size: 1.1rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1.5rem;
+        flex-direction: column;
+    }
+    
+    .logoland-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .logoland-logo {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        height: auto;
+        width: 200px;
+    }
+    
+    .footer-powered-by p {
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-social {
+        margin-top: 1rem;
+    }
+    
+    .social-link {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .social-link i {
+        font-size: 22px;
+    }
+    
+    /* Add more space between elements */
+    .footer-container {
+        padding: 3rem 1rem;
+    }
+    
+    /* Back to top button - larger for mobile */
+    .back-to-top-button {
+        width: 60px;
+        height: 60px;
+        right: 15px;
+        bottom: 15px;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/auto-generated-styles-final.css"><link href="assets/hamburger-animation.css" rel="stylesheet">
+<script src="assets/header-scroll-effect.js" defer></script>
+    <link rel="stylesheet" href="assets/cookie-consent.css">
+    <script src="assets/cookie-consent.js" defer></script>
+</head>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="en" data-path-to-root="./">
+<!-- Original Fooodis Header - Exact Copy -->
+<style data-parsed="true">
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-container {
+    display: block;
+}
+
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
+
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+
+/* Navigation */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 10px;
+}
+
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-item a:hover {
+    color: #e8f24c;
+}
+
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.show {
+    left: 0;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
+
+.mobile-nav-item {
+    margin: 15px 0;
+}
+
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-item a:hover {
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+</style>
+<header class="fooodis-header">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Service">Service</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html" title="Contact">Contact</a></li>
+<li class="nav-item"><a data-lang-en="FEBlog" data-lang-sv="FEBlogg" href="FEBlog.html" title="FEBlog">FEBlog</a></li>
+<li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="Blog.html" title="Blog">Blog</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="Prices.html" title="Price">Price</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="Registrar">Registrar</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/login" rel="noopener noreferrer" target="_blank" title="Login">Login</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button>
+</div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
+
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="SERVICE">SERVICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">CONTACT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="FEBLOG" data-lang-sv="FEBLOGG" href="FEBlog.html" title="FEBLOG">FEBLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="Blog.html" title="BLOG">BLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html" title="PRICE">PRICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="REGISTRAR">REGISTRAR</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/login" rel="noopener noreferrer" target="_blank" title="LOGIN">LOGIN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
+        }
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    const ham = document.querySelector('.ham');
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.toggle('show');
+            if (ham) ham.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('show') ? 'hidden' : ''; // Toggle scrolling
+        });
+    }
+    
+    // Close button for the mobile menu
+    const closeBtn = document.querySelector('.mobile-close-btn');
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            if (ham) ham.classList.remove('active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+    }
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'Blog': 'Blog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'Blog': 'Blogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-xl u-custom-color-1 u-section-1" id="sec-238a">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-sheet-1">
+<h1 class="u-text u-text-1"> Fooodis.com's Expert Blog</h1>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-2" id="sec-27e5">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Guide to Setting Up the Loyalty Program on Fooodis.com<br>
+</h3>
+<p class="u-align-center u-text u-text-2">
+<a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white u-btn-1" data-href="#" title="Create a dynamic and engaging loyalty program to reward your customers and encourage repeat business. This guide walks you through the process of activating and customizing the loyalty program on your Fooodis dashboard, helping you to increase customer retention and enhance their engagement with your brand."> Create a dynamic and engaging loyalty program to reward your customers and encourage repeat business. This guide walks you through the process of activating and customizing the loyalty program on your Fooodis dashboard, helping you to increase customer retention and enhance their engagement with your brand.<br>
+</a>
+</p>
+</div>
+</section>
+<section class="skrollable u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-3" id="sec-3f49" src="">
+<div class="u-clearfix u-sheet u-sheet-1">
+<img alt="" class="u-image u-image-contain u-image-default u-image-1" data-custom-animation="{&quot;animation&quot;:{&quot;XXL&quot;:{&quot;steps&quot;:[],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XL&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;LG&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-688&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-684&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;MD&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-577&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-572&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;SM&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-473&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-462&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XS&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-366&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-361&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}}},&quot;container&quot;:&quot;&quot;}" data-image-height="1856" data-image-width="2362" src="images/Rewards2.png">
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-4" id="sec-ba85">
+<div class="u-clearfix u-sheet u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Join Fooodis Today!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Empower Your Restaurant with Digital Solutions<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Ready to take your restaurant to the next level? Register now and start using​Fooodis.com’s advanced digital tools for free. Streamline your operations, enhance customer service, and boost your profits with our easy-to-use platform. Get started today for free and transform your restaurant's future!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-5" id="sec-bf91">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener noreferrer" title="Start for Free"> Start for Free</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-6" id="sec-52fc">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Activating Your Loyalty Program on Fooodis<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Boost Customer Engagement and Retention with Customizable Rewards<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Enhance customer loyalty and drive repeat business by setting up a customizable loyalty program on your Fooodis dashboard. Reward your patrons effectively to foster long-term relationships.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-7" id="sec-c083">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-1049">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-1049"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards1.png" alt="Rewards1" title="Rewards1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-1049" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-1049" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-3"> Maximize Customer Retention with Fooodis Loyalty Program </span>
+<br>
+<br><span class="Loyalty-program-extracted-4"><b><span class="Loyalty-program-extracted-5"></span></b></span><span class="Loyalty-program-extracted-4"><b></b>
+<br>Unlock the Power of Rewards to Enhance Customer Engagement and Drive Repeat Business<br></span>
+<br>The Fooodis Loyalty Program is a dynamic, customizable tool designed to help restaurants cultivate lasting relationships with their customers by rewarding loyalty and encouraging repeat visits. This program allows restaurant owners to set up and manage a comprehensive rewards system directly through the Fooodis.com dashboard. <br>
+<br><span class="Loyalty-program-extracted-4">Here’s how it works:</span>
+<br> &nbsp; ○ <span class="Loyalty-program-extracted-4">Setup and Customization:</span> Restaurant owners can easily set up the loyalty program by accessing their Fooodis dashboard. From there, they can customize the program's structure, including the types of rewards offered (e.g., discounts, free items, exclusive offers) and the criteria for earning these rewards.<br> &nbsp; ○ <span class="Loyalty-program-extracted-4">Point Accumulation:</span> Customers earn points based on their purchases. The point allocation can be tailored to different products or services, providing flexibility in how rewards are distributed.<br> &nbsp; ○ <span class="Loyalty-program-extracted-4">Reward Redemption:</span> Once customers accumulate enough points, they can redeem them for rewards. The redemption process is streamlined through the Fooodis dashboard, where customers can view their points and available rewards, enhancing the user experience.<br> &nbsp; ○ <span class="Loyalty-program-extracted-4">Ongoing Management:</span> Owners have full control over the program, with capabilities to adjust settings, track program success, and analyze customer behavior and program impact.<br>
+<br>By integrating a loyalty program, restaurants not only enhance customer satisfaction but also increase the likelihood of repeat business, ultimately fostering a community of loyal patrons who feel valued and engaged.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-8" id="sec-d2cd">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Setting Up Your Fooodis Loyalty Program<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> A Simple Guide to Launching a Reward System That Keeps Customers Coming Back<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Discover how to effortlessly set up the Fooodis Loyalty Program through your dashboard, enabling you to reward repeat customers and enhance their loyalty. Follow our straightforward steps to configure point systems and reward mechanisms that resonate with your clientele.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-9" id="carousel_c133">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-c347">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-c347"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards3.png" alt="Rewards3" title="Rewards3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-c347" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-c347" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-3"></span><span class="Loyalty-program-extracted-4"><span class="Loyalty-program-extracted-6">Activating and Configuring the Loyalty Program via the App<br></span>
+<br></span><span class="Loyalty-program-extracted-4">Accessing the Loyalty Program</span>
+<br>&nbsp; ○&nbsp;Login to Fooodis Dashboard:<br>Begin by logging into your Fooodis dashboard using your credentials.<br>
+<br><span class="Loyalty-program-extracted-4">1. Navigate to the Loyalty Program (App Section)</span>
+<br>&nbsp; ○&nbsp;From the left sidebar, locate the <span class="Loyalty-program-extracted-4">'App'</span> section. Under this section, click on the <span class="Loyalty-program-extracted-4">'Loyalty Program'</span> option.<br>
+<br><span class="Loyalty-program-extracted-4">2. Enable the Loyalty ProgramActivate the Loyalty Program</span>
+<br>&nbsp; ○ In the loyalty program configuration page that appears, check the <span class="Loyalty-program-extracted-4">'Enable Loyalty Program'</span> box at the top to activate this feature for your customers.<br>
+<br><span class="Loyalty-program-extracted-4">3. Configure the Program DetailsHeading</span>
+<br>&nbsp; ○&nbsp;Add a headline for your loyalty program, such as <span class="Loyalty-program-extracted-4">“Earn Points with Every Purchase”</span> to grab your customers' attention.<br>
+<br> &nbsp; ○&nbsp;Provide a short description that explains the purpose of the loyalty program, e.g., <span class="Loyalty-program-extracted-4">“Join our loyalty program and start collecting points for exciting rewards!”</span>.<br>
+<br>&nbsp; ○&nbsp;Join Now Text 1: Encourage your customers to sign up, for example, with text like: <span class="Loyalty-program-extracted-4">“Unlock special offers and rewards by becoming a loyalty member today!”</span>.<br>
+<br>&nbsp; ○&nbsp;Join Now Text 2: Clarify how the points system works, such as <span class="Loyalty-program-extracted-4">“As a member, you'll earn points for every purchase, which can be redeemed for discounts on future orders.”<br></span>
+<br>&nbsp; ○&nbsp;Webhook (Optional)If you have a system that communicates through webhooks, input the URL in this section. This will trigger automatic updates or notifications based on loyalty point actions.<br> &nbsp; ○&nbsp;Set Initial PointsYou can set the initial number of points that each new customer receives upon joining. A common starting value could be 5 points to incentivise sign-ups.<br>
+<br><span class="Loyalty-program-extracted-4"> 4. Save Your Settings</span>
+<br>Once all the fields are filled out, click the <span class="Loyalty-program-extracted-4">'Save'</span> button to finalize the setup and activate the loyalty program for your restaurant.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-10" id="carousel_583d">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-59b2">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-59b2"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards4-1.png" alt="Rewards4 1" title="Rewards4 1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-59b2" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-59b2" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-6"></span><span class="Loyalty-program-extracted-4"></span><span class="Loyalty-program-extracted-6">Configuring Award Details</span><span class="Loyalty-program-extracted-4">
+<br></span>
+<br><span class="Loyalty-program-extracted-4">1. Add New</span>
+<br>&nbsp; ○&nbsp;After clicking 'Add New', a new window will appear where you can enter the details for the new reward, as shown in the screenshots.<br><span class="Loyalty-program-extracted-4">2. Enter the Award Information</span>
+<br>&nbsp; ○&nbsp;Title<br>&nbsp; ○&nbsp;Description<br>&nbsp; ○&nbsp;Text After Redeem<br>&nbsp; ○&nbsp;Points Needed<br>&nbsp; ○&nbsp;Reward Type<br>&nbsp; ○&nbsp;Value for the Discount<br>&nbsp; ○&nbsp;Active To<br>&nbsp; ○&nbsp;Color<br><span class="Loyalty-program-extracted-4">3. Upload Image</span>
+<br>&nbsp; ○&nbsp;Add an eye-catching image by clicking 'Select Image' to upload a visual representation of the award.<br>&nbsp; ○&nbsp;Example: Use an image of a pizza if you are offering a <span class="Loyalty-program-extracted-4">“Free Pizza”</span> reward.<br><span class="Loyalty-program-extracted-4">4. Finalizing the AwardSave the Award:</span>
+<br>Once all the fields are filled out correctly, click the <span class="Loyalty-program-extracted-4">'Insert'</span> button at the bottom of the screen to save and activate the new reward.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-11" id="carousel_eaa4">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-valign-top-xs u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-6f25">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-6f25"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards5.png" alt="Rewards5" title="Rewards5">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-6f25" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-hidden u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-6f25" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-7">Detailed Example Guide for Setting Up Awards</span><span class="Loyalty-program-extracted-6">
+<br></span>
+<br><span class="Loyalty-program-extracted-4">Title:</span>
+<br>&nbsp; ○&nbsp;Enter a descriptive title for the reward.<br>&nbsp; ○&nbsp;Example: <span class="Loyalty-program-extracted-4">"Get a Free Pizza" or "20% Off Your Next Order"</span>.<br><span class="Loyalty-program-extracted-4">Description:</span>
+<br>&nbsp; ○&nbsp;Provide a detailed description of the reward, explaining how customers can earn and redeem it.<br>&nbsp; ○&nbsp;Example: <span class="Loyalty-program-extracted-4">"Earn this free pizza by collecting 100 points from your orders. Redeemable at any time for any type of pizza."</span>
+<br><span class="Loyalty-program-extracted-4">Text After Redeem:</span>
+<br>&nbsp; ○&nbsp;Add a message that will be displayed to customers after they redeem the reward.<br>&nbsp; ○&nbsp;Example: "<span class="Loyalty-program-extracted-4">Congratulations! You’ve redeemed a free pizza. We hope you enjoy your meal!"</span>
+<br><span class="Loyalty-program-extracted-4">Points Needed:</span>
+<br>&nbsp; ○&nbsp;Specify how many points are required to claim this award.<br>&nbsp; ○&nbsp;Example: <span class="Loyalty-program-extracted-4">"100 points"</span>.<br><span class="Loyalty-program-extracted-4">Reward Type:</span>
+<br>&nbsp; ○&nbsp;Select the type of reward from the dropdown list. The available options are:<br>Fixed: A fixed-value discount or offer.<br><span class="Loyalty-program-extracted-4">Percentage:&nbsp;</span>
+<br>&nbsp; ○&nbsp;A percentage-based discount.<br><span class="Loyalty-program-extracted-4">Physical Product:&nbsp;</span>
+<br>&nbsp; ○&nbsp;A tangible item like merchandise.<br><span class="Loyalty-program-extracted-4">Digital Product:</span>&nbsp;<br>&nbsp; ○&nbsp;A downloadable or digital reward.<br><span class="Loyalty-program-extracted-4">Active To:</span>
+<br>&nbsp; ○&nbsp;Set an expiration date for the award to create urgency and manage reward availability.<br><span class="Loyalty-program-extracted-4">Color:</span>
+<br>&nbsp; ○&nbsp;Select a color that will be associated with the reward in the user interface. This helps with visual identification of different rewards.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-12" id="carousel_55a7">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-c19f">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-c19f"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards4-1.png" alt="Rewards4 1" title="Rewards4 1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-c19f" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-c19f" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-sm u-container-align-left-xl u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-7"> Setting Award Parameters<span class="Loyalty-program-extracted-4"><b><span class="Loyalty-program-extracted-5"></span></b></span></span><span class="Loyalty-program-extracted-4"><span class="Loyalty-program-extracted-6"><b></b>
+<br></span>Points Needed:<br></span> &nbsp; ○ Specify the number of points required to redeem the award.<br><span class="Loyalty-program-extracted-4">Reward Type Options:</span>
+<br> &nbsp; ○ Select from Fixed, Percentage, Physical Product, or Digital Product, each with specific setup details.<br><span class="Loyalty-program-extracted-4">Value for the Discount:</span>
+<br> &nbsp; ○ Explain how to input the correct values for different types of rewards—fixed items or percentage discounts.<br><span class="Loyalty-program-extracted-4">Active To and Color:</span>
+<br> &nbsp; ○ Set the expiration date to create urgency and choose a color for the award indicator in the user interface.<br>
+<br><span class="Loyalty-program-extracted-3"> Finalizing and Managing Awards</span>
+<br><span class="Loyalty-program-extracted-4">Save the Award:&nbsp;</span>
+<br> &nbsp; ○ Ensure all parameters are correctly filled out, then click <span class="Loyalty-program-extracted-4">'Insert'</span> to save and activate the award.<br><span class="Loyalty-program-extracted-4">Manage Awards:</span>
+<br> &nbsp; ○ View all created awards, make any necessary edits, or delete them if necessary.<br>
+<br>By structuring the guide into these four distinct parts, users can easily follow through the process of setting up and managing awards in the Fooodis Loyalty Program, making it a valuable tool for enhancing customer loyalty and engagement.<br>
+<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-13" id="sec-a924">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Implementing and Managing Your Loyalty Program<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Enhance Your Website with Effective Loyalty Integration and Support<br>
+</h6>
+<p class="u-align-center u-text u-text-3"><span class="Loyalty-program-extracted-4"> Upcoming Guides</span>
+<br><span class="Loyalty-program-extracted-4">Implementation on Website:</span> The next sections will guide you on how to effectively use the loyalty program on your website, how to allocate points to different food categories, and how to set up point redemption and rewards.<br><span class="Loyalty-program-extracted-4">FAQ Page Setup:</span> Consider adding a FAQ page regarding your loyalty program policies to answer common customer queries and clarify program details.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-14" id="carousel_c667">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xl u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-6fa7">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-6fa7"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards6.png" alt="Rewards6" title="Rewards6">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD"></style>
+<style data-mode="SM"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-6fa7" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-6fa7" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-valign-top u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-7">Initial Setup and Client Selection</span>
+<br>
+<br><span class="Loyalty-program-extracted-4">1. Navigating to Give Points</span>
+<br>○ Log into your Dashboard:<br>Access your Fooodis dashboard by logging in with your credentials.<br>○ Select 'Give Points':<br>From the left sidebar menu, select the ‘Give Points’ option to open the points allocation interface.<br>
+<br><span class="Loyalty-program-extracted-4">2. Selecting a Client</span>
+<br>○ Client Field<br>The selected client's details will appear automatically at the top, showing their name and current points balance . Use the dropdown or search by name or ID to assign points to a different client if needed.<br>
+<br><span class="Loyalty-program-extracted-4">Transaction Details and Applying Point Rules</span>
+<br><span class="Loyalty-program-extracted-4">3. Order ID Entry</span>
+<br>○ Input the unique identifier for the transaction in the Order ID field (marked as 3 in the screenshot). This could be the order number or an internal reference.<br>
+<br><span class="Loyalty-program-extracted-4">4. Order Value Entry</span>
+<br>○ Input the total monetary value of the customer’s order in the Order Value field.<br>
+<br><span class="Loyalty-program-extracted-4">5. Points to Give to User</span>
+<br>○ Enter the number of points you want to assign to the user in the Points to give to user field. This can either be manually entered or automatically calculated.<br>
+<br><span class="Loyalty-program-extracted-4">6. Give Points</span>
+<br>○ Once all the fields are filled and confirmed, click the <span class="Loyalty-program-extracted-4">'Give Points'</span> button to finalize the process and credit the customer with the earned points.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-15" id="carousel_8118">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-fdb3">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-fdb3"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards7.png" alt="Rewards7" title="Rewards7">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-fdb3" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-fdb3" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-4"><span class="Loyalty-program-extracted-6">Understanding and Applying Point Rules</span>
+<br></span>
+<br><span class="Loyalty-program-extracted-4">○ Review Point Rules:</span>
+<br>On the right side of the interface, you’ll see the list of point rules for each food category (e.g., “Persisk,” “Klassisk,” “Vegetarisk,” “Tillbehör,” and “Varma drycker”). Enter the order values per category, and click <span class="Loyalty-program-extracted-4">'Calculate Points'</span> to determine the total points earned based on those rules.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-16" id="sec-c364">
+<div class="u-clearfix u-sheet u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Guide to Redeeming Awards in Your Fooodis Loyalty Program<br>
+</h3>
+<p class="u-align-center u-text u-text-2"><span class="Loyalty-program-extracted-4"></span>Creating a seamless experience for redeeming awards is essential for maintaining a successful loyalty program on Fooodis. This guide will walk you through the process of how customers can redeem their earned points for awards through your Fooodis dashboard.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-17" id="carousel_5667">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-94c3">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Loyalty-program-extracted-2" data-u-slide-to="0" data-u-target="#carousel-94c3"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Rewards8.png" alt="Rewards8" title="Rewards8">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-94c3" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-94c3" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Loyalty-program-extracted-7">Mastering Award Redemption on Fooodis</span>
+<br>
+<br><span class="Loyalty-program-extracted-4"> 1.&nbsp;</span><span class="Loyalty-program-extracted-4">Accessing the Redemption Interface<br></span><span class="Loyalty-program-extracted-4"> &nbsp; ○ Navigate to Redeem Points:</span> Log into your Fooodis dashboard and select the 'Redeem Points' ​&nbsp; option from the menu to open the award redemption interface.<br><span class="Loyalty-program-extracted-4">&nbsp; ○ Redemption Page: </span>You will see the 'Get an Award' section as shown in the screenshot.<br>
+<br><span class="Loyalty-program-extracted-4">2. Selecting the Client</span>
+<br><span class="Loyalty-program-extracted-4"> &nbsp; ○ Client Selection: </span>Use the dropdown menu under the 'Client' field to select the client who wishes to redeem their points. The dropdown list includes all registered clients who have accumulated enough points for at least one award.<br>
+<br><span class="Loyalty-program-extracted-4">3. Choosing the Award</span>
+<br><span class="Loyalty-program-extracted-4"> &nbsp; ○ Award Selection:</span> Next to the 'Award' field, use the corresponding dropdown to select the specific award that the client wishes to redeem. This list will display all available awards that the client has enough points to claim.<br>
+<br><span class="Loyalty-program-extracted-4">4. Redeeming the Award</span>
+<br><span class="Loyalty-program-extracted-4"> &nbsp; ○ Initiate Redemption: </span>Once the client and their chosen award have been selected, click the 'Get Award' button to proceed with the redemption.<br><span class="Loyalty-program-extracted-4"> &nbsp; ○ Confirmation:</span> A confirmation message should appear to verify that the award has been successfully redeemed, and the appropriate points will be deducted from the client’s total.<br>
+<br><span class="Loyalty-program-extracted-4">Managing After Redemption</span>
+<br><span class="Loyalty-program-extracted-4"> &nbsp; ○ Update Client Records: </span>Ensure that the client’s points balance is updated immediately to reflect the redemption.<br><span class="Loyalty-program-extracted-4"> &nbsp; ○ Award Availability:</span> Adjust the availability of awards as necessary, depending on stock or offer expiry dates.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-18" id="sec-0b19">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Complete Guide to Managing the Fooodis Loyalty Program<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> From Awarding Points to Redeeming Rewards: Empower Your Customer Engagement<br>
+</h6>
+<p class="u-align-center u-text u-text-3"><span class="Loyalty-program-extracted-4"></span>Congratulations on successfully navigating the full spectrum of the Fooodis Loyalty Program. You've learned how to effectively award points, manage point allocation, and facilitate the redemption of those points for meaningful rewards. This comprehensive guide has equipped you and your team with the knowledge to seamlessly integrate the loyalty program into your daily operations, enhancing the customer experience at every step.<br>
+<br>By implementing these practices, you're not only rewarding your customers but also building stronger relationships and fostering loyalty that goes beyond the occasional visit. The Fooodis Loyalty Program is designed to support your business by incentivizing repeat business and ultimately, contributing to sustained growth and success. Keep engaging with your customers through this program, adapt to their preferences, and watch your business thrive.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-19" id="sec-c7a7">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Try Our Interactive Demo!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Experience ​Fooodis.com in Action<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Dive into our fully functional demo website and explore the power and simplicity of the Fooodis POS system. Test all the features, customize your experience, and see firsthand how our integrated platform can transform your restaurant management. Click here to start your journey!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-20" id="sec-ca85">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="https://demo.fooodis.com/login" target="_blank" rel="noopener noreferrer" title="Explore Demo Now"> Explore Demo Now<br>
+</a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-21" id="sec-15e6">
+<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
+<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="images/Artboard1.svg">
+<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1"> Empower Your Brand with Our Comprehensive Digital Services</h3>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-22" id="sec-7743">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Loyalty-program-extracted-8">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-23" id="sec-895c">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Logo Land Design - Your Gateway to Digital Excellence</h3>
+<p class="u-align-center u-text u-text-2"> Discover the power of unified social media campaigns, custom content design, and creative digital storytelling at Logo Land Design. Our expert team specializes in designing, executing, and monitoring digital ad campaigns for maximum ROI. We craft a unique brand voice and strategy, create dynamic animations, produce compelling video narratives, capture stunning photography, and generate engaging, plagiarism-free content. Elevate your brand's presence with our tailored digital solutions.</p>
+</div>
+</section>
+<section class="u-border-2 u-border-grey-75 u-clearfix u-custom-color-1 u-section-24" id="sec-b910">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-list u-list-1">
+<div class="u-repeater u-repeater-1">
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"> Unified Social Media&nbsp;<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-2"> Designing, executing, and monitoring digital ad campaigns for maximum ROI<sider-trans></sider-trans>
+<br>
+<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"> Custom Content Design<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-4"> Crafting a unique brand voice and strategy to ensure consistent and impactful messaging across all platforms.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"> Animation Services<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-6"> Creating dynamic animations and graphics to convey messages in an engaging manner.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"> Video Editing<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-8"> Crafting compelling video narratives for promotions, brand stories, or advertisements.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">Photography<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-10"> Capturing high-quality visuals and designing graphics to enhance advertisements and promotional materials.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"> Creation &amp; Copywriting<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-12"> Using AI and human expertise to generate engaging, plagiarism-free content tailored for advertising needs.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-25" id="sec-b2d4">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-body-color u-text-1"> We Have More for You</h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-26" id="sec-0af7">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Explore More with Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2"> Your journey with Logo Land Design doesn't end here. Explore our additional offerings by visiting the dedicated websites for our specialized products: the Website Builder, Email Marketing Program, and Webshop Builder. Each one is designed to enhance your digital experience and success. Discover more now!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-27" id="sec-12a3">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Loyalty-program-extracted-8">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-28" id="sec-d88c">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Consolidated FAQs for the Fooodis Loyalty Program<br>
+</h3>
+<p class="u-align-center u-text u-text-2"> Dive into our detailed FAQ section where we cover every facet of the Fooodis Loyalty Program, providing you with step-by-step instructions and insightful tips on how to effectively set up, manage, and optimize your loyalty program. Whether you’re configuring point systems, creating enticing rewards, or handling customer redemptions, our guide ensures you have the knowledge and tools at your fingertips to enhance customer engagement and drive repeat business. Explore our extensive resources to make the most of your loyalty program, and watch your customer satisfaction and retention soar.<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-29" id="sec-d8f0">
+<div class="u-accordion u-collapsed-by-default u-expanded-width u-spacing-0 u-accordion-1" role="tablist">
+<div class="u-accordion-item u-accordion-item-1">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-1" id="link-accordion-a910" role="tab" aria-label="How do I initially set up the Fooodis Loyalty Program for my restaurant?" aria-controls="panel-9317" aria-selected="false" tabindex="0" title="How do I initially set up the Fooodis Loyalty Program for my restaurant?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-10" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-11"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I initially set up the Fooodis Loyalty Program for my restaurant?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f6ce"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-f6ce" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-1" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-1">
+<p class="u-text u-text-1"> Begin by logging into your Fooodis dashboard. Navigate to the 'Apps' section where you'll find the option to activate the Loyalty Program. Here, you can customize settings such as reward types, point values, and eligibility criteria based on your operational needs and marketing strategy.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-2">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-2" id="link-accordion-a910" role="tab" aria-label="What are the first steps to customize the loyalty program after activation?" aria-controls="panel-7837" aria-selected="false" tabindex="0" title="What are the first steps to customize the loyalty program after activation?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-13" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-14"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> What are the first steps to customize the loyalty program after activation?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-feec"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-feec" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-2" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-2">
+<p class="u-text u-text-2"> After activation, configure the program by setting up reward tiers, point accrual rules, and redemption processes. Customize the program interface to match your brand, and set communication preferences for engaging participants through the dashboard.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-3">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-3" id="link-accordion-a910" role="tab" aria-label="How are points awarded to customers, and what rules can I set?" aria-controls="panel-5800" aria-selected="false" tabindex="0" title="How are points awarded to customers, and what rules can I set?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-15" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-16"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How are points awarded to customers, and what rules can I set?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-0b4a"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-0b4a" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-3" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-3">
+<p class="u-text u-text-3"> Points are awarded based on purchase amounts or specific customer actions (like visiting or social media sharing). In the 'Give Points' section, set rules such as a percentage of the transaction value or static points for actions. You can define different rules for different product categories or customer behaviors.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-4">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-4" id="link-accordion-0781" role="tab" aria-label="How do I modify or adjust point values after they have been set?" aria-controls="panel-8411" aria-selected="false" tabindex="0" title="How do I modify or adjust point values after they have been set?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-17" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-18"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I modify or adjust point values after they have been set?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-4"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f798"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-f798" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-4" id="accordion-0781">
+<div class="u-container-layout u-container-layout-4">
+<ul class="u-custom-list u-text u-text-4">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div>
+</li>
+<li></li>
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div> Visit the 'Point Distribution' section to adjust the point values or rules. Changes can be made to accommodate promotional periods, adjust to customer feedback, or refine the program’s effectiveness.<br>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-5">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-5" id="link-accordion-a910" role="tab" aria-label="Can I offer different types of rewards in the loyalty program?" aria-controls="panel-1010" aria-selected="false" tabindex="0" title="Can I offer different types of rewards in the loyalty program?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-19" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-20"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I offer different types of rewards in the loyalty program?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-5"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-5d8b"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-5d8b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-5" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-5">
+<p class="u-text u-text-5"> Yes, you can offer various rewards, including discounts, free products, exclusive content, or early access to new releases. Each reward type can be customized in the 'Awards' section, where you set the required points for redemption and the validity period.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-6">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-6" id="link-accordion-a910" role="tab" aria-label="What should I consider when setting expiration dates for rewards?" aria-controls="panel-5077" aria-selected="false" tabindex="0" title="What should I consider when setting expiration dates for rewards?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-21" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-22"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> What should I consider when setting expiration dates for rewards?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-6"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-4889"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-4889" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-6" id="accordion-a910">
+<div class="u-container-layout u-container-layout-6">
+<p class="u-text u-text-6"> Consider your business cycle, product shelf life (if applicable), and customer buying behavior. Set expiration dates to encourage timely redemptions that drive repeat business without compromising inventory management.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-7">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-7" id="link-accordion-a910" role="tab" aria-label="How does the award redemption process work for customers?" aria-controls="panel-9790" aria-selected="false" tabindex="0" title="How does the award redemption process work for customers?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-23" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-24"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How does the award redemption process work for customers?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-7"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ba78"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-ba78" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-7" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-7">
+<p class="u-text u-text-7"> Customers log into their accounts on the Fooodis platform, view available rewards, and choose an award to redeem based on their point balance. Staff can also assist with redemptions by accessing the 'Redeem Points' section, selecting the customer’s profile, and processing the redemption.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-8">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-8" id="link-accordion-a910" role="tab" aria-label="What are best practices for handling discrepancies during award redemptions?" aria-controls="panel-9668" aria-selected="false" tabindex="0" title="What are best practices for handling discrepancies during award redemptions?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-25" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-26"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> What are best practices for handling discrepancies during award redemptions?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-8"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-10d1"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-10d1" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-8" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-8">
+<p class="u-text u-text-8"> Establish clear protocols for verifying transaction details and managing discrepancies. Train staff to handle adjustments and maintain transparency with customers to ensure trust and satisfaction.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-9">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-9" id="link-accordion-0781" role="tab" aria-label="How can I effectively promote the loyalty program to enhance customer engagement?" aria-controls="panel-7583" aria-selected="false" tabindex="0" title="How can I effectively promote the loyalty program to enhance customer engagement?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-27" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-28"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How can I effectively promote the loyalty program to enhance customer engagement?<br></span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-9"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-626f"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-626f" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-9" id="accordion-0781">
+<div class="u-container-layout u-container-layout-9">
+<ul class="u-custom-list u-text u-text-9">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> –</div>
+</div> Utilize multiple channels such as in-store displays, email marketing, social media announcements, and staff interactions to educate customers about the program benefits. Regularly update promotional materials to reflect the current rewards and program enhancements.<br>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-10">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-10" id="link-accordion-0781" role="tab" aria-label="Where can I find more resources and guides?" aria-controls="panel-8276" aria-selected="false" tabindex="0" title="Where can I find more resources and guides?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Loyalty-program-extracted-9">
+<qb-div class="qb-highlighter__wrapper Loyalty-program-extracted-29" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Loyalty-program-extracted-30"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Where can I find more resources and guides?</span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-10"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-1b3f"></use></svg><svg class="u-svg-content Loyalty-program-extracted-12" id="svg-1b3f" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-10" id="accordion-0781">
+<div class="u-container-layout u-container-layout-10">
+<ul class="u-custom-list u-text u-text-10">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div> Visit our blog, '​Fooodis.com's Expert Blog,' to elevate your restaurant with insights and tips from industry experts.<br>
+</li>
+</ul>
+<a class="u-active-white u-border-1 u-border-active-white u-border-hover-white u-border-white u-btn u-button-style u-hover-white u-none u-text-active-grey-70 u-text-body-alt-color u-text-hover-grey-70 u-btn-1" data-page-id="2059315254" href="Blog.html" title="Expert Blog"> Expert Blog</a>
+</div>
+</div>
+</div>
+</div><div role="tabpanel" id="panel-8276"></div><div role="tabpanel" id="panel-7583"></div><div role="tabpanel" id="panel-9668"></div><div role="tabpanel" id="panel-9790"></div><div role="tabpanel" id="panel-5077"></div><div role="tabpanel" id="panel-1010"></div><div role="tabpanel" id="panel-8411"></div><div role="tabpanel" id="panel-5800"></div><div role="tabpanel" id="panel-7837"></div><div role="tabpanel" id="panel-9317"></div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-30" id="sec-fe58">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" data-page-id="2059315254" href="Blog.html" title="LEARN More!"> LEARN More!</a>
+</div>
+</section>
+<style class="u-overlap-style" data-parsed="true">.u-overlap:not(.u-sticky-scroll) .u-header {
+background-color: #1d2029 !important; transparency: 45 !important
+}</style>
+    
+    
+    <script src="assets/footer-loader.js"></script>
+  <!-- Unified Footer Loader -->  
+  <script src="assets/include-footer.js"></script>
+
+
+</body></html>

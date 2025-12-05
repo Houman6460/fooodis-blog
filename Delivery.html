@@ -1,0 +1,1819 @@
+<!DOCTYPE html><html lang="en" class="Delivery-extracted-1"><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="​​Digital Mastery, Design Perfection" name="keywords">
+<meta content="" name="description">
+<title>Delivery</title>
+<link href="nicepage.css" media="screen" rel="stylesheet">
+<link href="Delivery.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Delivery" name="twitter:title">
+<meta content="" name="twitter:description">
+<meta content="Delivery" property="og:title">
+<meta content="" property="og:description">
+<meta content="website" property="og:type">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
+
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
+        }
+
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
+        }
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
+            }
+            dynamicLoadScript();
+        });
+    </script>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
+            }
+
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
+
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
+
+                            var forms = document.getElementsByTagName('form');
+
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<meta data-intl-tel-input-cdn-path="intlTelInput/"><!-- Fooodis Header CSS and JS -->
+<link href="assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="assets/header.js"></script>
+<script defer="" src="assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style data-parsed="true">
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fooodis-footer {
+        text-align: center;
+    }
+    
+    .footer-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .footer-logo {
+        margin-bottom: 2rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 1.2rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-item a {
+        font-size: 1.1rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1.5rem;
+        flex-direction: column;
+    }
+    
+    .logoland-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .logoland-logo {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        height: auto;
+        width: 200px;
+    }
+    
+    .footer-powered-by p {
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-social {
+        margin-top: 1rem;
+    }
+    
+    .social-link {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .social-link i {
+        font-size: 22px;
+    }
+    
+    /* Add more space between elements */
+    .footer-container {
+        padding: 3rem 1rem;
+    }
+    
+    /* Back to top button - larger for mobile */
+    .back-to-top-button {
+        width: 60px;
+        height: 60px;
+        right: 15px;
+        bottom: 15px;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/auto-generated-styles-final.css"><link href="assets/hamburger-animation.css" rel="stylesheet">
+<script src="assets/header-scroll-effect.js" defer></script>
+    <link rel="stylesheet" href="assets/cookie-consent.css">
+    <script src="assets/cookie-consent.js" defer></script>
+</head>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="en" data-path-to-root="./">
+<!-- Original Fooodis Header - Exact Copy -->
+<style data-parsed="true">
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-container {
+    display: block;
+}
+
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
+
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+
+/* Navigation */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 10px;
+}
+
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-item a:hover {
+    color: #e8f24c;
+}
+
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.show {
+    left: 0;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
+
+.mobile-nav-item {
+    margin: 15px 0;
+}
+
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-item a:hover {
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+</style>
+<header class="fooodis-header">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Service">Service</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html" title="Contact">Contact</a></li>
+<li class="nav-item"><a data-lang-en="FEBlog" data-lang-sv="FEBlogg" href="FEBlog.html" title="FEBlog">FEBlog</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="Prices.html" title="Price">Price</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="Registrar">Registrar</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="Login">Login</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button>
+</div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
+
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="SERVICE">SERVICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">CONTACT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="FEBLOG" data-lang-sv="FEBLOGG" href="FEBlog.html" title="FEBLOG">FEBLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html" title="PRICE">PRICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="REGISTRAR">REGISTRAR</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="LOGIN">LOGIN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
+        }
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    const ham = document.querySelector('.ham');
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.toggle('show');
+            if (ham) ham.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('show') ? 'hidden' : ''; // Toggle scrolling
+        });
+    }
+    
+    // Close button for the mobile menu
+    const closeBtn = document.querySelector('.mobile-close-btn');
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            if (ham) ham.classList.remove('active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'FEBlog': 'FEBlog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'FEBlog': 'FEBlogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-xl u-custom-color-1 u-section-1" id="sec-308f">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-sheet-1">
+<h1 class="u-text u-text-1"> Fooodis.com's Expert Blog</h1>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-2" id="sec-893b">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Streamline Your Delivery Process with Fooodis<br>
+</h3>
+<quillbot-extension-highlights class="Delivery-extracted-2"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2">
+<a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white u-btn-1" data-href="#" title="Fooodis provides an integrated delivery management system to help your restaurant handle deliveries efficiently. By setting up specific delivery areas, adding drivers, and using our POS system, you can manage all your delivery needs in one place without relying on third-party services."> Fooodis provides an integrated delivery management system to help your restaurant handle deliveries efficiently. By setting up specific delivery areas, adding drivers, and using our POS system, you can manage all your delivery needs in one place without relying on third-party services.<br>
+</a>
+</p>
+</div>
+</section>
+<section class="skrollable u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-3" id="sec-3f49" src="">
+<div class="u-clearfix u-sheet u-sheet-1">
+<img alt="" class="u-image u-image-contain u-image-default u-image-1" data-custom-animation="{&quot;animation&quot;:{&quot;XXL&quot;:{&quot;steps&quot;:[],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XL&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;LG&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-688&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-684&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;MD&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-577&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-572&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;SM&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-473&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-462&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XS&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-366&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-361&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}}},&quot;container&quot;:&quot;&quot;}" data-image-height="1856" data-image-width="2362" src="images/Delivery-4.png">
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-4" id="sec-3fb7">
+<div class="u-clearfix u-sheet u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Join Fooodis Today!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Empower Your Restaurant with Digital Solutions<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Ready to take your restaurant to the next level? Register now and start using​Fooodis.com’s advanced digital tools for free. Streamline your operations, enhance customer service, and boost your profits with our easy-to-use platform. Get started today for free and transform your restaurant's future!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-5" id="sec-dd3f">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener noreferrer" title="Start for Free"> Start for Free</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-6" id="sec-ed06">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Efficiently Manage Restaurant Deliveries with Fooodis</h3>
+<quillbot-extension-highlights class="Delivery-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Delivery-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Simplify Delivery Operations with Our Integrated System</h6>
+<p class="u-align-center u-text u-text-3"> Transform your restaurant’s delivery operations with Fooodis’s cutting-edge delivery management system. Our platform allows you to set up specific delivery zones, manage driver information, and integrate delivery orders into your POS system. <br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-7" id="sec-ee87">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-xl u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-xl u-expanded-width-xs u-group u-group-1">
+<div class="u-container-layout u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-215d">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="0" data-u-target="#carousel-215d"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="1" data-u-target="#carousel-215d"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="2" data-u-target="#carousel-215d"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="3" data-u-target="#carousel-215d"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="4" data-u-target="#carousel-215d"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="5" data-u-target="#carousel-215d"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="6" data-u-target="#carousel-215d"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="7" data-u-target="#carousel-215d"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Delivery1.png" alt="Delivery1" title="Delivery1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Delivery2-1.png" alt="Delivery2 1" title="Delivery2 1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-3" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Driver2.png" alt="Driver2" title="Driver2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-3"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-4" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Delivery4.png" alt="Delivery4" title="Delivery4">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-4"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-5" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver3.png" alt="Driver3" title="Driver3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-5"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-6" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver1.png" alt="Driver1" title="Driver1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-6"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-7" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver2.png" alt="Driver2" title="Driver2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-7"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-8" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver3.png" alt="Driver3" title="Driver3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-8"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-215d" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-215d" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-xl u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-valign-bottom-xs u-container-layout-3">
+<div class="custom-expanded u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-sm u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-xl u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-container-layout-4">
+<p class="u-text u-text-1"><span class="Delivery-extracted-5"><span class="Delivery-extracted-6"> Enhance Delivery Efficiency with Fooodis</span>
+<br>
+<br>Enable Delivery Areas<br></span><span class="Delivery-extracted-5">1. </span>Go to the '<span class="Delivery-extracted-5">Apps'</span> section on your dashboard's left sidebar menu.<br><b> 2.&nbsp;</b>Locate and select '<span class="Delivery-extracted-5">Delivery Areas'</span>.<br><span class="Delivery-extracted-5">3.</span> Enable delivery areas by ticking the '<span class="Delivery-extracted-5">checkbox'</span>.<br><span class="Delivery-extracted-5">4.</span> Click on <span class="Delivery-extracted-5">'Save'</span> to activate the feature.<br>
+<br><span class="Delivery-extracted-5">Add a New Delivery Area</span>
+<br><span class="Delivery-extracted-5">5.</span> Navigate to the '<span class="Delivery-extracted-5">Delivery Areas'</span> section in the left sidebar menu.<br><span class="Delivery-extracted-5">6.</span> Click on <span class="Delivery-extracted-5">'Add'</span> New '<span class="Delivery-extracted-5">Delivery Area'</span>.<br><span class="Delivery-extracted-5">7.</span> Enter the '<span class="Delivery-extracted-5">Name'</span> of the delivery area, '<span class="Delivery-extracted-5">Delivery Cost'</span>, and '<span class="Delivery-extracted-5">Phone Number'</span>.<br><span class="Delivery-extracted-5">8.</span> Click Insert to <span class="Delivery-extracted-5">'save'</span> the new delivery area.<br>
+<br><span class="Delivery-extracted-5">Manage Delivery Areas</span>
+<br>&nbsp; ○ You can view, edit, or delete existing delivery areas from the '<span class="Delivery-extracted-5">Delivery Areas Management'</span> page.<br>
+<br><b><span class="Delivery-extracted-7"></span></b><span class="Delivery-extracted-5"><b></b>Add and Manage Drivers<br></span>
+<br> 1. Go to the <span class="Delivery-extracted-5">'Drivers'</span> section in the left sidebar menu.<br>2. Click on <span class="Delivery-extracted-5">'Add Driver'</span>.<br>3. Enter the Driver's <span class="Delivery-extracted-5">'Name'</span>, <span class="Delivery-extracted-5">'Email'</span>, and <span class="Delivery-extracted-5">'Phone Number'</span>.<br>4. Click 'Save' to add the driver.<br>5. You can also <span class="Delivery-extracted-5">'Deactivate' </span>drivers from the Drivers Management page.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-8" id="sec-c7f7">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Efficient Layout &amp; Table Management<br>
+</h3>
+<quillbot-extension-highlights class="Delivery-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Delivery-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Optimize Your Space for Better Flow and Service</h6>
+<p class="u-align-center u-text u-text-3"> Maximize efficiency and guest satisfaction with smart restaurant layout and table management. Our digital tools help you manage space and seating dynamically, improving service flow and accommodating more guests comfortably.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-9" id="carousel_0ea9">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-valign-top-xs u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-f902">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="0" data-u-target="#carousel-f902"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="1" data-u-target="#carousel-f902"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="2" data-u-target="#carousel-f902"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver1.png" alt="Driver1" title="Driver1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Driver2.png" alt="Driver2" title="Driver2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-3" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver3.png" alt="Driver3" title="Driver3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-3"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-f902" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-f902" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-xl u-container-style u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-8"></span></b></span><span class="Delivery-extracted-6"><b>Managing Orders from Customer to Delivery </b></span><b>Step 1</b><span class="Delivery-extracted-6">
+<br></span>
+<br><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7"><span class="Delivery-extracted-5">Customer Places an Order</span>
+<br><span class="Delivery-extracted-5">1. Adding Items to Cart&nbsp;&nbsp;&nbsp; &nbsp;</span></span></b></span><span class="Delivery-extracted-5">
+<br></span><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7"></span></b></span>&nbsp; ○&nbsp;<span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">The customer selects the desired items from the menu and adds them to their cart by clicking on <span class="Delivery-extracted-5">"Add to Cart."</span></span></b></span>
+<br>
+<br><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">2. Viewing the Cart and Checkout</span></b></span><span class="Delivery-extracted-5">
+<br></span>○&nbsp;<span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">Once items are added to the cart, the customer can view their order summary and proceed to checkout by clicking <span class="Delivery-extracted-5">"Checkout."</span></span></b></span>
+<br>
+<br><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">3. Checkout Process&nbsp; &nbsp;</span></b></span><span class="Delivery-extracted-5">
+<br></span><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7"></span></b></span>&nbsp; ○&nbsp;<span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">The customer fills in the necessary details such as delivery address, delivery time, contact phone number, and payment method. After filling in the details, they click <span class="Delivery-extracted-5">"Place Order"</span> to finalize the purchase.</span></b></span>
+<br>
+<br><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">4. Order Confirmation&nbsp;&nbsp;</span></b></span><span class="Delivery-extracted-5">
+<br></span><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7"></span></b></span>&nbsp; ○&nbsp;<span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">The customer receives an order confirmation screen indicating that their order has been successfully placed.<br></span></b></span>
+<br>
+<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-10" id="carousel_746b">
+<div class="u-clearfix u-sheet u-valign-bottom-lg u-valign-bottom-md u-valign-bottom-sm u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-sm u-container-align-left-xl u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="custom-expanded u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xl u-group u-group-1">
+<div class="u-container-layout u-container-layout-2">
+<div class="custom-expanded u-carousel u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-7630">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="0" data-u-target="#carousel-7630"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="1" data-u-target="#carousel-7630"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="2" data-u-target="#carousel-7630"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver1.png" alt="Driver1" title="Driver1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Driver2.png" alt="Driver2" title="Driver2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-3" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver3.png" alt="Driver3" title="Driver3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-3"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-7630" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-7630" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="custom-expanded u-align-left u-container-align-left u-container-style u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-8"></span></b></span><span class="Delivery-extracted-6"><b>Managing Orders from Customer to Delivery </b></span><b>Step 2</b><span class="Delivery-extracted-6">
+<br></span>
+<br><b><span class="Delivery-extracted-7"><span class="Delivery-extracted-5">Restaurant Receives and Manages the Order</span>
+<br><span class="Delivery-extracted-5">1. Order Details</span></span></b><span class="Delivery-extracted-5">
+<br></span><b><span class="Delivery-extracted-7"></span></b>&nbsp; ○&nbsp;<b><span class="Delivery-extracted-7">The restaurant receives the order details, including the items ordered, delivery address, and customer contact information.</span></b>
+<br>
+<br><b><span class="Delivery-extracted-7">2. View Live Orders</span></b><span class="Delivery-extracted-5">
+<br></span><b><span class="Delivery-extracted-7"></span></b>&nbsp; ○&nbsp;<b><span class="Delivery-extracted-7">The restaurant navigates to the <span class="Delivery-extracted-5">"Live Orders"</span> section on the dashboard to view incoming orders.</span></b>
+<br>
+<br><b><span class="Delivery-extracted-7">3. Accept or Reject the Order</span></b><span class="Delivery-extracted-5">
+<br></span><b><span class="Delivery-extracted-7"></span></b>&nbsp; ○&nbsp;<b><span class="Delivery-extracted-7">The restaurant can either accept or reject the order. If accepted, they proceed to the next step.</span></b>
+<br>
+<br><b><span class="Delivery-extracted-7">4. Set Preparation Time</span></b><span class="Delivery-extracted-5">
+<br></span><b><span class="Delivery-extracted-7"></span></b>&nbsp; ○&nbsp;<b><span class="Delivery-extracted-7">After accepting the order, the restaurant sets the preparation time by selecting the estimated time required to prepare the order.</span></b>
+<br>
+<br><b><span class="Delivery-extracted-7">5. Order Status Update</span></b><span class="Delivery-extracted-5">
+<br></span><b><span class="Delivery-extracted-7"></span></b>&nbsp; ○&nbsp;<b><span class="Delivery-extracted-7">The order status is updated to <span class="Delivery-extracted-5">"Prepared"</span> once the preparation is completed.</span></b><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7">
+<br></span></b></span>
+<br>
+<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-11" id="carousel_32ab">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-sm u-container-align-left-xl u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-cabf">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="0" data-u-target="#carousel-cabf"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="1" data-u-target="#carousel-cabf"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="2" data-u-target="#carousel-cabf"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver1.png" alt="Driver1" title="Driver1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Driver2.png" alt="Driver2" title="Driver2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-3" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Driver3.png" alt="Driver3" title="Driver3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-3"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-cabf" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-cabf" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-align-left-xl u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="custom-expanded u-align-left u-container-align-left u-container-style u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-8"></span></b></span><span class="Delivery-extracted-6"><b>Managing Orders from Customer to Delivery </b></span><b>Step 3</b><span class="Delivery-extracted-6">
+<br></span><b>
+<br><span class="Delivery-extracted-7"><span class="Delivery-extracted-5">Assigning a Driver</span>
+<br><span class="Delivery-extracted-5">1.&nbsp; Assigning a Driver&nbsp; (Screenshot 10)&nbsp; &nbsp;&nbsp;</span></span>
+<br><span class="Delivery-extracted-7"></span>&nbsp; ○&nbsp;<span class="Delivery-extracted-7">The restaurant assigns a driver to the order. They select the available driver from the list and click <span class="Delivery-extracted-5">"Save."</span>
+<br><span class="Delivery-extracted-5">2.&nbsp; Order Status: Assigned to Driver&nbsp; &nbsp;&nbsp;</span></span>
+<br><span class="Delivery-extracted-7"></span>&nbsp; ○&nbsp;<span class="Delivery-extracted-7">The order status is updated to <span class="Delivery-extracted-5">"Assigned to Driver,"</span> indicating that the order is ready for delivery.<br>
+<br><span class="Delivery-extracted-5">Monitoring Delivery and Completion</span>
+<br><span class="Delivery-extracted-5">3.&nbsp; Order Tracking and Status Updates&nbsp; &nbsp;&nbsp;</span></span>
+<br><span class="Delivery-extracted-7"></span>&nbsp; ○&nbsp;<span class="Delivery-extracted-7">The restaurant and customer can monitor the order status through the dashboard. The statuses include <span class="Delivery-extracted-5">"Just Created," "Accepted by Restaurant,"</span><span class="Delivery-extracted-5">"Prepared,"</span><span class="Delivery-extracted-5">"Assigned to Driver,"</span><span class="Delivery-extracted-5">"Delivered," <span class="Delivery-extracted-7">and</span> "Closed."</span></span>
+<br>
+<br><span class="Delivery-extracted-7">By following these steps, restaurants can efficiently manage orders from placement to delivery, ensuring a smooth and professional experience for the restaurant and the customer.</span>
+<br></b>
+<br>
+<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-12" id="carousel_344f">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-9210">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="0" data-u-target="#carousel-9210"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/sttafpage1.png" alt="Sttafpage1" title="Sttafpage1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-9210" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-9210" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-sm u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<h2 class="u-align-left u-text u-text-default u-text-1"> Seamless Integration of Delivery Orders in Fooodis<br>
+</h2>
+<p class="u-text u-text-2"><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7"></span></b></span><span class="Delivery-extracted-5"><b></b>Manage Active Orders<br></span>
+<br> 1. Click on<span class="Delivery-extracted-5">&nbsp;'Active </span><span class="Delivery-extracted-5">Orders' </span>in the top menu to view and manage all current delivery orders.<br>&nbsp; ○ Assign drivers to orders and update the status as needed.<br>
+<br><span class="Delivery-extracted-5"> POS Integration</span>
+<br> 1. In the<span class="Delivery-extracted-5">&nbsp;'POS'</span> section, ensure the delivery options are enabled.<br>2. When creating a new order in the POS system, select '<span class="Delivery-extracted-5">Delivery'</span> and enter the delivery details.<br>3. The POS system will track and record the delivery orders seamlessly.<br>
+<br><span class="Delivery-extracted-5">Online Order Integration</span>
+<br>
+<br>1.Customers can place delivery orders online by selecting the delivery option and filling out the delivery info.<br>2. Ensure the online menu and delivery settings are properly configured in the <span class="Delivery-extracted-5">Restaurang Management section.</span>
+<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-13" id="carousel_5076">
+<div class="u-clearfix u-sheet u-valign-middle-xs u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-md u-container-align-left-sm u-container-align-left-xl u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="custom-expanded u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xl u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-14f5">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="0" data-u-target="#carousel-14f5"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/sttafpage1.png" alt="Sttafpage1" title="Sttafpage1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-14f5" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-14f5" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-lg u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<h2 class="u-align-left u-text u-text-default u-text-1"> Effortless Delivery Order Management with Fooodis<br>
+</h2>
+<p class="u-text u-text-2"><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7"></span></b></span><span class="Delivery-extracted-5"><b></b>Utilizing the Delivery System<br></span>
+<br>
+<br><span class="Delivery-extracted-5">Order Management</span>
+<br> &nbsp; ○ Orders can be accepted online or via phone.<br>&nbsp; ○ For online orders, customers within the specified delivery areas can place orders directly on your website.<br>&nbsp; ○ For phone orders, use the POS system to record the order and select the delivery option.<br>
+<br>
+<br><span class="Delivery-extracted-5">Sharing Delivery Details</span>
+<br>
+<br>&nbsp; ○ Once an order is placed, assign the delivery to a driver.<br>&nbsp; ○ The driver will receive all necessary details through the platform, ensuring a smooth and efficient delivery process.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-14" id="carousel_1899">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-align-center u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-36 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-center u-container-align-center u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-md u-valign-top-xl u-container-layout-1" src="">
+<div class="u-carousel u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-a861">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="0" data-u-target="#carousel-a861"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="1" data-u-target="#carousel-a861"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="2" data-u-target="#carousel-a861"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="3" data-u-target="#carousel-a861"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="4" data-u-target="#carousel-a861"></li>
+<li class="u-grey-70 u-shape-circle Delivery-extracted-4" data-u-slide-to="5" data-u-target="#carousel-a861"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Pos4.png" alt="Pos4" title="Pos4">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Pos5.png" alt="Pos5" title="Pos5">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-3" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Pos6.png" alt="Pos6" title="Pos6">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-3"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-4" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Pos7.png" alt="Pos7" title="Pos7">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-4">
+<h3 class="u-gallery-heading u-text-white Delivery-extracted-9">Tap to Zoom In</h3>
+</div>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-5" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Pos8.png" alt="Pos8" title="Pos8">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-5"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-6" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Pos9.png" alt="Pos9" title="Pos9">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-6"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-grey-70 u-icon-circle u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-a861" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 451.847 451.847"><path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0
+c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744
+c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 451.847 451.847"><path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0
+c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744
+c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-grey-70 u-icon-circle u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-a861" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 451.846 451.847"><path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744
+L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284
+c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 451.846 451.847"><path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744
+L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284
+c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2" src="">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-2">
+<quillbot-extension-highlights class="Delivery-extracted-10"></quillbot-extension-highlights>
+<h2 class="u-text u-text-default u-text-1"> Effortless Delivery Order Management with Fooodis<br>
+</h2>
+<quillbot-extension-highlights class="Delivery-extracted-10"></quillbot-extension-highlights>
+<p class="u-text u-text-2"><span class="Delivery-extracted-5"><b><span class="Delivery-extracted-7"></span></b></span><span class="Delivery-extracted-5">Utilizing the Delivery System</span>
+<br>
+<br>
+<br><span class="Delivery-extracted-5">Order Management</span>
+<br> &nbsp; ○ Orders can be accepted online or via phone.<br>&nbsp; ○ For online orders, customers within the specified delivery areas can place orders directly on your website.<br>&nbsp; ○ For phone orders, use the POS system to record the order and select the delivery option.<br>
+<br>
+<br><span class="Delivery-extracted-5">Sharing Delivery Details<br></span>
+<br>&nbsp; ○ Once an order is placed, assign the delivery to a driver.<br>&nbsp; ○ The driver will receive all necessary details through the platform, ensuring a smooth and efficient delivery process.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-15" id="sec-7ad3">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Try Our Interactive Demo!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Experience ​Fooodis.com in Action<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Dive into our fully functional demo website and explore the power and simplicity of the Fooodis POS system. Test all the features, customize your experience, and see firsthand how our integrated platform can transform your restaurant management. Click here to start your journey!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-16" id="sec-8e51">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="https://demo.fooodis.com/login" target="_blank" rel="noopener noreferrer" title="Explore Demo Now"> Explore Demo Now<br>
+</a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-17" id="sec-6c99">
+<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
+<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="images/Artboard1.svg">
+<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1"> Empower Your Brand with Our Comprehensive Digital Services</h3>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-18" id="sec-6f71">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Delivery-extracted-11">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-19" id="sec-8c77">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Logo Land Design - Your Gateway to Digital Excellence</h3>
+<p class="u-align-center u-text u-text-2"> Discover the power of unified social media campaigns, custom content design, and creative digital storytelling at Logo Land Design. Our expert team specializes in designing, executing, and monitoring digital ad campaigns for maximum ROI. We craft a unique brand voice and strategy, create dynamic animations, produce compelling video narratives, capture stunning photography, and generate engaging, plagiarism-free content. Elevate your brand's presence with our tailored digital solutions.</p>
+</div>
+</section>
+<section class="u-border-2 u-border-grey-75 u-clearfix u-custom-color-1 u-section-20" id="sec-73eb">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-list u-list-1">
+<div class="u-repeater u-repeater-1">
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"> Unified Social Media&nbsp;<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-2"> Designing, executing, and monitoring digital ad campaigns for maximum ROI<sider-trans></sider-trans>
+<br>
+<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"> Custom Content Design<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-4"> Crafting a unique brand voice and strategy to ensure consistent and impactful messaging across all platforms.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"> Animation Services<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-6"> Creating dynamic animations and graphics to convey messages in an engaging manner.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"> Video Editing<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-8"> Crafting compelling video narratives for promotions, brand stories, or advertisements.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">Photography<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-10"> Capturing high-quality visuals and designing graphics to enhance advertisements and promotional materials.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"> Creation &amp; Copywriting<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-12"> Using AI and human expertise to generate engaging, plagiarism-free content tailored for advertising needs.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-21" id="sec-4e41">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-body-color u-text-1"> We Have More for You</h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-22" id="sec-625e">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Explore More with Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2"> Your journey with Logo Land Design doesn't end here. Explore our additional offerings by visiting the dedicated websites for our specialized products: the Website Builder, Email Marketing Program, and Webshop Builder. Each one is designed to enhance your digital experience and success. Discover more now!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-23" id="sec-e472">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Delivery-extracted-11">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-24" id="sec-157a">
+<div class="u-clearfix u-sheet u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> FAQs About Setting Up Your Delivery System on Fooodis<br>
+</h3>
+<quillbot-extension-highlights class="Delivery-extracted-3"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2"> Find answers to the most common questions about setting up and managing delivery orders on the Fooodis platform. Whether it's configuring delivery areas, adding drivers, or processing orders online and through the POS system, we've got you covered. For further assistance, our support team is always available to help.<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-25" id="sec-99a6">
+<div class="u-accordion u-collapsed-by-default u-expanded-width u-spacing-0 u-accordion-1" role="tablist">
+<div class="u-accordion-item u-accordion-item-1">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-1" id="link-accordion-a910" role="tab" aria-label="What is the benefit of setting up delivery areas?" aria-controls="panel-294" aria-selected="false" tabindex="0" title="What is the benefit of setting up delivery areas?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-13" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-14"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> What is the benefit of setting up delivery areas? <br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f6ce"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-f6ce" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-1" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-1">
+<quillbot-extension-highlights class="Delivery-extracted-16"></quillbot-extension-highlights>
+<p class="u-text u-text-1"> Setting up delivery areas helps you define specific locations where you can accept deliveries, ensuring efficient service and manageable delivery zones.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-2">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-2" id="link-accordion-a910" role="tab" aria-label="How do I add a new delivery area?" aria-controls="panel-5449" aria-selected="false" tabindex="0" title="How do I add a new delivery area?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-17" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-18"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I add a new delivery area? <br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-feec"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-feec" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-2" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-2">
+<quillbot-extension-highlights class="Delivery-extracted-16"></quillbot-extension-highlights>
+<p class="u-text u-text-2"> Navigate to the <span class="Delivery-extracted-5">Delivery Areas</span> section, click on <span class="Delivery-extracted-5">Add New Delivery Area</span>, fill in the required details, and click <span class="Delivery-extracted-5">Insert</span>.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-3">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-3" id="link-accordion-a910" role="tab" aria-label="Can I edit or delete existing delivery areas?" aria-controls="panel-7155" aria-selected="false" tabindex="0" title="Can I edit or delete existing delivery areas?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-19" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-20"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I edit or delete existing delivery areas? <br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-0b4a"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-0b4a" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-3" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-3">
+<quillbot-extension-highlights class="Delivery-extracted-16"></quillbot-extension-highlights>
+<p class="u-text u-text-3"> Yes, you can view, edit, or delete existing delivery areas from the <span class="Delivery-extracted-5">Delivery</span><span class="Delivery-extracted-5">Areas Management</span> page.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-4">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-4" id="link-accordion-0781" role="tab" aria-label="How do I add a driver to the system?" aria-controls="panel-2389" aria-selected="false" tabindex="0" title="How do I add a driver to the system?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-21" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-22"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I add a driver to the system? <br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-4"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f798"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-f798" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-4" id="accordion-0781">
+<div class="u-container-layout u-container-layout-4">
+<quillbot-extension-highlights class="Delivery-extracted-3"></quillbot-extension-highlights>
+<ul class="u-custom-list u-text u-text-4">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div>
+</li>
+<li></li>
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div>Go to the <span class="Delivery-extracted-5">Drivers</span> section, click on <span class="Delivery-extracted-5">Add Driver</span>, fill in the driver's details, and click <span class="Delivery-extracted-5">Save</span>.<br>
+</li>
+</ul>
+<quillbot-extension-highlights class="Delivery-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-5">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-5" id="link-accordion-a910" role="tab" aria-label="Can I manage active delivery orders?" aria-controls="panel-4204" aria-selected="false" tabindex="0" title="Can I manage active delivery orders?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-23" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-24"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I manage active delivery orders? <br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-5"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-5d8b"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-5d8b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-5" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-5">
+<quillbot-extension-highlights class="Delivery-extracted-16"></quillbot-extension-highlights>
+<p class="u-text u-text-5"> Yes, you can view and manage all current delivery orders by clicking on <span class="Delivery-extracted-5">Active Orders</span> in the top menu.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-6">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-6" id="link-accordion-a910" role="tab" aria-label="How do customers place online delivery orders?" aria-controls="panel-209" aria-selected="false" tabindex="0" title="How do customers place online delivery orders?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-25" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-26"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do customers place online delivery orders? <br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-6"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-4889"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-4889" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-6" id="accordion-a910">
+<div class="u-container-layout u-container-layout-6">
+<quillbot-extension-highlights class="Delivery-extracted-16"></quillbot-extension-highlights>
+<p class="u-text u-text-6"> Customers can place delivery orders online by selecting the delivery option, entering their delivery info, and selecting the delivery area.<br>
+</p>
+<quillbot-extension-highlights class="Delivery-extracted-16"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-7">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-7" id="link-accordion-a910" role="tab" aria-label="How does the POS system handle delivery orders?" aria-controls="panel-8509" aria-selected="false" tabindex="0" title="How does the POS system handle delivery orders?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-27" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-28"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How does the POS system handle delivery orders? <br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-7"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ba78"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-ba78" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-7" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-7">
+<quillbot-extension-highlights class="Delivery-extracted-16"></quillbot-extension-highlights>
+<p class="u-text u-text-7">The POS system tracks and records delivery orders seamlessly. Select the delivery option when creating a new order and enter the necessary details.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-8">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-8" id="link-accordion-0781" role="tab" aria-label="Where can I find more resources and guides?" aria-controls="panel-487" aria-selected="false" tabindex="0" title="Where can I find more resources and guides?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Delivery-extracted-12">
+<qb-div class="qb-highlighter__wrapper Delivery-extracted-29" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Delivery-extracted-30"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Where can I find more resources and guides?</span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-8"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-9367"></use></svg><svg class="u-svg-content Delivery-extracted-15" id="svg-9367" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-8" id="accordion-0781">
+<div class="u-container-layout u-container-layout-8">
+<ul class="u-custom-list u-text u-text-8">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div> Visit our blog, '​Fooodis.com's Expert Blog,' to elevate your restaurant with insights and tips from industry experts.<br>
+</li>
+</ul>
+<a class="u-active-white u-border-1 u-border-active-white u-border-hover-white u-border-white u-btn u-button-style u-hover-white u-none u-text-active-grey-70 u-text-body-alt-color u-text-hover-grey-70 u-btn-1" data-page-id="2059315254" href="Blog.html" title="Expert Blog"> Expert Blog</a>
+</div>
+</div>
+</div>
+</div><div role="tabpanel" id="panel-487"></div><div role="tabpanel" id="panel-8509"></div><div role="tabpanel" id="panel-209"></div><div role="tabpanel" id="panel-4204"></div><div role="tabpanel" id="panel-2389"></div><div role="tabpanel" id="panel-7155"></div><div role="tabpanel" id="panel-5449"></div><div role="tabpanel" id="panel-294"></div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-26" id="sec-3993">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" data-page-id="2059315254" href="Blog.html" title="LEARN More!"> LEARN More!</a>
+</div>
+</section>
+<style class="u-overlap-style" data-parsed="true">.u-overlap:not(.u-sticky-scroll) .u-header {
+background-color: #1d2029 !important; transparency: 45 !important
+}</style>
+    
+    
+    <script src="assets/footer-loader.js"></script>
+  <!-- Unified Footer Loader -->  
+  <script src="assets/include-footer.js"></script>
+
+
+</body></html>

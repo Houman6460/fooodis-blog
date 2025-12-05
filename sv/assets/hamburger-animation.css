@@ -1,0 +1,93 @@
+/* Animated Hamburger Menu CSS 
+   Based on https://codepen.io/ainalem/pen/LJYRxz */
+
+.hamburger-menu {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+.ham {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 400ms;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 26px; /* Adjusted to fit Fooodis site size */
+  height: 26px; /* Adjusted to fit Fooodis site size */
+  display: block;
+  position: relative;
+  z-index: 10;
+  margin: 8px 0;
+}
+
+.hamRotate.active {
+  transform: rotate(45deg);
+}
+
+/* Set the line color to match Fooodis branding */
+.line {
+  fill: none;
+  transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
+  stroke: #e8f24c !important; /* Updated to Fooodis yellow color (#e8f24c) */
+  stroke-width: 5; /* Increased for better visibility of the yellow color */
+  stroke-linecap: round;
+}
+
+/* Force yellow color on all hamburger icons across all contexts */
+.hamburger-menu .ham .line,
+.fooodis-header .hamburger-menu .ham .line,
+.u-body .hamburger-menu .ham .line,
+.u-header .hamburger-menu .ham .line,
+.u-overlap .hamburger-menu .ham .line,
+.u-overlap-contrast .hamburger-menu .ham .line,
+button.hamburger-menu .ham .line {
+  stroke: #e8f24c !important; /* Always yellow (#e8f24c) with !important to override any other styles */
+}
+
+/* Ensure consistent sizing across all pages - increased size further */
+.ham.hamRotate.ham1,
+.ham.hamRotate {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+}
+
+/* Hamburger Animation Style 1 */
+.ham1 .top {
+  stroke-dasharray: 40 139;
+}
+
+.ham1 .bottom {
+  stroke-dasharray: 40 180;
+}
+
+.ham1.active .top {
+  stroke-dashoffset: -98px;
+}
+
+.ham1.active .bottom {
+  stroke-dashoffset: -138px;
+}
+
+/* Mobile adaptations */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 15px;
+    display: flex; /* Show on mobile */
+    align-items: center;
+    justify-content: center;
+  }
+}

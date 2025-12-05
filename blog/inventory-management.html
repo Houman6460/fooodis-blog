@@ -1,0 +1,749 @@
+<!DOCTYPE html><html lang="en" class="inventory-management-extracted-1"><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="Post 1 Headline" name="keywords">
+<meta content="" name="description">
+<title>Inventory Management</title>
+<link href="../nicepage.css" media="screen" rel="stylesheet">
+<link href="../Post-Template.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="../jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="../nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<!-- Hamburger Menu Animation CSS -->
+<link href="../assets/hamburger-animation.css" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Inventory Management" name="twitter:title">
+<meta content="" name="twitter:description">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
+
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
+        }
+
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
+        }
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
+            }
+            dynamicLoadScript();
+        });
+    </script>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
+            }
+
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
+
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
+
+                            var forms = document.getElementsByTagName('form');
+
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<meta data-intl-tel-input-cdn-path="intlTelInput/"><!-- Fooodis Header CSS and JS -->
+<link href="../assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="../assets/header.js"></script>
+<script defer="" src="../assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style data-parsed="true">
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .footer-logo {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 0.8rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1rem;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="../footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/auto-generated-styles-final.css">
+<script src="assets/header-scroll-effect.js" defer></script>
+    <link rel="stylesheet" href="../assets/cookie-consent.css">
+    <script src="../assets/cookie-consent.js" defer></script>
+</head>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="en" data-path-to-root="./">
+<!-- Original Fooodis Header - Exact Copy -->
+<style data-parsed="true">
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-container {
+    display: block;
+}
+
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
+
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+
+/* Navigation */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 10px;
+}
+
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-item a:hover {
+    color: #e8f24c;
+}
+
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.show {
+    left: 0;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
+
+.mobile-nav-item {
+    margin: 15px 0;
+}
+
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-item a:hover {
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+</style>
+<header class="fooodis-header">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="../images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="../images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="../images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Service">Service</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="../Contact.html" title="Contact">Contact</a></li>
+<li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="../Blog.html" title="Blog">Blog</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="../Prices.html" title="Price">Price</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="Registrar">Registrar</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/login" rel="noopener noreferrer" target="_blank" title="Login">Login</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button>
+</div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
+
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="SERVICE">SERVICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">CONTACT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="Blog.html" title="BLOG">BLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html" title="PRICE">PRICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="REGISTRAR">REGISTRAR</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/login" rel="noopener noreferrer" target="_blank" title="LOGIN">LOGIN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
+        }
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    // X icon removed from sidebar
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+        });
+    }
+    
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'Blog': 'Blog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'Blog': 'Blogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<script>
+  fetch('../header.html')
+    .then(response => response.text())
+    .then(data => document.getElementById("header-placeholder").innerHTML = data);
+</script>
+<section class="u-align-center u-clearfix u-section-1" id="sec-a428">
+<div class="u-clearfix u-sheet u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1"><!--post_details--><!--post_details_options_json--><!--{"source":""}--><!--/post_details_options_json--><!--blog_post-->
+<div class="u-container-style u-expanded-width u-post-details u-post-details-1">
+<div class="u-container-layout u-valign-middle u-container-layout-1"><!--blog_post_image-->
+<img alt="" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="../images/0fd3416c.jpeg"><!--/blog_post_image--><!--blog_post_header-->
+<h2 class="u-blog-control u-text u-text-1">Inventory Management</h2><!--/blog_post_header--><!--blog_post_metadata-->
+<div class="u-blog-control u-metadata u-metadata-1"><!--blog_post_metadata_date--><span class="u-meta-date u-meta-icon">Apr 09, 2024</span><!--/blog_post_metadata_date--><!--blog_post_metadata_category--><span class="u-meta-category u-meta-icon"><a href="../blog/blog.html#/blog-1///" title="Uncategorized">Uncategorized</a></span><!--/blog_post_metadata_category--><!--blog_post_metadata_comments--><span class="u-meta-comments u-meta-icon"><!--blog_post_metadata_comments_content-->Comments (0)<!--/blog_post_metadata_comments_content--></span><!--/blog_post_metadata_comments-->
+</div><!--/blog_post_metadata--><!--blog_post_content-->
+<div class="u-align-justify u-blog-control u-post-content u-text u-text-2 fr-view"><p>Keep tracking item and variant stock levels to ensure availability and fulfill orders immediately.</p></div><!--/blog_post_content-->
+</div>
+</div><!--/blog_post--><!--/post_details-->
+</div>
+</section>
+    
+    
+    <script src="assets/footer-loader.js"></script>
+  <!-- Unified Footer Loader -->  
+  <script src="assets/include-footer.js"></script>
+
+
+</body></html>

@@ -1,0 +1,189 @@
+/* Policy Content Styles - Updated for dropdown sections */
+
+/* Base policy container styling */
+.policy-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: rgba(30, 33, 39, 0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(232, 242, 76, 0.2);
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.policy-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.policy-header h1 {
+    color: #e8f24c;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.policy-header p {
+    color: #a0a0a0;
+    font-size: 1rem;
+}
+
+.policy-section {
+    margin-bottom: 20px;
+    border: 1px solid rgba(232, 242, 76, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.policy-section-header {
+    background-color: rgba(232, 242, 76, 0.1);
+    padding: 15px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.policy-section-header:hover {
+    background-color: rgba(232, 242, 76, 0.2);
+}
+
+.policy-section-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #e8f24c;
+}
+
+.policy-section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding: 0 20px;
+}
+
+.policy-section.active .policy-section-content {
+    max-height: 5000px; /* Large enough to accommodate content */
+    padding: 20px;
+}
+
+.policy-section-header .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.policy-section.active .policy-section-header .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.policy-table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+.policy-table th, .policy-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(232, 242, 76, 0.2);
+}
+
+.policy-table th {
+    background-color: rgba(232, 242, 76, 0.1);
+    color: #e8f24c;
+}
+
+.policy-subsection {
+    margin: 30px 0 20px;
+}
+
+.policy-subsection h3 {
+    color: #e8f24c;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(232, 242, 76, 0.2);
+    padding-bottom: 8px;
+}
+
+.policy-list {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.policy-list li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.policy-list li:before {
+    content: "•";
+    color: #e8f24c;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+.policy-contact {
+    background-color: rgba(232, 242, 76, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.policy-disclaimer {
+    font-style: italic;
+    color: #a0a0a0;
+    margin-top: 40px;
+    padding: 15px;
+    border-left: 3px solid #e8f24c;
+    background-color: rgba(232, 242, 76, 0.05);
+}
+
+.policy-language-toggle {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.policy-language-toggle button {
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #e8f24c;
+    padding: 10px 15px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.policy-language-toggle button.active {
+    background-color: #e8f24c;
+    color: #1e2127;
+}
+
+.policy-language-content[lang="en"],
+.policy-language-content[lang="sv"] {
+    display: none;
+}
+
+.policy-language-content.active {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .policy-container {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .policy-header h1 {
+        font-size: 2rem;
+    }
+    
+    .policy-section-header h2 {
+        font-size: 1.2rem;
+    }
+}

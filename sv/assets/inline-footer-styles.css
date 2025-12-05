@@ -1,0 +1,387 @@
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Desktop/Mobile specific classes */
+.desktop-only {
+    display: flex;
+}
+
+.mobile-nav {
+    display: none;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover,
+.footer-nav-item a.active {
+    color: #e3c878; /* Gold/yellow color from the screenshot */
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: #e3c878; /* Gold/yellow color from the screenshot */
+    color: #1e2127; /* Dark background color */
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fooodis-footer {
+        text-align: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #1d2029; /* Exact dark background color from screenshot */
+    }
+    
+    /* Hide the bubbles animation on mobile for cleaner look */
+    .bubbles {
+        display: none;
+    }
+    
+    /* Footer container adjustments */
+    .footer-container {
+        padding: 0 20px;
+        max-width: 100%;
+        background-color: #1d2029; /* Exact dark background color from screenshot */
+    }
+    
+    /* Toggle desktop/mobile elements */
+    .desktop-only {
+        display: none; /* Hide desktop elements */
+    }
+    
+    .mobile-nav {
+        display: block; /* Show mobile navigation */
+    }
+    
+    /* Navigation menu - vertical stack */
+    .footer-nav {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 25px; /* Increased gap between menu items */
+        padding: 0;
+        margin: 0 0 30px 0;
+    }
+    
+    .footer-nav-item {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .footer-nav-item a {
+        font-size: 20px; /* Larger font size to match source */
+        font-weight: 400;
+        color: #fff;
+        text-decoration: none;
+        padding: 5px 0;
+        display: inline-block;
+        letter-spacing: 0.5px; /* Slight letter spacing for better readability */
+    }
+    
+    /* Highlight the active/current page */
+    .footer-nav-item a.active,
+    .footer-nav-item a:hover {
+        color: #e3c878; /* Gold/yellow color as shown in screenshot */
+        opacity: 1;
+    }
+    
+    /* Normal state slightly dimmed for contrast */
+    .footer-nav-item a {
+        opacity: 0.9;
+    }
+    
+    /* Bottom section with logo and social icons */
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+    
+    /* LogoLand section */
+    .footer-powered-by {
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .logoland-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .logoland-logo {
+        width: 240px; /* Larger logo to match source */
+        height: auto;
+        margin: 0 0 20px 0;
+    }
+    
+    .footer-powered-by p {
+        font-size: 18px; /* Larger font size */
+        color: #fff;
+        margin: 10px 0 0 0;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Social media icons */
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 30px 0;
+    }
+    
+    .social-link {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .social-link:hover {
+        background-color: #e3c878; /* Gold/yellow color from screenshot */
+        transform: translateY(-3px);
+    }
+    
+    .social-link:hover i {
+        color: #1d2029; /* Exact dark background color from screenshot */
+    }
+    
+    .social-link i {
+        font-size: 22px;
+        color: #fff;
+        transition: color 0.3s ease;
+    }
+    
+    /* Horizontal line separator */
+    .footer-separator {
+        width: 85%;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.15);
+        margin: 35px auto;
+    }
+    
+    /* Back to top button */
+    .back-to-top-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(227, 200, 120, 0.9); /* Gold/yellow with transparency */
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        z-index: 100;
+        transition: all 0.3s ease;
+    }
+    
+    .back-to-top-button img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .back-to-top-button.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

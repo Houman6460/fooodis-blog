@@ -1,0 +1,1271 @@
+<!DOCTYPE html><html lang="sv" class="Daily-Menu-extracted-1"><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="​​Digital Mastery, Design Perfection" name="keywords">
+<meta content="" name="description">
+<title>Daily Menu</title>
+<link href="../nicepage.css" media="screen" rel="stylesheet">
+<link href="../Daily-Menu.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="../jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="../nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<!-- Hamburger Menu Animation CSS -->
+<link href="../assets/hamburger-animation.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "../images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Daily Menu" name="twitter:title">
+<meta content="" name="twitter:description">
+<meta content="" property="og:title">
+<meta content="" property="og:description">
+<meta content="website" property="og:type">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
+
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
+        }
+
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
+        }
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
+            }
+            dynamicLoadScript();
+        });
+    </script>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
+            }
+
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
+
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
+
+                            var forms = document.getElementsByTagName('form');
+
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<!-- Fooodis Header CSS and JS -->
+<link href="../assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="../assets/header.js"></script>
+<script defer="" src="../assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style data-parsed="true">
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .footer-logo {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 0.8rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1rem;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="../footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/auto-generated-styles-final.css">
+<script src="assets/header-scroll-effect.js" defer></script>
+</head>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="sv" data-path-to-root="../">
+<!-- Original Fooodis Header - Exact Copy -->
+<style data-parsed="true">
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-container {
+    display: block;
+}
+
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
+
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+
+/* Navigation */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 10px;
+}
+
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-item a:hover {
+    color: #e8f24c;
+}
+
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.show {
+    left: 0;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
+
+.mobile-nav-item {
+    margin: 15px 0;
+}
+
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-item a:hover {
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+</style>
+<header class="fooodis-header">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="../images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="../images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="../images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Service">Tjänst</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html" title="Contact">Kontakt</a></li>
+<li class="nav-item"><a data-lang-en="FEBlog" data-lang-sv="FEBlogg" href="FEBlog.html" title="FEBlog">FEBlogg</a></li>
+<li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="Blog.html" title="Blog">Blogg</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="Prices.html" title="Price">Pris</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="Registrar">Registrera</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="Login">Logga in</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button></div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
+
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="SERVICE">TJÄNST</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">KONTAKT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="FEBLOG" data-lang-sv="FEBLOGG" href="FEBlog.html" title="FEBLOG">FEBLOGG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="Blog.html" title="BLOG">BLOGG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html" title="PRICE">PRIS</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="REGISTRAR">REGISTRERA</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="LOGIN">LOGGA IN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
+        }
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    const ham = document.querySelector('.ham');
+    const closeBtn = document.querySelector('.mobile-close-btn');
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+        });
+    }
+    
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'FEBlog': 'FEBlog',
+            'Blog': 'Blog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'FEBlog': 'FEBlogg',
+            'Blog': 'Blogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<script>
+  fetch('../header.html')
+    .then(response => response.text())
+    .then(data => document.getElementById("header-placeholder").innerHTML = data);
+</script>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-xl u-custom-color-1 u-section-1" id="sec-4df7">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-sheet-1">
+<h1 class="u-text u-text-1">​Fooodis.com Expertblogg<br></h1>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-2" id="sec-444f">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Effektivisera dagens specialmeny för optimal produktivitet<br></h3>
+<quillbot-extension-highlights class="Daily-Menu-extracted-2"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2">​Fooodis erbjuder ett dedikerat avsnitt för Dagens meny på restaurangens instrumentpanel, som hjälper chefer att enkelt organisera och presentera dagens specialerbjudanden. Restaurangchefer kan:<br>Lägga till alla artiklar som används för dagens meny.<br>Sortera dem efter veckodag.<br>Anpassa titlar på sitt föredragna språk.<br>Denna funktion möjliggör smidiga uppdateringar och visar rätt meny varje dag, vilket gör det enkelt att hålla erbjudandena fräscha och relevanta.</p>
+</div>
+</section>
+<section class="skrollable u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-3" id="sec-3f49" src="">
+<div class="u-clearfix u-sheet u-sheet-1">
+<img alt="" class="u-image u-image-contain u-image-default u-image-1" data-custom-animation="{&quot;animation&quot;:{&quot;XXL&quot;:{&quot;steps&quot;:[],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XL&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;LG&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-688&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-684&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;MD&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-577&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-572&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;SM&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-473&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-462&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XS&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-366&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-361&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}}},&quot;container&quot;:&quot;&quot;}" data-image-height="1654" data-image-width="2105" src="../images/Dailymenu-1.png">
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-4" id="sec-e8bf">
+<div class="u-clearfix u-sheet u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Gå med i Fooodis idag!<br></h3>
+<h6 class="u-align-center u-text u-text-2">​Stärk din restaurang med digitala lösningar<br></h6>
+<p class="u-align-center u-text u-text-3">​Redo att ta din restaurang till nästa nivå? Registrera dig nu och börja använda Fooodis.coms avancerade digitala verktyg helt gratis. Effektivisera dina processer, förbättra kundservicen och öka dina vinster med vår användarvänliga plattform. Kom igång idag utan kostnad och förvandla din restaurangs framtid!<br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-5" id="sec-16d1">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="​Börja gratis">​Börja gratis<br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-6" id="sec-db52">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Smidiga uppdateringar av dagens meny</h3>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Daily-Menu-extracted-4" data-translate-gpt="preserved-style">Håll dina kunder informerade</span></h6>
+<p class="u-align-center u-text u-text-3">​Hantera och uppdatera enkelt din restaurangs dagliga meny med Fooodis, så att dina kunder alltid vet vad som finns tillgängligt.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-7" id="sec-79e4">
+<div class="u-clearfix u-sheet u-valign-middle-md u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-7473">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Daily-Menu-extracted-5" data-u-slide-to="0" data-u-target="#carousel-7473"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/Dailymenu7.png" alt="Dailymenu7" title="Dailymenu7">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-7473" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-7473" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-container-layout-4">
+<p class="u-text u-text-1"><span class="Daily-Menu-extracted-6"></span><span class="translate-gpt-translated Daily-Menu-extracted-7" data-translate-gpt="preserved-style">Aktiverar funktionen för dagens meny</span><span class="Daily-Menu-extracted-8"></span><br><br><span class="translate-gpt-translated Daily-Menu-extracted-9" data-translate-gpt="preserved-style">För att börja använda den Dagliga menyn på din Fooodis plattform måste du först aktivera den från systeminställningarna.</span><span class="Daily-Menu-extracted-8"><br><br></span><span class="Daily-Menu-extracted-8">Följ dessa steg:</span><br><span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-10" data-translate-gpt="preserved-style">1. Gå till appinställningar</span>&nbsp;&nbsp;<br><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">&nbsp; ○&nbsp;I vänstermenyn, bläddra nedåt och klicka på </span><span class="translate-gpt-translated Daily-Menu-extracted-12" data-translate-gpt="preserved-style">"Appar"</span><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style"> för att öppna den fullständiga listan över tillgängliga moduler.</span><br><span class="translate-gpt-translated Daily-Menu-extracted-10" data-translate-gpt="preserved-style">2. Hitta modulen för dagens meny</span><br><br>&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">I listan över moduler, leta upp </span><span class="translate-gpt-translated Daily-Menu-extracted-12" data-translate-gpt="preserved-style">"Daglig meny"</span><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style"> (punkt 2).</span><br><br><span class="Daily-Menu-extracted-8">3.<span class="translate-gpt-translated Daily-Menu-extracted-10" data-translate-gpt="preserved-style">Activate today's menu</span><span class="translate-gpt-translated Daily-Menu-extracted-13" data-translate-gpt="preserved-style"></span></span><br>&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Klicka på modulen</span><span class="translate-gpt-translated Daily-Menu-extracted-12" data-translate-gpt="preserved-style"> "Daglig meny"</span><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style"> för att expandera den, kontrollera sedan alternativet märkt </span><span class="translate-gpt-translated Daily-Menu-extracted-12" data-translate-gpt="preserved-style">"Hantering: daglig meny"</span><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style"> (Punkt 3) för att aktivera det.</span><br><br><span class="Daily-Menu-extracted-8">4.&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-13" data-translate-gpt="preserved-style">Spara dina inställningar</span></span><br>&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Klicka på den gröna </span><span class="translate-gpt-translated Daily-Menu-extracted-12" data-translate-gpt="preserved-style">"Spara"</span><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style"> -knappen (Punkt 4) för att bekräfta och aktivera modulen.</span><br><br><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">När aktiverat kan du komma åt och konfigurera din dagliga meny under avsnittet "Daglig meny" i vänstermenyn.</span><br></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-8" id="sec-4d52">
+<div class="u-clearfix u-sheet u-valign-top-lg u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-9504">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Daily-Menu-extracted-5" data-u-slide-to="0" data-u-target="#carousel-9504"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/Dailymenu1.png" alt="Dailymenu1" title="Dailymenu1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-9504" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-9504" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-valign-bottom-md u-valign-middle-lg u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-bottom-md u-valign-top-lg u-container-layout-4">
+<p class="u-text u-text-1"><span class="Daily-Menu-extracted-6"><span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-7" data-translate-gpt="preserved-style">Lägga till föremål på menyn för dagligt bruk</span></span><br><br><span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-10" data-translate-gpt="preserved-style">Innan du skapar din dagliga meny måste du se till att alla relevanta rätter läggs till under rätt menykategori. Följ dessa steg för att lägga till menyobjekt:</span><br><br><span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-10" data-translate-gpt="preserved-style">1. Gå till menyn.</span>&nbsp;<br>&nbsp;○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-14" data-translate-gpt="preserved-style">Från navigeringspanelen till vänster, klicka på <span class="Daily-Menu-extracted-8">"Meny"</span> under avsnittet Restaurang (punkt 1).</span><br><br><span class="Daily-Menu-extracted-8">2.&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-13" data-translate-gpt="preserved-style">Välj rätt menyalternativ</span></span><br>&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">I kategorilistan på vänster sida av menyn för hantering, välj "Lunch" (punkt 2).</span><br>&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Detta är den utvalda kategorin där dagliga menyobjekt ska lagras.</span><br><br><span class="Daily-Menu-extracted-8">3.&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-13" data-translate-gpt="preserved-style">Lägg till en ny menyartikel</span></span><br><br>​&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Klicka på knappen "Lägg till objekt" som finns längst upp till höger i objektlistan (punkt 3).</span><br><br><span class="Daily-Menu-extracted-8">&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-13" data-translate-gpt="preserved-style">○ Fyll i följande detaljer</span>:</span><br><br>&nbsp; &nbsp; &nbsp; ○&nbsp;<span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-15" data-translate-gpt="preserved-style">Artikelnamn: <span class="Daily-Menu-extracted-16">Ange namnet på rätten.</span></span><br>&nbsp; &nbsp; &nbsp; ○<span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-10" data-translate-gpt="preserved-style">Beskrivning: </span><span class="translate-gpt-translated Daily-Menu-extracted-17" data-translate-gpt="preserved-style">Skriv en kort beskrivning av artikeln.</span><br>&nbsp; &nbsp; &nbsp; ○<span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-10" data-translate-gpt="preserved-style">Pris:</span><span class="translate-gpt-translated Daily-Menu-extracted-17" data-translate-gpt="preserved-style"> Ange objektets pris.</span><br><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">&nbsp; &nbsp; &nbsp; ○Ladda upp en tydlig bild av rätten för visning i menyn</span>.<br><br><span class="Daily-Menu-extracted-8">4.&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-13" data-translate-gpt="preserved-style">Spara artikeln</span></span><br>&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Efter att ha angett alla detaljer klickar du på "Spara" för att lägga till det nya objektet i din menulista.</span><br><br><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">När du har sparat, kommer dina menyobjekt att vara tillgängliga för val i daglig menyn-uppsättning.</span><br></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-9" id="sec-5d74">
+<div class="u-clearfix u-sheet u-valign-middle-md u-valign-middle-sm u-valign-middle-xl u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Hantera och anpassa din dagliga meny<br></h3>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Daily-Menu-extracted-4" data-translate-gpt="preserved-style">Effektivt organisera och anpassa din dagliga special</span></h6>
+<p class="u-align-center u-text u-text-3">​Först, navigera till avsnittet "Meny" i menyn till vänster för att lägga till dina artiklar. Gå sedan till avsnittet "Dagens meny" för att skapa och organisera dina dagliga specialerbjudanden. Dra och släpp artiklar för att arrangera dem och anpassa titlar och färger för att matcha din restaurangs varumärke. Spara dina ändringar för att hålla din meny uppdaterad och visuellt tilltalande.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-10" id="sec-8590">
+<div class="u-clearfix u-sheet u-valign-middle-md u-valign-middle-sm u-valign-middle-xl u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-top-md u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-53a8">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Daily-Menu-extracted-5" data-u-slide-to="0" data-u-target="#carousel-53a8"></li>
+<li class="u-grey-70 u-shape-circle Daily-Menu-extracted-5" data-u-slide-to="1" data-u-target="#carousel-53a8"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="../images/Dailymenu2.png" alt="Dailymenu2" title="Dailymenu2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="../images/Dailymenu3.png" alt="Dailymenu3" title="Dailymenu3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-53a8" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-53a8" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-valign-bottom-lg u-valign-bottom-sm u-valign-middle-md u-valign-middle-xl u-valign-middle-xs u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-container-layout-4">
+<p class="u-text u-text-1"><span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-18" data-translate-gpt="preserved-style">Hantera och organisera den dagliga menyn</span><br><span class="Daily-Menu-extracted-8"></span><span class="translate-gpt-translated Daily-Menu-extracted-19" data-translate-gpt="preserved-style">Efter att du har lagt till dina menyalternativ är nästa steg att konfigurera din dagliga meny genom att välja vilka alternativ som ska visas varje dag och hur de ska visas.</span><br><br><span class="Daily-Menu-extracted-8">1:&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-20" data-translate-gpt="preserved-style">Navigera till daglig menyhanteringReferens: Daglig meny - Punk1</span></span><br>&nbsp; ○<span class="translate-gpt-translated Daily-Menu-extracted-21" data-translate-gpt="preserved-style">Från den vänstra sidofältet klickar du på "Dagens meny" under avsnittet "Restaurang" för att komma åt vyn för hantering av dagens meny.</span><br><br><span class="Daily-Menu-extracted-8">2:&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-20" data-translate-gpt="preserved-style">Välj dagen du vill redigeraReferens: Daglig meny 2 - punkt 2</span></span><br>&nbsp; ○&nbsp;<span class="translate-gpt-translated Daily-Menu-extracted-21" data-translate-gpt="preserved-style">Använd den övre raden med veckodagar (måndag till fredag) för att välja den specifika dagen du vill konfigurera.</span><br><br><span class="Daily-Menu-extracted-8">Lägg till objekt i dagens meny.
+Referens: Dagens meny 2 - punkter 4, 5, 6</span><br>&nbsp; ○&nbsp;The list on the Right (Point 5) shows all available menu items.<br>&nbsp; ○&nbsp;Use the arrow buttons to move items to the selected items list on the Left (Point 4), which defines the actual daily menu.<br>&nbsp; ○&nbsp;You can use the filter (Point 6) to quickly find specific dishes.<br><br><span class="Daily-Menu-extracted-8">4: Customize Appearance SettingsReference: Daily menu 2 – P​oints 7, 8, 9</span><br>&nbsp; ○&nbsp;In the General Setting area, you can:Enter a custom title for the menu table (e.g., the day name in your preferred language).<br>&nbsp; ○&nbsp;Set a background color and a text color for the digital display.<br>&nbsp; ○&nbsp;Add a description that will appear at the top of the daily menu (e.g., “Week 16 | Lunch mellan 11:00–14:00”).<br>Click <span class="Daily-Menu-extracted-8">“Save”</span> (Point 9) to apply your changes.<br><br><span class="Daily-Menu-extracted-8">Sort Items for the DayReference:&nbsp;</span><br><span class="Daily-Menu-extracted-8">Daily menu 3 – Points 1, 2, 3</span><br>&nbsp; ○&nbsp;To set the order in which items appear, click on <span class="Daily-Menu-extracted-8">“Configure the sorting”.</span><br>&nbsp; ○&nbsp;Select a weekday tab (Point 1) to view the current list.<br>&nbsp; ○&nbsp;The numbered list (Point 2) shows the current order. You can reorder items by dragging or using sort controls.<br>Click “Save” (Point 3) to finalize the order.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-11" id="sec-0dc7">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-xl u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-4e97">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Daily-Menu-extracted-5" data-u-slide-to="0" data-u-target="#carousel-4e97"></li>
+<li class="u-grey-70 u-shape-circle Daily-Menu-extracted-5" data-u-slide-to="1" data-u-target="#carousel-4e97"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="../images/Dailymenu4.png" alt="Dailymenu4" title="Dailymenu4">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/Dailymenu5.png" alt="Dailymenu5" title="Dailymenu5">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-4e97" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-4e97" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-container-layout-4">
+<p class="u-text u-text-1"><span class="Daily-Menu-extracted-8"><span class="Daily-Menu-extracted-6">​​</span><span class="Daily-Menu-extracted-6">Displaying the Daily Menu on the Restaurant TV View</span></span><br>&nbsp;<br>Once your daily menu is configured, you can display it on a screen inside your restaurant for customers to easily view what’s being served.&nbsp;<br><br><span class="Daily-Menu-extracted-8">1: Access the Daily Menu View Options&nbsp;</span><br>&nbsp; ○&nbsp;Reference: Daily menu 4 – Point 1<br>&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;In the Daily Menu Management section, click on the “View TV layout” button. This allows you to preview how your menu will appear on a digital screen.&nbsp;<br><br><span class="Daily-Menu-extracted-8">2: Customize the Display Style&nbsp;</span><br>&nbsp; ○&nbsp;Reference: Daily menu 4 – left panel &amp; settings<br>&nbsp; ○&nbsp;You can adjust visual settings such as:
+<br><span class="Daily-Menu-extracted-8">
+&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;Background color</span> of the screen
+<br><span class="Daily-Menu-extracted-8">
+&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;Text color</span> for menu readability
+<br><span class="Daily-Menu-extracted-8">
+&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;Title and description</span>, such as the week number and lunch hours (e.g., “Vecka 16 | Lunch mellan 11:00–14:00”)
+<br>
+These customizations are reflected on the screen layout preview.&nbsp;<br><br><span class="Daily-Menu-extracted-8">3: TV Display Output
+Reference:&nbsp;</span><br>&nbsp; ○&nbsp;Daily menu 5 – Point 2<br>&nbsp; ○&nbsp;The live TV view will show the selected daily menu items for the current day, including:&nbsp;<br><span class="Daily-Menu-extracted-8">&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;Dish name
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;Description
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;Price
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;○&nbsp;Image of the dish</span>
+<br>
+Menus are displayed in a structured and visually appealing format with automatic updates that switch to the next day’s menu at midnight.
+This setup ensures that customers always see the most current daily offering in a clear and professional layout.<br></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-12" id="sec-dc59">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Lägga till din dagliga meny i huvudmenyn<br></h3>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2">​Seamlessly Integrate Daily Specials into Your Restaurant’s Navigation</h6>
+<p class="u-align-center u-text u-text-3">​För att göra dina dagliga specialerbjudanden lättillgängliga, navigera först till <span class="Daily-Menu-extracted-8">"Menyhantering"</span> under avsnittet <span class="Daily-Menu-extracted-8">"Restaurang"</span> i menyn till vänster. Klicka på <span class="Daily-Menu-extracted-8">"Lägg till artikel"</span> och ange detaljerna för dina dagliga menyartiklar. Välj en ikon och ställ in målet så att länken öppnas direkt. Spara dina ändringar för att säkerställa att den dagliga menyn läggs till i huvudmenyn, vilket ger en smidig navigeringsupplevelse för dina kunder.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-13" id="sec-0526">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​PROVA VÅR INTERAKTIVA DEMO!<br></h3>
+<h6 class="u-align-center u-text u-text-2">​Upplev Fooodis.com i aktion<sider-trans data-url-id="1578637305"><sider-trans-block><sider-trans-text data-display="none">Experience Fooodis.com in action</sider-trans-text></sider-trans-block></sider-trans><br></h6>
+<p class="u-align-center u-text u-text-3">​Dyk in i vår fullt fungerande demo-webbplats och utforska kraften och enkelheten i Fooodis POS-system. Testa alla funktioner, anpassa din upplevelse och se med egna ögon hur vår integrerade plattform kan transformera din restauranghantering. Klicka här för att starta din resa!<br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-14" id="sec-a49b">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" target="_blank" rel="noopener noreferrer" title="​Utforska demot nu">​Utforska demot nu<br></a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-15" id="sec-02ad">
+<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
+<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="../images/Artboard1.svg">
+<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1">​Stärk Ditt Varumärke med Våra Omfattande Digitala Tjänster</h3>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-16" id="sec-b15c">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="BESÖK LOGOLANDS"><span class="translate-gpt-translated Daily-Menu-extracted-22" data-translate-gpt="preserved-style">BESÖK LOGOLANDS</span><br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-17" id="sec-3f90">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Logo Land Design - Din Port till Digital Excellens</h3>
+<p class="u-align-center u-text u-text-2">​Upptäck kraften i enhetliga sociala mediekampanjer, skräddarsydd innehållsdesign och kreativ digital berättande hos Logo Land Design. Vårt expertteam specialiserar sig på att designa, genomföra och övervaka digitala annonskampanjer för maximal avkastning. Vi skapar en unik varumärkesröst och strategi, skapar dynamiska animationer, producerar fängslande videonarrativ, fångar fantastisk fotografi och genererar engagerande, plagiatfritt innehåll. Höj ditt varumärkes närvaro med våra skräddarsydda digitala lösningar.</p>
+</div>
+</section>
+<section class="u-border-2 u-border-grey-75 u-clearfix u-custom-color-1 u-section-18" id="sec-b57c">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-list u-list-1">
+<div class="u-repeater u-repeater-1">
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"><span class="translate-gpt-translated Daily-Menu-extracted-23" data-translate-gpt="preserved-style">SOCIALE MEDIER I ETT NÄTVERK</span></p>
+<p class="u-text u-text-body-alt-color u-text-2">​<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Utforma, utföra och övervaka digitala annonskampanjer för maximal avkastning på investeringen (ROI).</span><br><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="Läs mer"><span class="translate-gpt-translated Daily-Menu-extracted-24" data-translate-gpt="preserved-style">Läs mer</span></a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"><span class="translate-gpt-translated Daily-Menu-extracted-23" data-translate-gpt="preserved-style">SKRÄDDARSYTT INNEHÅLLSDESIGN</span></p>
+<p class="u-text u-text-body-alt-color u-text-4"><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Utforma en unik varumärkesröst och strategi för att säkerställa konsekvent och effektiv kommunikation på alla plattformar.</span></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"><span class="translate-gpt-translated Daily-Menu-extracted-23" data-translate-gpt="preserved-style">TJÄNSTER INOM ANIMERING</span></p>
+<p class="u-text u-text-body-alt-color u-text-6">​<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Skapa dynamiska animationer och grafik för att förmedla meddelanden på ett engagerande sätt.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"><span class="translate-gpt-translated Daily-Menu-extracted-23" data-translate-gpt="preserved-style">VIDEO REDIGERING</span></p>
+<p class="u-text u-text-body-alt-color u-text-8">​<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Skapa lockande videoberättelser för marknadsföring, varumärkesberättelser eller annonser.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">​Fotografi</p>
+<p class="u-text u-text-body-alt-color u-text-10">​<span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Fånga högkvalitativa visuella element och designa grafik för att förbättra annonser och marknadsföringsmaterial.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"><span class="translate-gpt-translated Daily-Menu-extracted-23" data-translate-gpt="preserved-style">SKAPANDE OCH COPYRIGHT</span></p>
+<p class="u-text u-text-body-alt-color u-text-12"><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Att använda AI och mänsklig expertis för att skapa engagerande, fri från plagiat, skräddarsytt innehåll anpassat för reklambehov.</span></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-19" id="sec-c509">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-body-color u-text-1"><span class="translate-gpt-translated Daily-Menu-extracted-25" data-translate-gpt="preserved-style">VI HAR MER FÖR DIG</span></h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-20" id="sec-db3d">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Utforska Mer med Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2">​Din resa med Logo Land Design slutar inte här. Utforska våra ytterligare erbjudanden genom att besöka de dedikerade webbplatserna för våra specialiserade produkter: Webbplatsbyggaren, E-postmarknadsföringsprogrammet och Webbshopbyggaren. Varje produkt är utformad för att förbättra din digitala upplevelse och framgång. Upptäck mer nu!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-21" id="sec-1c42">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="BESÖK LOGOLANDS"><span class="translate-gpt-translated Daily-Menu-extracted-22" data-translate-gpt="preserved-style">BESÖK LOGOLANDS</span><br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-22" id="sec-b3b2">
+<div class="u-clearfix u-sheet u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Vanliga frågor om hantering av dagens meny<br></h3>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2">​Att hantera din dagliga meny på Fooodis-plattformen är utformat för att vara enkelt och effektivt. Här är svar på några vanliga frågor som hjälper dig att utnyttja funktionerna för daglig menyhantering på bästa sätt.<br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-23" id="sec-4765">
+<div class="u-accordion u-collapsed-by-default u-expanded-width u-spacing-0 u-accordion-1" role="tablist">
+<div class="u-accordion-item u-accordion-item-1">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-1" id="link-accordion-a910" role="tab" aria-label="Hur lägger jag till nya artiklar på den dagliga menyn?" aria-controls="panel-5417" aria-selected="false" tabindex="0" title="Hur lägger jag till nya artiklar på den dagliga menyn?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Daily-Menu-extracted-26">
+<qb-div class="qb-highlighter__wrapper Daily-Menu-extracted-27" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Daily-Menu-extracted-28"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"><span class="translate-gpt-translated Daily-Menu-extracted-29" data-translate-gpt="preserved-style"></span><span class="translate-gpt-translated Daily-Menu-extracted-30" data-translate-gpt="preserved-style">Hur lägger jag till nya artiklar på den dagliga menyn?</span><br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-1 u-text-custom-color-1 u-text-hover-custom-color-1 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f6ce"></use></svg><svg class="u-svg-content Daily-Menu-extracted-31" id="svg-f6ce" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-1" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-1">
+<quillbot-extension-highlights class="Daily-Menu-extracted-32"></quillbot-extension-highlights>
+<p class="u-text u-text-1"><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">För att lägga till nya objekt, navigera till avsnittet "Meny" i vänstermenyn. Klicka på "Lägg till objekt" och fyll i objektinformationen, inklusive namn, beskrivning, pris och bild. Spara objektet och det kommer att vara tillgängligt för val i dagens meny.</span><br></p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-2">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-2" id="link-accordion-a910" role="tab" aria-label="Kan jag anpassa utseendet på dagens meny?" aria-controls="panel-5642" aria-selected="false" tabindex="0" title="Kan jag anpassa utseendet på dagens meny?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Daily-Menu-extracted-26">
+<qb-div class="qb-highlighter__wrapper Daily-Menu-extracted-33" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Daily-Menu-extracted-34"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"><span class="translate-gpt-translated Daily-Menu-extracted-29" data-translate-gpt="preserved-style">Kan jag anpassa utseendet på dagens meny?</span><br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-1 u-text-custom-color-1 u-text-hover-custom-color-1 u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-feec"></use></svg><svg class="u-svg-content Daily-Menu-extracted-31" id="svg-feec" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-2" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-2">
+<quillbot-extension-highlights class="Daily-Menu-extracted-32"></quillbot-extension-highlights>
+<p class="u-text u-text-2">​​Ja, du kan anpassa tabellens titel för att återspegla dagens namn på ditt föredragna språk. Dessutom kan du justera bakgrunds- och textfärger för att matcha din restaurangs varumärke.<br></p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-3">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-3" id="link-accordion-a910" role="tab" aria-label="​​Hur organiserar jag artiklar för varje dag?" aria-controls="panel-9989" aria-selected="false" tabindex="0" title="​​Hur organiserar jag artiklar för varje dag?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Daily-Menu-extracted-26">
+<qb-div class="qb-highlighter__wrapper Daily-Menu-extracted-35" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Daily-Menu-extracted-36"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​​Hur organiserar jag artiklar för varje dag?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-1 u-text-custom-color-1 u-text-hover-custom-color-1 u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-0b4a"></use></svg><svg class="u-svg-content Daily-Menu-extracted-31" id="svg-0b4a" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-3" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-3">
+<quillbot-extension-highlights class="Daily-Menu-extracted-32"></quillbot-extension-highlights>
+<p class="u-text u-text-3">​​I avsnittet "Dagens meny" väljer du den specifika dag du vill hantera. Du kan lägga till artiklar i den dagliga menyn genom att välja dem från listan och sedan använda dra-och-släpp-funktionen för att arrangera dem i önskad ordning. Kom ihåg att spara dina ändringar.<br></p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-4">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-4" id="link-accordion-0781" role="tab" aria-label="​​Hur visar jag den dagliga menyn på en TV-skärm?" aria-controls="panel-8808" aria-selected="false" tabindex="0" title="​​Hur visar jag den dagliga menyn på en TV-skärm?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Daily-Menu-extracted-26">
+<qb-div class="qb-highlighter__wrapper Daily-Menu-extracted-37" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Daily-Menu-extracted-38"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​​Hur visar jag den dagliga menyn på en TV-skärm?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-1 u-text-custom-color-1 u-text-hover-custom-color-1 u-icon-4"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f798"></use></svg><svg class="u-svg-content Daily-Menu-extracted-31" id="svg-f798" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-4" id="accordion-0781">
+<div class="u-container-layout u-container-layout-4">
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+<ul class="u-custom-list u-text u-text-4">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div></li><li>
+</li>
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+                ​​</div><span class="translate-gpt-translated Daily-Menu-extracted-39" data-translate-gpt="preserved-style">Gå till avsnittet "Dagens meny" och klicka på knappen "Visa TV-layout". TV-vyn kommer automatiskt att visa dagens meny och uppdateras till nästa dags meny vid midnatt.</span><br></li>
+</ul>
+<quillbot-extension-highlights class="Daily-Menu-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-5">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-5" id="link-accordion-a910" role="tab" aria-label="Hur lägger jag till dagens meny i huvudmenyn?" aria-controls="panel-2783" aria-selected="false" tabindex="0" title="Hur lägger jag till dagens meny i huvudmenyn?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Daily-Menu-extracted-26">
+<qb-div class="qb-highlighter__wrapper Daily-Menu-extracted-40" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Daily-Menu-extracted-41"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"><span class="translate-gpt-translated Daily-Menu-extracted-29" data-translate-gpt="preserved-style">Hur lägger jag till dagens meny i huvudmenyn?</span><br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-1 u-text-custom-color-1 u-text-hover-custom-color-1 u-icon-5"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-5d8b"></use></svg><svg class="u-svg-content Daily-Menu-extracted-31" id="svg-5d8b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-5" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-5">
+<quillbot-extension-highlights class="Daily-Menu-extracted-32"></quillbot-extension-highlights>
+<p class="u-text u-text-5"><span class="translate-gpt-translated Daily-Menu-extracted-11" data-translate-gpt="preserved-style">Gå till "Menyhantering" under avsnittet "Restaurang" i vänstermenyn. Klicka på "Lägg till objekt" för att ange namn och andra detaljer för dagens meny. Välj en ikon, ställ in målet att öppna länken direkt och spara ändringarna.</span><br></p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-6">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-6" id="link-accordion-0781" role="tab" aria-label="​Var kan jag hitta fler resurser och guider?" aria-controls="panel-2990" aria-selected="false" tabindex="0" title="​Var kan jag hitta fler resurser och guider?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Daily-Menu-extracted-26">
+<qb-div class="qb-highlighter__wrapper Daily-Menu-extracted-42" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Daily-Menu-extracted-36"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Var kan jag hitta fler resurser och guider?</span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-6"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-3a36"></use></svg><svg class="u-svg-content Daily-Menu-extracted-31" id="svg-3a36" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-6" id="accordion-0781">
+<div class="u-container-layout u-container-layout-6">
+<ul class="u-custom-list u-text u-text-6">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div>​Besök vår blogg, "Fooodis.com's Expert Blog", för att lyfta din restaurang med insikter och tips från branschexperter.<br></li>
+</ul>
+<a class="u-active-white u-border-1 u-border-active-white u-border-hover-white u-border-white u-btn u-button-style u-hover-white u-none u-text-active-grey-70 u-text-body-alt-color u-text-hover-grey-70 u-btn-1" data-page-id="2059315254" href="Blog.html" title="​Expertblogg">​Expertblogg</a>
+</div>
+</div>
+</div>
+</div><div role="tabpanel" id="panel-2990"></div><div role="tabpanel" id="panel-2783"></div><div role="tabpanel" id="panel-8808"></div><div role="tabpanel" id="panel-9989"></div><div role="tabpanel" id="panel-5642"></div><div role="tabpanel" id="panel-5417"></div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-24" id="sec-1b21">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" title="​LÄS mer">​LÄS mer<br></a>
+</div>
+</section>
+<style class="u-overlap-style" data-parsed="true">.u-overlap:not(.u-sticky-scroll) .u-header {
+background-color: #1d2029 !important; transparency: 45 !important
+}</style>
+    
+    
+    <script src="assets/footer-loader.js"></script>
+  <!-- Unified Footer Loader -->  
+  <script src="../assets/include-footer.js"></script>
+
+
+</body></html>

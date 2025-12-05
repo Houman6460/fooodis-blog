@@ -1,0 +1,2824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savings Calculator Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1c23;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .features-tips-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .features-tips-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calculator-section.options-section {
+            flex: 1;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .features-section {
+            position: relative;
+            height: auto;
+            min-height: 300px;
+            max-height: 400px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .features-section {
+                height: auto;
+                min-height: 200px;
+                max-height: 300px;
+            }
+        }
+
+        .features-scroll {
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 768px) {
+            .features-scroll {
+                height: auto;
+                max-height: 300px;
+            }
+        }
+
+        .features-list {
+            animation: scrollFeatures 20s linear infinite;
+            padding: 0 10px;
+        }
+
+        @media (max-width: 768px) {
+            .features-list {
+                animation-duration: 15s;
+                padding: 0 5px;
+            }
+        }
+
+        .feature-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(232, 242, 76, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .feature-item {
+                padding: 12px;
+                margin-bottom: 8px;
+            }
+        }
+
+        .feature-item:hover {
+            background: rgba(232, 242, 76, 0.1);
+            transform: translateX(5px);
+        }
+
+        .feature-title {
+            color: #e8f24c;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .feature-description {
+            color: #ffffff;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .fade-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 50px;
+            pointer-events: none;
+        }
+
+        .fade-overlay.top {
+            top: 0;
+            background: linear-gradient(to bottom, rgba(42, 45, 54, 1) 0%, rgba(42, 45, 54, 0) 100%);
+        }
+
+        .fade-overlay.bottom {
+            bottom: 0;
+            background: linear-gradient(to top, rgba(42, 45, 54, 1) 0%, rgba(42, 45, 54, 0) 100%);
+        }
+
+        @keyframes scrollFeatures {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        .tips-section {
+            padding: 20px;
+            background: rgba(232, 242, 76, 0.05);
+            border-radius: 8px;
+        }
+
+        .tips-section h3 {
+            color: #e8f24c;
+            margin-bottom: 15px;
+        }
+
+        .tips-content {
+            color: #ffffff;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .section-header {
+            color: #e8f24c;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .calculator-modal {
+            width: 100%;
+            max-width: 1300px;
+            background: #1E2028;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 20px;
+            overflow-x: auto;
+        }
+
+        .calculator-card {
+            background: #1E1E1E;
+            border-radius: 10px;
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            min-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .calculator-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-logo {
+                width: 60px;
+                margin-bottom: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calculator-logo {
+                width: 50px;
+                margin-bottom: 6px;
+            }
+        }
+
+        .calculator-title {
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: clamp(24px, 5vw, 48px);
+            font-weight: bold;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+            /* Color animation with text gradient - simplified to yellow, blue, white */
+            background: linear-gradient(
+                to right,
+                #e8f24c, /* Yellow */
+                #ffffff, /* White */
+                #4fc3f7, /* Blue */
+                #ffffff, /* White */
+                #e8f24c /* Back to yellow */
+            );
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            /* Animation */
+            animation: textGradientAnimation 8s ease infinite;
+            /* Add subtle glow effect with text shadow */
+            text-shadow: 0 0 10px rgba(232, 242, 76, 0.5), 0 0 20px rgba(79, 195, 247, 0.3);
+        }
+        
+        @keyframes textGradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .action-button {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .demo-button {
+            background: #e8f24c;
+            color: #1a1c23;
+            border: none;
+        }
+
+        .demo-button:hover {
+            background: #d9e33d;
+            transform: translateY(-2px);
+        }
+
+        .register-button {
+            background: transparent;
+            color: #e8f24c;
+            border: 2px solid #e8f24c;
+        }
+
+        .register-button:hover {
+            background: rgba(232, 242, 76, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .calculator-section {
+            background: #1E2028;
+            padding: 20px;
+            min-width: 500px;
+        }
+
+        @media (max-width: 1024px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .calculator-section {
+                min-width: auto;
+            }
+
+            .currency-buttons, .period-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .currency-btn, .period-btn {
+                flex: 0 1 calc(50% - 10px);
+                min-width: 120px;
+            }
+
+            .plan-options {
+                gap: 15px;
+            }
+
+            .plan-option {
+                padding: 15px;
+            }
+
+            .promo-text {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calculator-modal {
+                padding: 15px;
+                margin: 10px;
+            }
+
+            .calculator-title {
+                font-size: 22px;
+                margin-bottom: 25px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .calculator-input label {
+                font-size: 14px;
+            }
+
+            .calculator-input input {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .metric-value {
+                font-size: 18px;
+            }
+
+            .metric-label {
+                font-size: 12px;
+            }
+
+            .guide-box {
+                padding: 15px;
+            }
+
+            .guide-box h4 {
+                font-size: 14px;
+            }
+
+            .guide-steps li {
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .currency-btn, .period-btn {
+                flex: 1 1 100%;
+            }
+
+            .plan-price {
+                font-size: 20px;
+            }
+
+            .promo-text {
+                font-size: 10px;
+            }
+        }
+
+        .calculator-section {
+            background: #1E2028;
+        }
+
+        .calculator-section h3 {
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .calculator-input {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(42, 45, 54, 0.7);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        .currency-buttons, .period-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 480px) {
+            .currency-buttons, .period-buttons {
+                gap: 5px;
+            }
+
+            .currency-btn, .period-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+                flex: 1 1 calc(50% - 5px);
+            }
+        }
+
+        .currency-btn, .period-btn {
+            padding: 12px 20px;
+            background: rgba(42, 45, 54, 0.7);
+            border: none;
+            color: #ffffff;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: visible;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .flag-icon {
+            width: 20px;
+            height: 15px;
+            display: inline-block;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            vertical-align: middle;
+        }
+        
+        .flag-icon-se {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxMCI+PHBhdGggZmlsbD0iIzAwNkFBNyIgZD0iTTAgMGgxNnYxMEgweiIvPjxwYXRoIGZpbGw9IiNGRUNDMDAiIGQ9Ik01IDBoMnYxMEg1eiIvPjxwYXRoIGZpbGw9IiNGRUNDMDAiIGQ9Ik0wIDRoMTZ2MkgweiIvPjwvc3ZnPg==');
+        }
+        
+        .flag-icon-us {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxMCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgxNnYxMEgweiIvPjxwYXRoIGZpbGw9IiNiMjIyMzQiIGQ9Ik0wIDBoMTZ2MC43NjlIMHpNMCAxLjUzOGgxNnYwLjc2OUgwek0wIDMuMDc3aDE2djAuNzY5SDB6TTAgNC42MTVoMTZ2MC43NjlIMHpNMCA2LjE1NGgxNnYwLjc2OUgwek0wIDcuNjkyaDE2djAuNzY5SDB6TTAgOS4yMzFoMTZ2MC43NjlIMHoiLz48cGF0aCBmaWxsPSIjMzM2NmNjIiBkPSJNMCAwaDYuMTU0djUuMzg1SDB6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAuNDc5IDAuNDc5aDAuMjRsMC4wNzQgMC4yMjkgMC4wNzQtMC4yMjloMC4yNGwtMC4xOTQtMC4xNDEgMC4wNzQtMC4yMjktMC4xOTQgMC4xNDEtMC4xOTQtMC4xNDEgMC4wNzQgMC4yMjl6TTEuNDM4IDAuNDc5aDAuMjRsMC4wNzQgMC4yMjkgMC4wNzQtMC4yMjloMC4yNGwtMC4xOTQtMC4xNDEgMC4wNzQtMC4yMjktMC4xOTQgMC4xNDEtMC4xOTQtMC4xNDEgMC4wNzQgMC4yMjl6TTIuMzk2IDAuNDc5aDAuMjRsMC4wNzQgMC4yMjkgMC4wNzQtMC4yMjloMC4yNGwtMC4xOTQtMC4xNDEgMC4wNzQtMC4yMjktMC4xOTQgMC4xNDEtMC4xOTQtMC4xNDEgMC4wNzQgMC4yMjl6TTMuMzU0IDAuNDc5aDAuMjRsMC4wNzQgMC4yMjkgMC4wNzQtMC4yMjloMC4yNGwtMC4xOTQtMC4xNDEgMC4wNzQtMC4yMjktMC4xOTQgMC4xNDEtMC4xOTQtMC4xNDEgMC4wNzQgMC4yMjl6TTQuMzEzIDAuNDc5aDAuMjRsMC4wNzQgMC4yMjkgMC4wNzQtMC4yMjloMC4yNGwtMC4xOTQtMC4xNDEgMC4wNzQtMC4yMjktMC4xOTQgMC4xNDEtMC4xOTQtMC4xNDEgMC4wNzQgMC4yMjl6TTUuMjcxIDAuNDc5aDAuMjRsMC4wNzQgMC4yMjkgMC4wNzQtMC4yMjloMC4yNGwtMC4xOTQtMC4xNDEgMC4wNzQtMC4yMjktMC4xOTQgMC4xNDEtMC4xOTQtMC4xNDEgMC4wNzQgMC4yMjl6Ii8+PC9zdmc+');
+        }
+        
+        .flag-icon-eu {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxMCI+PHBhdGggZmlsbD0iIzAzOSIgZD0iTTAgMGgxNnYxMEgweiIvPjxwYXRoIGZpbGw9IiNGQ0MwMDAiIGQ9Ik04IDEuNWwtLjM4MiAxLjE3N2gtMS4yMzZsMS4wMDEuNzI3LS4zODIgMS4xNzYgMS0uNzI2IDEgLjcyNi0uMzgyLTEuMTc2IDEtLjcyN0g4LjM4M3ptLTMgMmwtLjM4MiAxLjE3N0g0LjM4MmwxLjAwMS43MjctLjM4MiAxLjE3NiAxLS43MjYgMSAuNzI2LS4zODItMS4xNzYgMS0uNzI3SDUuMzgzem06IDBsLS4zODIgMS4xNzdoLTEuMjM2bDEuMDAxLjcyNy0uMzgyIDEuMTc2IDEtLjcyNiAxIC43MjYtLjM4Mi0xLjE3NiAxLS43MjdIMTEuMzgzem0tMyAybC0uMzgyIDEuMTc3aC0xLjIzNmwxLjAwMS43MjctLjM4MiAxLjE3NiAxLS43MjYgMSAuNzI2LS4zODItMS4xNzYgMS0uNzI3SDguMzgzeiIvPjwvc3ZnPg==');
+        }
+        
+        .period-label {
+            position: absolute;
+            top: -12px;
+            right: -25px;
+            background: #e8f24c;
+            color: #1a1c23;
+            padding: 4px 25px;
+            font-size: 12px;
+            transform: rotate(45deg);
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .currency-btn.active, .period-btn.active {
+            background: rgba(232, 242, 76, 0.2);
+            color: #e8f24c;
+        }
+        
+        .period-btn[data-period="yearly"] {
+            animation: yearly-button-glow 2s infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Star Rating Styles */
+        .star-rating {
+            display: flex;
+            gap: 1px;
+            margin: 3px 0 8px 0;
+            justify-content: flex-start;
+            padding: 0;
+        }
+
+        .plan-name, .plan-price, .star-rating {
+            padding: 5px 15px;
+        }
+
+        .star-on, .star-off {
+            width: 12px;
+            height: 12px;
+            display: inline-block;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: starLoad 0.3s ease forwards;
+        }
+
+        .star-on:nth-child(1) { animation-delay: 0.1s; }
+        .star-on:nth-child(2) { animation-delay: 0.2s; }
+        .star-on:nth-child(3) { animation-delay: 0.3s; }
+        .star-on:nth-child(4) { animation-delay: 0.4s; }
+        .star-on:nth-child(5) { animation-delay: 0.5s; }
+
+        .star-off:nth-child(1) { animation-delay: 0.1s; }
+        .star-off:nth-child(2) { animation-delay: 0.2s; }
+        .star-off:nth-child(3) { animation-delay: 0.3s; }
+        .star-off:nth-child(4) { animation-delay: 0.4s; }
+        .star-off:nth-child(5) { animation-delay: 0.5s; }
+
+        .plan-option:hover .star-on,
+        .plan-option:hover .star-off {
+            animation: starPulse 1s infinite;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @keyframes starPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes starLoad {
+            from { 
+                opacity: 0;
+                transform: translateY(5px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .star-on {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23e8f24c' d='M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z'/%3E%3C/svg%3E");
+        }
+
+        .star-off {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23666666' d='M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z'/%3E%3C/svg%3E");
+        }
+
+        .star-on.active, .star-off.active {
+            transform: scale(1.2);
+            filter: brightness(1.2);
+        }
+
+        .star-on:hover {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        .total-cost {
+            color: #e8f24c;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .savings-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 480px) {
+            .savings-metrics {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .metric {
+                padding: 15px;
+            }
+
+            .metric-value {
+                font-size: 18px;
+            }
+
+            .metric-label {
+                font-size: 12px;
+            }
+        }
+
+        .metric {
+            background: rgba(42, 45, 54, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            color: #e8f24c;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #8A8A8A;
+            font-size: 14px;
+        }
+
+        /* Coupon Section Styles */
+        .coupon-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .coupon-card {
+            background-color: #2b2e37;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(232, 242, 76, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coupon-title {
+            color: #e8f24c;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        /* Price Comparison Styles */
+        .price-comparison {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+
+        .original-price {
+            color: #ff6b6b;
+            font-size: 1.1em;
+            text-decoration: line-through;
+            position: relative;
+        }
+
+        .discounted-price {
+            color: #4caf50;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .total-savings {
+            border-top: 1px dashed rgba(232, 242, 76, 0.3);
+            padding-top: 10px;
+            margin-top: 5px;
+        }
+
+        .savings-amount {
+            color: #e8f24c;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .coupon-code-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .coupon-code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 1.1em;
+            color: #e8f24c;
+            letter-spacing: 1px;
+            flex-grow: 1;
+        }
+
+        .copy-button {
+            background: #e8f24c;
+            color: #1a1c23;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-button:hover {
+            background: #f2f76c;
+            transform: translateY(-2px);
+        }
+
+        .copy-button.copied {
+            background: #4caf50;
+            color: white;
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .limited-time-badge {
+            position: absolute;
+            top: 20px;
+            right: -110px;
+            background: linear-gradient(90deg, #ff6b6b 0%, #ff6b6b 40%, #ff8a8a 50%, #ff6b6b 60%, #ff6b6b 100%);
+            background-size: 200% 100%;
+            animation: shine 3s linear infinite;
+            color: white;
+            padding: 12px 0;
+            font-size: 0.9em;
+            font-weight: bold;
+            transform: rotate(45deg);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            text-transform: uppercase;
+            width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .marquee-content {
+            display: flex;
+            animation: marquee 15s linear infinite;
+            white-space: nowrap;
+        }
+
+        .marquee-item {
+            flex-shrink: 0;
+            padding: 0 10px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
+
+        .coupon-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Countdown Timer Styles */
+        .coupon-countdown-container {
+            background-color: #2b2e37;
+            border-radius: 5px;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+        
+        .countdown-left-section {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 60%;
+        }
+        
+        .countdown-right-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38%;
+            border-left: 1px solid rgba(232, 242, 76, 0.3);
+            padding-left: 15px;
+        }
+        
+        .discounts-animation {
+            text-align: center;
+            width: 100%;
+        }
+        
+        .discounts-animation p {
+            margin: 0;
+            font-size: 16px;
+            color: #ffffff;
+        }
+        
+
+        
+        #calc-typewriter-text {
+            position: relative;
+            display: inline-block;
+            min-width: 5px;
+            color: #e8f24c;
+            font-weight: bold;
+        }
+        
+        #calc-typewriter-text::after {
+            content: '|';
+            position: absolute;
+            right: -5px;
+            color: #e8f24c;
+            animation: blink 0.7s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Windsurf-style glowing border effect */
+        .coupon-countdown-container::before {
+            content: '';
+            position: absolute;
+            inset: -2px; /* Extend glow slightly further */
+            background: linear-gradient(90deg, 
+                      transparent, 
+                      rgba(232, 242, 76, 0.2), 
+                      rgba(232, 242, 76, 0.8), 
+                      rgba(232, 242, 76, 0.2), 
+                      transparent);
+            z-index: -1;
+            animation: border-glow 4s ease-in-out infinite;
+            filter: blur(4px);
+        }
+        
+        .coupon-countdown-container::after {
+            content: '';
+            position: absolute;
+            inset: 1px; /* Maintain the inner background */
+            background: #2b2e37;
+            border-radius: 4px;
+            z-index: -1;
+        }
+        
+        @keyframes border-glow {
+            0%, 100% {
+                transform: translateX(-100%);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateX(100%);
+                opacity: 1;
+            }
+        }
+        
+        .countdown-animation {
+            width: auto;
+            height: 55px;
+            margin-right: 15px;
+            position: relative;
+            background-color: transparent;
+            border: none;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .countdown-video {
+            width: 55px;
+            height: 55px;
+            display: block;
+            border-radius: 0;
+            filter: brightness(1.5) contrast(1.1) sepia(1) hue-rotate(8deg) saturate(5);
+            /* This filter combination helps match the video color to #e8f24c */
+        }
+
+        .offer-expires {
+            background-color: #e8f24c;
+            color: #1a1c23;
+            font-size: 0.75em;
+            font-weight: bold;
+            text-align: left;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .countdown-timer-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .coupon-countdown-timer {
+            display: flex;
+            justify-content: flex-start;
+            gap: 30px;
+            flex-wrap: nowrap;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .countdown-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 40px;
+        }
+
+        .countdown-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #e8f24c;
+        }
+
+        .countdown-label {
+            font-size: 0.7em;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+        }
+
+        .guide-box {
+            margin-top: 30px;
+            background: rgba(232, 242, 76, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .guide-box h4 {
+            color: #e8f24c;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+        
+        .discount-guide-title {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(232, 242, 76, 0.3);
+        }
+
+        .guide-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .guide-steps li {
+            color: #8A8A8A;
+            font-size: 13px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .guide-steps li:before {
+            content: '•';
+            color: #e8f24c;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .plan-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .plan-option {
+            background: rgba(42, 45, 54, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .plan-label {
+            display: inline-block;
+            background: #e8f24c;
+            color: #1a1c23;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            animation: badge-pulse 2s infinite;
+        }
+        
+        @keyframes badge-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(232, 242, 76, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(232, 242, 76, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(232, 242, 76, 0); }
+        }
+        
+        @keyframes yearly-button-glow {
+            0% { box-shadow: 0 0 5px 2px rgba(232, 242, 76, 0.3); }
+            50% { box-shadow: 0 0 15px 5px rgba(232, 242, 76, 0.7); }
+            100% { box-shadow: 0 0 5px 2px rgba(232, 242, 76, 0.3); }
+        }
+
+        .plan-option:hover {
+            background: #333640;
+        }
+
+        .plan-option.selected {
+            background: rgba(232, 242, 76, 0.1);
+            border-color: #e8f24c;
+        }
+
+        .plan-name {
+            color: #e8f24c;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .plan-price {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .promo-text {
+            font-size: 12px;
+            color: #8A8A8A;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: none;
+        }
+
+        .promo-text.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-modal">
+        <button class="close-button">×</button>
+        <div class="calculator-header">
+            <img src="assets/Artboard 17 copy 9.svg" alt="Logo" class="calculator-logo">
+            <h1 class="calculator-title">Calculate Your Savings</h1>
+        </div>
+        
+        <div class="calculator-grid">
+            <div class="calculator-section current-costs">
+                <h3 class="section-title">Your Current Costs</h3>
+                <div class="calculator-input">
+                    <label for="bookingCost">Booking System ($)</label>
+                    <input type="number" id="bookingCost" value="49" min="0" step="0.01">
+                </div>
+                <div class="calculator-input">
+                    <label for="websiteCost">Website Builder ($)</label>
+                    <input type="number" id="websiteCost" value="29" min="0" step="0.01">
+                </div>
+                <div class="calculator-input">
+                    <label for="loyaltyCost">Loyalty & Coupons ($)</label>
+                    <input type="number" id="loyaltyCost" value="39" min="0" step="0.01">
+                </div>
+                <div class="calculator-input">
+                    <label for="deliveryCost">Delivery Integration ($)</label>
+                    <input type="number" id="deliveryCost" value="59" min="0" step="0.01">
+                </div>
+
+                <div class="total-cost">
+                    <span class="total-cost-label">Total Monthly Cost: </span>
+                    <span id="totalCurrentCost">$0.00</span>
+                </div>
+
+                <div class="savings-metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="monthlySavings">$0.00</div>
+                        <div class="metric-label">Monthly Savings</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="yearlySavings">$0.00</div>
+                        <div class="metric-label">Yearly Savings</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value"><span id="costReduction">0</span>%</div>
+                        <div class="metric-label">Cost Reduction</div>
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <h4 class="guide-title" data-translate="guideTitle">How to Calculate Your Benefits</h4>
+                    <ul class="guide-steps">
+                        <li data-translate="guideStep1">Enter your current monthly costs for each service you're using</li>
+                        <li data-translate="guideStep2">Select your preferred currency (USD, EUR, or SEK)</li>
+                        <li data-translate="guideStep3">Choose a billing period - longer periods offer greater savings</li>
+                        <li data-translate="guideStep4">Pick a plan that matches your needs</li>
+                        <li data-translate="guideStep5">View your monthly and yearly savings, plus total cost reduction</li>
+                    </ul>
+                    
+                    <h4 class="guide-title discount-guide-title" data-translate="discountGuideTitle">How to Use Your 50% Extra Discount</h4>
+                    <ul class="guide-steps">
+                        <li data-translate="discountStep1">Select your preferred plan and billing period above</li>
+                        <li data-translate="discountStep2">Copy the discount code shown in the coupon card</li>
+                        <li data-translate="discountStep3">During checkout on Fooodis.com, paste your code in the coupon field</li>
+                        <li data-translate="discountStep4">Your 50% discount will be automatically applied to your order</li>
+                        <li data-translate="discountStep5">Act quickly! This offer is only available for a limited time</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="calculator-section options-section">
+                <h3 class="section-title currency-title">Select Currency</h3>
+                <div class="currency-buttons">
+                    <button onclick="changeCurrency('USD')" class="currency-btn active" data-currency="USD"><span class="flag-icon flag-icon-us"></span> $ USD</button>
+                    <button onclick="changeCurrency('EUR')" class="currency-btn" data-currency="EUR"><span class="flag-icon flag-icon-eu"></span> € EUR</button>
+                    <button onclick="changeCurrency('SEK')" class="currency-btn" data-currency="SEK"><span class="flag-icon flag-icon-se"></span> kr SEK</button>
+                </div>
+
+                <h3 class="section-title period-title">Select Period</h3>
+                <div class="period-buttons">
+                    <button onclick="selectPeriod('monthly')" class="period-btn active" data-period="monthly">Monthly</button>
+                    <button onclick="selectPeriod('threeMonth')" class="period-btn" data-period="threeMonth">3 Months</button>
+                    <button onclick="selectPeriod('sixMonth')" class="period-btn" data-period="sixMonth">
+                        <div class="period-label" data-translate="mostPopular">Most Popular</div>
+                        6 Months
+                    </button>
+                    <button onclick="selectPeriod('yearly')" class="period-btn" data-period="yearly">
+                        <div class="period-label" data-translate="bestValue">Best Value</div>
+                        Yearly
+                    </button>
+                </div>
+
+                <h3 class="section-title plan-title">Select Plan</h3>
+                <div class="plan-options">
+                    <div class="plan-option" onclick="selectPlan('basic')" data-plan="basic">
+                        <div class="plan-name">Basic</div>
+                        <div class="star-rating">
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-off"></span>
+                            <span class="star-off"></span>
+                            <span class="star-off"></span>
+                        </div>
+                        <div class="plan-price" id="basicPrice">19.99</div>
+                        <div class="promo-text monthly" data-promo="monthlyPromo"></div>
+                        <div class="promo-text threeMonth" data-promo="threeMonthPromo"></div>
+                        <div class="promo-text sixMonth" data-promo="sixMonthPromo"></div>
+                        <div class="promo-text yearly" data-promo="yearlyPromo"></div>
+                    </div>
+                    <div class="plan-option" onclick="selectPlan('standard')" data-plan="standard">
+                        <div class="plan-name">Standard</div>
+                        <div class="star-rating">
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-off"></span>
+                            <span class="star-off"></span>
+                        </div>
+                        <div class="plan-price" id="standardPrice">39.99</div>
+                        <div class="promo-text monthly" data-promo="monthlyPromo"></div>
+                        <div class="promo-text threeMonth" data-promo="threeMonthPromo"></div>
+                        <div class="promo-text sixMonth" data-promo="sixMonthPromo"></div>
+                        <div class="promo-text yearly" data-promo="yearlyPromo"></div>
+                    </div>
+                    <div class="plan-option" onclick="selectPlan('professional')" data-plan="professional">
+                        <div class="plan-label">Most Popular</div>
+                        <div class="plan-name">Professional</div>
+                        <div class="star-rating">
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-off"></span>
+                        </div>
+                        <div class="plan-price" id="professionalPrice">59.99</div>
+                        <div class="promo-text monthly" data-promo="monthlyPromo"></div>
+                        <div class="promo-text threeMonth" data-promo="threeMonthPromo"></div>
+                        <div class="promo-text sixMonth" data-promo="sixMonthPromo"></div>
+                        <div class="promo-text yearly" data-promo="yearlyPromo"></div>
+                    </div>
+                    <div class="plan-option" onclick="selectPlan('elite')" data-plan="elite">
+                        <div class="plan-label">Best Value</div>
+                        <div class="plan-name">Elite</div>
+                        <div class="star-rating">
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                            <span class="star-on"></span>
+                        </div>
+                        <div class="plan-price" id="elitePrice">69.99</div>
+                        <div class="promo-text monthly" data-promo="monthlyPromo"></div>
+                        <div class="promo-text threeMonth" data-promo="threeMonthPromo"></div>
+                        <div class="promo-text sixMonth" data-promo="sixMonthPromo"></div>
+                        <div class="promo-text yearly" data-promo="yearlyPromo"></div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="https://demo.fooodis.com/login" target="_blank" rel="noopener noreferrer" class="action-button demo-button" data-translate="tryDemo">Try Demo</a>
+                    <a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener noreferrer" class="action-button register-button" data-translate="registerNow">Register Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-tips-container">
+            <div class="features-section">
+                <div class="features-scroll">
+                    <div class="features-list" id="featuresList">
+                        <!-- Features will be populated dynamically -->
+                    </div>
+                </div>
+                <div class="fade-overlay top"></div>
+                <div class="fade-overlay bottom"></div>
+            </div>
+            <div class="tips-section">
+                <h3 class="section-header" data-translate="planRecommendations">Plan Recommendations</h3>
+                <div class="tips-content" id="tipsContent">
+                    <!-- Tips will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- New Coupon Code Section -->
+        <div class="coupon-section">
+            <h3 class="section-header">Special Discount</h3>
+            <div class="coupon-card" id="couponCard">
+                <div class="coupon-title" id="couponTitle">Select a plan to see your discount</div>
+                
+                <div class="price-comparison">
+                    <div class="price-item">
+                        <div class="price-label" id="regularPriceLabel">Regular Price:</div>
+                        <div class="original-price" id="originalPrice"></div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-label" id="discountedPriceLabel">Discounted Price:</div>
+                        <div class="discounted-price" id="discountedPrice"></div>
+                    </div>
+                    <div class="price-item total-savings">
+                        <div class="price-label" id="youSaveLabel">You Save:</div>
+                        <div class="savings-amount" id="savingsAmount"></div>
+                    </div>
+                </div>
+                
+                <div class="coupon-code-container">
+                    <div class="coupon-code" id="couponCode"></div>
+                    <button class="copy-button" id="copyButton">Copy</button>
+                </div>
+                <div class="limited-time-badge" id="limitedTimeBadge">
+                    <div class="marquee">
+                        <div class="marquee-content" id="marqueeContent">
+                            <div class="marquee-item">Limited Time Offer! ★</div>
+                            <div class="marquee-item">Limited Time Offer! ★</div>
+                            <div class="marquee-item">Limited Time Offer! ★</div>
+                            <div class="marquee-item">Limited Time Offer! ★</div>
+                            <div class="marquee-item">Limited Time Offer! ★</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="coupon-description" id="couponDescription">Apply this code during checkout for a 50% discount!</div>
+                
+                <!-- Countdown Timer -->
+                <div class="offer-expires" id="offerExpiresText">Offer expires in:</div>
+                <div class="coupon-countdown-container" id="countdownContainer">
+                    <div class="countdown-left-section">
+                        <div class="countdown-animation">
+                            <video autoplay loop muted class="countdown-video">
+                                <source src="assets/countdown-animation.webm" type="video/webm">
+                            </video>
+                        </div>
+                        <div class="countdown-timer-wrapper">
+                            <div class="coupon-countdown-timer">
+                                <div class="countdown-box">
+                                    <div class="countdown-value" id="countdownDays">7</div>
+                                    <div class="countdown-label" id="daysLabel">days</div>
+                                </div>
+                                <div class="countdown-box">
+                                    <div class="countdown-value" id="countdownHours">11</div>
+                                    <div class="countdown-label" id="hoursLabel">hours</div>
+                                </div>
+                                <div class="countdown-box">
+                                    <div class="countdown-value" id="countdownMinutes">02</div>
+                                    <div class="countdown-label" id="minutesLabel">mins</div>
+                                </div>
+                                <div class="countdown-box">
+                                    <div class="countdown-value" id="countdownSeconds">18</div>
+                                    <div class="countdown-label" id="secondsLabel">secs</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="countdown-right-section">
+                        <div class="discounts-animation">
+                            <p>
+                                <span>Save up to </span><span id="calc-typewriter-text"></span><span> plans!</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Plan features and tips data
+    const PLAN_DATA = {
+        basic: {
+            features: [
+                { 
+                    title: 'Menu Items Limit', 
+                    description: 'Up to 20 items in your digital menu',
+                    titleSv: 'Menyobjektsgräns',
+                    descriptionSv: 'Upp till 20 objekt i din digitala meny'
+                },
+                { 
+                    title: 'Basic Analytics', 
+                    description: 'View basic visitor statistics and menu performance',
+                    titleSv: 'Grundläggande analys',
+                    descriptionSv: 'Se grundläggande besöksstatistik och menyprestanda'
+                },
+                { 
+                    title: 'Mobile Responsive', 
+                    description: 'Your menu works perfectly on all devices',
+                    titleSv: 'Mobilanpassad',
+                    descriptionSv: 'Din meny fungerar perfekt på alla enheter'
+                },
+                { 
+                    title: 'QR Code Menu', 
+                    description: 'Generate QR codes for contactless menu access',
+                    titleSv: 'QR-kodmeny',
+                    descriptionSv: 'Generera QR-koder för kontaktlös menyåtkomst'
+                }
+            ],
+            tips: {
+                title: 'Perfect For',
+                description: 'Small cafes, food trucks, and startups looking for an essential digital menu solution. Ideal for businesses with a focused, limited menu offering.',
+                recommendation: 'Choose Basic if you\'re just starting out or have a small, focused menu with minimal customization needs.',
+                titleSv: 'Perfekt för',
+                descriptionSv: 'Små kaféer, food trucks och nystartade företag som söker en grundläggande digital menylösning. Idealisk för verksamheter med ett fokuserat, begränsat menyutbud.',
+                recommendationSv: 'Välj Basic om du precis har börjat eller har en liten, fokuserad meny med minimala anpassningsbehov.'
+            }
+        },
+        standard: {
+            features: [
+                { 
+                    title: 'Menu Items Limit', 
+                    description: 'Up to 40 items with categories',
+                    titleSv: 'Menyobjektsgräns',
+                    descriptionSv: 'Upp till 40 objekt med kategorier'
+                },
+                { 
+                    title: 'Advanced Analytics', 
+                    description: 'Detailed insights into menu performance',
+                    titleSv: 'Avancerad analys',
+                    descriptionSv: 'Detaljerad insikt i menyprestanda'
+                },
+                { 
+                    title: 'Mobile Responsive', 
+                    description: 'Your menu works perfectly on all devices',
+                    titleSv: 'Mobilanpassad',
+                    descriptionSv: 'Din meny fungerar perfekt på alla enheter'
+                },
+                { 
+                    title: 'QR Code Menu', 
+                    description: 'Generate QR codes for contactless menu access',
+                    titleSv: 'QR-kodmeny',
+                    descriptionSv: 'Generera QR-koder för kontaktlös menyåtkomst'
+                },
+                { 
+                    title: 'Daily Specials', 
+                    description: 'Easily update and highlight daily specials',
+                    titleSv: 'Dagens special',
+                    descriptionSv: 'Uppdatera och markera dagens special enkelt'
+                }
+            ],
+            tips: {
+                title: 'Perfect For',
+                description: 'Growing restaurants and cafes that need more flexibility and features. Ideal for businesses with a medium-sized menu.',
+                recommendation: 'Choose Standard if you want more menu items and daily specials management.',
+                titleSv: 'Perfekt för',
+                descriptionSv: 'Växande restauranger och kaféer som behöver mer flexibilitet och funktioner. Idealisk för verksamheter med en mellanstor meny.',
+                recommendationSv: 'Välj Standard om du vill ha fler menyobjekt och hantering av dagens special.'
+            }
+        },
+        professional: {
+            features: [
+                { 
+                    title: 'Menu Items Limit', 
+                    description: 'Up to 60 items with categories',
+                    titleSv: 'Menyobjektsgräns',
+                    descriptionSv: 'Upp till 60 objekt med kategorier'
+                },
+                { 
+                    title: 'Online Ordering', 
+                    description: 'Accept orders directly through your digital menu',
+                    titleSv: 'Onlinebeställning',
+                    descriptionSv: 'Ta emot beställningar direkt genom din digitala meny'
+                },
+                { 
+                    title: 'Daily Menu', 
+                    description: 'Create and update special menus easily',
+                    titleSv: 'Daglig meny',
+                    descriptionSv: 'Skapa och uppdatera specialmenyer enkelt'
+                },
+                { 
+                    title: 'Advanced Analytics', 
+                    description: 'Detailed insights into ordering patterns',
+                    titleSv: 'Avancerad analys',
+                    descriptionSv: 'Detaljerad insikt i beställningsmönster'
+                },
+                { 
+                    title: 'Multiple Languages', 
+                    description: 'Present your menu in different languages',
+                    titleSv: 'Flera språk',
+                    descriptionSv: 'Presentera din meny på olika språk'
+                }
+            ],
+            tips: {
+                title: 'Perfect For',
+                description: 'Growing restaurants, cafes, and bars that need more advanced features. Ideal for businesses with a diverse menu and regular updates.',
+                recommendation: 'Choose Professional if you need online ordering capabilities and want to manage a larger menu with daily specials.',
+                titleSv: 'Perfekt för',
+                descriptionSv: 'Växande restauranger, kaféer och barer som behöver mer avancerade funktioner. Idealisk för verksamheter med en varierad meny och regelbundna uppdateringar.',
+                recommendationSv: 'Välj Professional om du behöver onlinebeställning och vill hantera en större meny med dagens special.'
+            }
+        },
+        elite: {
+            features: [
+                { 
+                    title: 'Unlimited Menu Items', 
+                    description: 'No limits on menu size or categories',
+                    titleSv: 'Obegränsade menyobjekt',
+                    descriptionSv: 'Inga begränsningar på menystorlek eller kategorier'
+                },
+                { 
+                    title: 'Poscloud Integration', 
+                    description: 'Full POS system integration',
+                    titleSv: 'Poscloud-integration',
+                    descriptionSv: 'Full integration med kassasystem'
+                },
+                { 
+                    title: 'PDF-Invoice', 
+                    description: 'Automated invoice generation',
+                    titleSv: 'PDF-faktura',
+                    descriptionSv: 'Automatisk fakturagenerering'
+                },
+                { 
+                    title: 'API Access', 
+                    description: 'Connect with your existing systems',
+                    titleSv: 'API-åtkomst',
+                    descriptionSv: 'Anslut till dina befintliga system'
+                },
+                { 
+                    title: 'Custom Development', 
+                    description: 'Get custom features built for your needs',
+                    titleSv: 'Anpassad utveckling',
+                    descriptionSv: 'Få skräddarsydda funktioner byggda för dina behov'
+                },
+                { 
+                    title: 'Priority Support', 
+                    description: '24/7 dedicated customer support',
+                    titleSv: 'Prioriterad support',
+                    descriptionSv: 'Dedikerad kundsupport dygnet runt'
+                }
+            ],
+            tips: {
+                title: 'Perfect For',
+                description: 'Large restaurants, chains, and enterprise businesses needing full integration and customization capabilities.',
+                recommendation: 'Choose Elite for complete control, integration capabilities, and unlimited menu management.',
+                titleSv: 'Perfekt för',
+                descriptionSv: 'Stora restauranger, kedjor och företag som behöver full integration och anpassningsmöjligheter.',
+                recommendationSv: 'Välj Elite för fullständig kontroll, integrationsmöjligheter och obegränsad menyhantering.'
+            }
+        }
+    };
+
+    function updateFeaturesAndTips(plan) {
+        const planData = PLAN_DATA[plan.toLowerCase()];
+        if (!planData) return;
+
+        // Get translations
+        const translations = TRANSLATIONS[currentState.language];
+
+        // Update section headers
+        document.querySelector('.tips-section .section-header').textContent = translations.planRecommendations;
+
+        // Update features list
+        const featuresList = document.getElementById('featuresList');
+        featuresList.innerHTML = '';
+        
+        // Create two copies of features for smooth infinite scroll
+        const features = [...planData.features, ...planData.features];
+        features.forEach(feature => {
+            const featureElement = document.createElement('div');
+            featureElement.className = 'feature-item';
+            featureElement.innerHTML = `
+                <div class="feature-title">${currentState.language === 'sv' ? feature.titleSv || feature.title : feature.title}</div>
+                <div class="feature-description">${currentState.language === 'sv' ? feature.descriptionSv || feature.description : feature.description}</div>
+            `;
+            featuresList.appendChild(featureElement);
+        });
+
+        // Update tips content
+        const tipsContent = document.getElementById('tipsContent');
+        tipsContent.innerHTML = `
+            <h4>${currentState.language === 'sv' ? planData.tips.titleSv || planData.tips.title : planData.tips.title}</h4>
+            <p>${currentState.language === 'sv' ? planData.tips.descriptionSv || planData.tips.description : planData.tips.description}</p>
+            <p><strong>${currentState.language === 'sv' ? planData.tips.recommendationSv || planData.tips.recommendation : planData.tips.recommendation}</strong></p>
+        `;
+    }
+
+    // Pricing data structure
+    const PRICING_DATA = {
+        USD: {
+            basic: {
+                monthly: 19.99,
+                threeMonth: 53.99,
+                sixMonth: 100.99,
+                yearly: 189.99
+            },
+            standard: {
+                monthly: 39.99,
+                threeMonth: 107.99,
+                sixMonth: 185.99,
+                yearly: 379.99
+            },
+            professional: {
+                monthly: 59.99,
+                threeMonth: 161.99,
+                sixMonth: 278.99,
+                yearly: 569.99
+            },
+            elite: {
+                monthly: 69.99,
+                threeMonth: 189.99,
+                sixMonth: 325.99,
+                yearly: 669.99
+            }
+        },
+        SEK: {
+            basic: {
+                monthly: 199.99,
+                threeMonth: 539.99,
+                sixMonth: 1009.99,
+                yearly: 1899.99
+            },
+            standard: {
+                monthly: 399.99,
+                threeMonth: 1079.99,
+                sixMonth: 1859.99,
+                yearly: 3799.99
+            },
+            professional: {
+                monthly: 599.99,
+                threeMonth: 1619.99,
+                sixMonth: 2789.99,
+                yearly: 5699.99
+            },
+            elite: {
+                monthly: 699.99,
+                threeMonth: 1899.99,
+                sixMonth: 3259.99,
+                yearly: 6699.99
+            }
+        },
+        EUR: {
+            basic: {
+                monthly: 17.99,
+                threeMonth: 48.99,
+                sixMonth: 90.99,
+                yearly: 170.99
+            },
+            standard: {
+                monthly: 35.99,
+                threeMonth: 97.99,
+                sixMonth: 167.99,
+                yearly: 341.99
+            },
+            professional: {
+                monthly: 53.99,
+                threeMonth: 145.99,
+                sixMonth: 251.99,
+                yearly: 512.99
+            },
+            elite: {
+                monthly: 62.99,
+                threeMonth: 170.99,
+                sixMonth: 293.99,
+                yearly: 602.99
+            }
+        }
+    };
+
+    const TRANSLATIONS = {
+        en: {
+            planRecommendations: 'Plan Recommendations',
+            monthlyLabel: 'Monthly',
+            threeMonthLabel: '3 Months',
+            sixMonthLabel: '6 Months',
+            yearlyLabel: 'Yearly',
+            monthlySavings: 'Monthly Savings',
+            yearlySavings: 'Yearly Savings',
+            costReduction: 'Cost Reduction',
+            totalCost: 'Total Monthly Cost:',
+            bookingSystem: 'Booking System',
+            websiteBuilder: 'Website Builder',
+            loyaltyCoupons: 'Loyalty & Coupons',
+            deliveryIntegration: 'Delivery Integration',
+            selectCurrency: 'Select Currency',
+            selectPeriod: 'Select Period',
+            selectPlan: 'Select Plan',
+            calculateSavings: 'Calculate Your Savings',
+            currentCosts: 'Your Current Costs',
+            monthlyPromo: '50% off on plans (Limited Time) + Get 15 days free trial',
+            threeMonthPromo: '50% off on plans (Limited Time) + Get 1 month free and save an additional 10%',
+            sixMonthPromo: '50% off on plans (Limited Time) + Get 2 months free and save an additional 15%',
+            yearlyPromo: '50% off on plans (Limited Time) + Get 3 months free and save an additional 20% on yearly selection',
+            guideTitle: 'How to Calculate Your Benefits',
+            guideStep1: 'Enter your current monthly costs for each service you\'re using',
+            guideStep2: 'Select your preferred currency (USD, EUR, or SEK)',
+            guideStep3: 'Choose a billing period - longer periods offer greater savings',
+            guideStep4: 'Pick a plan that matches your needs',
+            guideStep5: 'View your monthly and yearly savings, plus total cost reduction',
+            discountGuideTitle: 'How to Use Your 50% Extra Discount',
+            discountStep1: 'Select your preferred plan and billing period above',
+            discountStep2: 'Copy the discount code shown in the coupon card',
+            discountStep3: 'During checkout on Fooodis.com, paste your code in the coupon field',
+            discountStep4: 'Your 50% discount will be automatically applied to your order',
+            discountStep5: 'Act quickly! This offer is only available for a limited time',
+            tryDemo: 'Try Demo',
+            registerNow: 'Register Now'
+        },
+        sv: {
+            monthlyLabel: 'Månadsvis',
+            threeMonthLabel: '3 Månader',
+            sixMonthLabel: '6 Månader',
+            yearlyLabel: 'Årlig',
+            monthlySavings: 'Månadsbesparingar',
+            yearlySavings: 'Årliga besparingar',
+            costReduction: 'Kostnadsminskning',
+            totalCost: 'Total månadskostnad:',
+            bookingSystem: 'Bokningssystem',
+            websiteBuilder: 'Webbplatsbyggare',
+            loyaltyCoupons: 'Lojalitet och kuponger',
+            deliveryIntegration: 'Leveransintegration',
+            selectCurrency: 'Välj valuta',
+            selectPeriod: 'Välj period',
+            selectPlan: 'Välj plan',
+            calculateSavings: 'Beräkna dina besparingar',
+            currentCosts: 'Dina nuvarande kostnader',
+            monthlyPromo: '50% rabatt på planer (Begränsad tid) + Få 15 dagars gratis provperiod',
+            threeMonthPromo: '50% rabatt på planer (Begränsad tid) + Få 1 månad gratis och spara ytterligare 10%',
+            sixMonthPromo: '50% rabatt på planer (Begränsad tid) + Få 2 månader gratis och spara ytterligare 15%',
+            yearlyPromo: '50% rabatt på planer (Begränsad tid) + Få 3 månader gratis och spara ytterligare 20%',
+            guideTitle: 'Hur du beräknar dina fördelar',
+            guideStep1: 'Ange dina nuvarande månadskostnader för varje tjänst du använder',
+            tryDemo: 'Prova Demo',
+            registerNow: 'Registrera dig nu',
+            guideStep2: 'Välj din önskade valuta (USD, EUR eller SEK)',
+            guideStep3: 'Välj en faktureringsperiod - längre perioder ger större besparingar',
+            guideStep4: 'Välj en plan som matchar dina behov',
+            guideStep5: 'Se dina månads- och årsbesparingar plus total kostnadsminskning',
+            discountGuideTitle: 'Hur du använder din 50% extra rabatt',
+            discountStep1: 'Välj din önskade plan och faktureringsperiod ovan',
+            discountStep2: 'Kopiera rabattkoden som visas i kupongkortet',
+            discountStep3: 'Under kassan på Fooodis.com, klistra in din kod i kupongfältet',
+            discountStep4: 'Din 50% rabatt kommer automatiskt att appliceras på din beställning',
+            discountStep5: 'Agera snabbt! Detta erbjudande är endast tillgängligt under en begränsad tid',
+            planRecommendations: 'Planrekommendationer'
+        }
+    };
+
+    // Current state
+    let currentState = {
+        period: 'monthly',
+        plan: 'professional',
+        currency: 'USD'
+    };
+
+    // Initialize input handlers
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('input', calculateSavings);
+    });
+
+    function selectPeriod(period) {
+        currentState.period = period;
+        
+        // Update active state of period buttons
+        document.querySelectorAll('.period-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-period') === period) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Update promo text visibility
+        document.querySelectorAll('.promo-text').forEach(promo => {
+            promo.classList.remove('active');
+        });
+        document.querySelectorAll(`.promo-text.${period}`).forEach(promo => {
+            promo.classList.add('active');
+        });
+
+        updatePlanPrices();
+        calculateSavings();
+    }
+
+    function changeCurrency(currency) {
+        currentState.currency = currency;
+        
+        // Update active state of currency buttons
+        document.querySelectorAll('.currency-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.includes(currency)) {
+                btn.classList.add('active');
+            }
+        });
+
+        const currencySymbol = getCurrencySymbol(currency);
+
+        // Update currency symbols in input labels and savings metrics
+        document.querySelectorAll('.currency-symbol').forEach(symbol => {
+            symbol.textContent = currencySymbol;
+        });
+        
+        // Update default values for SEK by adding a 0 to each value
+        if (currency === 'SEK') {
+            // Only update if the values are the default USD values
+            if (document.getElementById('bookingCost').value === '49') {
+                document.getElementById('bookingCost').value = '490';
+            }
+            if (document.getElementById('websiteCost').value === '29') {
+                document.getElementById('websiteCost').value = '290';
+            }
+            if (document.getElementById('loyaltyCost').value === '39') {
+                document.getElementById('loyaltyCost').value = '390';
+            }
+            if (document.getElementById('deliveryCost').value === '59') {
+                document.getElementById('deliveryCost').value = '590';
+            }
+        } else if (currency === 'USD') {
+            // Reset to USD defaults if coming from SEK
+            if (document.getElementById('bookingCost').value === '490') {
+                document.getElementById('bookingCost').value = '49';
+            }
+            if (document.getElementById('websiteCost').value === '290') {
+                document.getElementById('websiteCost').value = '29';
+            }
+            if (document.getElementById('loyaltyCost').value === '390') {
+                document.getElementById('loyaltyCost').value = '39';
+            }
+            if (document.getElementById('deliveryCost').value === '590') {
+                document.getElementById('deliveryCost').value = '59';
+            }
+        }
+
+        // Update language based on currency
+        currentState.language = currency === 'SEK' ? 'sv' : 'en';
+        updateLanguage();
+
+        updatePlanPrices();
+        calculateSavings();
+    }
+
+    function selectPlan(plan) {
+        currentState.plan = plan;
+        
+        // Update active state of plan options
+        document.querySelectorAll('.plan-option').forEach(option => {
+            option.classList.toggle('selected', option.getAttribute('data-plan') === plan);
+        });
+
+        // Update features and tips
+        updateFeaturesAndTips(plan);
+        calculateSavings();
+    }
+
+    function updatePlanPrices() {
+        const plans = ['basic', 'standard', 'professional', 'elite'];
+        const currencySymbol = getCurrencySymbol(currentState.currency);
+        
+        plans.forEach(plan => {
+            const basePrice = PRICING_DATA[currentState.currency][plan][currentState.period];
+            let finalPrice = basePrice;
+
+            // Apply period discounts
+            if (currentState.period === 'threeMonth') {
+                finalPrice = (basePrice * 0.9) / 3; // 10% discount
+            } else if (currentState.period === 'sixMonth') {
+                finalPrice = (basePrice * 0.85) / 6; // 15% discount
+            } else if (currentState.period === 'yearly') {
+                finalPrice = (basePrice * 0.8) / 12; // 20% discount
+            }
+
+            // Update price display
+            const priceElement = document.getElementById(`${plan}Price`);
+            if (priceElement) {
+                priceElement.textContent = `${currencySymbol}${finalPrice.toFixed(2)}/mo`;
+            }
+        });
+    }
+
+    function getCurrencySymbol(currency) {
+        switch (currency) {
+            case 'USD': return '$';
+            case 'EUR': return '€';
+            case 'SEK': return 'kr';
+            default: return '$';
+        }
+    }
+
+    function calculateSavings() {
+        // Get current costs
+        const bookingCost = parseFloat(document.getElementById('bookingCost').value) || 0;
+        const websiteCost = parseFloat(document.getElementById('websiteCost').value) || 0;
+        const loyaltyCost = parseFloat(document.getElementById('loyaltyCost').value) || 0;
+        const deliveryCost = parseFloat(document.getElementById('deliveryCost').value) || 0;
+        
+        const totalCurrentCost = bookingCost + websiteCost + loyaltyCost + deliveryCost;
+        const basePrice = PRICING_DATA[currentState.currency][currentState.plan][currentState.period];
+        
+        // Calculate monthly platform cost with period discounts
+        let monthlyPlatformCost;
+        if (currentState.period === 'threeMonth') {
+            monthlyPlatformCost = (basePrice * 0.9) / 3;
+        } else if (currentState.period === 'sixMonth') {
+            monthlyPlatformCost = (basePrice * 0.85) / 6;
+        } else if (currentState.period === 'yearly') {
+            monthlyPlatformCost = (basePrice * 0.8) / 12;
+        } else {
+            monthlyPlatformCost = basePrice; // monthly period
+        }
+
+        const monthlySavings = totalCurrentCost - monthlyPlatformCost;
+        const yearlySavings = monthlySavings * 12;
+        const costReduction = totalCurrentCost > 0 ? (monthlySavings / totalCurrentCost) * 100 : 0;
+
+        const currencySymbol = getCurrencySymbol(currentState.currency);
+
+        // Update the display
+        document.getElementById('totalCurrentCost').textContent = `${currencySymbol}${totalCurrentCost.toFixed(2)}`;
+        document.getElementById('monthlySavings').textContent = `${currencySymbol}${monthlySavings.toFixed(2)}`;
+        document.getElementById('yearlySavings').textContent = `${currencySymbol}${yearlySavings.toFixed(2)}`;
+        document.getElementById('costReduction').textContent = Math.round(costReduction);
+    }
+
+    function updateLanguage() {
+        const translations = TRANSLATIONS[currentState.language];
+
+        // Update all text content
+        document.querySelector('.calculator-title').textContent = translations.calculateSavings;
+        document.querySelector('.current-costs .section-title').textContent = translations.currentCosts;
+        document.querySelector('.currency-title').textContent = translations.selectCurrency;
+        document.querySelector('.period-title').textContent = translations.selectPeriod;
+        document.querySelector('.plan-title').textContent = translations.selectPlan;
+
+        // Update input labels
+        document.querySelector('label[for="bookingCost"]').textContent = translations.bookingSystem + ` (${getCurrencySymbol(currentState.currency)})`;
+        document.querySelector('label[for="websiteCost"]').textContent = translations.websiteBuilder + ` (${getCurrencySymbol(currentState.currency)})`;
+        document.querySelector('label[for="loyaltyCost"]').textContent = translations.loyaltyCoupons + ` (${getCurrencySymbol(currentState.currency)})`;
+        document.querySelector('label[for="deliveryCost"]').textContent = translations.deliveryIntegration + ` (${getCurrencySymbol(currentState.currency)})`;
+
+        // Update period buttons
+        document.querySelectorAll('.period-btn').forEach((btn, index) => {
+            const period = ['monthly', 'threeMonth', 'sixMonth', 'yearly'][index];
+            btn.textContent = translations[period + 'Label'];
+        });
+
+        // Update metric labels
+        document.querySelectorAll('.metric-label').forEach((label, index) => {
+            const keys = ['monthlySavings', 'yearlySavings', 'costReduction'];
+            label.textContent = translations[keys[index]];
+        });
+
+        // Update action buttons
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (translations[key]) {
+                element.textContent = translations[key];
+            }
+        });
+
+        // Update total cost label
+        document.querySelector('.total-cost-label').textContent = translations.totalCost;
+
+        // Update promo text
+        document.querySelectorAll('.promo-text').forEach(promo => {
+            const promoKey = promo.getAttribute('data-promo');
+            if (promoKey) {
+                promo.textContent = translations[promoKey];
+            }
+        });
+
+        // Update guide text
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const translateKey = element.getAttribute('data-translate');
+            if (translateKey) {
+                element.textContent = translations[translateKey];
+            }
+        });
+    }
+
+    function closeCalculator() {
+        document.getElementById('savingsCalculator').style.display = 'none';
+    }
+
+    // Close button functionality
+    document.querySelector('.close-button').addEventListener('click', function() {
+        // In a real implementation, this would close the modal
+        console.log('Close button clicked');
+    });
+
+    function getCurrencySymbol(currency) {
+        switch(currency) {
+            case 'USD': return '$';
+            case 'EUR': return '€';
+            case 'SEK': return 'kr ';
+            default: return '$';
+        }
+    }
+
+    function calculateSavings() {
+    // Get current costs
+    const bookingCost = parseFloat(document.getElementById('bookingCost').value) || 0;
+    const websiteCost = parseFloat(document.getElementById('websiteCost').value) || 0;
+    const loyaltyCost = parseFloat(document.getElementById('loyaltyCost').value) || 0;
+    const deliveryCost = parseFloat(document.getElementById('deliveryCost').value) || 0;
+    
+    const totalCurrentCost = bookingCost + websiteCost + loyaltyCost + deliveryCost;
+    const basePrice = PRICING_DATA[currentState.currency][currentState.plan][currentState.period];
+    
+    // Calculate monthly platform cost with period discounts
+    let monthlyPlatformCost;
+    if (currentState.period === 'threeMonth') {
+        monthlyPlatformCost = (basePrice * 0.9) / 3;
+    } else if (currentState.period === 'sixMonth') {
+        monthlyPlatformCost = (basePrice * 0.85) / 6;
+    } else if (currentState.period === 'yearly') {
+        monthlyPlatformCost = (basePrice * 0.8) / 12;
+    } else {
+        monthlyPlatformCost = basePrice; // monthly period
+    }
+
+    const monthlySavings = totalCurrentCost - monthlyPlatformCost;
+    const yearlySavings = monthlySavings * 12;
+    const costReduction = totalCurrentCost > 0 ? (monthlySavings / totalCurrentCost) * 100 : 0;
+
+    const currencySymbol = getCurrencySymbol(currentState.currency);
+
+    // Update the display
+    document.getElementById('totalCurrentCost').textContent = `${currencySymbol}${totalCurrentCost.toFixed(2)}`;
+    document.getElementById('monthlySavings').textContent = `${monthlySavings.toFixed(2)}`;
+    document.getElementById('yearlySavings').textContent = `${yearlySavings.toFixed(2)}`;
+    document.getElementById('costReduction').textContent = Math.round(costReduction);
+}
+
+function updateLanguage() {
+    const translations = TRANSLATIONS[currentState.language];
+
+    // Update all text content
+    document.querySelector('.calculator-title').textContent = translations.calculateSavings;
+    document.querySelector('.current-costs .section-title').textContent = translations.currentCosts;
+    document.querySelector('.currency-title').textContent = translations.selectCurrency;
+    document.querySelector('.period-title').textContent = translations.selectPeriod;
+    document.querySelector('.plan-title').textContent = translations.selectPlan;
+
+    // Update input labels
+    document.querySelector('label[for="bookingCost"]').textContent = translations.bookingSystem + ` (${getCurrencySymbol(currentState.currency)})`;
+    document.querySelector('label[for="websiteCost"]').textContent = translations.websiteBuilder + ` (${getCurrencySymbol(currentState.currency)})`;
+    document.querySelector('label[for="loyaltyCost"]').textContent = translations.loyaltyCoupons + ` (${getCurrencySymbol(currentState.currency)})`;
+    document.querySelector('label[for="deliveryCost"]').textContent = translations.deliveryIntegration + ` (${getCurrencySymbol(currentState.currency)})`;
+
+    // Update period buttons
+    document.querySelectorAll('.period-btn').forEach((btn, index) => {
+        const period = ['monthly', 'threeMonth', 'sixMonth', 'yearly'][index];
+        btn.textContent = translations[period + 'Label'];
+    });
+
+    // Update metric labels
+    document.querySelectorAll('.metric-label').forEach((label, index) => {
+        const keys = ['monthlySavings', 'yearlySavings', 'costReduction'];
+        label.textContent = translations[keys[index]];
+    });
+
+    // Update total cost label
+    document.querySelector('.total-cost-label').textContent = translations.totalCost;
+
+    // Update promo text
+    document.querySelectorAll('.promo-text').forEach(promo => {
+        const promoKey = promo.getAttribute('data-promo');
+        if (promoKey) {
+            promo.textContent = translations[promoKey];
+        }
+    });
+
+    // Update guide text
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const translateKey = element.getAttribute('data-translate');
+        if (translateKey) {
+            element.textContent = translations[translateKey];
+        }
+    });
+}
+
+function closeCalculator() {
+    document.getElementById('savingsCalculator').style.display = 'none';
+}
+
+// Close button functionality
+document.querySelector('.close-button').addEventListener('click', function() {
+    // In a real implementation, this would close the modal
+    console.log('Close button clicked');
+});
+
+function getCurrencySymbol(currency) {
+    switch(currency) {
+        case 'USD': return '$';
+        case 'EUR': return '€';
+        case 'SEK': return 'kr ';
+        default: return '$';
+    }
+}
+
+    // Coupon codes data structure
+    const COUPON_CODES = {
+        USD: {
+            basic: {
+                monthly: {
+                    code: "FOOODIS-BASIC-M50",
+                    title: "Basic Monthly Plan - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-BASIC-3M50",
+                    title: "Basic 3-Month Plan - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-BASIC-6M50",
+                    title: "Basic 6-Month Plan - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-BASIC-Y50",
+                    title: "Basic Yearly Plan - 50% OFF"
+                }
+            },
+            standard: {
+                monthly: {
+                    code: "FOOODIS-STD-M50",
+                    title: "Standard Monthly Plan - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-STD-3M50",
+                    title: "Standard 3-Month Plan - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-STD-6M50",
+                    title: "Standard 6-Month Plan - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-STD-Y50",
+                    title: "Standard Yearly Plan - 50% OFF"
+                }
+            },
+            professional: {
+                monthly: {
+                    code: "FOOODIS-PRO-M50",
+                    title: "Professional Monthly Plan - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-PRO-3M50",
+                    title: "Professional 3-Month Plan - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-PRO-6M50",
+                    title: "Professional 6-Month Plan - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-PRO-Y50",
+                    title: "Professional Yearly Plan - 50% OFF"
+                }
+            },
+            elite: {
+                monthly: {
+                    code: "FOOODIS-ELITE-M50",
+                    title: "Elite Monthly Plan - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-ELITE-3M50",
+                    title: "Elite 3-Month Plan - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-ELITE-6M50",
+                    title: "Elite 6-Month Plan - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-ELITE-Y50",
+                    title: "Elite Yearly Plan - 50% OFF"
+                }
+            }
+        },
+        EUR: {
+            basic: {
+                monthly: {
+                    code: "FOOODIS-EU-BASIC-M50",
+                    title: "Basic Monthly Plan (EUR) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-EU-BASIC-3M50",
+                    title: "Basic 3-Month Plan (EUR) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-EU-BASIC-6M50",
+                    title: "Basic 6-Month Plan (EUR) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-EU-BASIC-Y50",
+                    title: "Basic Yearly Plan (EUR) - 50% OFF"
+                }
+            },
+            standard: {
+                monthly: {
+                    code: "FOOODIS-EU-STD-M50",
+                    title: "Standard Monthly Plan (EUR) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-EU-STD-3M50",
+                    title: "Standard 3-Month Plan (EUR) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-EU-STD-6M50",
+                    title: "Standard 6-Month Plan (EUR) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-EU-STD-Y50",
+                    title: "Standard Yearly Plan (EUR) - 50% OFF"
+                }
+            },
+            professional: {
+                monthly: {
+                    code: "FOOODIS-EU-PRO-M50",
+                    title: "Professional Monthly Plan (EUR) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-EU-PRO-3M50",
+                    title: "Professional 3-Month Plan (EUR) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-EU-PRO-6M50",
+                    title: "Professional 6-Month Plan (EUR) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-EU-PRO-Y50",
+                    title: "Professional Yearly Plan (EUR) - 50% OFF"
+                }
+            },
+            elite: {
+                monthly: {
+                    code: "FOOODIS-EU-ELITE-M50",
+                    title: "Elite Monthly Plan (EUR) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-EU-ELITE-3M50",
+                    title: "Elite 3-Month Plan (EUR) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-EU-ELITE-6M50",
+                    title: "Elite 6-Month Plan (EUR) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-EU-ELITE-Y50",
+                    title: "Elite Yearly Plan (EUR) - 50% OFF"
+                }
+            }
+        },
+        SEK: {
+            basic: {
+                monthly: {
+                    code: "FOOODIS-SE-BASIC-M50",
+                    title: "Basic Monthly Plan (SEK) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-SE-BASIC-3M50",
+                    title: "Basic 3-Month Plan (SEK) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-SE-BASIC-6M50",
+                    title: "Basic 6-Month Plan (SEK) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-SE-BASIC-Y50",
+                    title: "Basic Yearly Plan (SEK) - 50% OFF"
+                }
+            },
+            standard: {
+                monthly: {
+                    code: "FOOODIS-SE-STD-M50",
+                    title: "Standard Monthly Plan (SEK) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-SE-STD-3M50",
+                    title: "Standard 3-Month Plan (SEK) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-SE-STD-6M50",
+                    title: "Standard 6-Month Plan (SEK) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-SE-STD-Y50",
+                    title: "Standard Yearly Plan (SEK) - 50% OFF"
+                }
+            },
+            professional: {
+                monthly: {
+                    code: "FOOODIS-SE-PRO-M50",
+                    title: "Professional Monthly Plan (SEK) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-SE-PRO-3M50",
+                    title: "Professional 3-Month Plan (SEK) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-SE-PRO-6M50",
+                    title: "Professional 6-Month Plan (SEK) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-SE-PRO-Y50",
+                    title: "Professional Yearly Plan (SEK) - 50% OFF"
+                }
+            },
+            elite: {
+                monthly: {
+                    code: "FOOODIS-SE-ELITE-M50",
+                    title: "Elite Monthly Plan (SEK) - 50% OFF"
+                },
+                threeMonth: {
+                    code: "FOOODIS-SE-ELITE-3M50",
+                    title: "Elite 3-Month Plan (SEK) - 50% OFF"
+                },
+                sixMonth: {
+                    code: "FOOODIS-SE-ELITE-6M50",
+                    title: "Elite 6-Month Plan (SEK) - 50% OFF"
+                },
+                yearly: {
+                    code: "FOOODIS-SE-ELITE-Y50",
+                    title: "Elite Yearly Plan (SEK) - 50% OFF"
+                }
+            }
+        }
+    };
+
+    // Swedish translations for coupon texts
+    const COUPON_TRANSLATIONS = {
+        en: {
+            titleFormat: '{plan} {period} Plan{currency} - 50% OFF',
+            saveText: 'Save {symbol}{amount} with this code!',
+            defaultSaveText: 'Save 50% with this code!',
+            applyText: 'Apply this code during checkout for a 50% discount!',
+            copyButton: 'Copy',
+            copiedButton: 'Copied!',
+            specialDiscount: 'Special Discount',
+            limitedTimeOffer: 'Limited Time Offer!',
+            selectPlanText: 'Select a plan to see your discount',
+            periodNames: {
+                monthly: 'Monthly',
+                threeMonth: '3-Month',
+                sixMonth: '6-Month',
+                yearly: 'Yearly'
+            },
+            additionalSavings: {
+                threeMonth: '+ Get 1 month free and save an additional 10%!',
+                sixMonth: '+ Get 2 months free and save an additional 15%!',
+                yearly: '+ Get 3 months free and save an additional 20%!'
+            },
+            priceLabels: {
+                regularPrice: 'Regular Price:',
+                discountedPrice: 'Discounted Price:',
+                youSave: 'You Save:'
+            }
+        },
+        sv: {
+            titleFormat: '{plan} {period} Plan{currency} - 50% RABATT',
+            saveText: 'Spara {symbol}{amount} med denna kod!',
+            defaultSaveText: 'Spara 50% med denna kod!',
+            applyText: 'Använd denna kod vid kassan för 50% rabatt!',
+            copyButton: 'Kopiera',
+            copiedButton: 'Kopierad!',
+            specialDiscount: 'Specialrabatt',
+            limitedTimeOffer: 'Begränsat Erbjudande!',
+            selectPlanText: 'Välj en plan för att se din rabatt',
+            periodNames: {
+                monthly: 'Månadsvis',
+                threeMonth: '3-Månaders',
+                sixMonth: '6-Månaders',
+                yearly: 'Årlig'
+            },
+            planNames: {
+                basic: 'Basic',
+                standard: 'Standard',
+                professional: 'Professional',
+                elite: 'Elite'
+            },
+            additionalSavings: {
+                threeMonth: '+ Få 1 månad gratis och spara ytterligare 10%!',
+                sixMonth: '+ Få 2 månader gratis och spara ytterligare 15%!',
+                yearly: '+ Få 3 månader gratis och spara ytterligare 20%!'
+            },
+            priceLabels: {
+                regularPrice: 'Ordinärie pris:',
+                discountedPrice: 'Rabatterat pris:',
+                youSave: 'Du sparar:'
+            }
+        }
+    };
+
+    // Function to update coupon code based on current selections
+    function updateCouponCode() {
+        const { currency, plan, period } = currentState;
+        
+        // Set language based on currency
+        const language = currency === 'SEK' ? 'sv' : 'en';
+        const translations = COUPON_TRANSLATIONS[language];
+        
+        // Update section header with translation
+        document.querySelector('.coupon-section h3').textContent = translations.specialDiscount;
+        
+        // Update apply text with translation
+        document.getElementById('couponDescription').textContent = translations.applyText;
+        
+        // Update limited time badge text with marquee effect
+        const offerText = translations.limitedTimeOffer;
+        const marqueeContent = document.getElementById('marqueeContent');
+        marqueeContent.innerHTML = '';
+        
+        // Create 5 marquee items for continuous circular effect
+        for (let i = 0; i < 5; i++) {
+            const marqueeItem = document.createElement('div');
+            marqueeItem.className = 'marquee-item';
+            marqueeItem.textContent = offerText + ' ★';
+            marqueeContent.appendChild(marqueeItem);
+        }
+        
+        // Update price labels with translations
+        document.getElementById('regularPriceLabel').textContent = translations.priceLabels.regularPrice;
+        document.getElementById('discountedPriceLabel').textContent = translations.priceLabels.discountedPrice;
+        document.getElementById('youSaveLabel').textContent = translations.priceLabels.youSave;
+        
+        // Update copy button text
+        const copyButton = document.getElementById('copyButton');
+        if (!copyButton.classList.contains('copied')) {
+            copyButton.textContent = translations.copyButton;
+        }
+        
+        // Get coupon data for current selection
+        const couponData = COUPON_CODES[currency]?.[plan]?.[period];
+        
+        // Calculate prices and savings
+        if (PRICING_DATA[currency] && PRICING_DATA[currency][plan] && PRICING_DATA[currency][plan][period]) {
+            const originalPrice = PRICING_DATA[currency][plan][period];
+            const discountedPrice = originalPrice * 0.5; // 50% discount
+            const savings = originalPrice - discountedPrice;
+            const currencySymbol = getCurrencySymbol(currency);
+            
+            // Get additional savings based on period
+            let additionalSavingsPercent = 0;
+            let additionalSavingsText = '';
+            
+            switch(period) {
+                case 'threeMonth':
+                    additionalSavingsPercent = 0.10; // Additional 10% for 3-month plans
+                    additionalSavingsText = translations.additionalSavings.threeMonth;
+                    break;
+                case 'sixMonth':
+                    additionalSavingsPercent = 0.15; // Additional 15% for 6-month plans
+                    additionalSavingsText = translations.additionalSavings.sixMonth;
+                    break;
+                case 'yearly':
+                    additionalSavingsPercent = 0.20; // Additional 20% for yearly plans
+                    additionalSavingsText = translations.additionalSavings.yearly;
+                    break;
+            }
+            
+            // Calculate additional savings if applicable
+            const additionalSavings = originalPrice * additionalSavingsPercent;
+            const totalSavings = savings + additionalSavings;
+            const finalPrice = originalPrice - totalSavings;
+            
+            // Update price displays
+            document.getElementById('originalPrice').textContent = `${currencySymbol}${originalPrice.toFixed(2)}`;
+            document.getElementById('discountedPrice').textContent = `${currencySymbol}${finalPrice.toFixed(2)}`;
+            document.getElementById('savingsAmount').textContent = `${currencySymbol}${totalSavings.toFixed(2)}`;
+            
+            // Update coupon title with appropriate translation
+            if (couponData) {
+                // Use predefined title if available
+                if (language === 'sv') {
+                    const planName = translations.planNames[plan] || plan.charAt(0).toUpperCase() + plan.slice(1);
+                    const periodName = translations.periodNames[period];
+                    const currencyLabel = currency === 'USD' ? '' : ` (${currency})`;
+                    document.getElementById('couponTitle').textContent = 
+                        translations.titleFormat
+                            .replace('{plan}', planName)
+                            .replace('{period}', periodName)
+                            .replace('{currency}', currencyLabel);
+                } else {
+                    document.getElementById('couponTitle').textContent = couponData.title;
+                }
+                
+                // Update coupon code
+                document.getElementById('couponCode').textContent = couponData.code;
+            } else {
+                // Generate a fallback coupon code
+                const planShort = {
+                    'basic': 'BASIC',
+                    'standard': 'STD',
+                    'professional': 'PRO',
+                    'elite': 'ELITE'
+                }[plan] || 'BASIC';
+                
+                const periodShort = {
+                    'monthly': 'M',
+                    'threeMonth': '3M',
+                    'sixMonth': '6M',
+                    'yearly': 'Y'
+                }[period] || 'M';
+                
+                const regionCode = {
+                    'USD': '',
+                    'EUR': 'EU-',
+                    'SEK': 'SE-'
+                }[currency] || '';
+                
+                // Generate a fallback code
+                const fallbackCode = `FOOODIS-${regionCode}${planShort}-${periodShort}50`;
+                
+                // Generate a title
+                const planName = language === 'sv' ? 
+                    (translations.planNames[plan] || plan.charAt(0).toUpperCase() + plan.slice(1)) : 
+                    plan.charAt(0).toUpperCase() + plan.slice(1);
+                    
+                const periodName = translations.periodNames[period];
+                const currencyLabel = currency === 'USD' ? '' : ` (${currency})`;
+                
+                // Update elements
+                document.getElementById('couponTitle').textContent = 
+                    translations.titleFormat
+                        .replace('{plan}', planName)
+                        .replace('{period}', periodName)
+                        .replace('{currency}', currencyLabel);
+                        
+                document.getElementById('couponCode').textContent = fallbackCode;
+            }
+            
+            // Update description with additional savings info if applicable
+            if (additionalSavingsPercent > 0) {
+                document.getElementById('couponDescription').textContent = 
+                    `${translations.applyText} ${additionalSavingsText}`;
+            }
+        } else {
+            // Fallback if pricing data isn't available
+            document.getElementById('couponTitle').textContent = translations.selectPlanText;
+            document.getElementById('originalPrice').textContent = '-';
+            document.getElementById('discountedPrice').textContent = '-';
+            document.getElementById('savingsAmount').textContent = '-';
+            document.getElementById('couponCode').textContent = '';
+        }
+    }
+
+    // Copy button functionality
+    document.getElementById('copyButton').addEventListener('click', function() {
+        const couponCode = document.getElementById('couponCode').textContent;
+        if (couponCode) {
+            navigator.clipboard.writeText(couponCode).then(() => {
+                // Get current language
+                const language = currentState.currency === 'SEK' ? 'sv' : 'en';
+                const translations = COUPON_TRANSLATIONS[language];
+                
+                // Visual feedback
+                this.textContent = translations.copiedButton;
+                this.classList.add('copied');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    this.textContent = translations.copyButton;
+                    this.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    });
+
+    // Update functions to include coupon code updates
+    const originalSelectPeriod = selectPeriod;
+    selectPeriod = function(period) {
+        originalSelectPeriod(period);
+        updateCouponCode();
+    };
+
+    const originalChangeCurrency = changeCurrency;
+    changeCurrency = function(currency) {
+        originalChangeCurrency(currency);
+        updateCouponCode();
+    };
+
+    const originalSelectPlan = selectPlan;
+    selectPlan = function(plan) {
+        originalSelectPlan(plan);
+        updateCouponCode();
+    };
+
+    // Initialize calculator
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set initial state
+        currentState.language = 'en';
+        currentState.currency = 'USD';
+        currentState.period = 'monthly';
+        currentState.plan = 'basic';
+
+        // Initialize calculator
+        updateLanguage();
+        updateFeaturesAndTips('basic');
+        calculateSavings();
+        updateCouponCode();
+
+        // Reset features list animation when it ends
+        document.getElementById('featuresList').addEventListener('animationend', function() {
+            this.style.animation = 'none';
+            this.offsetHeight; // Trigger reflow
+            this.style.animation = null;
+        });
+        
+        // Initialize the countdown timer
+        initCountdownTimer();
+    });
+    
+    // Function to initialize and update the countdown timer
+    function initCountdownTimer() {
+        // Add countdown timer translations
+        const COUNTDOWN_TRANSLATIONS = {
+            en: {
+                offerExpires: 'Offer expires in:',
+                days: 'days',
+                hours: 'hours',
+                minutes: 'mins',
+                seconds: 'secs'
+            },
+            se: {
+                offerExpires: 'Erbjudandet går ut om:',
+                days: 'dagar',
+                hours: 'timmar',
+                minutes: 'min',
+                seconds: 'sek'
+            }
+        };
+        
+        // Create or get the countdown end date (10 days from now)
+        const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
+        let targetDate;
+        
+        // Check if we have a stored end date in localStorage from the other page
+        const storedDate = localStorage.getItem('countdownEndDate');
+        if (storedDate) {
+            targetDate = parseInt(storedDate);
+            
+            // If the stored date is in the past, create a new one
+            if (targetDate < new Date().getTime()) {
+                targetDate = new Date().getTime() + TEN_DAYS;
+                localStorage.setItem('countdownEndDate', targetDate.toString());
+            }
+        } else {
+            // Create a new end date
+            targetDate = new Date().getTime() + TEN_DAYS;
+            localStorage.setItem('countdownEndDate', targetDate.toString());
+        }
+        
+        function updateAllTimers() {
+            // Get current time
+            const now = new Date().getTime();
+            
+            // Calculate time remaining
+            let timeRemaining = Math.max(0, targetDate - now);
+            
+            // Calculate units
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            timeRemaining %= (1000 * 60 * 60 * 24);
+            
+            const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+            timeRemaining %= (1000 * 60 * 60);
+            
+            const minutes = Math.floor(timeRemaining / (1000 * 60));
+            timeRemaining %= (1000 * 60);
+            
+            const seconds = Math.floor(timeRemaining / 1000);
+            
+            // Format numbers
+            const formattedHours = hours < 10 ? '0' + hours : hours;
+            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+            const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+            
+            // Update countdown display
+            document.getElementById('countdownDays').textContent = days;
+            document.getElementById('countdownHours').textContent = formattedHours;
+            document.getElementById('countdownMinutes').textContent = formattedMinutes;
+            document.getElementById('countdownSeconds').textContent = formattedSeconds;
+            
+            // Update translations based on current currency
+            updateCountdownTranslations();
+        }
+        
+        // Update countdown translations based on currency
+        function updateCountdownTranslations() {
+            const lang = currentState.currency === 'SEK' ? 'se' : 'en';
+            const translations = COUNTDOWN_TRANSLATIONS[lang];
+            
+            document.getElementById('offerExpiresText').textContent = translations.offerExpires;
+            document.getElementById('daysLabel').textContent = translations.days;
+            document.getElementById('hoursLabel').textContent = translations.hours;
+            document.getElementById('minutesLabel').textContent = translations.minutes;
+            document.getElementById('secondsLabel').textContent = translations.seconds;
+        }
+        
+        // Run immediately
+        updateAllTimers();
+        
+        // Then update every second
+        setInterval(updateAllTimers, 1000);
+        
+        // Override currency change function to update countdown translations
+        const originalChangeCurrencyWithCoupon = changeCurrency;
+        changeCurrency = function(currency) {
+            originalChangeCurrencyWithCoupon(currency);
+            updateCountdownTranslations();
+        };
+    }
+    </script>
+
+    <!-- Isolated script for the typewriter animation -->
+    <script>
+    // Discount text translations
+    const DISCOUNT_TEXT_TRANSLATIONS = {
+        en: {
+            texts: ['10% on 3-Month', '15% on 6-Month', '20% on Yearly'],
+            prefix: 'Save up to ',
+            suffix: ' plans!'
+        },
+        sv: {
+            texts: ['10% på 3-Månader', '15% på 6-Månader', '20% på Årlig'],
+            prefix: 'Spara upp till ',
+            suffix: ' planer!'
+        }
+    };
+    
+    // Typewriter animation for discount text
+    function startCalcTypewriterAnimation(texts, speed = 70) {
+        // Clear any existing animation
+        if (window.calcTypewriterTimer) {
+            clearTimeout(window.calcTypewriterTimer);
+        }
+        
+        const typewriterElement = document.getElementById('calc-typewriter-text');
+        if (!typewriterElement) return;
+        
+        // Reset the element
+        typewriterElement.textContent = '';
+        
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let timeout = 1000;
+        
+        function type() {
+            const currentText = texts[textIndex];
+            
+            if (isDeleting) {
+                // Deleting text
+                typewriterElement.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+                timeout = speed / 2; // Delete faster than typing
+                
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    timeout = 500; // Pause before typing next text
+                }
+            } else {
+                // Typing text
+                typewriterElement.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+                timeout = speed;
+                
+                if (charIndex === currentText.length) {
+                    timeout = 3000; // Pause at the end of text
+                    isDeleting = true;
+                }
+            }
+            
+            window.calcTypewriterTimer = setTimeout(type, timeout);
+        }
+        
+        // Start the typing animation
+        window.calcTypewriterTimer = setTimeout(type, 1000);
+    }
+    
+    // Update the typewriter text based on the current language
+    function updateTypewriterText() {
+        const language = currentState.language || 'en';
+        const translationSet = DISCOUNT_TEXT_TRANSLATIONS[language] || DISCOUNT_TEXT_TRANSLATIONS.en;
+        
+        // Update the prefix and suffix text
+        const discountsAnimation = document.querySelector('.discounts-animation p');
+        if (discountsAnimation) {
+            const spans = discountsAnimation.querySelectorAll('span');
+            if (spans.length === 3) {
+                spans[0].textContent = translationSet.prefix;
+                spans[2].textContent = translationSet.suffix;
+            }
+        }
+        
+        // Start the animation with the translated texts
+        startCalcTypewriterAnimation(translationSet.texts);
+    }
+    
+    // Override the language change function to update the typewriter text
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial setup of typewriter text
+        updateTypewriterText();
+        
+        // Override the currency change function to update typewriter text
+        const originalChangeCurrency = window.changeCurrency;
+        if (originalChangeCurrency) {
+            window.changeCurrency = function(currency) {
+                originalChangeCurrency(currency);
+                
+                // If currency is SEK, set language to Swedish, otherwise English
+                if (currency === 'SEK') {
+                    currentState.language = 'sv';
+                } else {
+                    currentState.language = 'en';
+                }
+                
+                // Update the typewriter text with the new language
+                updateTypewriterText();
+            };
+        }
+    });
+    
+    // Also start the animation immediately in case the DOM is already loaded
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        startCalcTypewriterAnimation(['10% on 3-Month', '15% on 6-Month', '20% on Yearly']);
+    }
+    </script>
+</body>
+</html>

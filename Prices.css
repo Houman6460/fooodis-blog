@@ -1,0 +1,80 @@
+ .u-section-1 {
+  background-image: none;
+}
+
+.u-section-1 .u-sheet-1 {
+  min-height: 400px;
+}
+
+.u-section-1 .u-text-1 {
+  font-weight: 700;
+  margin: 159px auto 60px 0;
+} .u-section-2 {
+  background-image: none;
+}
+
+.u-section-2 .u-sheet-1 {
+  min-height: 400px;
+}
+
+.u-section-2 .u-custom-html-1 {
+  margin-bottom: 0;
+  height: auto;
+  min-height: 265px;
+  margin-top: 60px;
+}
+
+.u-section-2 .u-text-1 {
+  margin-top: 30px;
+  margin-bottom: 60px;
+  font-weight: 700;
+} .u-section-3 {
+  background-image: none;
+}
+
+.u-section-3 .u-sheet-1 {
+  min-height: 2139px;
+}
+
+.u-section-3 .u-custom-html-1 {
+  height: auto;
+  min-height: 4013px;
+  width: 893px;
+  margin: 186px auto -2060px;
+}
+
+@media (max-width: 991px) {
+  .u-section-3 .u-custom-html-1 {
+    width: 720px;
+  }
+}
+
+@media (max-width: 767px) {
+  .u-section-3 .u-custom-html-1 {
+    width: 540px;
+  }
+}
+
+@media (max-width: 575px) {
+  .u-section-3 .u-sheet-1 {
+    min-height: 1357px;
+  }
+
+  .u-section-3 .u-custom-html-1 {
+    min-height: 3728px;
+    margin-top: 0;
+    margin-bottom: -2371px;
+    margin-right: initial;
+    margin-left: initial;
+    width: auto;
+  }
+}/* Apply custom styles to the selected text */
+::selection {
+    background: #e8f24c; /* Phosphorescent yellow-green highlight color */
+    color: #000; /* Text color when highlighted */
+}
+/* Apply the same styles for Firefox */
+::-moz-selection {
+    background: #e8f24c; /* Phosphorescent yellow-green highlight color */
+    color: #000; /* Text color when highlighted */
+} 

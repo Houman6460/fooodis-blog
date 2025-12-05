@@ -1,0 +1,78 @@
+/**
+ * CSS file to extract inline styles from index.html
+ * This helps fix linting errors related to inline styles
+ */
+
+/* FAQ section styles */
+.faq-item {
+  margin-bottom: 20px;
+}
+
+.faq-question {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.faq-answer {
+  padding: 10px;
+  display: none;
+}
+
+/* Fix empty rulesets */
+.u-section-39 .u-accordion-1 {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.u-section-39 .u-accordion-item {
+  margin-bottom: 10px;
+}
+
+.u-section-39 .u-accordion-link {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.u-section-39 .u-accordion-pane {
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 0 0 5px 5px;
+}
+
+/* Promotion plans styles */
+.promotion-plans-container button.tab {
+  background-color: transparent;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.promotion-plans-container button.tab.active {
+  border-bottom: 2px solid #ffc107;
+}
+
+/* Fix other inline styles */
+.qb-highlighter {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+}
+
+.qb-highlighter::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-color: rgba(255, 193, 7, 0.3);
+  z-index: -1;
+}

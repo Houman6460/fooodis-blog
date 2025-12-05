@@ -1,179 +1,1872 @@
+<!DOCTYPE html><html lang="en" class="Settings-extracted-1"><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="​​Digital Mastery, Design Perfection" name="keywords">
+<meta content="" name="description">
+<title>Settings</title>
+<link href="nicepage.css" media="screen" rel="stylesheet">
+<link href="Settings.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Settings" name="twitter:title">
+<meta content="" name="twitter:description">
+<meta content="Settings" property="og:title">
+<meta content="" property="og:description">
+<meta content="website" property="og:type">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - Fooodis Blog System</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="icon" type="image/png" href="images/New images/favicon.png">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="dashboard.html">
-                <img src="images/New images/logo.png" alt="Fooodis" height="30">
-                Fooodis Blog System
-            </a>
-            
-            <div class="navbar-nav ms-auto">
-                <div class="nav-item dropdown user-nav-item">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <div class="user-avatar"></div>
-                        <span class="user-display-name">User</span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-                        <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
+        }
 
-    <!-- Main Content -->
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="dashboard.html">
-                                <i class="fas fa-tachometer-alt"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="blog.html">
-                                <i class="fas fa-blog"></i> Blog Posts
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="profile.html">
-                                <i class="fas fa-user"></i> Profile
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="settings.html">
-                                <i class="fas fa-cog"></i> Settings
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <!-- Content Area -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Settings</h1>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-8">
-                        <!-- Authentication Settings -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-shield-alt"></i> Authentication Settings
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="autoLoginToggle">
-                                    <label class="form-check-label" for="autoLoginToggle">
-                                        <strong>Enable Auto-Login</strong>
-                                    </label>
-                                    <div class="form-text">
-                                        When enabled, you will be automatically logged in when visiting the site. 
-                                        This uses the default admin credentials for convenience.
-                                    </div>
-                                </div>
-                                
-                                <div id="settingsStatus" class="alert" style="display: none;"></div>
-                            </div>
-                        </div>
-
-                        <!-- System Information -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-info-circle"></i> System Information
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <strong>Version:</strong> 1.0.0
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <strong>Environment:</strong> Development
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-sm-6">
-                                        <strong>Last Login:</strong> <span id="lastLoginTime">-</span>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <strong>Session Status:</strong> <span class="badge bg-success">Active</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <script src="js/jquery-3.6.0.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/storage-manager.js"></script>
-    <script src="js/auth-manager.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize auto-login toggle
-            const autoLoginToggle = document.getElementById('autoLoginToggle');
-            const settingsStatus = document.getElementById('settingsStatus');
-            
-            // Set initial state
-            if (AuthManager && typeof AuthManager.autoLoginEnabled !== 'undefined') {
-                autoLoginToggle.checked = AuthManager.autoLoginEnabled;
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
+        }
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
             }
-            
-            // Handle toggle change
-            autoLoginToggle.addEventListener('change', function() {
-                const enabled = this.checked;
-                
-                if (AuthManager && typeof AuthManager.toggleAutoLogin === 'function') {
-                    AuthManager.toggleAutoLogin(enabled);
-                    
-                    // Show success message
-                    settingsStatus.textContent = enabled ? 
-                        'Auto-login has been enabled.' : 
-                        'Auto-login has been disabled.';
-                    settingsStatus.className = 'alert alert-success';
-                    settingsStatus.style.display = 'block';
-                    
-                    // Hide message after 3 seconds
-                    setTimeout(() => {
-                        settingsStatus.style.display = 'none';
-                    }, 3000);
-                }
-            });
-            
-            // Update last login time if available
-            const lastLoginTime = document.getElementById('lastLoginTime');
-            if (AuthManager && AuthManager.currentUser) {
-                // You can enhance this to show actual last login time from session data
-                lastLoginTime.textContent = 'Current session';
-            }
+            dynamicLoadScript();
         });
     </script>
-</body>
-</html>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
+            }
+
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
+
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
+
+                            var forms = document.getElementsByTagName('form');
+
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<meta data-intl-tel-input-cdn-path="intlTelInput/"><!-- Fooodis Header CSS and JS -->
+<link href="assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="assets/header.js"></script>
+<script defer="" src="assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style data-parsed="true">
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fooodis-footer {
+        text-align: center;
+    }
+    
+    .footer-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .footer-logo {
+        margin-bottom: 2rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 1.2rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-item a {
+        font-size: 1.1rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1.5rem;
+        flex-direction: column;
+    }
+    
+    .logoland-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .logoland-logo {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        height: auto;
+        width: 200px;
+    }
+    
+    .footer-powered-by p {
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-social {
+        margin-top: 1rem;
+    }
+    
+    .social-link {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .social-link i {
+        font-size: 22px;
+    }
+    
+    /* Add more space between elements */
+    .footer-container {
+        padding: 3rem 1rem;
+    }
+    
+    /* Back to top button - larger for mobile */
+    .back-to-top-button {
+        width: 60px;
+        height: 60px;
+        right: 15px;
+        bottom: 15px;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/auto-generated-styles-final.css"><link href="assets/hamburger-animation.css" rel="stylesheet">
+<script src="assets/header-scroll-effect.js" defer></script>
+    <link rel="stylesheet" href="assets/cookie-consent.css">
+    <script src="assets/cookie-consent.js" defer></script>
+</head>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="en" data-path-to-root="./">
+<!-- Original Fooodis Header - Exact Copy -->
+<style data-parsed="true">
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-container {
+    display: block;
+}
+
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
+
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+
+/* Navigation */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 10px;
+}
+
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-item a:hover {
+    color: #e8f24c;
+}
+
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.show {
+    left: 0;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
+
+.mobile-nav-item {
+    margin: 15px 0;
+}
+
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-item a:hover {
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+</style>
+<header class="fooodis-header">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Service">Service</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html" title="Contact">Contact</a></li>
+<li class="nav-item"><a data-lang-en="FEBlog" data-lang-sv="FEBlogg" href="FEBlog.html" title="FEBlog">FEBlog</a></li>
+<li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="Blog.html" title="Blog">Blog</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="Prices.html" title="Price">Price</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="Registrar">Registrar</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="Login">Login</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button>
+</div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
+
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="SERVICE">SERVICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">CONTACT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="FEBLOG" data-lang-sv="FEBLOGG" href="FEBlog.html" title="FEBLOG">FEBLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="Blog.html" title="BLOG">BLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html" title="PRICE">PRICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="REGISTRAR">REGISTRAR</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="LOGIN">LOGIN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
+        }
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    const ham = document.querySelector('.ham');
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.toggle('show');
+            if (ham) ham.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('show') ? 'hidden' : ''; // Toggle scrolling
+        });
+    }
+    
+    // Close button for the mobile menu
+    const closeBtn = document.querySelector('.mobile-close-btn');
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            if (ham) ham.classList.remove('active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+    }
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'FEBlog': 'FEBlog',
+            'Blog': 'Blog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'FEBlog': 'FEBlogg',
+            'Blog': 'Blogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-xl u-custom-color-1 u-section-1" id="sec-ac62">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-sheet-1">
+<h1 class="u-text u-text-1"> Fooodis.com's Expert Blog</h1>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-2" id="sec-6fcb">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Elevate Your Restaurant with SwedeTaste's Blog</h3>
+<quillbot-extension-highlights class="Settings-extracted-2"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2"> Explore our blog for essential tips and guides on using SwedeTaste to boost your restaurant's success. From digital menus to online ordering, we provide everything you need to thrive in the digital age.<br>
+</p>
+</div>
+</section>
+<section class="skrollable u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-3" id="sec-3f49" src="">
+<div class="u-clearfix u-sheet u-sheet-1">
+<img alt="" class="u-image u-image-contain u-image-default u-image-1" data-custom-animation="{&quot;animation&quot;:{&quot;XXL&quot;:{&quot;steps&quot;:[],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XL&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;LG&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-688&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-684&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;MD&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-577&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-572&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;SM&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-473&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-462&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XS&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-366&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-361&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}}},&quot;container&quot;:&quot;&quot;}" data-image-height="1772" data-image-width="2255" src="images/Setting1.png">
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-4" id="sec-e853">
+<div class="u-clearfix u-sheet u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Join Fooodis Today!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Empower Your Restaurant with Digital Solutions<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Ready to take your restaurant to the next level? Register now and start using​Fooodis.com’s advanced digital tools for free. Streamline your operations, enhance customer service, and boost your profits with our easy-to-use platform. Get started today for free and transform your restaurant's future!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-5" id="sec-d623">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener noreferrer" title="Start for Free"> Start for Free</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-6" id="sec-3d66">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Restaurant Settings Guide: Step-by-Step Manual<br>
+</h3>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Seamless Configuration for Managing Your Restaurant Information<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Setting up your restaurant settings on Fooodis is straightforward with our intuitive interface. This guide provides a step-by-step walkthrough to help you manage your restaurant information, menus, working hours, and location seamlessly.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-7" id="sec-ccfb">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-53b7">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-4" data-u-slide-to="0" data-u-target="#carousel-53b7"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Setting2.png" alt="Setting2" title="Setting2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-53b7" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-53b7" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Settings-extracted-5">Restaurang Management</span>
+<br>Essential Details and Customization for Your Restaurant<br><span class="Settings-extracted-6">Restaurang Management Overview:</span>
+<br><b>&nbsp; ○&nbsp;</b>You can enter and amend important information about your restaurant, such as its name, description, address, and contact details, in this section.<br>
+<br><span class="Settings-extracted-6">1. Access Restaurang Management.</span>
+<br><b>&nbsp; ○&nbsp;</b>From the list on the sidebar, select <span class="Settings-extracted-6">'Restaurang'</span>&nbsp;.<br><b>&nbsp; ○&nbsp;</b>In the top menu, select <span class="Settings-extracted-6">‘Restaurang Management’</span>&nbsp;.<br>
+<br><span class="Settings-extracted-6">2. Restaurang Name and Description:</span>
+<br><b>&nbsp; ○&nbsp;</b><span class="Settings-extracted-6">Restaurang Name:&nbsp;</span>
+<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Enter the name of your restaurant in the <span class="Settings-extracted-6">'Restaurang Name'</span> field.<br><b>&nbsp; ○&nbsp;</b><span class="Settings-extracted-6">Restaurang Description:&nbsp;</span>
+<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Provide a brief overview of your restaurant in the <span class="Settings-extracted-6">'Restaurang Description'</span> field.<br><span class="Settings-extracted-6">&nbsp; ○&nbsp;Restaurang Address and Contact:</span>
+<br><b>&nbsp; ○&nbsp;</b><span class="Settings-extracted-6">Restaurang Address:&nbsp;</span>
+<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Enter the street address in the <span class="Settings-extracted-6">'Restaurang Address'</span> field.<br><b>&nbsp; ○&nbsp;</b><span class="Settings-extracted-6">Restaurang Phone:&nbsp;</span>
+<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Add the contact phone number in the <span class="Settings-extracted-6">'Restaurang Phone'</span> field.<br>
+<br><span class="Settings-extracted-6">3. Order Settings:</span>
+<br><b>&nbsp; ○&nbsp;</b><span class="Settings-extracted-6">Minimum Order:&nbsp;</span>
+<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Set a minimum order value in the <span class="Settings-extracted-6">'Minimum Order'</span> field.<br><b>&nbsp; ○&nbsp;</b><span class="Settings-extracted-6">Average Order Prepare Time:&nbsp;</span>
+<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Specify the average order preparation time in minutes.<br><b>&nbsp; ○&nbsp;</b><span class="Settings-extracted-6">Order Separation:&nbsp;</span>
+<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Set the time slots separated by minutes for order scheduling.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-8" id="sec-31d2">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Restaurang Management<br>
+</h3>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Personalize Your Restaurant's Identity<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Showcase your unique restaurant identity by updating essential details like name, description, and contact information. Ensure customers see accurate and compelling information that reflects your brand.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-9" id="carousel_88a6">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-091e">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-4" data-u-slide-to="0" data-u-target="#carousel-091e"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Setting3.png" alt="Setting3" title="Setting3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-091e" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-091e" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Settings-extracted-5">Restaurang Management</span>
+<br>
+<br><span class="Settings-extracted-6">4. Select Service Features:</span>
+<br><b>&nbsp; ○&nbsp;</b>Enable or disable the following services based on your restaurant's offerings:<br>Pickup, Delivery, Free Delivery, Disable Ordering, Disable Call Waiter, Disable Continuous Orders, Dine-In.<br><span class="Settings-extracted-6">5. Localization:</span>
+<br>Currency and Localization Settings:<br><b>&nbsp; ○&nbsp;</b>Currency:&nbsp;<br><b>&nbsp; &nbsp; &nbsp;○&nbsp;</b>Choose the currency of your choice in the 'Currency' field.<br> &nbsp; ○&nbsp;Money Conversion:&nbsp;<br>&nbsp; &nbsp; &nbsp;○&nbsp;Option to enable or disable automatic currency conversion.<br>&nbsp; ○&nbsp;WhatsApp Number:<br>&nbsp; &nbsp; &nbsp;○&nbsp;WhatsApp Phone: Enter the WhatsApp number in the 'WhatsApp Phone' field.<br><span class="Settings-extracted-6">6. Visual Branding:</span>
+<br>&nbsp; ○&nbsp;<span class="Settings-extracted-6">Restaurang Wide Logo:&nbsp;</span>
+<br>&nbsp; &nbsp; &nbsp;○&nbsp;Upload your restaurant's wide logo image.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-6">Dark Restaurang Wide Logo:&nbsp;</span>
+<br>&nbsp; &nbsp; &nbsp;○&nbsp;Upload a version of your logo for dark mode.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-6">Restaurang Image:&nbsp;</span>
+<br>&nbsp; &nbsp; &nbsp;○&nbsp;Add an image representing your restaurant.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-6">Restaurang Cover Image:&nbsp;</span>
+<br>&nbsp; &nbsp; &nbsp;○&nbsp;Upload a cover image for your restaurant profile.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-6">Restaurang Favicon Image:&nbsp;</span>
+<br>&nbsp; &nbsp; &nbsp;○&nbsp;Upload a small favicon image to represent your restaurant in browser tabs.<br>
+<br><span class="Settings-extracted-6">Save Your Changes:</span>
+<br>&nbsp; ○&nbsp;After entering all the necessary information and configuring your preferences, click the <span class="Settings-extracted-6">'Save'</span> button to apply your updates.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-10" id="sec-08ce">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Menu Management<br>
+</h3>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Craft Irresistible Menus &amp; Seamless Navigation<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Elevate your customer experience with tailored menus and easy-to-navigate links to internal or external pages. Add icons and customize colors to match your restaurant's aesthetic.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-11" id="carousel_2f09">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-247b">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-4" data-u-slide-to="0" data-u-target="#carousel-247b"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Setting4.png" alt="Setting4" title="Setting4">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-247b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-247b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Settings-extracted-6"><span class="Settings-extracted-7">Menu Management</span>
+<br></span><span class="Settings-extracted-6"> Organize Your Menu and Customize Visual Settings</span>
+<br>
+<br><span class="Settings-extracted-6"> 1. Menu Management Overview:&nbsp;</span>
+<br> &nbsp; ○ You can add links to other pages, adjust the visual settings, and arrange the menu for your restaurant in this part.<br>
+<br><span class="Settings-extracted-6">2. How to Configure: <br></span> &nbsp; ○ From the list on the sidebar, select <span class="Settings-extracted-6">'</span><span class="Settings-extracted-6">Restaurant'.</span>
+<br> &nbsp; ○ Choose<span class="Settings-extracted-6">&nbsp;'Management</span> of the Menu.<br> &nbsp; ○ Make the following settings current:<br><span class="Settings-extracted-6">3. Logo Link:&nbsp;</span>
+<br> &nbsp; ○ Provide a <span class="Settings-extracted-6">'</span><span class="Settings-extracted-6">hyperlink'</span> to the home page or website of your restaurant.<br><span class="Settings-extracted-6">4. Menu Text Color:&nbsp;</span>
+<br> &nbsp; ○ Select a <span class="Settings-extracted-6">'</span><span class="Settings-extracted-6">hue'</span> that complements your brand.<br><span class="Settings-extracted-6">5. Include fresh menu items:</span>
+<br> &nbsp; ○ <span class="Settings-extracted-6">Name: </span>Give the menu item a <span class="Settings-extracted-6">'</span><span class="Settings-extracted-6">name'</span>.<br> &nbsp; ○ <span class="Settings-extracted-6">Slug:</span> Make a <span class="Settings-extracted-6">'</span><span class="Settings-extracted-6">slug'</span> that works with a<span class="Settings-extracted-6">&nbsp;'URL'</span>.<br> &nbsp; ○ <span class="Settings-extracted-6">CSS Class:</span> You can choose the <span class="Settings-extracted-6">'</span><span class="Settings-extracted-6">CSS'</span> class to use.<br> &nbsp; ○ <span class="Settings-extracted-6">Icon:</span> Select an '<span class="Settings-extracted-6">icon'</span> to symbolize the object.<br> &nbsp; ○ <span class="Settings-extracted-6">Target:</span> Choose<span class="Settings-extracted-6">&nbsp;'whether'</span> to open the link in a new tab or directly.<br>To add the new menu item, click <span class="Settings-extracted-6">'</span><span class="Settings-extracted-6">Add Item'.</span>
+<br>Drag the menu items into the appropriate positions to arrange them.<br>To verify the modifications, click '<span class="Settings-extracted-6">Save'.</span>
+<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-12" id="sec-a9bb">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Working Hours<br>
+</h3>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Set Precise Operating Hours for Your Customers<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Define your restaurant's working hours with precision. Add shifts and customize opening and closing times to ensure your customers always know when you're open.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-13" id="carousel_234a">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-8f17">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-4" data-u-slide-to="0" data-u-target="#carousel-8f17"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/WorkingHours.png" alt="WorkingHours" title="WorkingHours">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-8f17" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-8f17" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<p class="u-text u-text-1">
+<a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white u-btn-1" data-href="#" title="Working Hours
+
+Manage Accurate Opening and Closing Times
+
+
+Working Hours Overview:
+ &nbsp; ○ Keep an eye on your restaurant's working hours to make sure patrons are aware of when it opens and closes.
+ To configure, follow these steps: &nbsp; ○ Click on&nbsp;'Restaurant' on the list in the sidebar. &nbsp; ○ Select&nbsp;'Working Hours'.
+ &nbsp; ○ Choose the days your restaurant is open and set the opening and closing times. &nbsp; ○ Click&nbsp;'Add'&nbsp;New Shift to specify additional shifts. &nbsp; ○ Click&nbsp;'Save'&nbsp; to apply the changes."><span class="Settings-extracted-8">Working Hours</span>
+<br>
+<br><span class="Settings-extracted-6"></span><span class="Settings-extracted-6">Manage Accurate Opening and Closing Times</span>
+<br><span class="u-text-white">
+<br>
+<br><span class="Settings-extracted-6">Working Hours Overview:</span>
+<br> &nbsp; ○ Keep an eye on your restaurant's working hours to make sure patrons are aware of when it opens and closes.<br>
+<br><span class="Settings-extracted-6"> To configure, follow these steps:<br></span> &nbsp; ○ Click on<span class="Settings-extracted-6">&nbsp;'Restaurant'</span> on the list in the sidebar.<br> &nbsp; ○ Select<span class="Settings-extracted-6">&nbsp;'Working Hours'.</span>
+<br> &nbsp; ○ Choose the days your restaurant is open and set the opening and closing times.<br> &nbsp; ○ Click<span class="Settings-extracted-6">&nbsp;'Add'&nbsp;</span>New Shift to specify additional shifts.<br> &nbsp; ○ Click<span class="Settings-extracted-6">&nbsp;'Save'&nbsp;</span> to apply the changes.</span>
+<br>
+</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-14" id="sec-69d7">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Location<br>
+</h3>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Pinpoint Your Restaurant's Location with Precision<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Let your customers find you effortlessly. Verify your restaurant’s address and location on the map for seamless customer navigation.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-15" id="carousel_3bee">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-a96b">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-4" data-u-slide-to="0" data-u-target="#carousel-a96b"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="images/Location.png" alt="Location" title="Location">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-a96b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-a96b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<p class="u-text u-text-1">
+<a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white u-btn-1" data-href="#" title="Location
+Ensure Accurate Mapping of Your RestaurantOverview &nbsp; ○ The Location section displays the map location of your restaurant based on the address&nbsp;entered in the&nbsp;'Restaurang Management' section.
+Steps to Verify or Update:
+ &nbsp; ○ Click on&nbsp;'Restaurang'&nbsp;in the sidebar. &nbsp; ○ Select&nbsp;'Location'.
+ &nbsp; ○ Confirm that the map shows the correct location based on your restaurant's address provided in Restaurang Management.If required, update your restaurant's address in the Restaurang Management section.Click&nbsp;'Save'&nbsp;to apply the changes."><span class="Settings-extracted-8">Location</span>
+<br><span class="Settings-extracted-6"></span><span class="Settings-extracted-6">Ensure Accurate Mapping of Your Restaurant<br>Overview<br></span> &nbsp; ○ The Location section displays the map location of your restaurant based on the address&nbsp;entered in the<span class="Settings-extracted-6">&nbsp;'Restaurang Management'</span> section.<br>
+<br><span class="Settings-extracted-6">Steps to Verify or Update:</span>
+<br> &nbsp; ○ Click on<span class="Settings-extracted-6">&nbsp;'Restaurang'&nbsp;</span>in the sidebar.<br> &nbsp; ○ Select<span class="Settings-extracted-6">&nbsp;'Location'.</span>
+<br> &nbsp; ○ Confirm that the map shows the correct location based on your restaurant's address provided in Restaurang Management.<br>If required, update your restaurant's address in the Restaurang Management section.<br>Click<span class="Settings-extracted-6">&nbsp;'Save'&nbsp;</span>to apply the changes.<br>
+</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-16" id="sec-fda5">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Restaurant Website Cloning<br>
+</h3>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"> Seamless Expansion for Multi-Branch Restaurants<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Easily duplicate your restaurant's website for additional branches and customize each one to your needs. Send us an email to request a clone, and we'll handle the rest.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-17" id="carousel_235d">
+<div class="u-clearfix u-sheet u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-valign-top-xs u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-72b8">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-4" data-u-slide-to="0" data-u-target="#carousel-72b8"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/sttafpage1.png" alt="Sttafpage1" title="Sttafpage1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-72b8" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-72b8" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<p class="u-text u-text-1">
+<a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white u-btn-1" data-href="#" title="Restaurant Cloning
+Customization and Consistency Across All Branches
+
+ Expanding your restaurant chain just got easier with our Restaurant Website Cloning service.For customers who have additional branches, we offer a convenient way to duplicate your current restaurant website and customize it to meet the specific needs of each branch.Although this feature isn’t directly accessible to customers, you can request it by sending us an email at&nbsp;'info@fooodis.com'.
+Once we've duplicated your website, we will send you the login credentials, allowing you to personalize the new site.To ensure security, you can change the password later by selecting 'Forgot Password'&nbsp;on the login page.You'll receive an email at the address provided with a link to reset your password.After logging in, the plan will be set to the free tier by default.To access all features, make sure to upgrade to a suitable plan, such as the same one used for your original restaurant.
+Enjoy seamless multi-branch management and consistent branding with Fooodis!."><span class="Settings-extracted-8">Restaurant Cloning</span>
+<br><span class="Settings-extracted-6">Customization and Consistency Across All Branches</span>
+<br>
+<br><span class="Settings-extracted-6"></span> Expanding your restaurant chain just got easier with our Restaurant Website Cloning service.<br>For customers who have additional branches, we offer a convenient way to duplicate your current restaurant website and customize it to meet the specific needs of each branch.<br>Although this feature isn’t directly accessible to customers, you can request it by sending us an email at<span class="Settings-extracted-6">&nbsp;'info@fooodis.com'.</span>
+<br>Once we've duplicated your website, we will send you the login credentials, allowing you to personalize the new site.<br>To ensure security, you can change the password later by selecting <span class="Settings-extracted-6">'Forgot Password'</span>&nbsp;on the login page.<br>You'll receive an email at the address provided with a link to reset your password.<br>After logging in, the plan will be set to the free tier by default.<br>To access all features, make sure to upgrade to a suitable plan, such as the same one used for your original restaurant.<br>
+<br>Enjoy seamless multi-branch management and consistent branding with Fooodis!.<br>
+</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-18" id="sec-bc53">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Try Our Interactive Demo!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Experience ​Fooodis.com in Action<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Dive into our fully functional demo website and explore the power and simplicity of the Fooodis POS system. Test all the features, customize your experience, and see firsthand how our integrated platform can transform your restaurant management. Click here to start your journey!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-19" id="sec-dc70">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="https://demo.fooodis.com/login" target="_blank" rel="noopener noreferrer" title="Explore Demo Now"> Explore Demo Now<br>
+</a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-20" id="sec-383e">
+<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
+<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="images/Artboard1.svg">
+<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1"> Empower Your Brand with Our Comprehensive Digital Services</h3>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-21" id="sec-4bc9">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Settings-extracted-9">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-22" id="sec-5bc0">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Logo Land Design - Your Gateway to Digital Excellence</h3>
+<p class="u-align-center u-text u-text-2"> Discover the power of unified social media campaigns, custom content design, and creative digital storytelling at Logo Land Design. Our expert team specializes in designing, executing, and monitoring digital ad campaigns for maximum ROI. We craft a unique brand voice and strategy, create dynamic animations, produce compelling video narratives, capture stunning photography, and generate engaging, plagiarism-free content. Elevate your brand's presence with our tailored digital solutions.</p>
+</div>
+</section>
+<section class="u-border-2 u-border-grey-75 u-clearfix u-custom-color-1 u-section-23" id="sec-897e">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-list u-list-1">
+<div class="u-repeater u-repeater-1">
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"> Unified Social Media&nbsp;<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-2"> Designing, executing, and monitoring digital ad campaigns for maximum ROI<sider-trans></sider-trans>
+<br>
+<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"> Custom Content Design<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-4"> Crafting a unique brand voice and strategy to ensure consistent and impactful messaging across all platforms.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"> Animation Services<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-6"> Creating dynamic animations and graphics to convey messages in an engaging manner.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"> Video Editing<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-8"> Crafting compelling video narratives for promotions, brand stories, or advertisements.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">Photography<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-10"> Capturing high-quality visuals and designing graphics to enhance advertisements and promotional materials.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"> Creation &amp; Copywriting<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-12"> Using AI and human expertise to generate engaging, plagiarism-free content tailored for advertising needs.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-24" id="sec-8dfa">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-body-color u-text-1"> We Have More for You</h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-25" id="sec-c976">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Explore More with Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2"> Your journey with Logo Land Design doesn't end here. Explore our additional offerings by visiting the dedicated websites for our specialized products: the Website Builder, Email Marketing Program, and Webshop Builder. Each one is designed to enhance your digital experience and success. Discover more now!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-26" id="sec-de01">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Settings-extracted-9">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-27" id="sec-2754">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Restaurant Settings FAQs<br>
+</h3>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2"> Navigating the settings for your restaurant can be challenging, but we’re here to make it easier. Our Restaurant Settings FAQs are designed to provide answers to your most pressing questions about configuring your restaurant’s details. From managing working hours and menu items to updating location information and adding owner details, this guide will help you optimize your settings for seamless restaurant management. Whether you're new to Fooodis or looking to enhance your current setup, find the answers you need right here.<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-28" id="sec-c98b">
+<div class="u-accordion u-collapsed-by-default u-expanded-width u-spacing-0 u-accordion-1" role="tablist">
+<div class="u-accordion-item u-accordion-item-1">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-1" id="link-accordion-a910" role="tab" aria-label="How do I update my restaurant's name or description?" aria-controls="panel-7391" aria-selected="false" tabindex="0" title="How do I update my restaurant's name or description?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-11" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-12"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I update my restaurant's name or description?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f6ce"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-f6ce" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-1" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-1">
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+<ul class="u-text u-text-1">
+<li> To update your restaurant's name or description:</li>
+<li>Go to Restaurang in the sidebar.</li>
+<li>In the Restaurang Management section, edit the Restaurang Name and Restaurang Description fields.</li>
+<li>Click Save to apply the changes.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-2">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-2" id="link-accordion-a910" role="tab" aria-label="Can I change the restaurant logos and cover image?" aria-controls="panel-5386" aria-selected="false" tabindex="0" title="Can I change the restaurant logos and cover image?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-15" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-16"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I change the restaurant logos and cover image?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-feec"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-feec" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-2" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-2">
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+<ul class="u-text u-text-2">
+<li> Yes, you can change the logos and cover image by:</li>
+<li>Navigating to the Restaurang Management section.</li>
+<li>Uploading new images for the logos and cover.</li>
+<li>Clicking Save to confirm the changes.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-3">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-3" id="link-accordion-a910" role="tab" aria-label="How do I add or update the restaurant owner’s information?" aria-controls="panel-8724" aria-selected="false" tabindex="0" title="How do I add or update the restaurant owner’s information?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-17" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-18"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I add or update the restaurant owner’s information?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-0b4a"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-0b4a" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-3" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-3">
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+<ul class="u-text u-text-3">
+<li> To add or update the owner’s information:</li>
+<li>Go to Restaurang Management.</li>
+<li>Scroll to the Owner Information section and fill in the relevant fields.</li>
+<li>Click Save to confirm the changes.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-4">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-4" id="link-accordion-0781" role="tab" aria-label="How can I add a new menu item?" aria-controls="panel-8781" aria-selected="false" tabindex="0" title="How can I add a new menu item?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-19" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-20"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How can I add a new menu item?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-4"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f798"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-f798" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-4" id="accordion-0781">
+<div class="u-container-layout u-container-layout-4">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-custom-list u-text u-text-4">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div>
+</li>
+<li></li>
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div> To add a new menu item:<br>Go to Restaurang in the sidebar.<br>Click on Menu Management.<br>Fill in the Add Menu section with the item’s name, slug, class, and target.<br>Click Add Item and then Save to confirm.<br>
+</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-5">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-5" id="link-accordion-a910" role="tab" aria-label="Is it possible to add icons to menu items?" aria-controls="panel-4786" aria-selected="false" tabindex="0" title="Is it possible to add icons to menu items?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-21" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-22"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Is it possible to add icons to menu items?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-5"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-5d8b"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-5d8b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-5" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-5">
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+<ul class="u-text u-text-5">
+<li> Yes, you can add icons to menu items by:</li>
+<li>Going to Menu Management.</li>
+<li>Selecting an icon for each item in the Add Menu section.</li>
+<li>Clicking Save to confirm.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-6">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-6" id="link-accordion-a910" role="tab" aria-label="Can I change the logo link and menu text color?" aria-controls="panel-8727" aria-selected="false" tabindex="0" title="Can I change the logo link and menu text color?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-23" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-24"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I change the logo link and menu text color?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-6"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-4889"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-4889" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-6" id="accordion-a910">
+<div class="u-container-layout u-container-layout-6">
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+<ul class="u-text u-text-6">
+<li> Absolutely! In Menu Management:</li>
+<li>Update the Logo link and Menu text color fields.</li>
+<li>Click Save to confirm.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-7">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-7" id="link-accordion-a910" role="tab" aria-label="Can I create links to external or internal pages?" aria-controls="panel-506" aria-selected="false" tabindex="0" title="Can I create links to external or internal pages?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-25" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-26"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I create links to external or internal pages?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-7"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ba78"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-ba78" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-7" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-7">
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+<ul class="u-text u-text-7">
+<li> Yes, you can:</li>
+<li>Add links to external pages (e.g., your main website) or internal pages (e.g., loyalty, card, or user pages).</li>
+<li>Choose your preferred target (open directly or in a new tab).</li>
+<li>Click Save to confirm.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-8">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-8" id="link-accordion-a910" role="tab" aria-label="How do I change the working hours for specific days?" aria-controls="panel-2570" aria-selected="false" tabindex="0" title="How do I change the working hours for specific days?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-27" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-28"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I change the working hours for specific days?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-8"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-10d1"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-10d1" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-8" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-8">
+<quillbot-extension-highlights class="Settings-extracted-14"></quillbot-extension-highlights>
+<ul class="u-text u-text-8">
+<li> To change working hours:</li>
+<li>Go to Restaurang in the sidebar.</li>
+<li>Click on Working Hours.</li>
+<li>Adjust the opening and closing times for each day.</li>
+<li>Click Save to confirm.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-9">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-9" id="link-accordion-0781" role="tab" aria-label="Can I add or remove shifts for my restaurant?" aria-controls="panel-5252" aria-selected="false" tabindex="0" title="Can I add or remove shifts for my restaurant?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-29" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-30"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I add or remove shifts for my restaurant?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-9"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-626f"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-626f" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-9" id="accordion-0781">
+<div class="u-container-layout u-container-layout-9">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-9">
+<li> Yes, you can:</li>
+<li>Go to Working Hours.</li>
+<li>Click Add new shift to create additional shifts.</li>
+<li>Remove shifts by clicking the trash icon next to the shift timing.</li>
+<li>Click Save to apply the changes.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-10">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-10" id="link-accordion-0781" role="tab" aria-label="How do I ensure my restaurant’s map location is accurate?" aria-controls="panel-5363" aria-selected="false" tabindex="0" title="How do I ensure my restaurant’s map location is accurate?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-31" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-32"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I ensure my restaurant’s map location is accurate?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-10"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-c734"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-c734" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-10" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-10">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-10">
+<li> To ensure accuracy:</li>
+<li>Go to Restaurang in the sidebar.</li>
+<li>Click on Location.</li>
+<li>Verify that the map location matches your restaurant's address.</li>
+<li>If inaccurate, update the address in the Restaurang Management section.</li>
+<li>Click Save to apply the changes.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-11">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-11" id="link-accordion-0781" role="tab" aria-label="Where can I update my restaurant’s address?" aria-controls="panel-4122" aria-selected="false" tabindex="0" title="Where can I update my restaurant’s address?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-33" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-34"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Where can I update my restaurant’s address?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-11"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-d996"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-d996" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-11" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-11">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-11">
+<li> To update the address:</li>
+<li>Go to Restaurang Management.</li>
+<li>Edit the Restaurang Address field.</li>
+<li>Click Save to confirm.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-12">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-12" id="link-accordion-0781" role="tab" aria-label="How do I request a clone of my restaurant's website?" aria-controls="panel-3117" aria-selected="false" tabindex="0" title="How do I request a clone of my restaurant's website?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-35" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-36"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I request a clone of my restaurant's website?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-12"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ed87"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-ed87" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-12" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-12">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-12">
+<li> Send us an email at <a class="u-active-none u-border-none u-btn u-button-style u-hover-none u-none u-text-palette-1-base u-btn-1" href="mailto:info@fooodis.com" rel="noreferrer" target="_new" title="info@fooodis.com">info@fooodis.com</a> with your request. Include your current restaurant website details and any specific requirements for the new branch.
+                </li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-13">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-13" id="link-accordion-0781" role="tab" aria-label="Can I customize the cloned website separately from the original?" aria-controls="panel-4895" aria-selected="false" tabindex="0" title="Can I customize the cloned website separately from the original?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-37" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-38"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I customize the cloned website separately from the original?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-13"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-1579"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-1579" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-13" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-13">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-13">
+<li> Yes, once the new website is cloned, you will receive separate login credentials. You can customize it independently to meet the specific needs of the new branch.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-14">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-14" id="link-accordion-0781" role="tab" aria-label="How do I reset the password for the cloned website?" aria-controls="panel-2208" aria-selected="false" tabindex="0" title="How do I reset the password for the cloned website?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-39" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-40"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I reset the password for the cloned website?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-14"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-d75f"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-d75f" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-14" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-14">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-14">
+<li> On the login page, select "Forgot Password" and provide the email address associated with the new website. You'll receive a link to reset your password.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-15">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-15" id="link-accordion-0781" role="tab" aria-label="What plan will the cloned website be on initially?" aria-controls="panel-656" aria-selected="false" tabindex="0" title="What plan will the cloned website be on initially?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-41" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-42"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> What plan will the cloned website be on initially?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-15"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-3809"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-3809" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-15" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-15">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-15">
+<li> The cloned website will be set to the free tier by default. Please upgrade to a suitable plan to access all features.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-16">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-16" id="link-accordion-0781" role="tab" aria-label="Can I choose the same plan as my original restaurant website?" aria-controls="panel-511" aria-selected="false" tabindex="0" title="Can I choose the same plan as my original restaurant website?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-43" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-44"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I choose the same plan as my original restaurant website?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-16"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-1c4c"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-1c4c" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-16" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-16">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-16">
+<li> Yes, you can choose the same plan or any other plan that best meets the needs of your new branch.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-17">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-17" id="link-accordion-0781" role="tab" aria-label="Can I duplicate my restaurant website multiple times for different branches?" aria-controls="panel-9665" aria-selected="false" tabindex="0" title="Can I duplicate my restaurant website multiple times for different branches?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-45" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-46"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I duplicate my restaurant website multiple times for different branches?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-17"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-64c8"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-64c8" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-17" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-17">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-17">
+<li> Absolutely! You can request as many clones as you need for each additional branch.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-18">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-18" id="link-accordion-0781" role="tab" aria-label="How long does it take to clone my restaurant's website?" aria-controls="panel-8778" aria-selected="false" tabindex="0" title="How long does it take to clone my restaurant's website?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-47" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-46"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How long does it take to clone my restaurant's website?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-18"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ad07"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-ad07" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-18" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-18">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-18">
+<li> Once we receive your request, the cloning process typically takes 1-2 business days. We'll send you the login credentials as soon as it's ready.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-19">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-19" id="link-accordion-0781" role="tab" aria-label="Do I need to provide separate contact details for each cloned website?" aria-controls="panel-9756" aria-selected="false" tabindex="0" title="Do I need to provide separate contact details for each cloned website?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-48" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-49"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Do I need to provide separate contact details for each cloned website?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-19"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-44cd"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-44cd" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-19" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-19">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-19">
+<li> Yes, it's best to provide separate contact details (e.g., email address) for each new branch to ensure accurate and efficient communication.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-20">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-20" id="link-accordion-0781" role="tab" aria-label="Will my cloned websites have the same branding as the original?" aria-controls="panel-9361" aria-selected="false" tabindex="0" title="Will my cloned websites have the same branding as the original?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-50" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-51"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Will my cloned websites have the same branding as the original?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-20"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-2ac2"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-2ac2" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-20" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-20">
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+<ul class="u-text u-text-20">
+<li> Yes, the cloned websites will initially have the same branding as the original. You can customize each branch's branding as needed.</li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-3"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-21">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-21" id="link-accordion-0781" role="tab" aria-label="Where can I find more resources and guides?" aria-controls="panel-4638" aria-selected="false" tabindex="0" title="Where can I find more resources and guides?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-10">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-52" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-53"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Where can I find more resources and guides?</span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-21"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-234b"></use></svg><svg class="u-svg-content Settings-extracted-13" id="svg-234b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-21" id="accordion-0781">
+<div class="u-container-layout u-container-layout-21">
+<ul class="u-custom-list u-text u-text-21">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div> Visit our blog, '​Fooodis.com's Expert Blog,' to elevate your restaurant with insights and tips from industry experts.<br>
+</li>
+</ul>
+<a class="u-active-white u-border-1 u-border-active-white u-border-hover-white u-border-white u-btn u-button-style u-hover-white u-none u-text-active-grey-70 u-text-body-alt-color u-text-hover-grey-70 u-btn-2" data-page-id="2059315254" href="Blog.html" title="Expert Blog"> Expert Blog</a>
+</div>
+</div>
+</div>
+</div><div role="tabpanel" id="panel-4638"></div><div role="tabpanel" id="panel-9361"></div><div role="tabpanel" id="panel-9756"></div><div role="tabpanel" id="panel-8778"></div><div role="tabpanel" id="panel-9665"></div><div role="tabpanel" id="panel-511"></div><div role="tabpanel" id="panel-656"></div><div role="tabpanel" id="panel-2208"></div><div role="tabpanel" id="panel-4895"></div><div role="tabpanel" id="panel-3117"></div><div role="tabpanel" id="panel-4122"></div><div role="tabpanel" id="panel-5363"></div><div role="tabpanel" id="panel-5252"></div><div role="tabpanel" id="panel-2570"></div><div role="tabpanel" id="panel-506"></div><div role="tabpanel" id="panel-8727"></div><div role="tabpanel" id="panel-4786"></div><div role="tabpanel" id="panel-8781"></div><div role="tabpanel" id="panel-8724"></div><div role="tabpanel" id="panel-5386"></div><div role="tabpanel" id="panel-7391"></div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-29" id="sec-6e15">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" data-page-id="2059315254" href="Blog.html" title="LEARN More!"> LEARN More!</a>
+</div>
+</section>
+<style class="u-overlap-style" data-parsed="true">.u-overlap:not(.u-sticky-scroll) .u-header {
+background-color: #1d2029 !important; transparency: 45 !important
+}</style>
+    
+    
+    <script src="assets/footer-loader.js"></script>
+  <!-- Unified Footer Loader -->  
+  <script src="assets/include-footer.js"></script>
+
+
+</body></html>

@@ -1,0 +1,1608 @@
+<!DOCTYPE html><html lang="sv" class="Settings-extracted-1"><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="​​Digital Mastery, Design Perfection" name="keywords">
+<meta content="" name="description">
+<title>Settings</title>
+<link href="../nicepage.css" media="screen" rel="stylesheet">
+<link href="../Settings.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="../jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="../nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<!-- Hamburger Menu Animation CSS -->
+<link href="../assets/hamburger-animation.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "../images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Settings" name="twitter:title">
+<meta content="" name="twitter:description">
+<meta content="" property="og:title">
+<meta content="" property="og:description">
+<meta content="website" property="og:type">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
+
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
+        }
+
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
+        }
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
+            }
+            dynamicLoadScript();
+        });
+    </script>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
+            }
+
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
+
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
+
+                            var forms = document.getElementsByTagName('form');
+
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<!-- Fooodis Header CSS and JS -->
+<link href="../assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="../assets/header.js"></script>
+<script defer="" src="../assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style data-parsed="true">
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .footer-logo {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 0.8rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1rem;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="../footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/auto-generated-styles-final.css">
+<script src="assets/header-scroll-effect.js" defer></script>
+</head>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="sv" data-path-to-root="../">
+<!-- Original Fooodis Header - Exact Copy -->
+<style data-parsed="true">
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-container {
+    display: block;
+}
+
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
+
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+
+/* Navigation */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 10px;
+}
+
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-item a:hover {
+    color: #e8f24c;
+}
+
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.show {
+    left: 0;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
+
+.mobile-nav-item {
+    margin: 15px 0;
+}
+
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-item a:hover {
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+</style>
+<header class="fooodis-header">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="../images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="../images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="../images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Service">Service</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Contact">Contact</a></li>
+<li class="nav-item"><a data-lang-en="FEBlog" data-lang-sv="FEBlogg" href="FEBlog.html" title="FEBlog">FEBlog</a></li>
+<li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="Blog.html" title="Blog">Blog</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="../Prices.html" title="Price">Price</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="Registrar">Registrar</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/login" rel="noopener noreferrer" target="_blank" title="Login">Login</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button></div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
+
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="SERVICE">SERVICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">CONTACT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="FEBLOG" data-lang-sv="FEBLOGG" href="FEBlog.html" title="FEBLOG">FEBLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="Blog.html" title="BLOG">BLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html" title="PRICE">PRICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="REGISTRAR">REGISTRAR</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/login" rel="noopener noreferrer" target="_blank" title="LOGIN">LOGIN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
+        }
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    // X icon removed from sidebar
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+        });
+    }
+    
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'FEBlog': 'FEBlog',
+            'Blog': 'Blog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'FEBlog': 'FEBlogg',
+            'Blog': 'Blogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<script>
+  fetch('../header.html')
+    .then(response => response.text())
+    .then(data => document.getElementById("header-placeholder").innerHTML = data);
+</script>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-xl u-custom-color-1 u-section-1" id="sec-ac62">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-sheet-1">
+<h1 class="u-text u-text-1">​Fooodis.com Expertblogg<br></h1>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-2" id="sec-6fcb">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Guide för restaurangkonfiguration: Detaljerade instruktioner<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-2"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2"><a class="u-active-none u-block-f75e-5 u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white Settings-extracted-3" data-gramm="false" data-href="#" data-qb-tmp-id="lt-846969" spellcheck="false" wt-ignore-input="true" title="​Introduktion: Det är enkelt att konfigurera din restaurangs inställningar på Fooodis tack vare vårt användarvänliga gränssnitt. Med hjälp av den här guiden kan du enkelt hantera detaljer för din restaurang, inklusive menyer, öppettider och plats.">​Introduktion: Det är enkelt att konfigurera din restaurangs inställningar på Fooodis tack vare vårt användarvänliga gränssnitt. Med hjälp av den här guiden kan du enkelt hantera detaljer för din restaurang, inklusive menyer, öppettider och plats.<br></a></p>
+</div>
+</section>
+<section class="skrollable u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-3" id="sec-3f49" src="">
+<div class="u-clearfix u-sheet u-sheet-1">
+<img alt="" class="u-image u-image-contain u-image-default u-image-1" data-custom-animation="{&quot;animation&quot;:{&quot;XXL&quot;:{&quot;steps&quot;:[],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XL&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;LG&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-688&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-684&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;MD&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-577&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-572&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;SM&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-473&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-462&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XS&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-366&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-361&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}}},&quot;container&quot;:&quot;&quot;}" data-image-height="1772" data-image-width="2255" src="../images/Setting1.png">
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-4" id="sec-e853">
+<div class="u-clearfix u-sheet u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Gå med i Fooodis idag!<br></h3>
+<h6 class="u-align-center u-text u-text-2">​Stärk din restaurang med digitala lösningar<br></h6>
+<p class="u-align-center u-text u-text-3">​Redo att ta din restaurang till nästa nivå? Registrera dig nu och börja använda Fooodis.coms avancerade digitala verktyg helt gratis. Effektivisera dina processer, förbättra kundservicen och öka dina vinster med vår användarvänliga plattform. Kom igång idag utan kostnad och förvandla din restaurangs framtid!<br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-5" id="sec-d623">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="​Börja gratis">​Börja gratis<br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-6" id="sec-3d66">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Guide för restauranginställningar: Steg-för-steg-manual<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Settings-extracted-5" data-translate-gpt="preserved-style">Seamless konfiguration för hantering av din restauranginformation</span><br></h6>
+<p class="u-align-center u-text u-text-3">​Att ställa in dina restauranginställningar på Fooodis är enkelt med vårt intuitiva gränssnitt. Den här guiden ger dig en steg-för-steg-genomgång som hjälper dig att hantera din restaurangs information, menyer, arbetstider och plats smidigt.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-7" id="sec-ccfb">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-53b7">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-6" data-u-slide-to="0" data-u-target="#carousel-53b7"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/Setting2.png" alt="Setting2" title="Setting2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-53b7" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-53b7" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Settings-extracted-7">Restauranghantering</span><br><br><span class="Settings-extracted-8">Viktiga detaljer och anpassning för din restaurang</span><br><br><span class="Settings-extracted-8">Översikt över Restauranghantering</span><br>&nbsp; ○ I det här avsnittet kan du ange och ändra viktig information om din restaurang, såsom namn, beskrivning, adress och kontaktuppgifter.<br><br><span class="Settings-extracted-8">1. Gå till Restauranghantering</span><br>&nbsp; ○ Från sidomenyn, välj "Restaurang".<br>&nbsp; ○ I toppmenyn, välj "Restauranghantering".<br><br><span class="Settings-extracted-8">2. Restaurangnamn och beskrivning</span><br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Restaurangnamn:</span><br>&nbsp; &nbsp; ○ Ange din restaurangs namn i fältet "Restaurangnamn".<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Restaurangbeskrivning:</span><br>&nbsp; &nbsp; ○ Ge en kort översikt av din restaurang i fältet "Restaurangbeskrivning".<br><br>3. Restaurangadress och kontaktRestaurangadress:<br>&nbsp; ○ Ange gatuadressen i fältet "Restaurangadress".<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Restaurangtelefon:</span><br>&nbsp; &nbsp; ○ Lägg till kontakttelefonnumret i fältet "Restaurangtelefon".<br><br><span class="Settings-extracted-8">4. BeställningsinställningarMinimibeställning:</span><br>&nbsp; ○ Ange ett minimiorderbelopp i fältet "Minimibeställning".<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Genomsnittlig förberedelsetid:</span><br>&nbsp; &nbsp; ○ Specificera den genomsnittliga förberedelsetiden för beställningar i minuter.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Beställningsintervall:</span><br>&nbsp; &nbsp; ○ Ställ in tidsintervaller i minuter för schemaläggning av beställningar.<br><br></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-8" id="sec-31d2">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Restauranghantering<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Settings-extracted-5" data-translate-gpt="preserved-style">Sömlös konfiguration för hantering av din restauranginformation</span><br></h6>
+<p class="u-align-center u-text u-text-3">​Visa upp din unika restaurangs identitet genom att uppdatera viktiga detaljer som namn, beskrivning och kontaktinformation. Säkerställ att dina kunder ser korrekt och engagerande information som speglar ditt varumärke.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-9" id="carousel_88a6">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-091e">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-6" data-u-slide-to="0" data-u-target="#carousel-091e"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/Setting3.png" alt="Setting3" title="Setting3">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-091e" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-091e" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-align-left-xl u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Settings-extracted-9">Restauranghantering</span><br><br><span class="Settings-extracted-8">4. Välj tjänstefunktioner:</span><br><br>&nbsp; ○ Aktivera eller inaktivera följande tjänster baserat på din restaurangs erbjudanden:<br>&nbsp; ○ Hämtning<br>&nbsp; ○ Leverans<br>&nbsp; ○ Gratis leverans<br>&nbsp; ○ Inaktivera beställning<br>&nbsp; ○ Inaktivera Ring på Servitör<br>&nbsp; ○ Inaktivera kontinuerliga beställningar<br>&nbsp; ○ Äta på plats (Dine-In)<br><br><span class="Settings-extracted-8">5. Lokalisering:</span><br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Valuta och lokalisering:</span><br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Valuta:</span><br>&nbsp; &nbsp; ○ Välj önskad valuta i fältet "Valuta".<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Valutakonvertering:</span><br>&nbsp; &nbsp; &nbsp;○ Alternativ för att aktivera eller inaktivera automatisk valutakonvertering.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">WhatsApp-nummer:</span><br>&nbsp; &nbsp; ○ Ange WhatsApp-numret i fältet "WhatsApp-telefon".<br><br><span class="Settings-extracted-8">6. Visuell profilering:</span><br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Bred restauranglogotyp:</span><br>&nbsp; &nbsp; ○ Ladda upp din restaurangs breda logotyp.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Mörk bred restauranglogotyp:</span><br>&nbsp; &nbsp; ○ Ladda upp en version av din logotyp för mörkt läge.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Restaurangbild:</span><br>&nbsp; &nbsp; &nbsp;○ Lägg till en bild som representerar din restaurang.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Omslagsbild för restaurangen:</span><br>&nbsp; &nbsp; &nbsp;○ Ladda upp en omslagsbild för din restaurangs profil.<br>&nbsp; ○&nbsp;<span class="Settings-extracted-8">Favicon-bild för restaurangen:</span><br>&nbsp; &nbsp; &nbsp;○ Ladda upp en liten favicon-bild för att representera din restaurang i webbläsarflikar.<br><br><span class="Settings-extracted-8">Spara dina ändringar:</span><br>&nbsp; ○ När du har angett all nödvändig information och konfigurerat dina inställningar, klicka på knappen "Spara" för att tillämpa dina uppdateringar.<br></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-10" id="sec-08ce">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Menyhantering<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Settings-extracted-5" data-translate-gpt="preserved-style">Utforma Oemotståndliga Menyer &amp; Sömlös Navigering</span><br></h6>
+<p class="u-align-center u-text u-text-3">​Höj kundupplevelsen med skräddarsydda menyer och lättnavigerade länkar till interna eller externa sidor. Lägg till ikoner och anpassa färger för att matcha din restaurangs estetik.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-11" id="carousel_2f09">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-247b">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-6" data-u-slide-to="0" data-u-target="#carousel-247b"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/Setting4.png" alt="Setting4" title="Setting4">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-247b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-247b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-text u-text-1"><span class="Settings-extracted-9">Menyhantering</span><br><span class="Settings-extracted-8">Organisera din meny och anpassa visuella inställningar</span><br><br><span class="Settings-extracted-8">1. Översikt över menyhantering:</span><br>&nbsp; ○ I det här avsnittet kan du lägga till länkar till andra sidor, justera de visuella inställningarna och arrangera din restaurangs meny.<br><br><span class="Settings-extracted-8">2. Så här konfigurerar du:</span><br>&nbsp; ○ Från sidomenyn, välj "Restaurang".<br>&nbsp; ○ Välj "Menyhantering".<br>&nbsp; ○ Gör följande inställningar aktuella:<br><br>3. Logolänk:<br>&nbsp; ○ Ange en "hyperlänk" till din restaurangs hemsida eller webbplats.<br><br>4. Textfärg för meny:<br>&nbsp; ○ Välj en "färg" som kompletterar ditt varumärke.<br><br><span class="Settings-extracted-8">5. Lägg till nya menyalternativ:</span><br><span class="Settings-extracted-8">Namn:</span><br>&nbsp; ○ Ge menyalternativet ett "namn".<br><span class="Settings-extracted-8">Slug:</span><br>&nbsp; ○ Skapa en "slug" som fungerar med en "URL".<br><span class="Settings-extracted-8">CSS-klass:</span><br>&nbsp; ○ Välj en "CSS"-klass att använda.<br>Ikon:<br>&nbsp; ○ Välj en "ikon" för att symbolisera objektet.<br><span class="Settings-extracted-8">Mål:</span><br>&nbsp; ○ Välj om länken ska öppnas i en ny flik eller direkt.<br><br><span class="Settings-extracted-8">För att lägga till det nya menyalternativet:</span><br>&nbsp; ○ Klicka på "Lägg till artikel".<br>&nbsp; ○ Dra menyalternativen till rätt positioner för att arrangera dem.<br>&nbsp; ○ Klicka på "Spara" för att verifiera ändringarna.<br></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-12" id="sec-a9bb">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Arbetstider<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Settings-extracted-5" data-translate-gpt="preserved-style">Ställ exakta öppettider för dina kunder</span><br></h6>
+<p class="u-align-center u-text u-text-3">​Definiera din restaurangs arbetstider med precision. Lägg till skift och anpassa öppnings- och stängningstider för att säkerställa att dina kunder alltid vet när du har öppet.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-13" id="carousel_234a">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-8f17">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-6" data-u-slide-to="0" data-u-target="#carousel-8f17"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/WorkingHours.png" alt="WorkingHours" title="WorkingHours">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-8f17" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-8f17" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<p class="u-text u-text-1"><a class="u-active-none u-btn-1 u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white Settings-extracted-10" data-gramm="false" data-href="#" data-qb-tmp-id="lt-418822" spellcheck="false" wt-ignore-input="true" title="ArbetstiderHantera exakta öppnings- och stängningstiderÖversikt över arbetstider:&nbsp; ○ Håll koll på din restaurangs öppettider för att säkerställa att gäster vet när du har öppet och stängt.För att konfigurera, följ dessa steg:&nbsp; &nbsp; ○ Klicka på &quot;Restaurang&quot; i sidomenyn.&nbsp; &nbsp; ○ Välj &quot;Arbetstider&quot;.&nbsp; &nbsp; ○ Välj de dagar din restaurang är öppen och ange öppnings- och stängningstider.&nbsp; &nbsp; ○ Klicka på &quot;Lägg till nytt skift&quot; för att specificera ytterligare skift.&nbsp; &nbsp; ○ Klicka på &quot;Spara&quot; för att tillämpa ändringarna."><span class="Settings-extracted-7">Arbetstider</span><br><br><span class="Settings-extracted-8">Hantera exakta öppnings- och stängningstider</span><br><br><span class="Settings-extracted-8">Översikt över arbetstider:</span><br>&nbsp; ○ Håll koll på din restaurangs öppettider för att säkerställa att gäster vet när du har öppet och stängt.<br><span class="Settings-extracted-8">För att konfigurera, följ dessa steg:</span><br>&nbsp; &nbsp; ○ Klicka på "Restaurang" i sidomenyn.<br>&nbsp; &nbsp; ○ Välj "Arbetstider".<br>&nbsp; &nbsp; ○ Välj de dagar din restaurang är öppen och ange öppnings- och stängningstider.<br>&nbsp; &nbsp; ○ Klicka på "Lägg till nytt skift" för att specificera ytterligare skift.<br>&nbsp; &nbsp; ○ Klicka på "Spara" för att tillämpa ändringarna.<br></a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-14" id="sec-69d7">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Plats<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Settings-extracted-5" data-translate-gpt="preserved-style">Hitta din restaurangs plats med precision</span><br></h6>
+<p class="u-align-center u-text u-text-3">​Hjälp dina kunder att hitta dig enkelt. Verifiera din restaurangs adress och plats på kartan för smidig kundnavigering.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-15" id="carousel_3bee">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-bottom-xs u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-a96b">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-6" data-u-slide-to="0" data-u-target="#carousel-a96b"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide" data-image-height="1856" data-image-width="2362">
+<img class="u-back-image u-expanded" src="../images/Location.png" alt="Location" title="Location">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-a96b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-a96b" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<p class="u-text u-text-1"><a class="u-active-none u-btn-1 u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white Settings-extracted-10" data-gramm="false" data-href="#" data-qb-tmp-id="lt-629157" spellcheck="false" wt-ignore-input="true" title="​PlatsSäkerställ korrekt kartplacering av din restaurangÖversikt:&nbsp; ○ Avsnittet Plats visar kartpositionen för din restaurang baserat på adressen som angetts i avsnittet Restauranghantering.Steg för att verifiera eller uppdatera:&nbsp; ○ Klicka på &quot;Restaurang&quot; i sidomenyn.&nbsp; ○ Välj &quot;Plats&quot;.&nbsp; ○ Bekräfta att kartan visar rätt plats baserat på restaurangens adress som angivits i Restauranghantering.&nbsp; ○ Om det behövs, uppdatera din restaurangs adress i avsnittet Restauranghantering.Klicka på &quot;Spara&quot; för att tillämpa ändringarna."><span class="Settings-extracted-7">​Plats</span><br><br><span class="Settings-extracted-8">Säkerställ korrekt kartplacering av din restaurang</span><br><span class="Settings-extracted-8">Översikt:</span><br>&nbsp; ○ Avsnittet Plats visar kartpositionen för din restaurang baserat på adressen som angetts i avsnittet Restauranghantering.<br><br><span class="Settings-extracted-8">Steg för att verifiera eller uppdatera:</span><br>&nbsp; ○ Klicka på "Restaurang" i sidomenyn.<br>&nbsp; ○ Välj "Plats".<br>&nbsp; ○ Bekräfta att kartan visar rätt plats baserat på restaurangens adress som angivits i Restauranghantering.<br>&nbsp; ○ Om det behövs, uppdatera din restaurangs adress i avsnittet Restauranghantering.<br>Klicka på "Spara" för att tillämpa ändringarna.<br></a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-16" id="sec-fda5">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1">​Kloning av restaurangens webbplats<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated Settings-extracted-5" data-translate-gpt="preserved-style">Expansión sin fisuras para restaurantes de múltiples sucursales</span><br></h6>
+<p class="u-align-center u-text u-text-3">​Duplicera enkelt din restaurangs webbplats för ytterligare filialer och anpassa varje sida efter dina behov. Skicka ett e-postmeddelande till oss för att begära en kloning, så tar vi hand om resten.<br></p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-17" id="carousel_235d">
+<div class="u-clearfix u-sheet u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-valign-top-xs u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-valign-bottom-sm u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-72b8">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Settings-extracted-6" data-u-slide-to="0" data-u-target="#carousel-72b8"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="../images/sttafpage1.png" alt="Sttafpage1" title="Sttafpage1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-72b8" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-72b8" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-container-layout-4">
+<p class="u-text u-text-1"><a class="u-active-none u-btn-1 u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white Settings-extracted-10" data-gramm="false" data-href="#" data-qb-tmp-id="lt-397186" spellcheck="false" wt-ignore-input="true" title="Kloning av restaurangAnpassning och konsekvens för alla filialerAtt expandera din restaurangkedja har aldrig varit enklare med vår tjänst för kloning av restaurangens webbplats.Så här fungerar det:För kunder med ytterligare filialer erbjuder vi ett enkelt sätt att duplicera din nuvarande restaurangwebbplats och anpassa den efter varje filialens specifika behov.Begär kloning:&nbsp; ○ Den här funktionen är inte direkt tillgänglig för kunder, men du kan begära den genom att skicka ett e-postmeddelande till info@fooodis.com.&nbsp; ○ När vi har duplicerat din webbplats skickar vi inloggningsuppgifterna till dig, så att du kan anpassa den nya webbplatsen.Säkerhetsåtgärder:&nbsp; ○ För att säkerställa säkerheten kan du ändra lösenordet senare genom att välja &quot;Glömt lösenord&quot; på inloggningssidan.&nbsp; ○ Du får ett e-postmeddelande med en länk för att återställa ditt lösenord.Plan och uppgradering:&nbsp; ○ Efter inloggning är planen som standard inställd på gratisnivå.&nbsp; ○ För att få tillgång till alla funktioner, uppgradera till en lämplig plan, till exempel samma plan som används för din ursprungliga restaurang.Fördelar med tjänsten:&nbsp; ○ Njut av smidig hantering av flera filialer och en konsekvent varumärkesprofilering med Fooodis!"><span class="Settings-extracted-9">Kloning av restaurang</span><br><br><span class="Settings-extracted-8">Anpassning och konsekvens för alla filialer</span><br>Att expandera din restaurangkedja har aldrig varit enklare med vår tjänst för kloning av restaurangens webbplats.<br><span class="Settings-extracted-8">Så här fungerar det:</span><br>För kunder med ytterligare filialer erbjuder vi ett enkelt sätt att duplicera din nuvarande restaurangwebbplats och anpassa den efter varje filialens specifika behov.<br><br><span class="Settings-extracted-8">Begär kloning:</span><br>&nbsp; ○ Den här funktionen är inte direkt tillgänglig för kunder, men du kan begära den genom att skicka ett e-postmeddelande till info@fooodis.com.<br>&nbsp; ○ När vi har duplicerat din webbplats skickar vi inloggningsuppgifterna till dig, så att du kan anpassa den nya webbplatsen.<br>Säkerhetsåtgärder:<br>&nbsp; ○ För att säkerställa säkerheten kan du ändra lösenordet senare genom att välja "Glömt lösenord" på inloggningssidan.<br>&nbsp; ○ Du får ett e-postmeddelande med en länk för att återställa ditt lösenord.<br><br><span class="Settings-extracted-8">Plan och uppgradering:</span><br>&nbsp; ○ Efter inloggning är planen som standard inställd på gratisnivå.<br>&nbsp; ○ För att få tillgång till alla funktioner, uppgradera till en lämplig plan, till exempel samma plan som används för din ursprungliga restaurang.<br><br><span class="Settings-extracted-8">Fördelar med tjänsten:</span><br>&nbsp; ○ Njut av smidig hantering av flera filialer och en konsekvent varumärkesprofilering med Fooodis!<br></a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-18" id="sec-bc53">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​PROVA VÅR INTERAKTIVA DEMO!<br></h3>
+<h6 class="u-align-center u-text u-text-2">​Upplev Fooodis.com i aktion<sider-trans data-url-id="1578637305"><sider-trans-block><sider-trans-text data-display="none">Experience Fooodis.com in action</sider-trans-text></sider-trans-block></sider-trans><br></h6>
+<p class="u-align-center u-text u-text-3">​Dyk in i vår fullt fungerande demo-webbplats och utforska kraften och enkelheten i Fooodis POS-system. Testa alla funktioner, anpassa din upplevelse och se med egna ögon hur vår integrerade plattform kan transformera din restauranghantering. Klicka här för att starta din resa!<br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-19" id="sec-dc70">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" target="_blank" rel="noopener noreferrer" title="​Utforska demot nu">​Utforska demot nu<br></a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-20" id="sec-383e">
+<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
+<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="../images/Artboard1.svg">
+<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1">​Stärk Ditt Varumärke med Våra Omfattande Digitala Tjänster</h3>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-21" id="sec-4bc9">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="BESÖK LOGOLANDS"><span class="translate-gpt-translated Settings-extracted-11" data-block-type="" data-translate-gpt="preserved-style">BESÖK LOGOLANDS</span><br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-22" id="sec-5bc0">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Logo Land Design - Din Port till Digital Excellens</h3>
+<p class="u-align-center u-text u-text-2">​Upptäck kraften i enhetliga sociala mediekampanjer, skräddarsydd innehållsdesign och kreativ digital berättande hos Logo Land Design. Vårt expertteam specialiserar sig på att designa, genomföra och övervaka digitala annonskampanjer för maximal avkastning. Vi skapar en unik varumärkesröst och strategi, skapar dynamiska animationer, producerar fängslande videonarrativ, fångar fantastisk fotografi och genererar engagerande, plagiatfritt innehåll. Höj ditt varumärkes närvaro med våra skräddarsydda digitala lösningar.</p>
+</div>
+</section>
+<section class="u-border-2 u-border-grey-75 u-clearfix u-custom-color-1 u-section-23" id="sec-897e">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-list u-list-1">
+<div class="u-repeater u-repeater-1">
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"><span class="translate-gpt-translated Settings-extracted-12" data-translate-gpt="preserved-style">SOCIALE MEDIER I ETT NÄTVERK</span></p>
+<p class="u-text u-text-body-alt-color u-text-2">​<span class="translate-gpt-translated Settings-extracted-13" data-translate-gpt="preserved-style">Utforma, utföra och övervaka digitala annonskampanjer för maximal avkastning på investeringen (ROI).</span><br><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="Läs mer"><span class="translate-gpt-translated Settings-extracted-14" data-translate-gpt="preserved-style">Läs mer</span></a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"><span class="translate-gpt-translated Settings-extracted-12" data-translate-gpt="preserved-style">SKRÄDDARSYTT INNEHÅLLSDESIGN</span></p>
+<p class="u-text u-text-body-alt-color u-text-4"><span class="translate-gpt-translated Settings-extracted-13" data-translate-gpt="preserved-style">Utforma en unik varumärkesröst och strategi för att säkerställa konsekvent och effektiv kommunikation på alla plattformar.</span></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"><span class="translate-gpt-translated Settings-extracted-12" data-translate-gpt="preserved-style">TJÄNSTER INOM ANIMERING</span></p>
+<p class="u-text u-text-body-alt-color u-text-6">​<span class="translate-gpt-translated Settings-extracted-13" data-translate-gpt="preserved-style">Skapa dynamiska animationer och grafik för att förmedla meddelanden på ett engagerande sätt.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"><span class="translate-gpt-translated Settings-extracted-12" data-translate-gpt="preserved-style">VIDEO REDIGERING</span></p>
+<p class="u-text u-text-body-alt-color u-text-8">​<span class="translate-gpt-translated Settings-extracted-13" data-translate-gpt="preserved-style">Skapa lockande videoberättelser för marknadsföring, varumärkesberättelser eller annonser.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">​Fotografi</p>
+<p class="u-text u-text-body-alt-color u-text-10">​<span class="translate-gpt-translated Settings-extracted-13" data-translate-gpt="preserved-style">Fånga högkvalitativa visuella element och designa grafik för att förbättra annonser och marknadsföringsmaterial.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"><span class="translate-gpt-translated Settings-extracted-12" data-translate-gpt="preserved-style">SKAPANDE OCH COPYRIGHT</span></p>
+<p class="u-text u-text-body-alt-color u-text-12"><span class="translate-gpt-translated Settings-extracted-13" data-translate-gpt="preserved-style">Att använda AI och mänsklig expertis för att skapa engagerande, fri från plagiat, skräddarsytt innehåll anpassat för reklambehov.</span></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-24" id="sec-8dfa">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-body-color u-text-1"><span class="translate-gpt-translated Settings-extracted-15" data-translate-gpt="preserved-style">VI HAR MER FÖR DIG</span></h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-25" id="sec-c976">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Utforska Mer med Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2">​Din resa med Logo Land Design slutar inte här. Utforska våra ytterligare erbjudanden genom att besöka de dedikerade webbplatserna för våra specialiserade produkter: Webbplatsbyggaren, E-postmarknadsföringsprogrammet och Webbshopbyggaren. Varje produkt är utformad för att förbättra din digitala upplevelse och framgång. Upptäck mer nu!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-26" id="sec-de01">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="BESÖK LOGOLANDS"><span class="translate-gpt-translated Settings-extracted-11" data-block-type="" data-translate-gpt="preserved-style">BESÖK LOGOLANDS</span><br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-27" id="sec-2754">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Vanliga frågor om restauranginställningar<br></h3>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<p class="u-align-center u-text u-text-2">​tt navigera bland inställningarna för din restaurang kan vara en utmaning, men vi är här för att göra det enklare. Våra vanliga frågor om restauranginställningar är utformade för att ge svar på dina viktigaste frågor om att konfigurera din restaurangs detaljer.Vad du kan lära dig:<br>Hantering av arbetstider och menyalternativ.<br>Uppdatering av platsinformation.<br>Lägga till ägaruppgifter.<br>Den här guiden hjälper dig att optimera dina inställningar för en smidig restauranghantering. Oavsett om du är ny på Fooodis eller vill förbättra din nuvarande uppsättning hittar du de svar du behöver här.<br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-28" id="sec-c98b">
+<div class="u-accordion u-collapsed-by-default u-expanded-width u-spacing-0 u-accordion-1" role="tablist">
+<div class="u-accordion-item u-accordion-item-1">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-1" id="link-accordion-a910" role="tab" aria-label="​Hur uppdaterar jag min restaurangs namn eller beskrivning?" aria-controls="panel-8030" aria-selected="false" tabindex="0" title="​Hur uppdaterar jag min restaurangs namn eller beskrivning?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-17" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-18"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Hur uppdaterar jag min restaurangs namn eller beskrivning?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f6ce"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-f6ce" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-1" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-1">
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+<ul class="u-text u-text-1"><li><div class="hidden u-block-3ea4-122 u-list-icon"></div><span class="Settings-extracted-8">​För att uppdatera din restaurangs namn eller beskrivning:</span><br>Gå till "Restaurang" i sidomenyn.<br>I avsnittet Restauranghantering, redigera fälten Restaurangnamn och Restaurangbeskrivning.<br>Klicka på "Spara" för att tillämpa ändringarna.<br></li></ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-2">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-2" id="link-accordion-a910" role="tab" aria-label="​Kan jag ändra restaurangens logotyper och omslagsbild?" aria-controls="panel-2264" aria-selected="false" tabindex="0" title="​Kan jag ändra restaurangens logotyper och omslagsbild?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-21" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-22"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag ändra restaurangens logotyper och omslagsbild?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-feec"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-feec" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-2" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-2">
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+<ul class="u-text u-text-2"><li><div class="hidden u-block-3ea4-126 u-list-icon"></div>​Ja, du kan ändra logotyperna och omslagsbilden genom att:<br>Navigera till avsnittet Restauranghantering.<br>Ladda upp nya bilder för logotyperna och omslagsbilden.<br>Klicka på "Spara" för att bekräfta ändringarna.<br></li></ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-3">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-3" id="link-accordion-a910" role="tab" aria-label="​Hur lägger jag till eller uppdaterar ägarinformationen för restaurangen?" aria-controls="panel-498" aria-selected="false" tabindex="0" title="​Hur lägger jag till eller uppdaterar ägarinformationen för restaurangen?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-23" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-24"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Hur lägger jag till eller uppdaterar ägarinformationen för restaurangen?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-0b4a"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-0b4a" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-3" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-3">
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+<ul class="u-text u-text-3"><li><div class="hidden u-block-3ea4-130 u-list-icon"></div>​För att lägga till eller uppdatera ägarinformationen:<br>Gå till Restauranghantering.<br>Skrolla till avsnittet Ägarinformation och fyll i de relevanta fälten.<br>Klicka på "Spara" för att bekräfta ändringarna.</li></ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-4">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-4" id="link-accordion-0781" role="tab" aria-label="​Hur lägger jag till ett nytt menyalternativ?" aria-controls="panel-4054" aria-selected="false" tabindex="0" title="​Hur lägger jag till ett nytt menyalternativ?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-25" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-26"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Hur lägger jag till ett nytt menyalternativ?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-4"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-f798"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-f798" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-4" id="accordion-0781">
+<div class="u-container-layout u-container-layout-4">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-custom-list u-text u-text-4">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div></li><li>
+</li>
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div>​​För att lägga till ett nytt menyalternativ:<br>Gå till Restaurang i sidomenyn.<br>Klicka på Menyhantering.<br>Fyll i avsnittet Lägg till meny med:Namn på objektet.<br>Slug.<br>Klass.<br>Mål (om länken ska öppnas i en ny flik eller direkt).<br><br>Klicka på Lägg till objekt och sedan Spara för att bekräfta.<br></li>
+</ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-5">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-5" id="link-accordion-a910" role="tab" aria-label="​Är det möjligt att lägga till ikoner till menyalternativ?" aria-controls="panel-8748" aria-selected="false" tabindex="0" title="​Är det möjligt att lägga till ikoner till menyalternativ?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-27" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-28"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Är det möjligt att lägga till ikoner till menyalternativ?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-5"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-5d8b"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-5d8b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-5" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-5">
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+<ul class="u-text u-text-5"><li><div class="hidden u-block-3ea4-134 u-list-icon"></div>​Ja, du kan lägga till ikoner till menyalternativ genom att:<br>Gå till Menyhantering.<br>Välja en ikon för varje objekt i avsnittet Lägg till meny.<br>Klicka på Spara för att bekräfta.</li></ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-6">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-6" id="link-accordion-a910" role="tab" aria-label="​Kan jag ändra logolänken och textfärgen i menyn?" aria-controls="panel-1225" aria-selected="false" tabindex="0" title="​Kan jag ändra logolänken och textfärgen i menyn?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-29" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-30"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag ändra logolänken och textfärgen i menyn?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-6"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-4889"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-4889" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-6" id="accordion-a910">
+<div class="u-container-layout u-container-layout-6">
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+<ul class="u-text u-text-6"><li><div class="hidden u-block-3ea4-138 u-list-icon"></div>​Absolut!<br>Gå till Menyhantering.<br>Uppdatera fälten för Logolänk och Textfärg i menyn.<br>Klicka på Spara för att bekräfta.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-7">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-7" id="link-accordion-a910" role="tab" aria-label="​Kan jag skapa länkar till externa eller interna sidor?" aria-controls="panel-4469" aria-selected="false" tabindex="0" title="​Kan jag skapa länkar till externa eller interna sidor?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-31" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-32"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag skapa länkar till externa eller interna sidor?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-7"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ba78"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-ba78" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-7" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-7">
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+<ul class="u-text u-text-7"><li><div class="hidden u-block-3ea4-141 u-list-icon"></div>​Ja, du kan:<br>Lägga till länkar till externa sidor (t.ex. din huvudsajt) eller interna sidor (t.ex. lojalitet, kort eller användarsidor).<br>Välja ditt föredragna mål (öppna direkt eller i en ny flik).<br>Klicka på Spara för att bekräfta.</li></ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-8">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-8" id="link-accordion-a910" role="tab" aria-label="​Hur ändrar jag arbetstider för specifika dagar?" aria-controls="panel-6338" aria-selected="false" tabindex="0" title="​Hur ändrar jag arbetstider för specifika dagar?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-33" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-34"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Hur ändrar jag arbetstider för specifika dagar?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-8"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-10d1"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-10d1" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-8" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-8">
+<quillbot-extension-highlights class="Settings-extracted-20"></quillbot-extension-highlights>
+<ul class="u-text u-text-8"><li><div class="hidden u-block-3ea4-145 u-list-icon"></div>​För att ändra arbetstider:<br>Gå till Restaurang i sidomenyn.<br>Klicka på Arbetstider.<br>Justera öppnings- och stängningstiderna för varje dag.<br>Klicka på Spara för att bekräfta.</li></ul>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-9">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-9" id="link-accordion-0781" role="tab" aria-label="​Kan jag lägga till eller ta bort skift för min restaurang?" aria-controls="panel-7027" aria-selected="false" tabindex="0" title="​Kan jag lägga till eller ta bort skift för min restaurang?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-35" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-36"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag lägga till eller ta bort skift för min restaurang?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-9"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-626f"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-626f" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-9" id="accordion-0781">
+<div class="u-container-layout u-container-layout-9">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-9"><li><div class="hidden u-block-3ea4-150 u-list-icon"></div>
+                ​Ja, du kan:<br>Gå till Arbetstider.<br>Klicka på Lägg till nytt skift för att skapa ytterligare skift.<br>Ta bort skift genom att klicka på papperskorgsikonen bredvid skifttiden.<br>Klicka på Spara för att tillämpa ändringarna.</li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-10">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-10" id="link-accordion-0781" role="tab" aria-label="​Hur säkerställer jag att min restaurangs kartposition är korrekt?" aria-controls="panel-3920" aria-selected="false" tabindex="0" title="​Hur säkerställer jag att min restaurangs kartposition är korrekt?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-37" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-38"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Hur säkerställer jag att min restaurangs kartposition är korrekt?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-10"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-c734"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-c734" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-10" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-10">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-10"><li><div class="hidden u-block-3ea4-161 u-list-icon"></div>
+                ​För att säkerställa noggrannhet:<br>Gå till Restaurang i sidomenyn.<br>Klicka på Plats.<br>Verifiera att kartpositionen matchar din restaurangs adress.<br>Om positionen är felaktig, uppdatera adressen i avsnittet Restauranghantering.<br>Klicka på Spara för att tillämpa ändringarna.</li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-11">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-11" id="link-accordion-0781" role="tab" aria-label="​Var kan jag uppdatera min restaurangs adress?" aria-controls="panel-5283" aria-selected="false" tabindex="0" title="​Var kan jag uppdatera min restaurangs adress?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-39" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-40"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Var kan jag uppdatera min restaurangs adress?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-11"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-d996"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-d996" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-11" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-11">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-11"><li><div class="hidden u-block-3ea4-173 u-list-icon"></div>
+                ​För att uppdatera adressen:<br>Gå till Restauranghantering.<br>Redigera fältet Restaurangadress.<br>Klicka på Spara för att bekräfta.</li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-12">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-12" id="link-accordion-0781" role="tab" aria-label="​Hur begär jag en kloning av min restaurangs webbplats?" aria-controls="panel-941" aria-selected="false" tabindex="0" title="​Hur begär jag en kloning av min restaurangs webbplats?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-41" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-42"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Hur begär jag en kloning av min restaurangs webbplats?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-12"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ed87"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-ed87" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-12" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-12">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-12"><li><div class="hidden u-block-3ea4-183 u-list-icon"></div>
+                ​Skicka ett e-postmeddelande till <a class="u-active-none u-block-3ea4-269 u-border-none u-btn u-button-style u-hover-none u-none u-text-palette-1-base Settings-extracted-43" rel="noopener" title="info@fooodis.com">info@fooodis.com</a> med din begäran.<br>Inkludera information om din nuvarande restaurangwebbplats samt eventuella specifika krav för den nya filialen.</li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-13">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-13" id="link-accordion-0781" role="tab" aria-label="​Kan jag anpassa den klonade webbplatsen separat från originalet?" aria-controls="panel-8722" aria-selected="false" tabindex="0" title="​Kan jag anpassa den klonade webbplatsen separat från originalet?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-44" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-45"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag anpassa den klonade webbplatsen separat från originalet?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-13"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-1579"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-1579" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-13" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-13">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-13"><li><div class="hidden u-block-3ea4-191 u-list-icon"></div>
+                ​Ja, när den nya webbplatsen har klonats får du separata inloggningsuppgifter. Du kan anpassa den självständigt för att möta de specifika behoven för den nya filialen.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-14">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-14" id="link-accordion-0781" role="tab" aria-label="​Hur återställer jag lösenordet för den klonade webbplatsen?" aria-controls="panel-9754" aria-selected="false" tabindex="0" title="​Hur återställer jag lösenordet för den klonade webbplatsen?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-46" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-47"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Hur återställer jag lösenordet för den klonade webbplatsen?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-14"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-d75f"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-d75f" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-14" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-14">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-14"><li><div class="hidden u-block-3ea4-201 u-list-icon"></div>
+                ​På inloggningssidan, välj "Glömt lösenord" och ange e-postadressen som är kopplad till den nya webbplatsen. Du kommer att få en länk för att återställa ditt lösenord.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-15">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-15" id="link-accordion-0781" role="tab" aria-label="​Vilken plan kommer den klonade webbplatsen att ha initialt?" aria-controls="panel-8475" aria-selected="false" tabindex="0" title="​Vilken plan kommer den klonade webbplatsen att ha initialt?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-48" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-49"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Vilken plan kommer den klonade webbplatsen att ha initialt?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-15"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-3809"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-3809" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-15" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-15">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-15"><li><div class="hidden u-block-3ea4-211 u-list-icon"></div>
+                ​Den klonade webbplatsen kommer att vara inställd på gratisnivå som standard. Uppgradera till en lämplig plan för att få tillgång till alla funktioner.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-16">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-16" id="link-accordion-0781" role="tab" aria-label="​Kan jag välja samma plan som min ursprungliga restaurangwebbplats?" aria-controls="panel-8185" aria-selected="false" tabindex="0" title="​Kan jag välja samma plan som min ursprungliga restaurangwebbplats?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-50" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-51"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag välja samma plan som min ursprungliga restaurangwebbplats?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-16"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-1c4c"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-1c4c" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-16" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-16">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-16"><li><div class="hidden u-block-3ea4-221 u-list-icon"></div>
+                ​Ja, du kan välja samma plan eller någon annan plan som bäst uppfyller behoven för din nya filial.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-17">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-17" id="link-accordion-0781" role="tab" aria-label="​Kan jag duplicera min restaurangwebbplats flera gånger för olika filialer?" aria-controls="panel-8884" aria-selected="false" tabindex="0" title="​Kan jag duplicera min restaurangwebbplats flera gånger för olika filialer?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-52" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-53"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag duplicera min restaurangwebbplats flera gånger för olika filialer?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-17"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-64c8"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-64c8" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-17" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-17">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-17"><li>​Absolut! Du kan begära så många kloner du behöver för varje ytterligare filial.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-18">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-18" id="link-accordion-0781" role="tab" aria-label="​Kan jag duplicera min restaurangwebbplats flera gånger för olika filialer?" aria-controls="panel-1491" aria-selected="false" tabindex="0" title="​Kan jag duplicera min restaurangwebbplats flera gånger för olika filialer?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-54" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-53"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kan jag duplicera min restaurangwebbplats flera gånger för olika filialer?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-18"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ad07"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-ad07" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-18" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-18">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-18"><li><div class="hidden u-block-3ea4-241 u-list-icon"></div>
+                ​Ja, det kan du. När vi har mottagit din begäran tar kloningsprocessen vanligtvis 1–2 arbetsdagar. Vi skickar inloggningsuppgifterna till dig så snart den är klar.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-19">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-19" id="link-accordion-0781" role="tab" aria-label="​Behöver jag ange separata kontaktuppgifter för varje klonad webbplats?" aria-controls="panel-2466" aria-selected="false" tabindex="0" title="​Behöver jag ange separata kontaktuppgifter för varje klonad webbplats?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-55" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-56"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Behöver jag ange separata kontaktuppgifter för varje klonad webbplats?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-19"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-44cd"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-44cd" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-19" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-19">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-19"><li>​Ja, det är bäst att ange separata kontaktuppgifter (t.ex. e-postadress) för varje ny filial för att säkerställa korrekt och effektiv kommunikation.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-20">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-20" id="link-accordion-0781" role="tab" aria-label="​Kommer mina klonade webbplatser att ha samma varumärke som originalet?" aria-controls="panel-292" aria-selected="false" tabindex="0" title="​Kommer mina klonade webbplatser att ha samma varumärke som originalet?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-57" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-58"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Kommer mina klonade webbplatser att ha samma varumärke som originalet?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-20"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-2ac2"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-2ac2" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-20" id="accordion-0781">
+<div class="u-container-layout u-valign-top u-container-layout-20">
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+<ul class="u-text u-text-20"><li><div class="hidden u-block-3ea4-261 u-list-icon"></div>
+                ​Ja, de klonade webbplatserna kommer att behålla samma varumärkesprofil som originalet. Du kan dock anpassa varje klonad webbplats individuellt för att möta de specifika behoven för respektive filial.<br></li></ul>
+<quillbot-extension-highlights class="Settings-extracted-4"></quillbot-extension-highlights>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-21">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-21" id="link-accordion-0781" role="tab" aria-label="​Var kan jag hitta fler resurser och guider?" aria-controls="panel-5617" aria-selected="false" tabindex="0" title="​Var kan jag hitta fler resurser och guider?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Settings-extracted-16">
+<qb-div class="qb-highlighter__wrapper Settings-extracted-59" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Settings-extracted-60"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text">​Var kan jag hitta fler resurser och guider?</span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-21"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-234b"></use></svg><svg class="u-svg-content Settings-extracted-19" id="svg-234b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-21" id="accordion-0781">
+<div class="u-container-layout u-container-layout-21">
+<ul class="u-custom-list u-text u-text-21">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div>​Besök vår blogg, "Fooodis.com's Expert Blog", för att lyfta din restaurang med insikter och tips från branschexperter.<br></li>
+</ul>
+<a class="u-active-white u-border-1 u-border-active-white u-border-hover-white u-border-white u-btn u-button-style u-hover-white u-none u-text-active-grey-70 u-text-body-alt-color u-text-hover-grey-70 u-btn-2" data-page-id="2059315254" href="Blog.html" title="​Expertblogg">​Expertblogg</a>
+</div>
+</div>
+</div>
+</div><div role="tabpanel" id="panel-5617"></div><div role="tabpanel" id="panel-292"></div><div role="tabpanel" id="panel-2466"></div><div role="tabpanel" id="panel-1491"></div><div role="tabpanel" id="panel-8884"></div><div role="tabpanel" id="panel-8185"></div><div role="tabpanel" id="panel-8475"></div><div role="tabpanel" id="panel-9754"></div><div role="tabpanel" id="panel-8722"></div><div role="tabpanel" id="panel-941"></div><div role="tabpanel" id="panel-5283"></div><div role="tabpanel" id="panel-3920"></div><div role="tabpanel" id="panel-7027"></div><div role="tabpanel" id="panel-6338"></div><div role="tabpanel" id="panel-4469"></div><div role="tabpanel" id="panel-1225"></div><div role="tabpanel" id="panel-8748"></div><div role="tabpanel" id="panel-4054"></div><div role="tabpanel" id="panel-498"></div><div role="tabpanel" id="panel-2264"></div><div role="tabpanel" id="panel-8030"></div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-29" id="sec-6e15">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" title="​LÄS mer">​LÄS mer<br></a>
+</div>
+</section>
+<style class="u-overlap-style" data-parsed="true">.u-overlap:not(.u-sticky-scroll) .u-header {
+background-color: #1d2029 !important; transparency: 45 !important
+}</style>
+    
+    
+    <script src="assets/footer-loader.js"></script>
+  <!-- Unified Footer Loader -->  
+  <script src="../assets/include-footer.js"></script>
+
+
+</body></html>

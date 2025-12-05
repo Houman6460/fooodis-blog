@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <meta content="Fooodis Blog, Restaurant Technology, Food Industry" name="keywords">
+    <meta content="Read the latest articles about restaurant technology, food industry trends, and Fooodis updates" name="description">
+    <title>Blog - Fooodis</title>
+    
+    <!-- Core CSS -->
+    <link href="nicepage.css" media="screen" rel="stylesheet">
+    <link href="Blog.css" media="screen" rel="stylesheet">
+    <link rel="stylesheet" href="assets/nicepage-header-footer.css">
+    <link rel="stylesheet" href="assets/hamburger-animation.css">
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="assets/gradient-background.css">
+    <link rel="stylesheet" href="assets/cookie-consent.css">
+    
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Scripts -->
+    <script class="u-script" defer src="jquery.js" type="text/javascript"></script>
+    <script class="u-script" defer src="nicepage.js" type="text/javascript"></script>
+    <script src="assets/header-scroll-effect.js" defer></script>
+    <script src="assets/cookie-consent.js" defer></script>
+    
+    <style>
+        /* Blog Page Styles */
+        .blog-section {
+            background-color: #1e2127;
+            min-height: 80vh;
+            padding: 100px 20px 60px;
+        }
+        
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .blog-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .blog-header h1 {
+            font-size: 3rem;
+            color: #e8f24c;
+            margin-bottom: 15px;
+        }
+        
+        .blog-header p {
+            color: #a0a0a0;
+            font-size: 1.2rem;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .blog-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(232, 242, 76, 0.1);
+        }
+        
+        .blog-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #2b2e37;
+        }
+        
+        .blog-card-content {
+            padding: 25px;
+        }
+        
+        .blog-card-category {
+            display: inline-block;
+            background: rgba(232, 242, 76, 0.2);
+            color: #e8f24c;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .blog-card-title {
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .blog-card-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        .blog-card-title a:hover {
+            color: #e8f24c;
+        }
+        
+        .blog-card-excerpt {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .blog-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .blog-card-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .blog-card-author img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .blog-loading {
+            text-align: center;
+            padding: 50px;
+            color: #a0a0a0;
+        }
+        
+        .blog-loading i {
+            font-size: 3rem;
+            color: #e8f24c;
+            margin-bottom: 20px;
+        }
+        
+        .blog-empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: #a0a0a0;
+        }
+        
+        .blog-empty i {
+            font-size: 4rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .blog-pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 50px;
+        }
+        
+        .blog-pagination button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .blog-pagination button:hover:not(:disabled) {
+            background: rgba(232, 242, 76, 0.3);
+        }
+        
+        .blog-pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .blog-pagination .page-info {
+            display: flex;
+            align-items: center;
+            color: #a0a0a0;
+            padding: 0 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .blog-header h1 {
+                font-size: 2rem;
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body style="background-color: #1e2127; color: #fff;">
+    <!-- Header -->
+    <header class="fooodis-header" style="padding: 20px 0;">
+        <div class="header-container">
+            <a href="https://fooodis.com/" class="logo-container">
+                <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo">
+            </a>
+            
+            <div class="header-right">
+                <!-- Language flags -->
+                <div class="language-selector">
+                    <a href="#" class="flag-link" data-lang="en"><img src="assets/flags/uk-flag.svg" alt="English" class="flag-icon"></a>
+                    <a href="#" class="flag-link" data-lang="sv"><img src="assets/flags/sweden-flag.svg" alt="Swedish" class="flag-icon"></a>
+                </div>
+                
+                <!-- Navigation for desktop -->
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="https://logoland.se" target="_blank" rel="noopener">Service</a></li>
+                        <li class="nav-item"><a href="Contact.html">Contact</a></li>
+                        <li class="nav-item"><a href="support.html">Support</a></li>
+                        <li class="nav-item"><a href="FEBlog.html" class="active">Blog</a></li>
+                        <li class="nav-item"><a href="Blog.html">F.E.Blog</a></li>
+                        <li class="nav-item"><a href="index.html#limited-time-offer-en">Price</a></li>
+                        <li class="nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">Register</a></li>
+                        <li class="nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">Demo</a></li>
+                        <li class="nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">Login</a></li>
+                    </ul>
+                </nav>
+                
+                <!-- Hamburger menu for mobile -->
+                <button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+                    <svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+                        <path class="line top" d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+                        <path class="line middle" d="m 30,50 h 40" />
+                        <path class="line bottom" d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile navigation menu -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-logo">
+            <a href="https://fooodis.com/">
+                <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo-mobile">
+            </a>
+        </div>
+        <ul class="mobile-nav-list">
+            <li class="mobile-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener">SERVICE</a></li>
+            <li class="mobile-nav-item"><a href="Contact.html">CONTACT</a></li>
+            <li class="mobile-nav-item"><a href="support.html">SUPPORT</a></li>
+            <li class="mobile-nav-item"><a href="FEBlog.html" class="active">BLOG</a></li>
+            <li class="mobile-nav-item"><a href="Blog.html">F.E.BLOG</a></li>
+            <li class="mobile-nav-item"><a href="index.html#limited-time-offer-en">PRICE</a></li>
+            <li class="mobile-nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">REGISTER</a></li>
+            <li class="mobile-nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">DEMO</a></li>
+            <li class="mobile-nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">LOGIN</a></li>
+        </ul>
+    </div>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="blog-container">
+            <div class="blog-header">
+                <h1 data-lang-en="Our Blog" data-lang-sv="Vår Blogg">Our Blog</h1>
+                <p data-lang-en="Latest news and updates from Fooodis" data-lang-sv="Senaste nyheter och uppdateringar från Fooodis">Latest news and updates from Fooodis</p>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="blog-loading" class="blog-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p data-lang-en="Loading articles..." data-lang-sv="Laddar artiklar...">Loading articles...</p>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="blog-empty" class="blog-empty" style="display: none;">
+                <i class="fas fa-newspaper"></i>
+                <h3 data-lang-en="No articles yet" data-lang-sv="Inga artiklar ännu">No articles yet</h3>
+                <p data-lang-en="Check back soon for new content!" data-lang-sv="Kom tillbaka snart för nytt innehåll!">Check back soon for new content!</p>
+            </div>
+            
+            <!-- Blog Grid -->
+            <div id="blog-grid" class="blog-grid" style="display: none;"></div>
+            
+            <!-- Pagination -->
+            <div id="blog-pagination" class="blog-pagination" style="display: none;">
+                <button id="prev-page" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+                <span class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+                <button id="next-page">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="fooodis-footer">
+        <div class="bubbles" id="footer-bubbles"></div>
+        
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <a href="https://fooodis.com/">
+                        <img src="images/Artboard17.svg" alt="Fooodis Logo" class="fooodis-logo-footer" style="max-width: 120px; height: auto;">
+                    </a>
+                </div>
+                <nav class="footer-nav">
+                    <ul class="footer-nav-list">
+                        <li class="footer-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener">Service</a></li>
+                        <li class="footer-nav-item"><a href="Contact.html">Contact</a></li>
+                        <li class="footer-nav-item"><a href="support.html">Support</a></li>
+                        <li class="footer-nav-item"><a href="FEBlog.html">Blog</a></li>
+                        <li class="footer-nav-item"><a href="Blog.html">F.E.Blog</a></li>
+                        <li class="footer-nav-item"><a href="index.html#limited-time-offer-en">Price</a></li>
+                        <li class="footer-nav-item"><a href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener">Register</a></li>
+                        <li class="footer-nav-item"><a href="https://demo.fooodis.com/home" target="_blank" rel="noopener">Demo</a></li>
+                        <li class="footer-nav-item"><a href="https://fooodis.com/new/restaurant/login" target="_blank" rel="noopener">Login</a></li>
+                        <li class="footer-nav-item"><a href="Impressum.html">Impressum</a></li>
+                        <li class="footer-nav-item"><a href="Policy.html">Privacy Policy</a></li>
+                        <li class="footer-nav-item admin-login-link"><a href="login.html"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-powered-by">
+                    <div class="logoland-container">
+                        <a href="https://logoland.se/" target="_blank" rel="noopener">
+                            <img src="images/Artboard1.svg" alt="LogoLand" class="logoland-logo">
+                        </a>
+                        <p>Powered by LogoLand with ❤️</p>
+                    </div>
+                </div>
+                <div class="footer-social" style="position: relative; z-index: 15;">
+                    <a href="https://www.linkedin.com/company/102443279/" target="_blank" rel="noopener noreferrer" class="social-link linkedin" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61552797450099" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/fooodis.se/" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://x.com/Fooodis" target="_blank" rel="noopener noreferrer" class="social-link twitter" title="X (Twitter)">
+                        <img src="assets/icons8-x-logo.svg" alt="X" class="x-logo" width="18" height="18">
+                    </a>
+                    <a href="https://www.youtube.com/@Fooodis" target="_blank" rel="noopener noreferrer" class="social-link youtube" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SVG Filter for bubble effect -->
+    <svg class="svg-filters" aria-hidden="true" focusable="false" role="presentation">
+        <defs>
+            <filter id="blob" aria-hidden="true">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="blob"></feColorMatrix>
+            </filter>
+        </defs>
+    </svg>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const mobileNav = document.querySelector('.mobile-nav');
+        
+        if (hamburgerMenu && mobileNav) {
+            hamburgerMenu.addEventListener('click', function() {
+                this.querySelector('.ham').classList.toggle('active');
+                mobileNav.classList.toggle('show');
+                document.body.style.overflow = mobileNav.classList.contains('show') ? 'hidden' : '';
+            });
+        }
+        
+        // Footer bubbles
+        const bubblesContainer = document.getElementById('footer-bubbles');
+        if (bubblesContainer) {
+            for (let i = 0; i < 128; i++) {
+                const size = 2 + Math.random() * 4;
+                const distance = 6 + Math.random() * 4;
+                const position = -5 + Math.random() * 110;
+                const time = 2 + Math.random() * 2;
+                const delay = -1 * (2 + Math.random() * 2);
+                
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                bubble.style.cssText = `--size:${size}rem; --distance:${distance}rem; --position:${position}%; --time:${time}s; --delay:${delay}s;`;
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+        
+        // Language switcher
+        const flagLinks = document.querySelectorAll('.flag-link');
+        flagLinks.forEach(flag => {
+            flag.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+                localStorage.setItem('fooodis_preferred_language', lang);
+                document.documentElement.lang = lang;
+                updateLanguage(lang);
+            });
+        });
+        
+        function updateLanguage(lang) {
+            document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+                const text = lang === 'sv' ? el.getAttribute('data-lang-sv') : el.getAttribute('data-lang-en');
+                if (text) el.textContent = text;
+            });
+        }
+        
+        // Apply stored language
+        const storedLang = localStorage.getItem('fooodis_preferred_language') || 'en';
+        updateLanguage(storedLang);
+        
+        // Load blog posts
+        loadBlogPosts();
+    });
+    
+    let currentPage = 1;
+    const postsPerPage = 9;
+    
+    async function loadBlogPosts(page = 1) {
+        const loadingEl = document.getElementById('blog-loading');
+        const emptyEl = document.getElementById('blog-empty');
+        const gridEl = document.getElementById('blog-grid');
+        const paginationEl = document.getElementById('blog-pagination');
+        
+        try {
+            const response = await fetch(`/api/blog/posts?page=${page}&limit=${postsPerPage}&status=published`);
+            const data = await response.json();
+            
+            loadingEl.style.display = 'none';
+            
+            if (!data.success || !data.data || data.data.length === 0) {
+                emptyEl.style.display = 'block';
+                gridEl.style.display = 'none';
+                paginationEl.style.display = 'none';
+                return;
+            }
+            
+            const posts = data.data;
+            const totalPages = Math.ceil((data.total || posts.length) / postsPerPage);
+            
+            gridEl.innerHTML = posts.map(post => `
+                <article class="blog-card">
+                    <img src="${post.featured_image || post.image_url || 'images/placeholder-blog.jpg'}" 
+                         alt="${post.title}" 
+                         class="blog-card-image"
+                         onerror="this.src='images/placeholder-blog.jpg'">
+                    <div class="blog-card-content">
+                        ${post.category ? `<span class="blog-card-category">${post.category}</span>` : ''}
+                        <h2 class="blog-card-title">
+                            <a href="post.html?id=${post.id}">${post.title}</a>
+                        </h2>
+                        <p class="blog-card-excerpt">${post.excerpt || (post.content ? post.content.substring(0, 150) + '...' : '')}</p>
+                        <div class="blog-card-meta">
+                            <div class="blog-card-author">
+                                <img src="${post.author_avatar || 'images/default-avatar.png'}" alt="${post.author || 'Author'}">
+                                <span>${post.author || 'Fooodis Team'}</span>
+                            </div>
+                            <span>${formatDate(post.published_at || post.created_at)}</span>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+            
+            gridEl.style.display = 'grid';
+            
+            // Update pagination
+            if (totalPages > 1) {
+                paginationEl.style.display = 'flex';
+                document.getElementById('current-page').textContent = page;
+                document.getElementById('total-pages').textContent = totalPages;
+                document.getElementById('prev-page').disabled = page <= 1;
+                document.getElementById('next-page').disabled = page >= totalPages;
+            }
+            
+            currentPage = page;
+            
+        } catch (error) {
+            console.error('Error loading blog posts:', error);
+            loadingEl.style.display = 'none';
+            emptyEl.style.display = 'block';
+        }
+    }
+    
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+    }
+    
+    // Pagination handlers
+    document.getElementById('prev-page')?.addEventListener('click', () => {
+        if (currentPage > 1) loadBlogPosts(currentPage - 1);
+    });
+    
+    document.getElementById('next-page')?.addEventListener('click', () => {
+        loadBlogPosts(currentPage + 1);
+    });
+    </script>
+</body>
+</html>

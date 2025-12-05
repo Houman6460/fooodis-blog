@@ -1,0 +1,80 @@
+/* Bubble Footer Animation CSS - Based on CodePen example */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127; /* Dark blue from the header */
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127; /* Ensuring the footer has the same solid color */
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127; /* Solid color as requested */
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127; /* Solid color as requested */
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.yellow-bubble {
+    background: #1e2127 !important; /* Changed to solid color as requested */
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127; /* Solid color as requested */
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* SVG filter for blob effect */
+.svg-filters {
+    position: fixed;
+    top: 100vh;
+    left: 0;
+}

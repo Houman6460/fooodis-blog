@@ -1,1076 +1,1143 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta charset="utf-8"/>
-    <meta content="Fooodis Support Center - Submit and Track Support Tickets" name="keywords"/>
-    <meta content="Get help with your Fooodis account. Submit support tickets, track progress, and get expert assistance." name="description"/>
-    <title data-lang-en="Support Center - Fooodis" data-lang-sv="Supportcenter - Fooodis">Support Center - Fooodis</title>
+<!DOCTYPE html><html lang="en" class="Support-extracted-1"><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="​​Digital Mastery, Design Perfection" name="keywords">
+<meta content="" name="description">
+<title>Support</title>
+<link href="nicepage.css" media="screen" rel="stylesheet">
+<link href="Support.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Support" name="twitter:title">
+<meta content="" name="twitter:description">
+<meta content="Support" property="og:title">
+<meta content="" property="og:description">
+<meta content="website" property="og:type">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
 
-    <!-- Platform CSS -->
-    <link href="css/nicepage.css" media="screen" rel="stylesheet"/>
-    <link rel="stylesheet" href="css/blog.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/footer-bubbles.css">
-    <link rel="stylesheet" href="css/support-portal.css">
-    <link rel="stylesheet" href="css/chatbot-management.css">
-    <link rel="stylesheet" href="css/landing-responsive-fix.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-    <style>
-        /* Platform-matching header styles - Exact copy from blog page */
-        .fooodis-header *, .mobile-nav * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
         }
 
-        .fooodis-header {
-            background-color: #1e2127;
-            color: #fff;
-            padding: 10px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
         }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .fooodis-logo {
-            height: 40px;
-            width: auto;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .language-selector {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .flag-link {
-            display: inline-block;
-            transition: transform 0.2s ease;
-        }
-
-        .flag-link:hover {
-            transform: scale(1.1);
-        }
-
-        .flag-icon {
-            width: 24px;
-            height: 18px;
-            border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-
-        .main-nav {
-            display: flex;
-        }
-
-        .nav-list {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .nav-item a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item a:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .hamburger-menu {
-            display: none;
-            flex-direction: column;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .hamburger-line {
-            width: 25px;
-            height: 3px;
-            background: white;
-            margin: 3px 0;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .header-spacer {
-            height: 70px;
-        }
-
-        /* Mobile navigation */
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: left 0.3s ease;
-            z-index: 1001;
-            padding: 80px 0 0 0;
-        }
-
-        .mobile-nav.active {
-            left: 0;
-        }
-
-        .mobile-nav-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        .mobile-nav-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .mobile-nav-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mobile-nav-item a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 15px 25px;
-            font-weight: 500;
-            transition: background 0.3s ease;
-        }
-
-        .mobile-nav-item a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Language switching styles */
-        .language-tab {
-            display: inline-block;
-            padding: 8px 16px;
-            margin: 0 4px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-decoration: none;
-            border-radius: 20px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .language-tab.active {
-            background: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .language-tab:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Support portal specific styles */
-        .support-main {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: calc(100vh - 70px);
-            padding: 40px 20px;
-        }
-
-        /* Spacer to prevent content from being hidden under fixed header */
-        .header-spacer {
-            height: 80px;
-        }
-
-        /* Main background to match blog page */
-        .support-main {
-            background-color: #1e2127 !important;
-            min-height: 100vh;
-        }
-
-        /* Ensure all relevant div elements have the same background */
-        .support-container,
-        .support-header,
-        .ticket-section,
-        .section-header,
-        .user-status-section,
-        .ticket-history-section {
-            background-color: #1e2127 !important;
-        }
-
-        .support-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .support-header {
-            text-align: center;
-            margin-bottom: 40px;
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .support-header h1 {
-            color: #667eea;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .support-header p {
-            color: #666;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        /* Language toggle */
-        .language-toggle {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            gap: 10px;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .main-nav {
-                display: none;
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
+            }
+            dynamicLoadScript();
+        });
+    </script>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
             }
 
-            .hamburger-menu {
-                display: flex;
-            }
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
 
-            .header-container {
-                padding: 0 15px;
-            }
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
 
-            .language-selector {
-                gap: 5px;
-            }
+                            var forms = document.getElementsByTagName('form');
 
-            .flag-icon {
-                width: 20px;
-                height: 15px;
-            }
-        }
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<meta data-intl-tel-input-cdn-path="intlTelInput/"><!-- Fooodis Header CSS and JS -->
+<link href="assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="assets/header.js"></script>
+<script defer="" src="assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style data-parsed="true">
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .footer-logo {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 0.8rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1rem;
+    }
+}
     </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/auto-generated-styles-final.css"><link href="assets/hamburger-animation.css" rel="stylesheet">
+<script src="assets/header-scroll-effect.js" defer></script>
+    <link rel="stylesheet" href="assets/cookie-consent.css">
+    <script src="assets/cookie-consent.js" defer></script>
 </head>
-<body class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode">
-    <!-- Original Fooodis Header - Exact Copy -->
-    <header class="fooodis-header">
-        <div class="header-container">
-            <a class="logo-container" href="https://fooodis.com/">
-                <img alt="Fooodis Logo" class="fooodis-logo" src="images/Artboard17copy9.svg"/>
-            </a>
-            <div class="header-right">
-                <!-- Language flags -->
-                <div class="language-selector">
-                    <a class="flag-link" data-lang="en" href="#" onclick="switchLanguage('en')"><img alt="English" class="flag-icon" src="images/330425.png"/></a>
-                    <a class="flag-link" data-lang="sv" href="#" onclick="switchLanguage('sv')"><img alt="Swedish" class="flag-icon" src="images/555606.png"/></a>
-                </div>
-                <!-- Navigation for desktop -->
-                <nav class="main-nav">
-                    <ul class="nav-list">
-                        <li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener" target="_blank">Service</a></li>
-                        <li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html">Contact</a></li>
-                        <li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="blog.html">Blog</a></li>
-                        <li class="nav-item"><a data-lang-en="Support" data-lang-sv="Support" href="support.html" class="current-page">Support</a></li>
-                        <li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="Prices.html">Price</a></li>
-                        <li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank">Registrar</a></li>
-                        <li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener" target="_blank">Demo</a></li>
-                        <li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/login" rel="noopener" target="_blank">Login</a></li>
-                    </ul>
-                </nav>
-                <!-- Hamburger menu for mobile -->
-                <button aria-label="Toggle menu" class="hamburger-menu" onclick="toggleMobileNav()">
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                </button>
-            </div>
-        </div>
-    </header>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="en" data-path-to-root="./">
+<!-- Original Fooodis Header - Exact Copy -->
+<style data-parsed="true">
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    <!-- Mobile navigation menu (hidden by default) -->
-    <div class="mobile-nav" id="mobileNav">
-        <div class="mobile-nav-close" onclick="closeMobileNav()">×</div>
-        <ul class="mobile-nav-list">
-            <li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener" target="_blank">SERVICE</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html">CONTACT</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="blog.html">BLOG</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="SUPPORT" data-lang-sv="SUPPORT" href="support.html" class="current-page">SUPPORT</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html">PRICE</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank">REGISTRAR</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener" target="_blank">DEMO</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/login" rel="noopener" target="_blank">LOGIN</a></li>
-        </ul>
-    </div>
-    <!-- Spacer to prevent content from being hidden under fixed header -->
-    <div class="header-spacer"></div>
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
 
-    <!-- Main Content -->
-    <main class="support-main">
-        <div class="support-container">
-            <!-- Support Header -->
-            <div class="support-header">
-                <h1><i class="fas fa-headset"></i> <span data-lang-en="Support Center" data-lang-sv="Supportcenter">Support Center</span></h1>
-                <p data-lang-en="Need help? Submit a ticket and our team will get back to you promptly." data-lang-sv="Behöver du hjälp? Skicka in en förfrågan så återkommer vårt team till dig snabbt.">Need help? Submit a ticket and our team will get back to you promptly.</p>
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
 
-                <!-- Language Toggle -->
-                <div class="language-toggle">
-                    <span class="language-tab active" data-lang="en" onclick="switchLanguage('en')">
-                        <img src="images/330425.png" alt="English"> English
-                    </span>
-                    <span class="language-tab" data-lang="sv" onclick="switchLanguage('sv')">
-                        <img src="images/555606.png" alt="Swedish"> Svenska
-                    </span>
-                </div>
-            </div>
+.logo-container {
+    display: block;
+}
 
-            <!-- User Status Section -->
-            <div id="userStatus" class="user-status-section">
-                <!-- Will be populated by JavaScript -->
-            </div>
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
 
-            <!-- User Dashboard (shown after login) -->
-            <section id="userDashboard" class="user-dashboard hidden">
-                <div class="dashboard-header">
-                    <h2><i class="fas fa-tachometer-alt"></i> <span data-lang-en="My Support Dashboard" data-lang-sv="Min Support Dashboard">My Support Dashboard</span></h2>
-                    <div class="user-info">
-                        <span class="user-welcome">Welcome, <span id="userName"></span>!</span>
-                        <button type="button" class="btn-secondary" onclick="logout()">
-                            <i class="fas fa-sign-out-alt"></i> <span data-lang-en="Logout" data-lang-sv="Logga ut">Logout</span>
-                        </button>
-                    </div>
-                </div>
+.header-right {
+    display: flex;
+    align-items: center;
+}
 
-                <!-- Dashboard Stats -->
-                <div class="dashboard-stats">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="totalTickets">0</div>
-                            <div class="stat-label" data-lang-en="Total Tickets" data-lang-sv="Totalt Ärenden">Total Tickets</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="openTickets">0</div>
-                            <div class="stat-label" data-lang-en="Open Tickets" data-lang-sv="Öppna Ärenden">Open Tickets</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="resolvedTickets">0</div>
-                            <div class="stat-label" data-lang-en="Resolved" data-lang-sv="Lösta">Resolved</div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Dashboard Tabs -->
-                <div class="dashboard-tabs">
-                    <button class="tab-button active" onclick="showTab('createTicket')">
-                        <i class="fas fa-plus"></i> <span data-lang-en="New Ticket" data-lang-sv="Nytt Ärende">New Ticket</span>
-                    </button>
-                    <button class="tab-button" onclick="showTab('myTickets')">
-                        <i class="fas fa-list"></i> <span data-lang-en="My Tickets" data-lang-sv="Mina Ärenden">My Tickets</span>
-                    </button>
-                </div>
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
 
-                <!-- Tab Content -->
-                <div class="tab-content">
-                    <!-- Create Ticket Tab -->
-                    <div id="createTicketTab" class="tab-pane active">
-                        <div class="section-header">
-                            <h3><i class="fas fa-plus-circle"></i> <span data-lang-en="Submit a New Support Ticket" data-lang-sv="Skicka in ett nytt supportärende">Submit a New Support Ticket</span></h3>
-                            <p data-lang-en="Please provide detailed information about your issue to help us assist you better." data-lang-sv="Vänligen ge detaljerad information om ditt problem för att hjälpa oss att assistera dig bättre.">Please provide detailed information about your issue to help us assist you better.</p>
-                        </div>
-                        <!-- The existing ticket form will be moved here via JavaScript -->
-                        <div id="dashboardTicketForm"></div>
-                    </div>
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
 
-                    <!-- My Tickets Tab - Admin Dashboard Style -->
-                    <div id="myTicketsTab" class="tab-pane">
-                        <div class="admin-dashboard-style">
-                            <div class="dashboard-header">
-                                <h2><span data-lang-en="Support Tickets" data-lang-sv="Supportärenden">Support Tickets</span></h2>
-                                <p><span data-lang-en="Manage customer support tickets and inquiries" data-lang-sv="Hantera kundsupportärenden och förfrågningar">Manage customer support tickets and inquiries</span></p>
-                            </div>
 
-                            <!-- Category Tabs -->
-                            <div class="ticket-tabs">
-                                <button class="ticket-tab active" data-category="sales" onclick="filterUserTicketsByCategory('sales')">
-                                    <span data-lang-en="Sales" data-lang-sv="Försäljning">Sales</span> <span class="tab-count">0</span>
-                                </button>
-                                <button class="ticket-tab" data-category="billing" onclick="filterUserTicketsByCategory('billing')">
-                                    <span data-lang-en="Billing" data-lang-sv="Fakturering">Billing</span> <span class="tab-count">0</span>
-                                </button>
-                                <button class="ticket-tab" data-category="technical-support" onclick="filterUserTicketsByCategory('technical-support')">
-                                    <span data-lang-en="Technical Support" data-lang-sv="Teknisk Support">Technical Support</span> <span class="tab-count">0</span>
-                                </button>
-                                <button class="ticket-tab" data-category="delivery" onclick="filterUserTicketsByCategory('delivery')">
-                                    <span data-lang-en="Delivery" data-lang-sv="Leverans">Delivery</span> <span class="tab-count">0</span>
-                                </button>
-                                <button class="ticket-tab" data-category="general-inquiries" onclick="filterUserTicketsByCategory('general-inquiries')">
-                                    <span data-lang-en="General Inquiries" data-lang-sv="Allmänna Förfrågningar">General Inquiries</span> <span class="tab-count">0</span>
-                                </button>
-                                <button class="ticket-tab" data-category="all" onclick="filterUserTicketsByCategory('all')">
-                                    <span data-lang-en="All Tickets" data-lang-sv="Alla Ärenden">All Tickets</span> <span class="tab-count">0</span>
-                                </button>
-                            </div>
+/* Navigation */
+.main-nav {
+    display: flex;
+}
 
-                            <!-- Split View Layout -->
-                            <div class="ticket-split-view">
-                                <!-- Left Panel: Ticket List -->
-                                <div class="ticket-list-panel">
-                                    <!-- Filters -->
-                                    <div class="ticket-controls">
-                                        <select id="statusFilter" onchange="filterUserTickets()" title="Filter by status" aria-label="Filter tickets by status">
-                                            <option value="all" data-lang-en="All Status" data-lang-sv="Alla Status">All Status</option>
-                                            <option value="open" data-lang-en="Open" data-lang-sv="Öppet">Open</option>
-                                            <option value="in-progress" data-lang-en="In Progress" data-lang-sv="Pågående">In Progress</option>
-                                            <option value="resolved" data-lang-en="Resolved" data-lang-sv="Löst">Resolved</option>
-                                            <option value="closed" data-lang-en="Closed" data-lang-sv="Stängt">Closed</option>
-                                        </select>
-                                        <select id="priorityFilter" onchange="filterUserTickets()" title="Filter by priority" aria-label="Filter tickets by priority">
-                                            <option value="all" data-lang-en="All Priority" data-lang-sv="All Prioritet">All Priority</option>
-                                            <option value="low" data-lang-en="Low" data-lang-sv="Låg">Low</option>
-                                            <option value="medium" data-lang-en="Medium" data-lang-sv="Medium">Medium</option>
-                                            <option value="high" data-lang-en="High" data-lang-sv="Hög">High</option>
-                                            <option value="urgent" data-lang-en="Urgent" data-lang-sv="Brådskande">Urgent</option>
-                                        </select>
-                                        <input type="text" id="searchTickets" placeholder="Search tickets..." onkeyup="searchUserTickets()">
-                                    </div>
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
 
-                                    <!-- Tickets Header -->
-                                    <div class="tickets-header">
-                                        <h3><span data-lang-en="Tickets" data-lang-sv="Ärenden">Tickets</span></h3>
-                                        <button class="refresh-btn" onclick="supportPortal.loadUserTickets()" title="Refresh">
-                                            <i class="fas fa-sync-alt"></i>
-                                        </button>
-                                    </div>
+.nav-item {
+    margin: 0 10px;
+}
 
-                                    <!-- Tickets List -->
-                                    <div id="userTicketsList" class="admin-tickets-list">
-                                        <!-- Will be populated by JavaScript -->
-                                    </div>
-                                </div>
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
 
-                                <!-- Right Panel: Ticket Details & Reply -->
-                                <div class="ticket-details-panel">
-                                    <div class="ticket-details-header">
-                                        <h3 id="ticketDetailsTitle"><span data-lang-en="Ticket Details" data-lang-sv="Ärendedetaljer">Ticket Details</span></h3>
-                                        <div class="ticket-actions">
-                                            <button class="action-btn" title="Refresh" onclick="supportPortal.loadUserTickets()">
-                                                <i class="fas fa-sync-alt"></i>
-                                            </button>
-                                            <button class="action-btn" title="Print" onclick="printTicket()">
-                                                <i class="fas fa-print"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+.nav-item a:hover {
+    color: #e8f24c;
+}
 
-                                    <!-- Ticket Details Content -->
-                                    <div id="userTicketDetails" class="admin-ticket-details">
-                                        <div id="noTicketSelected" class="no-ticket-selected">
-                                            <i class="fas fa-inbox"></i>
-                                            <h4><span data-lang-en="Select a ticket to view details" data-lang-sv="Välj ett ärende för att se detaljer">Select a ticket to view details</span></h4>
-                                            <p><span data-lang-en="Click on any ticket from the list to see conversation history and details" data-lang-sv="Klicka på ett ärende från listan för att se konversationshistorik och detaljer">Click on any ticket from the list to see conversation history and details</span></p>
-                                        </div>
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
 
-                                        <!-- Selected Ticket Content -->
-                                        <div id="selectedTicketContent" class="selected-ticket-content hidden">
-                                            <!-- Ticket Header Info -->
-                                            <div class="ticket-header-info">
-                                                <div class="ticket-title-row">
-                                                    <h4 id="selectedTicketSubject"></h4>
-                                                    <span id="selectedTicketStatus" class="ticket-status-badge"></span>
-                                                </div>
-                                                <div class="ticket-meta-info">
-                                                    <div class="meta-item">
-                                                        <strong><span data-lang-en="Ticket ID" data-lang-sv="Ärende-ID">Ticket ID</span>:</strong>
-                                                        <span id="selectedTicketId"></span>
-                                                    </div>
-                                                    <div class="meta-item">
-                                                        <strong><span data-lang-en="Priority" data-lang-sv="Prioritet">Priority</span>:</strong>
-                                                        <span id="selectedTicketPriority"></span>
-                                                    </div>
-                                                    <div class="meta-item">
-                                                        <strong><span data-lang-en="Category" data-lang-sv="Kategori">Category</span>:</strong>
-                                                        <span id="selectedTicketCategory"></span>
-                                                    </div>
-                                                    <div class="meta-item">
-                                                        <strong><span data-lang-en="Created" data-lang-sv="Skapad">Created</span>:</strong>
-                                                        <span id="selectedTicketCreated"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
 
-                                            <!-- Initial Description -->
-                                            <div class="ticket-description">
-                                                <h5><span data-lang-en="Description" data-lang-sv="Beskrivning">Description</span></h5>
-                                                <div id="selectedTicketDescription" class="ticket-description-content"></div>
-                                            </div>
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
 
-                                            <!-- Conversation History -->
-                                            <div class="conversation-section">
-                                                <h5><span data-lang-en="Conversation" data-lang-sv="Konversation">Conversation</span></h5>
-                                                <div id="conversationHistory" class="conversation-history">
-                                                    <!-- Messages will be loaded here -->
-                                                </div>
-                                            </div>
+.mobile-nav.show {
+    left: 0;
+}
 
-                                            <!-- Reply Section -->
-                                            <div id="replySection" class="reply-section">
-                                                <h5><span data-lang-en="Add Reply" data-lang-sv="Lägg till svar">Add Reply</span></h5>
-                                                <form id="replyForm" class="reply-form">
-                                                    <div class="form-group">
-                                                        <textarea id="replyMessage" name="message" rows="4" required 
-                                                                 placeholder="Type your reply here..." 
-                                                                 data-lang-en-placeholder="Type your reply here..." 
-                                                                 data-lang-sv-placeholder="Skriv ditt svar här..."></textarea>
-                                                    </div>
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
 
-                                                    <!-- File Attachment Section -->
-                                                    <div class="attachment-section">
-                                                        <div class="attachment-header">
-                                                            <label class="attachment-label">
-                                                                <i class="fas fa-paperclip"></i>
-                                                                <span data-lang-en="Attachments" data-lang-sv="Bilagor">Attachments</span>
-                                                                <span class="attachment-limit" data-lang-en="(Max 5MB per file)" data-lang-sv="(Max 5MB per fil)">(Max 5MB per file)</span>
-                                                            </label>
-                                                        </div>
-                                                        <div class="file-upload-area">
-                                                            <input type="file" id="replyAttachments" name="attachments" multiple 
-                                                                   accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif" 
-                                                                   onchange="handleFileSelection(this)"
-                                                                   title="Select files to attach"
-                                                                   aria-label="Select files to attach to reply">
-                                                            <div class="file-upload-text">
-                                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                                <span data-lang-en="Click to select files or drag and drop" data-lang-sv="Klicka för att välja filer eller dra och släpp">Click to select files or drag and drop</span>
-                                                            </div>
-                                                        </div>
-                                                        <div id="fileList" class="file-list"></div>
-                                                    </div>
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
 
-                                                    <div class="reply-actions">
-                                                        <button type="button" class="btn-secondary" onclick="closeReplySection()">
-                                                            <i class="fas fa-times"></i>
-                                                            <span data-lang-en="Close" data-lang-sv="Stäng">Close</span>
-                                                        </button>
-                                                        <button type="submit" class="btn-primary" id="sendReplyBtn">
-                                                            <i class="fas fa-paper-plane"></i>
-                                                            <span data-lang-en="Send Reply" data-lang-sv="Skicka svar">Send Reply</span>
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+.mobile-nav-item {
+    margin: 15px 0;
+}
 
-            <!-- Authentication Required Section (shown when not logged in) -->
-            <section id="authRequiredSection" class="ticket-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-lock"></i> <span data-lang-en="Login Required" data-lang-sv="Inloggning krävs">Login Required</span></h2>
-                    <p data-lang-en="Please log in to your account to submit and track support tickets." data-lang-sv="Vänligen logga in på ditt konto för att skicka in och följa supportärenden.">Please log in to your account to submit and track support tickets.</p>
-                </div>
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
 
-                <div class="auth-buttons">
-                    <button type="button" class="btn-primary" onclick="showLoginModal()">
-                        <i class="fas fa-sign-in-alt"></i> <span data-lang-en="Login" data-lang-sv="Logga in">Login</span>
-                    </button>
-                    <button type="button" class="btn-secondary" onclick="showRegisterModal()">
-                        <i class="fas fa-user-plus"></i> <span data-lang-en="Register" data-lang-sv="Registrera">Register</span>
-                    </button>
-                </div>
-            </section>
+.mobile-nav-item a:hover {
+    color: #fff;
+}
 
-            <!-- Public Ticket Creation Section (hidden initially, shown after login) -->
-            <section id="ticketCreation" class="ticket-section hidden">
-                <div class="section-header">
-                    <h2><i class="fas fa-plus-circle"></i> <span data-lang-en="Submit a Support Ticket" data-lang-sv="Skicka in en supportförfrågan">Submit a Support Ticket</span></h2>
-                    <p data-lang-en="Please provide detailed information about your issue to help us assist you better." data-lang-sv="Vänligen ge detaljerad information om ditt problem för att hjälpa oss att assistera dig bättre.">Please provide detailed information about your issue to help us assist you better.</p>
-                </div>
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
 
-                <form id="ticketForm" class="ticket-form">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="ticketCategory"><span data-lang-en="Category" data-lang-sv="Kategori">Category</span> *</label>
-                            <select id="ticketCategory" name="category" required>
-                                <option value="" data-lang-en="Select Category" data-lang-sv="Välj kategori">Select Category</option>
-                                <option value="sales" data-lang-en="Sales" data-lang-sv="Försäljning">Sales</option>
-                                <option value="billing" data-lang-en="Billing" data-lang-sv="Fakturering">Billing</option>
-                                <option value="technical-support" data-lang-en="Technical Support" data-lang-sv="Teknisk Support">Technical Support</option>
-                                <option value="delivery" data-lang-en="Delivery" data-lang-sv="Leverans">Delivery</option>
-                                <option value="general-inquiries" data-lang-en="General Inquiries" data-lang-sv="Allmänna Förfrågningar">General Inquiries</option>
-                            </select>
-                    </div>
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+</style>
+<header class="fooodis-header">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="Service">Service</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html" title="Contact">Contact</a></li>
+<li class="nav-item"><a data-lang-en="FEBlog" data-lang-sv="FEBlogg" href="FEBlog.html" title="FEBlog">FEBlog</a></li>
+<li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="Blog.html" title="Blog">Blog</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="index.html#limited-time-offer-en" title="Price">Price</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="Registrar">Registrar</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="Login">Login</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button>
+</div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
 
-                    <div class="form-group">
-                        <label for="ticketPriority"><span data-lang-en="Priority" data-lang-sv="Prioritet">Priority</span> *</label>
-                        <select id="ticketPriority" name="priority" required>
-                            <option value="" data-lang-en="Select Priority" data-lang-sv="Välj prioritet">Select Priority</option>
-                            <option value="low" data-lang-en="Low - General Question" datalang-sv="Låg - Allmän fråga">Low - General Question</option>
-                            <option value="medium" data-lang-en="Medium - Standard Issue" data-lang-sv="Medium - Standard problem">Medium - Standard Issue</option>
-                            <option value="high" data-lang-en="High - Urgent Problem" data-lang-sv="Hög - Brådskande problem">High - Urgent Problem</option>
-                            <option value="urgent" data-lang-en="Urgent - Business Critical" data-lang-sv="Brådskande - Affärskritiskt">Urgent - Business Critical</option>
-                        </select>
-                    </div>
-                </div>
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener noreferrer" target="_blank" title="SERVICE">SERVICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">CONTACT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="FEBLOG" data-lang-sv="FEBLOGG" href="FEBlog.html" title="FEBLOG">FEBLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="Blog.html" title="BLOG">BLOG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="index.html#limited-time-offer-en" title="PRICE">PRICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener noreferrer" target="_blank" title="REGISTRAR">REGISTRAR</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener noreferrer" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/new/restaurant/login" rel="noopener noreferrer" target="_blank" title="LOGIN">LOGIN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
 
-                <div class="form-group full-width">
-                    <label for="ticketSubject"><span data-lang-en="Subject" data-lang-sv="Ämne">Subject</span> *</label>
-                    <input type="text" id="ticketSubject" name="subject" data-lang-en-placeholder="Brief description of your issue" data-lang-sv-placeholder="Kort beskrivning av ditt problem" placeholder="Brief description of your issue" required>
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="ticketDescription"><span data-lang-en="Description" data-lang-sv="Beskrivning">Description</span> *</label>
-                    <textarea id="ticketDescription" name="description" rows="6" 
-                              data-lang-en-placeholder="Please provide detailed information about your issue or question..." 
-                              data-lang-sv-placeholder="Vänligen ge detaljerad information om ditt problem eller din fråga..." 
-                              placeholder="Please provide detailed information about your issue or question..." required></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-paper-plane"></i> <span data-lang-en="Submit Ticket" data-lang-sv="Skicka förfrågan">Submit Ticket</span>
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <!-- Login Section (Initially Hidden) -->
-        <section id="loginSection" class="ticket-section hidden">
-            <div class="section-header">
-                <h2><i class="fas fa-sign-in-alt"></i> <span data-lang-en="Customer Login" data-lang-sv="Kundinloggning">Customer Login</span></h2>
-                <p data-lang-en="Login to view your ticket history and track support requests." data-lang-sv="Logga in för att se din ärendehistorik och spåra supportförfrågningar.">Login to view your ticket history and track support requests.</p>
-            </div>
-
-            <form id="customerLoginForm" class="login-form">
-                <div class="form-group">
-                    <label for="loginEmail"><span data-lang-en="Email Address" data-lang-sv="E-postadress">Email Address</span></label>
-                    <input type="email" id="loginEmail" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="loginPassword"><span data-lang-en="Password" data-lang-sv="Lösenord">Password</span></label>
-                    <input type="password" id="loginPassword" name="password" required>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-sign-in-alt"></i> <span data-lang-en="Login" data-lang-sv="Logga in">Login</span>
-                    </button>
-                    <button type="button" class="btn-secondary" onclick="showTicketCreation()">
-                        <i class="fas fa-arrow-left"></i> <span data-lang-en="Back to Submit Ticket" data-lang-sv="Tillbaka till skicka ärende">Back to Submit Ticket</span>
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <!-- Customer Ticket History (Shown after login) -->
-        <section id="ticketHistory" class="ticket-section hidden">
-            <div class="section-header">
-                <h2><i class="fas fa-history"></i> <span data-lang-en="My Support Tickets" data-lang-sv="Mina supportärenden">My Support Tickets</span></h2>
-                <div class="header-actions">
-                    <button class="btn-secondary" onclick="showTicketCreation()">
-                        <i class="fas fa-plus"></i> <span data-lang-en="New Ticket" data-lang-sv="Nytt ärende">New Ticket</span>
-                    </button>
-                    <button class="btn-secondary" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i> <span data-lang-en="Logout" data-lang-sv="Logga ut">Logout</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="tickets-grid" id="customerTicketsGrid">
-                <!-- Customer tickets will be loaded here -->
-            </div>
-        </section>
-
-        <!-- Ticket Detail Modal -->
-        <div id="ticketDetailModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="modalTicketTitle" data-lang-en="Ticket Details" data-lang-sv="Ärendedetaljer">Ticket Details</h3>
-                    <span class="close" onclick="closeTicketModal()">&times;</span>
-                </div>
-                <div class="modal-body" id="modalTicketContent">
-                    <!-- Ticket details will be loaded here -->
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="closeTicketModal()" data-lang-en="Close" data-lang-sv="Stäng">Close</button>
-                </div>
-            </div>
-        </div>
-        </div>
-    </main>
-
-    <!-- Login/Registration Modal -->
-    <div id="authModal" class="modal">
-        <div class="modal-content auth-modal">
-            <div class="modal-header">
-                <h3 id="authModalTitle" data-lang-en="Login to Your Account" data-lang-sv="Logga in på ditt konto">Login to Your Account</h3>
-                <span class="close" onclick="closeAuthModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <!-- Login Form -->
-                <div id="loginForm" class="auth-form">
-                    <form onsubmit="return handleLogin(event)">
-                        <div class="form-group">
-                            <label for="modalLoginEmail" data-lang-en="Email Address" data-lang-sv="E-postadress">Email Address</label>
-                            <input type="email" id="modalLoginEmail" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="modalLoginPassword" data-lang-en="Password" data-lang-sv="Lösenord">Password</label>
-                            <input type="password" id="modalLoginPassword" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary auth-btn">
-                            <i class="fas fa-sign-in-alt"></i> <span data-lang-en="Login" data-lang-sv="Logga in">Login</span>
-                        </button>
-                    </form>
-                    <div class="auth-links">
-                        <p><span data-lang-en="Don't have an account?" data-lang-sv="Har du inget konto?">Don't have an account?</span> <a href="#" onclick="showRegisterForm()" data-lang-en="Create Account" data-lang-sv="Skapa konto">Create Account</a></p>
-                        <p><a href="#" onclick="showForgotPassword()" data-lang-en="Forgot Password?" data-lang-sv="Glömt lösenord?">Forgot Password?</a></p>
-                    </div>
-                </div>
-
-                <!-- Registration Form -->
-                <div id="registerForm" class="auth-form hidden">
-                    <form onsubmit="return handleRegister(event)">
-                        <div class="form-group">
-                            <label for="registerName" data-lang-en="Full Name" data-lang-sv="Fullständigt namn">Full Name</label>
-                            <input type="text" id="registerName" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerEmail" data-lang-en="Email Address" data-lang-sv="E-postadress">Email Address</label>
-                            <input type="email" id="registerEmail" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerPassword" data-lang-en="Password" data-lang-sv="Lösenord">Password</label>
-                            <input type="password" id="registerPassword" name="password" required minlength="6">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword" data-lang-en="Confirm Password" data-lang-sv="Bekräfta lösenord">Confirm Password</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
-                        </div>
-                        <button type="submit" class="btn btn-primary auth-btn">
-                            <i class="fas fa-user-plus"></i> <span data-lang-en="Create Account" data-lang-sv="Skapa konto">Create Account</span>
-                        </button>
-                    </form>
-                    <div class="auth-links">
-                        <p><span data-lang-en="Already have an account?" data-lang-sv="Har du redan ett konto?">Already have an account?</span> <a href="#" onclick="showLoginForm()" data-lang-en="Login" data-lang-sv="Logga in">Login</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification System -->
-    <div id="notifications" class="notifications-container"></div>
-
-    <!-- Chatbot Widget -->
-    <div id="chatbot-widget" class="chatbot-widget">
-        <div class="chatbot-header">
-            <div class="chatbot-title">
-                <i class="fas fa-robot"></i>
-                <span data-lang-en="Fooodis Assistant" data-lang-sv="Fooodis Assistent">Fooodis Assistant</span>
-            </div>
-            <div class="chatbot-controls">
-                <button class="chatbot-minimize" title="Minimize">
-                    <i class="fas fa-minus"></i>
-                </button>
-                <button class="chatbot-close" title="Close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="chatbot-messages" id="chatbot-messages">
-            <div class="welcome-message">
-                <div class="message bot-message">
-                    <div class="message-content">
-                        <span data-lang-en="👋 Hello! I'm your Fooodis support assistant. How can I help you today?" 
-                              data-lang-sv="👋 Hej! Jag är din Fooodis supportassistent. Hur kan jag hjälpa dig idag?">
-                            👋 Hello! I'm your Fooodis support assistant. How can I help you today?
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="chatbot-input-area">
-            <div class="chatbot-input-container">
-                <input type="text" 
-                       id="chatbot-input" 
-                       placeholder="Type your message..." 
-                       data-lang-en-placeholder="Type your message..." 
-                       data-lang-sv-placeholder="Skriv ditt meddelande...">
-                <button id="chatbot-send" class="chatbot-send-btn" title="Send message" aria-label="Send message">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chatbot Toggle Button -->
-    <div id="chatbot-toggle" class="chatbot-toggle">
-        <i class="fas fa-comments"></i>
-        <span class="chatbot-notification-badge" id="chatbot-notification-badge">0</span>
-    </div>
-
-    <!-- Fooodis Footer with Bubble Animation -->
-    <footer class="fooodis-footer">
-        <!-- Bubbles animation container -->
-        <div class="bubbles">
-            <!-- Bubbles will be dynamically generated by JavaScript -->
-        </div>
-
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-logo">
-                    <a href="#">
-                        <img src="images/Artboard17copy9.svg" alt="Fooodis Logo" class="fooodis-logo-footer">
-                    </a>
-                </div>
-                <nav class="footer-nav">
-                    <ul class="footer-nav-list">
-                        <li class="footer-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener" data-lang-en="Service" data-lang-sv="Tjänst">Service</a></li>
-                        <li class="footer-nav-item"><a href="#" data-lang-en="Contact" data-lang-sv="Kontakt">Contact</a></li>
-                        <li class="footer-nav-item"><a href="blog.html" data-lang-en="Blog" data-lang-sv="Blogg">Blog</a></li>
-                        <li class="footer-nav-item"><a href="support.html" class="current-page" data-lang-en="Support" data-lang-sv="Support">Support</a></li>
-                        <li class="footer-nav-item"><a href="dashboard.html" data-lang-en="Dashboard" data-lang-sv="Instrumentpanel">Dashboard</a></li>
-                    </ul>
-                </nav>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="footer-powered-by">
-                    <div class="logoland-container">
-                        <a href="https://logoland.se/" target="_blank" rel="noopener">
-                            <img src="images/Artboard1.svg" alt="LogoLand" class="logoland-logo">
-                        </a>
-                        <p data-lang-en="Powered by LogoLand with ❤️" data-lang-sv="Drivs av LogoLand med ❤️">Powered by LogoLand with ❤️</p>
-                    </div>
-                </div>
-                <div class="footer-social">
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link linkedin" title="Visit Fooodis on LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Visit Fooodis on Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Visit Fooodis on Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link twitter" title="Visit Fooodis on X (Twitter)">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link youtube" title="Visit Fooodis on YouTube">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Initialize header functionality when the DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Header shadow and transparency on scroll
-            const header = document.querySelector('.fooodis-header');
-
-            function handleScroll() {
-                if (window.scrollY > 50) {
-                    // When scrolled, make header semi-transparent with blur effect
-                    header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
-                    header.style.backdropFilter = 'blur(10px)';
-                    header.style.WebkitBackdropFilter = 'blur(10px)';
-                    header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
-                } else {
-                    // When at top, restore original background
-                    header.style.backgroundColor = '#1e2127';
-                    header.style.backdropFilter = '';
-                    header.style.WebkitBackdropFilter = '';
-                    header.style.boxShadow = '';
-                }
-            }
-
-            // Initial check and add scroll listener
-            handleScroll();
-            window.addEventListener('scroll', handleScroll, { passive: true });
-
-            // Mobile menu toggle
-            const hamburgerMenu = document.querySelector('.hamburger-menu');
-            const mobileNav = document.querySelector('.mobile-nav');
-            const closeBtn = document.querySelector('.mobile-nav-close');
-
-            if (hamburgerMenu && mobileNav) {
-                hamburgerMenu.addEventListener('click', function() {
-                    mobileNav.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
-
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function() {
-                        mobileNav.classList.remove('active');
-                        document.body.style.overflow = '';
-                    });
-                }
-
-                // Close mobile nav when clicking outside
-                mobileNav.addEventListener('click', function(e) {
-                    if (e.target === mobileNav) {
-                        mobileNav.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                });
-            }
-
-            // Language switching functionality
-            window.switchLanguage = function(lang) {
-                document.documentElement.lang = lang;
-
-                // Update language tabs
-                document.querySelectorAll('.language-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                    if (tab.getAttribute('data-lang') === lang) {
-                        tab.classList.add('active');
-                    }
-                });
-
-                // Update all translatable elements
-                document.querySelectorAll('[data-lang-en]').forEach(element => {
-                    const translation = element.getAttribute('data-lang-' + lang);
-                    if (translation) {
-                        element.textContent = translation;
-                    }
-                });
-
-                // Update placeholders
-                document.querySelectorAll('[data-lang-' + lang + '-placeholder]').forEach(element => {
-                    const placeholder = element.getAttribute('data-lang-' + lang + '-placeholder');
-                    if (placeholder) {
-                        element.placeholder = placeholder;
-                    }
-                });
-
-                // Update select options
-                document.querySelectorAll('option[data-lang-' + lang + ']').forEach(option => {
-                    const translation = option.getAttribute('data-lang-' + lang);
-                    if (translation) {
-                        option.textContent = translation;
-                    }
-                });
-            };
-
-            // Mobile nav toggle functions
-            window.toggleMobileNav = function() {
-                const mobileNav = document.querySelector('.mobile-nav');
-                if (mobileNav) {
-                    mobileNav.classList.toggle('active');
-                    document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
-                }
-            };
-
-            window.closeMobileNav = function() {
-                const mobileNav = document.querySelector('.mobile-nav');
-                if (mobileNav) {
-                    mobileNav.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            };
-        });
-
-        // Footer bubbles animation
-        function createBubbles() {
-            const bubblesContainer = document.querySelector('.bubbles');
-            if (!bubblesContainer) return;
-
-            const bubbleCount = 15;
-
-            for (let i = 0; i < bubbleCount; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                bubble.style.left = Math.random() * 100 + '%';
-                bubble.style.animationDelay = Math.random() * 15 + 's';
-                bubble.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                bubblesContainer.appendChild(bubble);
-            }
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
         }
-
-        // Initialize bubbles when page loads
-        document.addEventListener('DOMContentLoaded', createBubbles);
-    </script>
-    <script src="js/support-portal.js"></script>
-
-    <!-- Chatbot Integration Scripts -->
-    <script src="js/storage-manager.js"></script>
-    <script src="js/chatbot-widget.js"></script>
-    <script src="js/chatbot-management.js"></script>
-    <script src="js/chatbot-message-enhancer.js"></script>
-    <script src="js/chatbot-integration-fixes.js"></script>
-    <script src="js/node-flow-builder.js"></script>
-
-    <!-- Initialize Chatbot -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize chatbot after page loads
-            setTimeout(() => {
-                if (typeof window.ChatbotWidget !== 'undefined') {
-                    window.chatbotWidget = new ChatbotWidget();
-                    console.log('✅ Chatbot initialized on support page');
-                } else {
-                    console.warn('⚠️ ChatbotWidget not available');
-                }
-            }, 1000);
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    const ham = document.querySelector('.ham');
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.toggle('show');
+            if (ham) ham.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('show') ? 'hidden' : ''; // Toggle scrolling
         });
-    </script>
-</body>
-</html>
+    }
+    
+    // Close button for the mobile menu
+    const closeBtn = document.querySelector('.mobile-close-btn');
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            if (ham) ham.classList.remove('active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+    }
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'Blog': 'Blog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'Blog': 'Blogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-xl u-custom-color-1 u-section-1" id="sec-ad82">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-sheet-1">
+<h1 class="u-text u-text-1"> Fooodis.com's Expert Blog</h1>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-2" id="sec-564d">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> 24/7 Support to Help You Succeed with Fooodis<br>
+</h3>
+<p class="u-align-center u-text u-text-2">
+<a class="u-active-none u-border-none u-btn u-button-link u-button-style u-hover-none u-none u-text-white u-btn-1" data-href="#" title="At Fooodis, we understand how important it is to have reliable support, whether you’re just getting started or need help optimizing your restaurant’s digital operations. That’s why we offer 24/7 assistance through multiple channels to make sure you always have the help you need. From our detailed and categorized blog page filled with guides and tutorials to our intelligent AI chat assistant, we’ve got you covered. If you need more personalized help, you can reach us via our contact form and we’ll get back to you as soon as possible. Whether you’re doing it yourself or outsourcing the setup to us, our support ensures that your restaurant setup is smooth and successful."> At Fooodis, we understand how important it is to have reliable support, whether you’re just getting started or need help optimizing your restaurant’s digital operations. That’s why we offer 24/7 assistance through multiple channels to make sure you always have the help you need. From our detailed and categorized blog page filled with guides and tutorials to our intelligent AI chat assistant, we’ve got you covered. If you need more personalized help, you can reach us via our contact form and we’ll get back to you as soon as possible. Whether you’re doing it yourself or outsourcing the setup to us, our support ensures that your restaurant setup is smooth and successful.<br>
+</a>
+</p>
+</div>
+</section>
+<section class="skrollable u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-3" id="sec-3f49" src="">
+<div class="u-clearfix u-sheet u-sheet-1">
+<img alt="" class="u-image u-image-contain u-image-default u-image-1" data-custom-animation="{&quot;animation&quot;:{&quot;XXL&quot;:{&quot;steps&quot;:[],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XL&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-775&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;LG&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-688&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-684&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;MD&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-577&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-572&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;SM&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-473&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-462&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}},&quot;XS&quot;:{&quot;steps&quot;:[{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-366&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0},{&quot;dist&quot;:0.2,&quot;skip&quot;:0,&quot;blur&quot;:0,&quot;sticky&quot;:false,&quot;fixed&quot;:false,&quot;mx&quot;:&quot;-361&quot;,&quot;my&quot;:0,&quot;op&quot;:1,&quot;rot&quot;:0,&quot;sx&quot;:1,&quot;sy&quot;:1,&quot;bgy&quot;:0}],&quot;hidden&quot;:false,&quot;start&quot;:{&quot;at&quot;:&quot;bottom&quot;,&quot;off&quot;:0},&quot;end&quot;:{&quot;at&quot;:&quot;top&quot;,&quot;off&quot;:0}}},&quot;container&quot;:&quot;&quot;}" data-image-height="1856" data-image-width="2362" src="images/Support3.png">
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-4" id="sec-5bf5">
+<div class="u-clearfix u-sheet u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Join Fooodis Today!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Empower Your Restaurant with Digital Solutions<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Ready to take your restaurant to the next level? Register now and start using​Fooodis.com’s advanced digital tools for free. Streamline your operations, enhance customer service, and boost your profits with our easy-to-use platform. Get started today for free and transform your restaurant's future!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-5" id="sec-be3b">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://fooodis.com/new/restaurant/register" target="_blank" rel="noopener noreferrer" title="Start for Free"> Start for Free</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-6" id="sec-6157">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-body-color u-text-1"> Round-the-Clock Support for Your Fooodis Journey<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Get Help Anytime with Our 24/7 Assistance<br>
+</h6>
+<p class="u-align-center u-text u-text-3">Fooodis is here to support you every step of the way, with 24/7 assistance available through multiple channels. Explore our blog for comprehensive guides, use our AI chat assistant for instant help, or contact us directly for personalized support. Whether you need help setting up or want us to handle the setup for you, we ensure your restaurant’s success is just a few clicks away.<br>
+</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-7" id="sec-d497">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="data-layout-selected u-clearfix u-expanded-width-lg u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gutter-0 u-layout-wrap u-layout-wrap-1">
+<div class="u-layout">
+<div class="u-layout-row">
+<div class="u-align-left u-container-align-left u-container-style u-layout-cell u-left-cell u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-1" src="">
+<div class="u-container-layout u-valign-middle-xl u-container-layout-1" src="">
+<div class="u-container-style u-expanded-width u-group u-group-1">
+<div class="u-container-layout u-container-layout-2">
+<div class="u-carousel u-expanded-width-xs u-gallery u-gallery-slider u-layout-carousel u-lightbox u-no-transition u-show-text-on-hover u-gallery-1" data-interval="5000" data-pause="hover" data-u-ride="carousel" id="carousel-720d">
+<ol class="u-absolute-hcenter u-carousel-indicators u-carousel-indicators-1">
+<li class="u-active u-grey-70 u-shape-circle Support-extracted-2" data-u-slide-to="0" data-u-target="#carousel-720d"></li>
+<li class="u-grey-70 u-shape-circle Support-extracted-2" data-u-slide-to="1" data-u-target="#carousel-720d"></li>
+</ol>
+<div class="u-carousel-inner u-gallery-inner u-gallery-inner-1" role="listbox">
+<div class="u-active u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-1" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Support1.png" alt="Support1" title="Support1">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-1"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+<div class="u-carousel-item u-effect-fade u-effect-hover-zoom u-gallery-item u-carousel-item-2" data-image-height="1856" data-image-width="2362" role="option">
+<div class="u-back-slide">
+<img class="u-back-image u-expanded" src="images/Support2.png" alt="Support2" title="Support2">
+</div>
+<div class="u-align-center u-over-slide u-shading u-valign-middle u-over-slide-2"></div>
+<style data-mode="XL" data-visited="true"></style>
+<style data-mode="LG" data-visited="true"></style>
+<style data-mode="MD" data-visited="true"></style>
+<style data-mode="SM" data-visited="true"></style>
+<style data-mode="XS" data-visited="true"></style>
+</div>
+</div>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-prev u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-1" data-u-slide="prev" href="#carousel-720d" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="m64.5,122.6c32,0 58.1-26 58.1-58.1s-26-58-58.1-58-58,26-58,58 26,58.1 58,58.1zm0-108c27.5,5.32907e-15 49.9,22.4 49.9,49.9s-22.4,49.9-49.9,49.9-49.9-22.4-49.9-49.9 22.4-49.9 49.9-49.9z"></path><path d="m70,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2 1.6-1.6 1.6-4.2 0-5.8l-23.5-23.5 23.5-23.5c1.6-1.6 1.6-4.2 0-5.8s-4.2-1.6-5.8,0l-26.4,26.4c-0.8,0.8-1.2,1.8-1.2,2.9s0.4,2.1 1.2,2.9l26.4,26.4z"></path></svg></span>
+</a>
+<a class="u-absolute-vcenter u-carousel-control u-carousel-control-next u-opacity u-opacity-70 u-spacing-10 u-text-white u-carousel-control-2" data-u-slide="next" href="#carousel-720d" role="button"><span aria-hidden="true">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span><span class="sr-only">
+<svg viewBox="0 0 129 129"><path d="M64.5,122.6c32,0,58.1-26,58.1-58.1S96.5,6.4,64.5,6.4S6.4,32.5,6.4,64.5S32.5,122.6,64.5,122.6z M64.5,14.6    c27.5,0,49.9,22.4,49.9,49.9S92,114.4,64.5,114.4S14.6,92,14.6,64.5S37,14.6,64.5,14.6z"></path><path d="m51.1,93.5c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l26.4-26.4c0.8-0.8 1.2-1.8 1.2-2.9 0-1.1-0.4-2.1-1.2-2.9l-26.4-26.4c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l23.5,23.5-23.5,23.5c-1.6,1.6-1.6,4.2 0,5.8z"></path></svg></span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="u-align-left u-container-align-left u-container-align-left-xl u-container-style u-layout-cell u-right-cell u-shape-rectangle u-size-30-xl u-size-60-lg u-size-60-md u-size-60-sm u-size-60-xs u-size-xs-60 u-layout-cell-2">
+<div class="u-container-layout u-valign-top-md u-valign-top-sm u-container-layout-3">
+<div class="u-align-left u-container-align-left u-container-style u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-group u-shape-rectangle u-group-2">
+<div class="u-container-layout u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xs u-container-layout-4">
+<p class="u-align-left u-text u-text-1"><span class="Support-extracted-3"></span><span class="Support-extracted-4">Unmatched Support for Fooodis Users</span><span class="Support-extracted-3">
+<br></span>
+<br>Whether you’ve registered or are simply exploring Fooodis, we’re here to provide support around the clock. Our platform offers <span class="Support-extracted-5">24/7 assistance</span> through multiple channels to ensure your restaurant setup is seamless and straightforward. Here are three ways you can access our support:<br>
+<br><span class="Support-extracted-5">1. <span class="Support-extracted-5">Blog Page</span></span>
+<br> Our <span class="Support-extracted-5">Expert Blog</span>&nbsp;page is packed with valuable information, guides, and tutorials, categorized to help you easily find the answers you need. Whether you're looking to set up a specific section in your Fooodis dashboard or want to optimize your restaurant's digital presence, we've made it easy for you to find the right solutions.<br>
+<br><span class="Support-extracted-5">2. AI Chat Assistant</span>
+<br> You’ll find our <span class="Support-extracted-5">AI Chat Assistant</span>&nbsp;at the bottom right corner of your screen, both on the main website and within your dashboard. This intelligent assistant is specifically trained on the Fooodis platform to guide you step-by-step. It’s available 24/7 to provide instant help, answer questions, and offer detailed guidance for every feature Fooodis offers.<br>
+<br><span class="Support-extracted-5">3. Contact Form</span>
+<br> Still have questions? You can reach out through our <span class="Support-extracted-5">Contact Form</span>&nbsp;on the contact page, and we will get back to you promptly. Whether you need help setting up your restaurant or want to outsource the job to us, we’re ready to assist. In fact, we can fully set up your restaurant on Fooodis within a week if needed.<br>
+<br>With our comprehensive support services, setting up and managing your restaurant with Fooodis is as easy as pie. For more details or inquiries, don’t hesitate to contact us!<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-8" id="sec-e564">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Try Our Interactive Demo!<br>
+</h3>
+<h6 class="u-align-center u-text u-text-2"> Experience ​Fooodis.com in Action<br>
+</h6>
+<p class="u-align-center u-text u-text-3"> Dive into our fully functional demo website and explore the power and simplicity of the Fooodis POS system. Test all the features, customize your experience, and see firsthand how our integrated platform can transform your restaurant management. Click here to start your journey!<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-9" id="sec-edf5">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="https://demo.fooodis.com/login" target="_blank" rel="noopener noreferrer" title="Explore Demo Now"> Explore Demo Now<br>
+</a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-10" id="sec-6758">
+<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
+<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="images/Artboard1.svg">
+<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1"> Empower Your Brand with Our Comprehensive Digital Services</h3>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-11" id="sec-17aa">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Support-extracted-6">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-12" id="sec-9ffa">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Logo Land Design - Your Gateway to Digital Excellence</h3>
+<p class="u-align-center u-text u-text-2"> Discover the power of unified social media campaigns, custom content design, and creative digital storytelling at Logo Land Design. Our expert team specializes in designing, executing, and monitoring digital ad campaigns for maximum ROI. We craft a unique brand voice and strategy, create dynamic animations, produce compelling video narratives, capture stunning photography, and generate engaging, plagiarism-free content. Elevate your brand's presence with our tailored digital solutions.</p>
+</div>
+</section>
+<section class="u-border-2 u-border-grey-75 u-clearfix u-custom-color-1 u-section-13" id="sec-079b">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-list u-list-1">
+<div class="u-repeater u-repeater-1">
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"> Unified Social Media&nbsp;<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-2"> Designing, executing, and monitoring digital ad campaigns for maximum ROI<sider-trans></sider-trans>
+<br>
+<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"> Custom Content Design<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-4"> Crafting a unique brand voice and strategy to ensure consistent and impactful messaging across all platforms.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"> Animation Services<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-6"> Creating dynamic animations and graphics to convey messages in an engaging manner.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more<sider-trans></sider-trans>
+</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"> Video Editing<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-8"> Crafting compelling video narratives for promotions, brand stories, or advertisements.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">Photography<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-10"> Capturing high-quality visuals and designing graphics to enhance advertisements and promotional materials.<br>
+<br>
+</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"> Creation &amp; Copywriting<sider-trans></sider-trans>
+</p>
+<p class="u-text u-text-body-alt-color u-text-12"> Using AI and human expertise to generate engaging, plagiarism-free content tailored for advertising needs.</p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="learn more">learn more</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-14" id="sec-2103">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-body-color u-text-1"> We Have More for You</h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-15" id="sec-8b1c">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> Explore More with Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2"> Your journey with Logo Land Design doesn't end here. Explore our additional offerings by visiting the dedicated websites for our specialized products: the Website Builder, Email Marketing Program, and Webshop Builder. Each one is designed to enhance your digital experience and success. Discover more now!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-16" id="sec-4f3f">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="visit&nbsp;Logoland website"><span class="translate-gpt-translated Support-extracted-6">visit&nbsp;Logoland website</span>
+</a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-17" id="sec-e7a0">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"> FAQs for Fooodis Support<br>
+</h3>
+<p class="u-align-center u-text u-text-2"> At Fooodis, we’re dedicated to providing constant support to help you manage your restaurant effortlessly. Below are some frequently asked questions about our support channels and how you can get the help you need anytime. From our expert blog to our AI chat assistant, we’ve made it easy for you to find the solutions you need, 24/7.<br>
+</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-18" id="sec-eb47">
+<div class="u-accordion u-collapsed-by-default u-expanded-width u-spacing-0 u-accordion-1" role="tablist">
+<div class="u-accordion-item u-accordion-item-1">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-1" id="link-accordion-a910" role="tab" aria-label="How can I access the support available on Fooodis?" aria-controls="panel-6997" aria-selected="false" tabindex="0" title="How can I access the support available on Fooodis?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-8" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-9">
+<canvas class="qb-highlighter__canvas Support-extracted-10" height="23" width="63"></canvas>
+</qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How can I access the support available on Fooodis?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-0b4a"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-0b4a" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-1" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-1">
+<p class="u-text u-text-1"> You can access support in three ways: through our categorized <span class="Support-extracted-5">Blog Page</span>, the <span class="Support-extracted-5">AI Chat Assistant</span> available at the bottom right corner of the page, or by sending a message via our <span class="Support-extracted-5">Contact Form</span> on the contact page.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-2">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-2" id="link-accordion-a910" role="tab" aria-label="What kind of information is available on the blog page?" aria-controls="panel-5467" aria-selected="false" tabindex="0" title="What kind of information is available on the blog page?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-12" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-13"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> What kind of information is available on the blog page?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-5d8b"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-5d8b" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-2" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-2">
+<p class="u-text u-text-2"> Our blog provides a range of guides, tutorials, and expert tips, categorized for easy navigation. You’ll find step-by-step instructions to help you set up and optimize different features of your Fooodis dashboard.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-3">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-3" id="link-accordion-a910" role="tab" aria-label="Where can I find the AI chat assistant?" aria-controls="panel-2619" aria-selected="false" tabindex="0" title="Where can I find the AI chat assistant?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-14" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-15"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Where can I find the AI chat assistant?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-10d1"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-10d1" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-3" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-3">
+<p class="u-text u-text-3"> The AI chat assistant is located at the bottom right corner of the Fooodis website and dashboard. It’s available 24/7 to guide you through any feature and provide real-time assistance whenever you need help.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-4">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-4" id="link-accordion-a910" role="tab" aria-label="Can I ask the AI chat assistant anything?" aria-controls="panel-9122" aria-selected="false" tabindex="0" title="Can I ask the AI chat assistant anything?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-16" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-17"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can I ask the AI chat assistant anything?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-4"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-ba78"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-ba78" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-4" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-4">
+<p class="u-text u-text-4"> Yes, our AI chat assistant is specifically trained to answer questions related to the Fooodis platform and provide step-by-step guidance for setting up and managing your restaurant.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-5">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-5" id="link-accordion-a910" role="tab" aria-label="How do I reach out if I need further assistance?" aria-controls="panel-3816" aria-selected="false" tabindex="0" title="How do I reach out if I need further assistance?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-18" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-19"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> How do I reach out if I need further assistance?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-5"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-1cb9"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-1cb9" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-5" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-5">
+<p class="u-text u-text-5"> If you need more personalized support, you can fill out the <span class="Support-extracted-5">Contact Form</span> on our contact page. A member of our team will get back to you promptly to assist with your query.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-6">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-6" id="link-accordion-a910" role="tab" aria-label="Can Fooodis set up my restaurant for me?" aria-controls="panel-3071" aria-selected="false" tabindex="0" title="Can Fooodis set up my restaurant for me?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-20" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-21"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Can Fooodis set up my restaurant for me?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-6"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-4889"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-4889" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-6" id="accordion-a910">
+<div class="u-container-layout u-container-layout-6">
+<p class="u-text u-text-6"> Yes, if you prefer to outsource the setup, we can fully configure your restaurant on Fooodis within a week. Just reach out through the contact form for more information.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-7">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-7" id="link-accordion-a910" role="tab" aria-label="Is support available to users who haven’t registered yet?" aria-controls="panel-9536" aria-selected="false" tabindex="0" title="Is support available to users who haven’t registered yet?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-22" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-23"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Is support available to users who haven’t registered yet?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-7"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-6b3a"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-6b3a" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-7" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-7">
+<p class="u-text u-text-7"> Yes, even if you haven’t registered on Fooodis, you can still access our blog and AI chat assistant for help.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-8">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-8" id="link-accordion-a910" role="tab" aria-label="What if I don’t find the answer I’m looking for?" aria-controls="panel-5221" aria-selected="false" tabindex="0" title="What if I don’t find the answer I’m looking for?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-24" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-25"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> What if I don’t find the answer I’m looking for?<br></span><span class="u-accordion-link-icon u-icon u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-8"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-7bc3"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-7bc3" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-a910" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-8" id="accordion-a910">
+<div class="u-container-layout u-valign-top u-container-layout-8">
+<p class="u-text u-text-8"> If you can’t find what you need on the blog or through the AI chat assistant, you can always reach out to us via the Contact Form, and we’ll make sure to help you with your specific issue.<br>
+</p>
+</div>
+</div>
+</div>
+<div class="u-accordion-item u-accordion-item-9">
+<a class="u-accordion-link u-active-custom-color-7 u-border-1 u-border-active-custom-color-2 u-border-custom-color-2 u-border-hover-custom-color-2 u-button-style u-custom-color-4 u-hover-custom-color-7 u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-accordion-link-9" id="link-accordion-0781" role="tab" aria-label="Where can I find more resources and guides?" aria-controls="panel-8841" aria-selected="false" tabindex="0" title="Where can I find more resources and guides?">
+<qb-highlighter class="qb--mac-os qb-highlighter--grid-item Support-extracted-7">
+<qb-div class="qb-highlighter__wrapper Support-extracted-26" spellcheck="false">
+<qb-div class="qb-highlighter__scroll-element Support-extracted-27"></qb-div>
+</qb-div>
+</qb-highlighter><span class="u-accordion-link-text"> Where can I find more resources and guides?</span><span class="u-accordion-link-icon u-icon u-icon-rectangle u-text-active-custom-color-2 u-text-custom-color-2 u-text-hover-custom-color-2 u-icon-9"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 42 42"><use xlink:href="#svg-4fe7"></use></svg><svg class="u-svg-content Support-extracted-11" id="svg-4fe7" version="1.1" viewBox="0 0 42 42" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><polygon points="42,20 22,20 22,0 20,0 20,20 0,20 0,22 20,22 20,42 22,42 22,22 42,22 "></polygon></svg></span>
+</a>
+<div aria-labelledby="link-accordion-0781" class="u-accordion-pane u-container-style u-shape-rectangle u-accordion-pane-9" id="accordion-0781">
+<div class="u-container-layout u-container-layout-9">
+<ul class="u-custom-list u-text u-text-9">
+<li>
+<div class="u-list-icon">
+<div class="u-svg-content" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">–</div>
+</div> Visit our blog, '​Fooodis.com's Expert Blog,' to elevate your restaurant with insights and tips from industry experts.<br>
+</li>
+</ul>
+<a class="u-active-white u-border-1 u-border-active-white u-border-hover-white u-border-white u-btn u-button-style u-hover-white u-none u-text-active-grey-70 u-text-body-alt-color u-text-hover-grey-70 u-btn-1" data-page-id="2059315254" href="Blog.html" title="Expert Blog"> Expert Blog</a>
+</div>
+</div>
+</div>
+</div><div role="tabpanel" id="panel-8841"></div><div role="tabpanel" id="panel-5221"></div><div role="tabpanel" id="panel-9536"></div><div role="tabpanel" id="panel-3071"></div><div role="tabpanel" id="panel-3816"></div><div role="tabpanel" id="panel-9122"></div><div role="tabpanel" id="panel-2619"></div><div role="tabpanel" id="panel-5467"></div><div role="tabpanel" id="panel-6997"></div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-1 u-section-19" id="sec-1d5b">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" data-page-id="2059315254" href="Blog.html" title="LEARN More!"> LEARN More!</a>
+</div>
+</section>
+<style class="u-overlap-style" data-parsed="true">.u-overlap:not(.u-sticky-scroll) .u-header {
+background-color: #1d2029 !important; transparency: 45 !important
+}</style>
+    
+    
+    <script src="assets/footer-loader.js"></script>
+  <!-- Unified Footer Loader -->  
+  <script src="assets/include-footer.js"></script>
+
+
+</body></html>

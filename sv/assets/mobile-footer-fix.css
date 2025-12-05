@@ -1,0 +1,115 @@
+/* Mobile Footer Fix - Ensures navigation links display correctly on mobile */
+
+@media (max-width: 768px) {
+    /* Mobile navigation container */
+    .mobile-menu-container {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 20 !important;
+    }
+    
+    /* Mobile navigation */
+    .mobile-nav {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 30px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Navigation list */
+    .mobile-nav .footer-nav-list {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 25px !important;
+        padding: 0 !important;
+        margin: 0 0 30px 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        list-style: none !important;
+    }
+    
+    /* Navigation items */
+    .mobile-nav .footer-nav-item {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Navigation links */
+    .mobile-nav .footer-nav-item a {
+        font-size: 20px !important;
+        font-weight: 400 !important;
+        color: #fff !important;
+        text-decoration: none !important;
+        padding: 5px 0 !important;
+        display: inline-block !important;
+        letter-spacing: 0.5px !important;
+        opacity: 0.9 !important;
+        visibility: visible !important;
+    }
+    
+    /* Active/hover state */
+    .mobile-nav .footer-nav-item a.active,
+    .mobile-nav .footer-nav-item a:hover {
+        color: #e3c878 !important;
+        opacity: 1 !important;
+    }
+    
+    /* Hide desktop navigation */
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* Override any conflicting styles */
+    .footer-container * {
+        box-sizing: border-box !important;
+    }
+    
+    /* LogoLand logo styling */
+    .logoland-logo {
+        max-width: 220px !important;
+        height: auto !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* Back to top button styling */
+    .back-to-top-button {
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 50px !important;
+        height: 50px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background-color: #1d2029 !important;
+        border: 2px solid #e3c878 !important;
+        z-index: 100 !important;
+    }
+    
+    .back-to-top-button img {
+        width: 20px !important;
+        height: 20px !important;
+        filter: invert(48%) sepia(80%) saturate(2476%) hue-rotate(190deg) brightness(90%) contrast(95%) !important;
+    }
+    
+    /* Force footer visibility */
+    .fooodis-footer {
+        display: grid !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}

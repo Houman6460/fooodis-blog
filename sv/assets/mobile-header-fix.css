@@ -1,0 +1,11 @@
+/* 
+ * Mobile header logo size reduction
+ * Reduces the size of the Fooodis logo only on mobile devices
+ */
+
+@media (max-width: 768px) {
+  .fooodis-logo {
+    height: 35px !important; /* Reduced size for mobile only */
+    width: auto;
+  }
+}

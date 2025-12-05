@@ -1,0 +1,16 @@
+/* Footer Gradient CSS - Added from Fooodis_Complete_20250530_1757 */
+body {
+    position: relative;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(to top, #e8f24c 0%, #1e2127 60%, transparent 100%);
+    z-index: -2; /* Lower z-index to ensure it's behind the footer */
+    pointer-events: none; /* Ensures clicks pass through */
+}

@@ -1,0 +1,1618 @@
+<!DOCTYPE html><html lang="sv" data-autogen-165=""><head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="​​Digital Mastery, Design Perfection" name="keywords">
+<meta content="" name="description">
+<title>Blog</title>
+<link href="../nicepage.css" media="screen" rel="stylesheet">
+<link href="../Blog.css" media="screen" rel="stylesheet">
+<script class="u-script" defer="" src="../jquery.js" type="text/javascript"></script>
+<script class="u-script" defer="" src="../nicepage.js" type="text/javascript"></script>
+<meta content="Nicepage 7.8.6, nicepage.com" name="generator">
+<meta content="origin" name="referrer">
+<!-- Hamburger Menu Animation CSS -->
+<link href="../assets/hamburger-animation.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i" id="u-theme-google-font" rel="stylesheet">
+<script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "Fooodis",
+		"logo": "../images/Artboard17copy9.svg",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+<meta content="#478ac9" name="theme-color">
+<meta content="@" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="Blog" name="twitter:title">
+<meta content="" name="twitter:description">
+<meta content="" property="og:title">
+<meta content="" property="og:description">
+<meta content="website" property="og:type">
+<script>
+    function gdprConfirmed() {
+        return true;
+    }
+    function dynamicLoadScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/enterprise.js?render=6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa';
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = function() {
+            let event = new CustomEvent("recaptchaLoaded");
+            document.dispatchEvent(event);
+        };
+    }
+    function showRecaptchaError(error) {
+        error = error || '';
+        var formError = document.querySelector('.u-form-send-error');
+
+        if (formError) {
+            formError.innerText = 'Site Owner Error: ' + error.replace(/:[\s\S]*/, '');
+            formError.style.display = 'block';
+        }
+
+        console.error('Error in grecaptcha: ', error);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
+        if (confirmButton) {
+            confirmButton.onclick = dynamicLoadScript;
+        }
+    });
+    </script>
+<script>
+        document.addEventListener("DOMContentLoaded", function(){
+            if (!gdprConfirmed()) {
+                return;
+            }
+            dynamicLoadScript();
+        });
+    </script>
+<script>
+        document.addEventListener("recaptchaLoaded", function() {
+            if (!gdprConfirmed()) {
+                return;
+            }
+
+            (function (grecaptcha, sitekey, actions) {
+                var recaptcha = {
+                    execute: function (action, submitFormCb) {
+                        if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                            showRecaptchaError('reCAPTCHA script failed to load.');
+                            return;
+                        }
+
+                        grecaptcha.execute(sitekey, {action: action}).then((token) => {
+                            if (!token) {
+                                throw new Error('Empty token received from reCAPTCHA');
+                            }
+
+                            var forms = document.getElementsByTagName('form');
+
+                            for (var i = 0; i < forms.length; i++) {
+                                var response = forms[i].querySelector('[name="recaptchaResponse"]');
+
+                                if (!response) {
+                                    response = document.createElement('input');
+                                    response.setAttribute('type', 'hidden');
+                                    response.setAttribute('name', 'recaptchaResponse');
+                                    forms[i].appendChild(response);
+                                }
+
+                                response.value = token;
+                            }
+
+                            submitFormCb();
+                        }).catch((e) => {
+                            showRecaptchaError(e.message);
+                        });
+                    },
+
+                    executeContact: function (submitFormCb) {
+                        recaptcha.execute(actions['contact'], submitFormCb);
+                    }
+                };
+
+                window.recaptchaObject = recaptcha;
+            })(
+                
+                grecaptcha.enterprise,
+                '6LfkPyYrAAAAAI8JTOrBcBQT71wNA-Ib3_aZkeTa',
+                {'contact': 'contact'}
+            );
+        });
+    </script>
+<!-- Fooodis Header CSS and JS -->
+<link href="../assets/nicepage-header-footer.css" rel="stylesheet">
+<script defer="" src="../assets/header.js"></script>
+<script defer="" src="../assets/header-include.js"></script>
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inline Footer Styles -->
+    <style>
+/* Combined footer styles for inline embedding */
+
+/* Bubble Footer Animation CSS */
+.fooodis-footer {
+    z-index: 1;
+    --footer-background: #1e2127;
+    display: grid;
+    position: relative;
+    min-height: 12rem;
+    background-color: #1e2127;
+}
+
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: #1e2127;
+    filter: url("#blob");
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: #1e2127;
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+        bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+}
+
+.footer-container {
+    z-index: 15;
+    position: relative;
+    padding: 2rem;
+    background: #1e2127;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Footer layout and components */
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-logo {
+    margin-right: 2rem;
+}
+
+.fooodis-logo-footer {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.footer-nav-item {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-nav-item a:hover {
+    color: #f8bb86;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-powered-by {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-container {
+    display: flex;
+    align-items: center;
+}
+
+.logoland-logo {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-powered-by p {
+    color: #fff;
+    margin: 0;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.social-link i {
+    font-size: 18px;
+}
+
+/* Back to top button */
+.back-to-top-button {
+    height: 64px;
+    width: 64px;
+    margin-left: 0px;
+    margin-right: auto;
+    margin-top: 0px;
+    right: 20px;
+    bottom: 20px;
+    padding: 20px;
+    background-image: none;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.back-to-top-button.visible {
+    opacity: 0.85;
+}
+
+.back-to-top-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* SVG filters */
+.svg-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Animations */
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 4rem);
+        height: var(--size, 4rem);
+    }
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: -4rem;
+    }
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .footer-logo {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+    
+    .footer-nav-list {
+        flex-direction: column;
+    }
+    
+    .footer-nav-item {
+        margin-bottom: 0.8rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+    }
+    
+    .footer-powered-by {
+        margin-bottom: 1rem;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="assets/mobile-footer.css">
+<link href="../footer-gradient.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/auto-generated-styles.css"><link rel="stylesheet" href="/assets/auto-generated-styles-final.css">
+<link rel="stylesheet" href="../assets/gallery-text-fix.css">
+<link rel="stylesheet" href="../assets/mobile-header-fix.css">
+<link rel="stylesheet" href="../assets/hamburger-animation.css">
+<script src="assets/header-scroll-effect.js" defer></script>
+</head>
+<body class="u-body u-xl-mode" data-include-products="true" data-lang="sv" data-path-to-root="../">
+<!-- Original Fooodis Header - Exact Copy -->
+<style>
+/* Reset and base styles */
+.fooodis-header *, .mobile-nav * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styles */
+.fooodis-header {
+    background-color: #1e2127;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-container {
+    display: block;
+}
+
+.fooodis-logo {
+    height: 45px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Language flags */
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+    margin-top: 2px; /* Add a small top margin to align with menu */
+}
+
+.flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+
+/* Navigation */
+.main-nav {
+    display: flex;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 10px;
+}
+
+.nav-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-item a:hover {
+    color: #e8f24c;
+}
+
+/* Hamburger menu */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #e8f24c;
+    margin: 5px 0;
+    border-radius: 3px;
+}
+
+/* Mobile navigation */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(30, 33, 39, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 50px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.show {
+    left: 0;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e8f24c;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+}
+
+.mobile-nav-item {
+    margin: 15px 0;
+}
+
+.mobile-nav-item a {
+    color: #e8f24c;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-item a:hover {
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+}
+
+/* Spacer to prevent content from being hidden under fixed header */
+.header-spacer {
+    height: 80px;
+}
+
+/* Additional header styles to match index.html exactly */
+.fooodis-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(30, 33, 39, 0.96);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    height: 80px; /* Fixed header height for desktop */
+    transition: background-color 0.3s ease;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    /* Fix header height on mobile */
+    .fooodis-header {
+        height: 60px; /* Fixed header height */
+    }
+    
+    .header-container {
+        height: 100%;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    
+    /* Ensure logo fits in the fixed header */
+    .fooodis-logo {
+        height: 35px; /* Slightly smaller logo on mobile */
+    }
+    
+    /* Move logo 20px to the right on mobile */
+    .logo-container {
+        margin-left: 20px;
+    }
+}
+</style>
+<header class="fooodis-header" style="padding: 20px 0;">
+<div class="header-container">
+<a class="logo-container" href="https://fooodis.com/" rel="noopener noreferrer" title="Fooodis Logo">
+<img alt="Fooodis Logo" class="fooodis-logo" src="../images/Artboard17copy9.svg">
+</a>
+<div class="header-right">
+<!-- Language flags -->
+<div class="language-selector">
+<a class="flag-link" data-lang="en" href="#" title="English"><img alt="English" class="flag-icon" src="../images/330425.png"></a>
+<a class="flag-link" data-lang="sv" href="#" title="Swedish"><img alt="Swedish" class="flag-icon" src="../images/555606.png"></a>
+</div>
+<!-- Navigation for desktop -->
+<nav class="main-nav">
+<ul class="nav-list">
+<li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener" target="_blank" title="Service">Service</a></li>
+<li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="../Contact.html" title="Contact">Contact</a></li>
+<li class="nav-item"><a data-lang-en="FEBlogg" data-lang-sv="FEBlogg" href="FEBlog.html" title="FEBlogg">FEBlogg</a></li>
+<li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="../Blog.html" title="Blogg">Blogg</a></li>
+<li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="../index.html#limited-time-offer-en" title="Pris">Pris</a></li>
+<li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank" title="Registrar">Registrar</a></li>
+<li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener" target="_blank" title="Demo">Demo</a></li>
+<li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/new/restaurant/login" rel="noopener" target="_blank" title="Logga in">Logga in</a></li>
+</ul>
+</nav>
+<!-- Hamburger menu for mobile -->
+<button aria-label="Toggle menu" class="hamburger-menu" id="hamburger-button">
+<svg class="ham hamRotate ham1" viewBox="0 0 100 100">
+  <path
+        class="line top"
+        d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+  <path
+        class="line middle"
+        d="m 30,50 h 40" />
+  <path
+        class="line bottom"
+        d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+</svg>
+</button>
+</div>
+</div>
+</header>
+<!-- Mobile navigation menu (hidden by default) -->
+<div class="mobile-nav">
+
+<ul class="mobile-nav-list">
+<li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener" target="_blank" title="SERVICE">SERVICE</a></li>
+<li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html" title="CONTACT">CONTACT</a></li>
+<li class="mobile-nav-item"><a data-lang-en="FEBLOGG" data-lang-sv="FEBLOGG" href="FEBlog.html" title="FEBLOGG">FEBLOGG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="Blog.html" title="BLOGG">BLOGG</a></li>
+<li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="../index.html#limited-time-offer-en" title="PRIS">PRIS</a></li>
+<li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank" title="REGISTRAR">REGISTRAR</a></li>
+<li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener" target="_blank" title="DEMO">DEMO</a></li>
+<li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/new/restaurant/login" rel="noopener" target="_blank" title="LOGGA IN">LOGGA IN</a></li>
+</ul>
+</div>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+
+<script>
+// Initialize header functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Header shadow and transparency on scroll
+    const header = document.querySelector('.fooodis-header');
+    
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            // When scrolled, make header semi-transparent with blur effect
+            header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
+            header.style.backdropFilter = 'blur(10px)';
+            header.style.WebkitBackdropFilter = 'blur(10px)';
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
+            // When at top, restore original background
+            header.style.backgroundColor = '#1e2127';
+            header.style.backdropFilter = '';
+            header.style.WebkitBackdropFilter = '';
+            header.style.boxShadow = '';
+        }
+    }
+    
+    // Initial check and add scroll listener
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Mobile menu toggle
+    const hamburgerMenu = document.querySelector('.hamburger-menu');
+    const mobileNav = document.querySelector('.mobile-nav');
+    // X icon removed from sidebar
+    
+    if (hamburgerMenu && mobileNav) {
+        hamburgerMenu.addEventListener('click', function() {
+            mobileNav.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+        });
+    }
+    
+    if (closeBtn && mobileNav) {
+        closeBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('show');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+    }
+    
+    // Language switching functionality
+    const translations = {
+        'en': {
+            'Service': 'Service',
+            'Contact': 'Contact',
+            'Blog': 'Blog',
+            'Price': 'Price',
+            'Registrar': 'Registrar',
+            'Demo': 'Demo',
+            'Login': 'Login'
+        },
+        'sv': {
+            'Service': 'Tjänst',
+            'Contact': 'Kontakt',
+            'Blog': 'Blogg',
+            'Price': 'Pris',
+            'Registrar': 'Registrera',
+            'Demo': 'Demo',
+            'Login': 'Logga in'
+        }
+    };
+    
+    // Function to update all text elements with translations
+    function updateLanguage(lang) {
+        // Update menu items in header
+        document.querySelectorAll('[data-lang-en], [data-lang-sv]').forEach(el => {
+            const langAttr = `data-lang-${lang}`;
+            if (el.hasAttribute(langAttr)) {
+                el.textContent = el.getAttribute(langAttr);
+            }
+        });
+        
+        // Store the selected language in localStorage
+        localStorage.setItem('fooodis_language', lang);
+        
+        // Redirect to language-specific version if needed
+        if (lang === 'sv' && !window.location.pathname.includes('/sv/')) {
+            window.location.href = 'sv/' + window.location.pathname.split('/').pop();
+        } else if (lang === 'en' && window.location.pathname.includes('/sv/')) {
+            window.location.href = '../' + window.location.pathname.split('/').pop();
+        }
+    }
+    
+    // Add click event listeners to language flags
+    const flagLinks = document.querySelectorAll('.flag-link');
+    flagLinks.forEach(flag => {
+        flag.addEventListener('click', function(e) {
+            e.preventDefault();
+            const lang = this.getAttribute('data-lang');
+            if (lang) {
+                updateLanguage(lang);
+            }
+        });
+    });
+    
+    // Check if there's a stored language preference
+    const storedLang = localStorage.getItem('fooodis_language');
+    if (storedLang) {
+        updateLanguage(storedLang);
+    }
+});
+</script>
+<!-- Mobile navigation menu (hidden by default) -->
+<!-- Spacer to prevent content from being hidden under fixed header -->
+<!-- Header JavaScript - Inline to avoid external dependencies -->
+<script>
+  fetch('../header.html')
+    .then(response => response.text())
+    .then(data => document.getElementById("header-placeholder").innerHTML = data);
+</script>
+<style>
+@media (min-width: 992px) {
+  #sec-3f49 {
+    min-height: calc(100vh - 200px) !important;
+    height: calc(100vh - 200px) !important;
+  }
+}
+</style>
+<section class="skrollable u-align-center u-clearfix u-container-align-center u-image u-shading u-section-1" data-image-height="3000" data-image-width="4500" id="sec-3f49" src="">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1"></div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-xl u-custom-color-2 u-section-2" id="sec-0021">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<img alt="" class="custom-expanded u-image u-image-contain u-image-default u-image-1" data-image-height="52" data-image-width="300" src="../images/Artboard17.svg">
+<h1 class="u-text u-text-1">Fooodis' Expertblog<br></h1>
+<p class="u-text u-text-2"><span class="translate-gpt-translated auto-gen-166" data-translate-gpt="preserved-style">BOOSTA DIN RESTAURANG MED FOOODIS BLOGG</span><br></p>
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" title="​Visa våra planer">​Visa våra planer<br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-2 u-section-3" id="sec-8091">
+<div class="u-clearfix u-sheet u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"><span class="translate-gpt-translated auto-gen-167" data-translate-gpt="preserved-style"><span class="translate-gpt-translated auto-gen-168" data-translate-gpt="preserved-style">HÖJ DITT RESTAURANG MED FOOODIS BLOGG</span></span><br></h3>
+<p class="u-align-center u-text u-text-2">​Discover our blog for essential tips and guides on how to use Foodis to boost your restaurant's success. From digital menus to online orders, we provide everything you need to thrive in the digital era.<br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-section-4" id="sec-dd39">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" target="_blank" rel="noopener noreferrer" title="​Utforska demot nu">​Utforska demot nu<br></a>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-2 u-section-5" id="sec-a448">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-gallery u-layout-grid u-lightbox u-show-text-always u-gallery-1">
+<style>
+@media (max-width: 991px) {
+  .u-gallery-filter-1 {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 5px;
+    scrollbar-width: thin;
+    max-width: 100%;
+  }
+  .u-gallery-filter-1::-webkit-scrollbar {
+    height: 4px;
+  }
+  .u-gallery-filter-1::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+  }
+  .u-gallery-filter-1 .u-filter-item {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    margin-right: 10px;
+  }
+}
+/* Gallery item hover light effect */
+.u-gallery-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.u-gallery-item::before {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: -100%;
+  width: 15%;
+  height: 400%;
+  opacity: 0;
+  transform: rotate(45deg);
+  background: linear-gradient(
+    to right, 
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.05) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.u-gallery-item:hover::before {
+  opacity: 1;
+  animation: shine 5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation-iteration-count: 1;
+}
+
+/* Change title color on hover */
+.u-gallery-item:hover .u-gallery-heading {
+  color: #e8f24c !important;
+  transition: color 0.3s ease;
+}
+
+@keyframes shine {
+  0% {
+    opacity: 0;
+    left: -100%;
+  }
+  5% {
+    opacity: 0.1;
+  }
+  15% {
+    opacity: 0.2;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  75% {
+    opacity: 0.3;
+  }
+  85% {
+    opacity: 0.2;
+  }
+  95% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+    left: 200%;
+  }
+}
+</style>
+<div class="u-gallery-controls">
+<div class="u-gallery-filter u-gallery-filter-1">
+<div class="active u-filter-item">
+<a href="#" title="ALLA">ALLA</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="QR-koder">QR-koder</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Betalningar">Betalningar</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Beställningar">Beställningar</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Kök">Kök</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Kunder">Kunder</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Socialt">Socialt</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Anpassa">Anpassa</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Teknik">Teknik</a>
+</div>
+<div class="u-filter-item">
+<a href="#" title="Chaufförer">Chaufförer</a>
+</div>
+</div>
+</div>
+<div class="u-gallery-inner u-gallery-inner-1">
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Betalningar" data-href="Pos.html" data-page-id="81644953">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="POS- och betalsystem" class="u-back-image u-expanded" src="../images/Screenshot2024-04-09at22.49copy.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-1">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-169">POS- och betalsystem</h3>
+<p class="u-align-left u-gallery-text auto-gen-170">Hantera beställningar smidigt och behandla säkra betalningar snabbt, allt i ett och samma praktiska system.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="QR-koder" data-href="Qr-cod.html" data-page-id="447503433">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Skapa QR-koder" class="u-back-image u-expanded" src="../images/QR.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-2">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-171">Skapa QR-koder</h3>
+<p class="u-align-left u-gallery-text auto-gen-172">Generera skräddarsydda QR-koder för menyer och bord, en viktig del av en kontaktfri och modern matupplevelse.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Beställningar" data-href="Dine-in.html" data-page-id="91165571">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Acceptera lokala beställningar" class="u-back-image u-expanded" src="../images/localorder.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-3">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-173">Acceptera lokala beställningar</h3>
+<p class="u-align-left u-gallery-text auto-gen-174">Ge kunder möjlighet att lägga beställningar direkt från sina smartphones med realtidsaviseringar för ett kontinuerligt orderflöde.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Beställningar" data-href="WhatsApp.html" data-page-id="1832811011">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Beställning via WhatsApp" class="u-back-image u-expanded" src="../images/whatsaap.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-4">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-175">Beställning via WhatsApp</h3>
+<p class="u-align-left u-gallery-text auto-gen-176">Integrera ett direkt, chattbaserat beställningssystem via WhatsApp för att erbjuda bekvämlighet och en personlig touch.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kök" data-href="Kitchen-Disply-System.html" data-page-id="660520108">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Köksdisplay-system" class="u-back-image u-expanded" src="../images/kitchen.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-5">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-177">Köksdisplay-system</h3>
+<p class="u-align-left u-gallery-text auto-gen-178">Effektivisera köksverksamheten med ett system som organiserar och visar beställningar för smidig förberedelse och leverans.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Beställningar" data-href="Order-Time.html" data-page-id="40171233">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Tid för beställningsförberedelse" class="u-back-image u-expanded" src="../images/time-1.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-6">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-179">Tid för beställningsförberedelse</h3>
+<p class="u-align-left u-gallery-text auto-gen-180">Optimera kökets effektivitet genom att ställa in och hantera förberedelsetider för varje rätt, vilket säkerställer snabb service.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kunder" data-href="Add-staff.html" data-page-id="940329865">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Personalhantering" class="u-back-image u-expanded" src="../images/staff-1.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-7">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-181">Personalhantering</h3>
+<p class="u-align-left u-gallery-text auto-gen-182">Ge personalen systemåtkomst för att hantera beställningar, vilket förbättrar både operativ effektivitet och kundservice.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kunder" data-href="Loyalty-program.html" data-page-id="18324005">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Lojalitetsprogram" class="u-back-image u-expanded" src="../images/loyal-1.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-8">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-183">Lojalitetsprogram</h3>
+<p class="u-align-left u-gallery-text auto-gen-184">Uppmuntra återkommande besök genom att belöna lojala kunder och visa uppskattning för deras kontinuerliga användning.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kunder" data-href="Coupons.html" data-page-id="75715845">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Kuponger" class="u-back-image u-expanded" src="../images/coupon-1.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-9">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-185">Kuponger</h3>
+<p class="u-align-left u-gallery-text auto-gen-186">Attrahera och behåll kunder med kampanjkoder för rabatter, vilket ökar försäljningen och lojaliteten.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Socialt" data-href="Tips.html" data-page-id="38117499">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Dricksfunktion" class="u-back-image u-expanded" src="../images/tips-1.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-10">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-187">Dricksfunktion</h3>
+<p class="u-align-left u-gallery-text auto-gen-188">Ge kunder möjlighet att visa uppskattning för utmärkt service med ett lättanvänt alternativ för dricks.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Socialt" data-href="Social-Profile.html" data-page-id="92921286">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Sociala profiler" class="u-back-image u-expanded" src="../images/social.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-11">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-189">Sociala profiler</h3>
+<p class="u-align-left u-gallery-text auto-gen-190">Stärk din online-närvaro och engagera kunder genom framträdande länkar till sociala medier.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kunder" data-href="Customer-login.html" data-page-id="272124068">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Kundlogg" class="u-back-image u-expanded" src="../images/customlog.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-12">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-191">Kundlogg</h3>
+<p class="u-align-left u-gallery-text auto-gen-192">Upprätthåll en följsam och detaljerad logg över kundbesök med ett användarvänligt och effektivt digitalt loggsystem.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Kök" data-href="Allergen.html" data-page-id="2056324307">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Allergeninformationn" class="u-back-image u-expanded" src="../images/alergy.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-13">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-193">Allergeninformationn</h3>
+<p class="u-align-left u-gallery-text auto-gen-194">Visa viktig allergeninformation för varje menyartikel och säkerställ kundsäkerhet samt välinformerade val.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Anpassa" data-href="Theme-Switcher.html" data-page-id="269583563">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Temaväxlare" class="u-back-image u-expanded" src="../images/themeswicher.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-14">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-195">Temaväxlare</h3>
+<p class="u-align-left u-gallery-text auto-gen-196">Ge leverantörer flexibiliteten att välja och växla mellan olika webbmallar för att upprätthålla varumärkeskonsekvens.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Anpassa" data-href="Multilingual.html" data-page-id="88105815">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Flerspråkiga menyer" class="u-back-image u-expanded" src="../images/multilangual.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-15">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-197">Flerspråkiga menyer</h3>
+<p class="u-align-left u-gallery-text auto-gen-198">Använd Google Translate-pluginet för att tillgodose en internationell kundkrets med menyer på flera språk.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Anpassa" data-href="Time-Zone.html" data-page-id="2262614969">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Anpassade tidszonsinställningar" class="u-back-image u-expanded" src="../images/timezoon.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-16">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-199">Anpassade tidszonsinställningar</h3>
+<p class="u-align-left u-gallery-text auto-gen-200">Säkerställ korrekt timing för erbjudanden och orderhantering med anpassningsbara tidszonsinställningar för restaurangen.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Anpassa" data-href="Impressum.html" data-page-id="666724704">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Impressum-visning" class="u-back-image u-expanded" src="../images/ImpressumDisplay.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-17">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-201">Impressum-visning</h3>
+<p class="u-align-left u-gallery-text auto-gen-202">Ge omfattande juridisk transparens med ett Impressum som visas på den digitala menyn.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Betalningar" data-href="Print.html" data-page-id="51501912">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Automatisk kvittoutskrift" class="u-back-image u-expanded" src="../images/AutomatedReceiptPrinting.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-18">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-203">Automatisk kvittoutskrift</h3>
+<p class="u-align-left u-gallery-text auto-gen-204">Använd Print Templ för skalbar och pålitlig automatisk kvittoutskrift som förbättrar transaktionseffektiviteten.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Anpassa" data-href="Settings.html" data-image-height="1869" data-image-width="1627" data-page-id="140216514">
+<div class="u-back-slide">
+<img alt="Klona menyer och inställningar" class="u-back-image u-expanded" src="../images/MenuandSettingsCloner.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-19">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-205">Klona menyer och inställningar</h3>
+<p class="u-align-left u-gallery-text auto-gen-206">Ställ snabbt in nya filialer eller kopiera restauranginställningar med en kloningsfunktion för menyer och konfigurationer.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Teknik" data-href="Webhooks.html" data-image-height="1869" data-image-width="1627" data-page-id="16131721">
+<div class="u-back-slide">
+<img alt="WebHooks i realtid" class="u-back-image u-expanded" src="../images/webhook-1.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-20">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-207">WebHooks i realtid</h3>
+<p class="u-align-left u-gallery-text auto-gen-208">Ta emot orderdata direkt med WebHooks för avancerad systemintegration och snabb respons.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Beställningar" data-href="Daily-Menu.html" data-image-height="1869" data-image-width="1627" data-page-id="3065713596">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Hantera dagens meny" class="u-back-image u-expanded" src="../images/Dailymenu.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-21">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-209">Hantera dagens meny</h3>
+<p class="u-align-left u-gallery-text auto-gen-210">Förenkla och effektivisera hanteringen av din restaurangs dagliga meny med Fooodis intuitiva verktyg och funktioner.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item" data-category="Anpassa" data-href="Custom-Domain.html" data-image-height="1869" data-image-width="1627" data-page-id="2887426515">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Anpassad domäninställning" class="u-back-image u-expanded" src="../images/customdomain.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-22">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-211">Anpassad domäninställning</h3>
+<p class="u-align-left u-gallery-text auto-gen-212">Anslut din restaurangs anpassade domän för en professionell och varumärkesanpassad online-närvaro.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-23" data-category="Chaufförer" data-href="Delivery.html" data-image-height="1869" data-image-width="1627" data-page-id="19101433">
+<div class="u-back-slide">
+<img alt="LEVERANTÖRSCHAUFFÖRER" class="u-back-image u-expanded" src="../images/delivery-3.jpg">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-23">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-213">LEVERANTÖRSCHAUFFÖRER</h3>
+<p class="u-align-left u-gallery-text auto-gen-214">Hantera leveranschaufförer effektivt med vårt modulverktyg för leverantörschaufförer, utformat för smidig samordning mellan leverantörer.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-24" data-category="Teknik" data-href="Custom-CSS-and-JS.html" data-image-height="1869" data-image-width="1627" data-page-id="32736228">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Customizing with JS &amp;amp; CSS" class="u-back-image u-expanded" src="../images/Coding.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-24">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-215">Anpassning med JS &amp; CSS</h3>
+<p class="u-align-left u-gallery-text auto-gen-216">För avancerade användare som vill skräddarsy design och funktionalitet på sin restaurangs online-meny, möjliggör funktionen för anpassad JS och CSS implementering av egna stilar och skript.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-25" data-category="Anpassa" data-href="Menu.html" data-image-height="1869" data-image-width="1627" data-page-id="126192526">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="CREATE MENU" class="u-back-image u-expanded" src="../images/Menu.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-25">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-217">SKAPA MENY</h3>
+<p class="u-align-left u-gallery-text auto-gen-218">Designa och organisera enkelt din restaurangs meny med vårt intuitiva gränssnitt. Lägg till, redigera och kategorisera rätter för att ge dina kunder en smidig upplevelse.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-26" data-category="Teknik" data-href="Settings.html" data-image-height="1869" data-image-width="1627" data-page-id="140216514">
+<div class="u-back-slide">
+<img alt="Settings" class="u-back-image u-expanded" src="../images/Settings.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-26">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-219">Inställningar</h3>
+<p class="u-align-left u-gallery-text auto-gen-220">Hantera alla viktiga detaljer för din restaurang, från namn och kontaktuppgifter till servicefunktioner och visuell branding. Anpassa inställningarna för att återspegla dina unika erbjudanden och förbättra den operativa effektiviteten.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-27" data-category="Teknik" data-href="Apps.html" data-image-height="1869" data-image-width="1627" data-page-id="120421751">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Apps" class="u-back-image u-expanded" src="../images/Apps.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-27">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-221">Appar</h3>
+<p class="u-align-left u-gallery-text auto-gen-222">Få åtkomst till alla viktiga funktioner i en praktisk applikation för att effektivisera din restaurangs verksamhet.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-28" data-category="Betalningar" data-href="Expenses.html" data-image-height="1869" data-image-width="1627" data-page-id="216419831">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Expenses" class="u-back-image u-expanded" src="../images/Inventory-2.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-28">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-223">Utgifter</h3>
+<p class="u-align-left u-gallery-text auto-gen-224">Övervaka och hantera din restaurangs utgifter enkelt för bättre ekonomisk kontroll.<br><br></p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-29" data-category="Betalningar" data-href="Payment-setting.html" data-image-height="1869" data-image-width="1627" data-page-id="506421435">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Send Status" class="u-back-image u-expanded" src="../images/SendStatus.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-29">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-225">Skicka status</h3>
+<p class="u-align-left u-gallery-text auto-gen-226">Informera kunder och personal om orderstatus i realtid för en smidig upplevelse.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-30" data-category="Teknik" data-href="Dashboard.html" data-image-height="1869" data-image-width="1627" data-page-id="1288019282">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Dashboard" class="u-back-image u-expanded" src="../images/Dashboard.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-30">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-227">Instrumentpanel</h3>
+<p class="u-align-left u-gallery-text auto-gen-228">Få en översikt över din restaurangs prestation med anpassningsbara analyser och rapporter.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-31" data-category="Teknik" data-href="Tax.html" data-image-height="1869" data-image-width="1627" data-page-id="32325464">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Tax" class="u-back-image u-expanded" src="../images/Tax.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-31">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-229">Skatt</h3>
+<p class="u-align-left u-gallery-text auto-gen-230">Förenkla skatteberäkningar och rapportering för att följa lokala regler.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-32" data-category="Anpassa" data-href="./#carousel_667d" data-image-height="1869" data-image-width="1627" data-page-id="262025306">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Pricing plan" class="u-back-image u-expanded" src="../images/Pricingplan.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-32">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-231">Prisplan</h3>
+<p class="u-align-left u-gallery-text auto-gen-232">Utforska flexibla abonnemangsplaner som är anpassade efter din restaurangs unika behov.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-33" data-category="Kunder" data-href="Support.html" data-image-height="1869" data-image-width="1627" data-page-id="83317237">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Support" class="u-back-image u-expanded" src="../images/Support.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-33">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-233">Support</h3>
+<p class="u-align-left u-gallery-text auto-gen-234">Få experthjälp när som helst för att lösa tekniska problem eller frågor.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-34" data-category="Betalningar" data-href="Payment-setting.html" data-image-height="1869" data-image-width="1627" data-page-id="506421435">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="payments Setting" class="u-back-image u-expanded" src="../images/payments.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-34">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-235">Betalningsinställningar</h3>
+<p class="u-align-left u-gallery-text auto-gen-236">Konfigurera säkra betalningsmetoder för att ge dina kunder bekvämlighet.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-35" data-category="Beställningar" data-href="Live-order.html" data-image-height="1869" data-image-width="1627" data-page-id="231717215">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="Live order" class="u-back-image u-expanded" src="../images/Liveorder.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-35">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-237">Livebeställning</h3>
+<p class="u-align-left u-gallery-text auto-gen-238">Spåra livebeställningar och säkerställ smidig kommunikation mellan ditt team och kunderna.</p>
+</div>
+</div>
+<div class="u-border-1 u-border-white u-effect-hover-zoom u-gallery-item u-gallery-item-36" data-category="Teknik" data-href="Registration.html" data-image-height="1869" data-image-width="1627" data-page-id="486328548">
+<div class="u-back-slide" data-image-height="1869" data-image-width="1627">
+<img alt="How to register" class="u-back-image u-expanded" src="../images/Howtoregister.png">
+</div>
+<div class="u-container-align-left u-over-slide u-valign-bottom u-over-slide-36">
+<h3 class="u-align-left u-gallery-heading u-text-custom-color-10 auto-gen-239">Hur man Registrerar sig</h3>
+<p class="u-align-left u-gallery-text auto-gen-240">Följ vår steg-för-steg-guide för att gå med i Fooodis-plattformen och starta din resa idag.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-2 u-section-6" id="carousel_a0ff">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1"><span class="translate-gpt-translated auto-gen-241" data-translate-gpt="preserved-style">LOGO LAND DESIGN - DIN PORT TILL DIGITALA EXCELLENS</span></h3>
+<h6 class="u-align-center u-text u-text-2"><span class="translate-gpt-translated auto-gen-242" data-translate-gpt="preserved-style">LOGO LAND DESIGN - DITT PORTAL TILL DIGITALA EXCELLENSEN</span><br></h6>
+<p class="u-align-center u-text u-text-3"><span class="translate-gpt-translated auto-gen-243" data-translate-gpt="preserved-style">Upptäck kraften i enad sociala mediekampanjer, skräddarsydd innehållsdesign och kreativ digital berättande med Logo Land Design. Vårt expertteam är specialiserat på att designa, utföra och övervaka digitala annonskampanjer för maximal avkastning på investeringen. Vi skapar en unik varumärkesröst och strategi, skapar dynamiska animationer, producerar fängslande videoberättelser, fångar fantastisk fotografi och genererar engagerande, plagiatfritt innehåll. Höj din varumärkesnärvaro med våra skräddarsydda digitala lösningar.</span><br></p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-custom-color-2 u-section-7" id="carousel_5c4a">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center u-border-2 u-border-active-white u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius u-text-active-white u-text-custom-color-4 u-text-hover-custom-color-7 u-btn-1" data-animation-delay="0" data-animation-direction="" data-animation-duration="0" data-animation-name="" href="#" target="_blank" rel="noopener noreferrer" title="​LÄS MER!">​LÄS MER!<br></a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-custom-color-1 u-section-8" id="sec-7fa1">
+<div class="u-clearfix u-sheet u-valign-middle-xl u-sheet-1">
+<img alt="" class="u-image u-image-default u-image-1" data-href="www.logoland.se" data-image-height="58" data-image-width="300" data-target="_blank" src="../images/Artboard1.svg">
+<h3 class="u-align-center u-text u-text-custom-color-8 u-text-1">​Stärk Ditt Varumärke med Våra Omfattande Digitala Tjänster</h3>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-9" id="sec-aff1">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="BESÖK LOGOLANDS"><span class="translate-gpt-translated auto-gen-244" data-block-type="" data-translate-gpt="preserved-style">BESÖK LOGOLANDS</span><br></a>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-10" id="sec-8a9a">
+<div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Logo Land Design - Din Port till Digital Excellens</h3>
+<p class="u-align-center u-text u-text-2">​Upptäck kraften i enhetliga sociala mediekampanjer, skräddarsydd innehållsdesign och kreativ digital berättande hos Logo Land Design. Vårt expertteam specialiserar sig på att designa, genomföra och övervaka digitala annonskampanjer för maximal avkastning. Vi skapar en unik varumärkesröst och strategi, skapar dynamiska animationer, producerar fängslande videonarrativ, fångar fantastisk fotografi och genererar engagerande, plagiatfritt innehåll. Höj ditt varumärkes närvaro med våra skräddarsydda digitala lösningar.</p>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-11" id="sec-3437">
+<div class="u-clearfix u-sheet u-sheet-1">
+<div class="u-expanded-width u-list u-list-1">
+<div class="u-repeater u-repeater-1">
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-1" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-1">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-1"><span class="translate-gpt-translated auto-gen-245" data-translate-gpt="preserved-style">SOCIALE MEDIER I ETT NÄTVERK</span></p>
+<p class="u-text u-text-body-alt-color u-text-2">​<span class="translate-gpt-translated auto-gen-246" data-translate-gpt="preserved-style">Utforma, utföra och övervaka digitala annonskampanjer för maximal avkastning på investeringen (ROI).</span><br><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="Läs mer"><span class="translate-gpt-translated auto-gen-247" data-translate-gpt="preserved-style">Läs mer</span></a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-2" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-2">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-3"><span class="translate-gpt-translated auto-gen-248" data-translate-gpt="preserved-style">SKRÄDDARSYTT INNEHÅLLSDESIGN</span></p>
+<p class="u-text u-text-body-alt-color u-text-4"><span class="translate-gpt-translated auto-gen-249" data-translate-gpt="preserved-style">Utforma en unik varumärkesröst och strategi för att säkerställa konsekvent och effektiv kommunikation på alla plattformar.</span></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-2" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-3" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-3">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-5"><span class="translate-gpt-translated auto-gen-250" data-translate-gpt="preserved-style">TJÄNSTER INOM ANIMERING</span></p>
+<p class="u-text u-text-body-alt-color u-text-6">​<span class="translate-gpt-translated auto-gen-251" data-translate-gpt="preserved-style">Skapa dynamiska animationer och grafik för att förmedla meddelanden på ett engagerande sätt.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-3" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-4" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-4">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-7"><span class="translate-gpt-translated auto-gen-252" data-translate-gpt="preserved-style">VIDEO REDIGERING</span></p>
+<p class="u-text u-text-body-alt-color u-text-8">​<span class="translate-gpt-translated auto-gen-253" data-translate-gpt="preserved-style">Skapa lockande videoberättelser för marknadsföring, varumärkesberättelser eller annonser.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-4" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-5" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-5">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-9">​Fotografi</p>
+<p class="u-text u-text-body-alt-color u-text-10">​<span class="translate-gpt-translated auto-gen-254" data-translate-gpt="preserved-style">Fånga högkvalitativa visuella element och designa grafik för att förbättra annonser och marknadsföringsmaterial.</span><br><br></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-5" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+<div class="u-container-style u-image u-list-item u-repeater-item u-image-6" data-image-height="1767" data-image-width="1438">
+<div class="u-container-layout u-similar-container u-valign-bottom-xs u-container-layout-6">
+<p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-11"><span class="translate-gpt-translated auto-gen-255" data-translate-gpt="preserved-style">SKAPANDE OCH COPYRIGHT</span></p>
+<p class="u-text u-text-body-alt-color u-text-12"><span class="translate-gpt-translated auto-gen-256" data-translate-gpt="preserved-style">Att använda AI och mänsklig expertis för att skapa engagerande, fri från plagiat, skräddarsytt innehåll anpassat för reklambehov.</span></p>
+<a class="u-active-none u-border-2 u-border-custom-color-3 u-border-hover-custom-color-4 u-border-no-left u-border-no-right u-border-no-top u-btn u-button-style u-custom-item u-hover-none u-none u-text-custom-color-3 u-btn-6" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="​Läs mer">​Läs mer</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-12" id="sec-cc83">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-body-color u-text-1"><span class="translate-gpt-translated auto-gen-257" data-translate-gpt="preserved-style">VI HAR MER FÖR DIG</span></h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-13" id="sec-2b12">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">​Utforska Mer med Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2">​Din resa med Logo Land Design slutar inte här. Utforska våra ytterligare erbjudanden genom att besöka de dedikerade webbplatserna för våra specialiserade produkter: Webbplatsbyggaren, E-postmarknadsföringsprogrammet och Webbshopbyggaren. Varje produkt är utformad för att förbättra din digitala upplevelse och framgång. Upptäck mer nu!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-14" id="sec-61a5">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="#" target="_blank" rel="noopener noreferrer" title="BESÖK LOGOLANDS"><span class="translate-gpt-translated auto-gen-258" data-block-type="" data-translate-gpt="preserved-style">BESÖK LOGOLANDS</span><br></a>
+</div>
+</section>
+<section class="u-align-left u-clearfix u-container-align-left u-container-align-left-xl u-custom-color-1 u-section-12" id="sec-cc83">
+<div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+<h5 class="u-align-center u-text u-text-1 auto-gen-259">Vi har mer för dig</h5>
+</div>
+</section>
+<section class="u-clearfix u-custom-color-1 u-section-13" id="sec-2b12">
+<div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+<h3 class="u-align-center u-text u-text-1">Utforska mer med Logo Land Design</h3>
+<p class="u-align-center u-text u-text-2">Din resa med Logo Land Design slutar inte här. Utforska våra ytterligare erbjudanden genom att besöka de dedikerade webbplatserna för våra specialiserade produkter: Webbplatsbyggaren, E-postmarknadsföringsprogrammet och Webshopbyggaren. Var och en är utformad för att förbättra din digitala upplevelse och framgång. Upptäck mer nu!</p>
+</div>
+</section>
+<section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-custom-color-1 u-section-14" id="sec-61a5">
+<div class="u-clearfix u-sheet u-sheet-1">
+<a class="u-align-center-xs u-border-2 u-border-active-custom-color-4 u-border-custom-color-4 u-border-hover-custom-color-7 u-btn u-btn-round u-button-style u-color-scheme-summer-time u-none u-radius-50 u-btn-1" href="https://logoland.se/" target="_blank" rel="noopener noreferrer" title="Besök Logoland webbplats"><span class="translate-gpt-translated auto-gen-260">Besök Logoland webbplats</span>
+</a>
+</div>
+</section>
+<style class="u-overlap-style">.u-overlap:not(.u-sticky-scroll) .u-header {
+background-color: #1d2029 !important; opacity: 0.45 !important
+}</style>
+    
+    
+    <script>
+    // Fix logo paths for Swedish version
+    document.addEventListener('DOMContentLoaded', function() {
+        // Give time for footer to load
+        setTimeout(function() {
+            // Fix LogoLand logo
+            const logolandLogo = document.querySelector('.logoland-logo');
+            if (logolandLogo && logolandLogo.src.includes('images/Artboard1.svg')) {
+                logolandLogo.src = '../images/Artboard1.svg';
+            }
+            
+            // Fix Fooodis logo in footer
+            const fooodisFooterLogo = document.querySelector('.fooodis-logo-footer');
+            if (fooodisFooterLogo && fooodisFooterLogo.src.includes('assets/Artboard 17 copy 9.svg')) {
+                fooodisFooterLogo.src = '../assets/Artboard 17 copy 9.svg';
+            }
+            
+            // Fix back-to-top button
+            const backToTopBtn = document.querySelector('.u-back-to-top img');
+            if (backToTopBtn && backToTopBtn.src.includes('images/e923cce1.png')) {
+                backToTopBtn.src = '../images/e923cce1.png';
+            }
+        }, 500); // Wait 500ms for footer to be fully loaded
+    });
+    
+    // Add a complete override for the gallery height adjustment
+    document.addEventListener('DOMContentLoaded', function() {
+        function fixGalleryHeight() {
+            // Target section and gallery elements
+            const gallerySection = document.getElementById('sec-a448');
+            const gallery = document.querySelector('.u-gallery-1');
+            const galleryItems = document.querySelectorAll('.u-gallery-item');
+            const footer = document.querySelector('.fooodis-footer') || document.querySelector('.footer-wrapper') || document.querySelector('footer');
+            
+            if (!gallerySection || !gallery) {
+                console.log('Gallery section or gallery not found');
+                return;
+            }
+            
+            // Find which filter is active
+            const activeFilter = document.querySelector('.u-filter-item.active a');
+            const activeCategory = activeFilter ? activeFilter.textContent.trim() : 'ALLA';
+            
+            // Count visible items based on the active category
+            let visibleCount = 0;
+            galleryItems.forEach(item => {
+                if (activeCategory === 'ALLA' || 
+                    item.getAttribute('data-category') === activeCategory) {
+                    item.style.display = '';  // Explicitly show matching items
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none'; // Explicitly hide non-matching items
+                }
+            });
+            
+            console.log('Active category:', activeCategory, 'Visible items:', visibleCount);
+            
+            // Calculate required height based on visible items
+            // (Items are in a 3-column grid on desktop)
+            const screenWidth = window.innerWidth;
+            const itemsPerRow = screenWidth > 992 ? 3 : (screenWidth > 768 ? 2 : 1);
+            const rowCount = Math.ceil(visibleCount / itemsPerRow);
+            
+            // Each row is approximately 450px tall
+            const filterHeaderHeight = 100; // Height of the filter buttons
+            const rowHeight = 450;  
+            const totalHeight = filterHeaderHeight + (rowCount * rowHeight);
+            
+            // Set both heights to ensure proper resizing
+            gallerySection.style.height = totalHeight + 'px';
+            gallerySection.style.minHeight = totalHeight + 'px';
+            gallery.style.height = (totalHeight - filterHeaderHeight) + 'px';
+            
+            // Find the next section after the gallery to fix spacing
+            const sections = document.querySelectorAll('section');
+            let nextSection = null;
+            let foundGallery = false;
+            
+            for (let i = 0; i < sections.length; i++) {
+                if (foundGallery) {
+                    nextSection = sections[i];
+                    break;
+                }
+                if (sections[i] === gallerySection) {
+                    foundGallery = true;
+                }
+            }
+            
+            // Reset margin of the next section to prevent layout flow issues
+            if (nextSection) {
+                nextSection.style.marginTop = '0';
+            }
+            
+            // Fix footer to prevent extra space and ensure it extends to bottom of viewport
+            if (footer) {
+                footer.style.position = 'relative';
+                footer.style.bottom = '0';
+                footer.style.width = '100%';
+                footer.style.marginBottom = '0';
+                
+                // Add a background element that extends to the bottom if needed
+                let footerBackground = document.getElementById('footer-background-fix');
+                if (!footerBackground) {
+                    footerBackground = document.createElement('div');
+                    footerBackground.id = 'footer-background-fix';
+                    footerBackground.style.position = 'fixed';
+                    footerBackground.style.bottom = '0';
+                    footerBackground.style.left = '0';
+                    footerBackground.style.width = '100%';
+                    footerBackground.style.zIndex = '-1';
+                    footerBackground.style.backgroundColor = getComputedStyle(footer).backgroundColor || '#1d2029';
+                    document.body.appendChild(footerBackground);
+                }
+                
+                // Calculate if we need to show the background filler
+                const viewportHeight = window.innerHeight;
+                const footerBottom = footer.getBoundingClientRect().bottom;
+                const needsFiller = footerBottom < viewportHeight;
+                
+                if (needsFiller) {
+                    const fillerHeight = viewportHeight - footerBottom;
+                    footerBackground.style.height = fillerHeight + 'px';
+                    footerBackground.style.display = 'block';
+                } else {
+                    footerBackground.style.display = 'none';
+                }
+            }
+            
+            // Fix overall body and html height to prevent extra space
+            document.body.style.height = 'auto';
+            document.documentElement.style.height = 'auto';
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+            
+            // Force a browser reflow
+            void(document.body.offsetHeight);
+            window.scrollTo(window.scrollX, window.scrollY);
+            
+            console.log('Setting height to', totalHeight, 'px for', rowCount, 'rows');
+        }
+        
+        // Apply the fix immediately and after any filter changes with multiple timing checks
+        const filterItems = document.querySelectorAll('.u-filter-item');
+        filterItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Apply immediately for initial effect
+                fixGalleryHeight();
+                
+                // Need multiple delayed calls to catch asynchronous DOM updates
+                setTimeout(fixGalleryHeight, 50);
+                setTimeout(fixGalleryHeight, 100);
+                setTimeout(fixGalleryHeight, 250);
+                setTimeout(fixGalleryHeight, 500);
+                setTimeout(fixGalleryHeight, 750);
+            });
+        });
+        
+        // Apply on window resize with immediate and delayed calls
+        window.addEventListener('resize', function() {
+            fixGalleryHeight(); // Immediate application
+            setTimeout(fixGalleryHeight, 100); // Delayed application after layout settles
+        });
+        
+        // Apply on page load and when images finish loading
+        window.addEventListener('load', fixGalleryHeight);
+        fixGalleryHeight(); // Initial application
+        
+        // Add a forced update every 500ms for 2 seconds to catch any late changes
+        let updateCount = 0;
+        const forceUpdateInterval = setInterval(function() {
+            fixGalleryHeight();
+            updateCount++;
+            if (updateCount >= 4) clearInterval(forceUpdateInterval);
+        }, 500);
+    });
+    </script>
+  <!-- Unified Footer Loader -->  
+  <script src="../assets/include-footer.js"></script>
+  
+  <!-- Direct Footer Fallback -->
+  <script>
+  // Fallback direct footer injection - executes after a delay to ensure other methods had a chance
+  setTimeout(function() {
+    // Only inject if no footer exists yet
+    if (!document.querySelector('.fooodis-footer')) {
+      console.log('No footer found after delay - injecting direct footer');
+      
+      // Create footer container
+      const footerContainer = document.createElement('div');
+      footerContainer.className = 'fooodis-footer';
+      footerContainer.style.cssText = 'position:relative; display:block; width:100%; background:#1d2029; color:white; padding:40px 0 20px; text-align:center; margin-top:50px;';
+      
+      // Simple footer content
+      footerContainer.innerHTML = `
+        <div style="max-width:1200px; margin:0 auto; padding:0 20px;">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; margin-bottom:30px;">
+            <div style="flex:1; min-width:250px; margin:10px;">
+              <h3>Fooodis</h3>
+              <p>Din kompletta restauranglösning</p>
+            </div>
+            <div style="flex:1; min-width:250px; margin:10px;">
+              <h3>Kontakt</h3>
+              <p>info@fooodis.com</p>
+            </div>
+            <div style="flex:1; min-width:250px; margin:10px;">
+              <h3>Följ oss</h3>
+              <div>
+                <a href="#" style="color:white; margin:0 10px;">Facebook</a>
+                <a href="#" style="color:white; margin:0 10px;">Instagram</a>
+              </div>
+            </div>
+          </div>
+          <div style="padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+            <p>&copy; ${new Date().getFullYear()} Fooodis. Alla rättigheter reserverade.</p>
+          </div>
+        </div>
+      `;
+      
+      // Add to body
+      document.body.appendChild(footerContainer);
+      
+      // Ensure it's at the bottom
+      document.body.style.minHeight = '100vh';
+      document.body.style.display = 'flex';
+      document.body.style.flexDirection = 'column';
+    }
+  }, 1500);
+  </script>
+
+
+</body></html>

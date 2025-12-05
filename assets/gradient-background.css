@@ -1,0 +1,93 @@
+/* Gradient Background CSS */
+body {
+    position: relative;
+    background-color: #1e2127;
+    color: #fff;
+}
+
+/* Add a background gradient to the entire page below the pricing table */
+body {
+    position: relative;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(to top, #e8f24c 0%, #1e2127 60%, transparent 100%);
+    z-index: -2; /* Lower z-index to ensure it's behind the footer */
+    pointer-events: none; /* Ensures clicks pass through */
+}
+
+/* Make sure the table is above the gradient */
+.table-container {
+    position: relative;
+    z-index: 2;
+    background-color: transparent;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Fix the white line at the top of the table */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+thead tr:first-child th {
+    border-top: none !important;
+}
+
+table#monthly, table#yearly {
+    border-top: none !important;
+    margin-top: -1px; /* Remove any gap */
+}
+
+/* Ensure the FAQ section has proper positioning */
+#faq-section {
+    position: relative;
+    z-index: 1;
+    margin-top: 50px;
+}
+
+/* Make sure the footer spans the full width with the gradient behind it */
+.fooodis-footer {
+    background-color: #1e2127;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    left: 0;
+    right: 0;
+}
+
+/* Add padding to the main content to ensure proper spacing */
+.main-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure the table container has proper positioning */
+.table-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Style the FAQ section to mark the start of the gradient */
+#faq-section {
+    position: relative;
+    z-index: 1;
+    padding-top: 30px;
+    margin-top: 50px;
+}
+
+/* Adjust footer positioning */
+.fooodis-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 50px; /* Add some space between content and footer */
+}

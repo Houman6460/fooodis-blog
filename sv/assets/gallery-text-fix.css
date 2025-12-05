@@ -1,0 +1,16 @@
+/* 
+ * Gallery text styling fix
+ * This CSS ensures gallery card descriptions use regular font weight and smaller font size
+ */
+
+.u-gallery-text {
+  font-weight: 400 !important; /* Force regular font weight */
+  font-size: 0.9rem !important; /* Reduce font size */
+}
+
+/* Also target the auto-generated classes for gallery text */
+[class*="auto-gen-"].u-gallery-text,
+p.u-gallery-text[class*="auto-gen-"] {
+  font-weight: 400 !important;
+  font-size: 0.9rem !important; /* Reduce font size */
+}

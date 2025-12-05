@@ -1,0 +1,39 @@
+/* Currency symbol styling */
+.currency-symbol {
+    display: inline-block;
+    margin-right: 2px;
+    font-weight: normal;
+}
+
+/* Pricing elements with currency */
+.price-amount, .price-value, .price-number {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Material icons styling */
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    vertical-align: middle;
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+}
+
+/* Compare Plans button styling */
+.compare-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
