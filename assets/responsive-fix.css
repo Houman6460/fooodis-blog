@@ -20,11 +20,11 @@
 
 /* Ensure gallery items have proper height */
 .u-gallery-item {
-    min-height: 350px !important;
+    min-height: 420px !important;
 }
 
 .u-gallery-item .u-back-slide {
-    min-height: 250px !important;
+    min-height: 300px !important;
 }
 
 /* Gallery inner grid */
