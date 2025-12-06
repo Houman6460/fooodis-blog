@@ -49,35 +49,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* Ticket card fade to background */
-        .ticket-section,
-        .user-dashboard,
-        .auth-container,
-        .tab-pane {
-            position: relative;
-        }
-
-        .ticket-section::after,
-        .user-dashboard::after,
-        .auth-container::after,
-        .tab-pane::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent 0%, #1e2127 100%);
-            pointer-events: none;
-            border-radius: 0 0 15px 15px;
-        }
-
-        /* Cards with white background - fade to gradient */
-        .support-container > div,
-        .support-container section {
-            position: relative;
-            overflow: hidden;
-        }
 
         .support-header h1 {
             color: #667eea;
