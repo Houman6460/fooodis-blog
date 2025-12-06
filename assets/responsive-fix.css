@@ -58,6 +58,53 @@
 }
 
 /* ===========================================
+   GENERAL CONTENT PADDING - Prevent edge-to-edge stretching
+   =========================================== */
+
+/* All sections should have minimum padding */
+section[class*="u-section"] {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Sheet containers should be contained */
+.u-sheet {
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Expanded width elements should have margins */
+.u-expanded-width {
+    width: calc(100% - 40px) !important;
+    max-width: 1400px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Row and container layouts */
+.u-row,
+.u-layout-row {
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+/* Grid items padding */
+.u-repeater {
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    gap: 15px !important;
+}
+
+/* ===========================================
    GALLERY FILTER HEIGHT FIX
    Section height should adjust when filtering
    =========================================== */
