@@ -57,3 +57,9 @@ npm-debug.log*
 # Build outputs
 dist/
 build/
+
+# Original large images (WebP versions in images-webp/)
+# Uncomment to exclude from repo:
+# images/*.png
+# images/*.jpg
+# images/*.jpeg
