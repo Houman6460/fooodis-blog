@@ -8,229 +8,28 @@
     <title data-lang-en="Support Center - Fooodis" data-lang-sv="Supportcenter - Fooodis">Support Center - Fooodis</title>
 
     <!-- Platform CSS -->
-    <link href="css/nicepage.css" media="screen" rel="stylesheet"/>
-    <link rel="stylesheet" href="css/blog.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/footer-bubbles.css">
+    <link href="nicepage.css" media="screen" rel="stylesheet"/>
     <link rel="stylesheet" href="css/support-portal.css">
     <link rel="stylesheet" href="css/chatbot-management.css">
-    <link rel="stylesheet" href="css/landing-responsive-fix.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Shared Header/Footer/Widget CSS -->
+    <link rel="stylesheet" href="assets/nicepage-header-footer.css">
+    <link rel="stylesheet" href="assets/hamburger-animation.css">
+    <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <link rel="stylesheet" href="assets/responsive-fix.css">
 
     <style>
-        /* Platform-matching header styles - Exact copy from blog page */
-        .fooodis-header *, .mobile-nav * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        .fooodis-header {
+        /* Support page specific styles */
+        body {
+            padding-top: 80px;
             background-color: #1e2127;
-            color: #fff;
-            padding: 10px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .fooodis-logo {
-            height: 40px;
-            width: auto;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .language-selector {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .flag-link {
-            display: inline-block;
-            transition: transform 0.2s ease;
-        }
-
-        .flag-link:hover {
-            transform: scale(1.1);
-        }
-
-        .flag-icon {
-            width: 24px;
-            height: 18px;
-            border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-
-        .main-nav {
-            display: flex;
-        }
-
-        .nav-list {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .nav-item a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item a:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .hamburger-menu {
-            display: none;
-            flex-direction: column;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .hamburger-line {
-            width: 25px;
-            height: 3px;
-            background: white;
-            margin: 3px 0;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .header-spacer {
-            height: 70px;
-        }
-
-        /* Mobile navigation */
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: left 0.3s ease;
-            z-index: 1001;
-            padding: 80px 0 0 0;
-        }
-
-        .mobile-nav.active {
-            left: 0;
-        }
-
-        .mobile-nav-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        .mobile-nav-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .mobile-nav-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mobile-nav-item a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 15px 25px;
-            font-weight: 500;
-            transition: background 0.3s ease;
-        }
-
-        .mobile-nav-item a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Language switching styles */
-        .language-tab {
-            display: inline-block;
-            padding: 8px 16px;
-            margin: 0 4px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-decoration: none;
-            border-radius: 20px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .language-tab.active {
-            background: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .language-tab:hover {
-            background: rgba(255, 255, 255, 0.2);
         }
 
         /* Support portal specific styles */
         .support-main {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: calc(100vh - 70px);
-            padding: 40px 20px;
-        }
-
-        /* Spacer to prevent content from being hidden under fixed header */
-        .header-spacer {
-            height: 80px;
-        }
-
-        /* Main background to match blog page */
-        .support-main {
             background-color: #1e2127 !important;
             min-height: 100vh;
-        }
-
-        /* Ensure all relevant div elements have the same background */
-        .support-container,
-        .support-header,
-        .ticket-section,
-        .section-header,
-        .user-status-section,
-        .ticket-history-section {
-            background-color: #1e2127 !important;
+            padding: 40px 20px;
         }
 
         .support-container {
@@ -268,85 +67,41 @@
             gap: 10px;
         }
 
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .main-nav {
-                display: none;
-            }
+        .language-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #333;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-            .hamburger-menu {
-                display: flex;
-            }
+        .language-tab.active {
+            background: #667eea;
+            color: white;
+        }
 
-            .header-container {
-                padding: 0 15px;
-            }
+        .language-tab img {
+            width: 20px;
+            height: 15px;
+        }
 
-            .language-selector {
-                gap: 5px;
-            }
-
-            .flag-icon {
-                width: 20px;
-                height: 15px;
-            }
+        /* Hide embedded chatbot - use floating widget only */
+        #chatbot-widget {
+            display: none !important;
+        }
+        #chatbot-toggle {
+            display: none !important;
         }
     </style>
-<link rel="stylesheet" href="assets/nicepage-header-footer.css">
-<link rel="stylesheet" href="assets/bubble-footer-codepen.css">
+    <script src="assets/header-scroll-effect.js" defer></script>
 </head>
 <body class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode">
-    <!-- Original Fooodis Header - Exact Copy -->
-    <header class="fooodis-header">
-        <div class="header-container">
-            <a class="logo-container" href="https://fooodis.com/">
-                <img alt="Fooodis Logo" class="fooodis-logo" src="images/Artboard17copy9.svg"/>
-            </a>
-            <div class="header-right">
-                <!-- Language flags -->
-                <div class="language-selector">
-                    <a class="flag-link" data-lang="en" href="#" onclick="switchLanguage('en')"><img alt="English" class="flag-icon" src="images/330425.png"/></a>
-                    <a class="flag-link" data-lang="sv" href="#" onclick="switchLanguage('sv')"><img alt="Swedish" class="flag-icon" src="images/555606.png"/></a>
-                </div>
-                <!-- Navigation for desktop -->
-                <nav class="main-nav">
-                    <ul class="nav-list">
-                        <li class="nav-item"><a data-lang-en="Service" data-lang-sv="Tjänst" href="https://logoland.se" rel="noopener" target="_blank">Service</a></li>
-                        <li class="nav-item"><a data-lang-en="Contact" data-lang-sv="Kontakt" href="Contact.html">Contact</a></li>
-                        <li class="nav-item"><a data-lang-en="Blog" data-lang-sv="Blogg" href="blog.html">Blog</a></li>
-                        <li class="nav-item"><a data-lang-en="Support" data-lang-sv="Support" href="support.html" class="current-page">Support</a></li>
-                        <li class="nav-item"><a data-lang-en="Price" data-lang-sv="Pris" href="Prices.html">Price</a></li>
-                        <li class="nav-item"><a data-lang-en="Registrar" data-lang-sv="Registrera" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank">Registrar</a></li>
-                        <li class="nav-item"><a data-lang-en="Demo" data-lang-sv="Demo" href="https://demo.fooodis.com/home" rel="noopener" target="_blank">Demo</a></li>
-                        <li class="nav-item"><a data-lang-en="Login" data-lang-sv="Logga in" href="https://fooodis.com/login" rel="noopener" target="_blank">Login</a></li>
-                    </ul>
-                </nav>
-                <!-- Hamburger menu for mobile -->
-                <button aria-label="Toggle menu" class="hamburger-menu" onclick="toggleMobileNav()">
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Mobile navigation menu (hidden by default) -->
-    <div class="mobile-nav" id="mobileNav">
-        <div class="mobile-nav-close" onclick="closeMobileNav()">×</div>
-        <ul class="mobile-nav-list">
-            <li class="mobile-nav-item"><a data-lang-en="SERVICE" data-lang-sv="TJÄNST" href="https://logoland.se" rel="noopener" target="_blank">SERVICE</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="CONTACT" data-lang-sv="KONTAKT" href="Contact.html">CONTACT</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="BLOG" data-lang-sv="BLOGG" href="blog.html">BLOG</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="SUPPORT" data-lang-sv="SUPPORT" href="support.html" class="current-page">SUPPORT</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="PRICE" data-lang-sv="PRIS" href="Prices.html">PRICE</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="REGISTRAR" data-lang-sv="REGISTRERA" href="https://fooodis.com/new/restaurant/register" rel="noopener" target="_blank">REGISTRAR</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="DEMO" data-lang-sv="DEMO" href="https://demo.fooodis.com/home" rel="noopener" target="_blank">DEMO</a></li>
-            <li class="mobile-nav-item"><a data-lang-en="LOGIN" data-lang-sv="LOGGA IN" href="https://fooodis.com/login" rel="noopener" target="_blank">LOGIN</a></li>
-        </ul>
-    </div>
-    <!-- Spacer to prevent content from being hidden under fixed header -->
-    <div class="header-spacer"></div>
+    <!-- Header injected by shared-header.js -->
 
     <!-- Main Content -->
     <main class="support-main">
@@ -861,221 +616,35 @@
         </div>
     </div>
 
-    <!-- Chatbot Toggle Button -->
-    <div id="chatbot-toggle" class="chatbot-toggle">
-        <i class="fas fa-comments"></i>
-        <span class="chatbot-notification-badge" id="chatbot-notification-badge">0</span>
-    </div>
-
-    <!-- Fooodis Footer with Bubble Animation -->
-    <footer class="fooodis-footer">
-        <!-- Bubbles animation container -->
-        <div class="bubbles">
-            <!-- Bubbles will be dynamically generated by JavaScript -->
-        </div>
-
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-logo">
-                    <a href="#">
-                        <img src="images/Artboard17copy9.svg" alt="Fooodis Logo" class="fooodis-logo-footer">
-                    </a>
-                </div>
-                <nav class="footer-nav">
-                    <ul class="footer-nav-list">
-                        <li class="footer-nav-item"><a href="https://logoland.se" target="_blank" rel="noopener" data-lang-en="Service" data-lang-sv="Tjänst">Service</a></li>
-                        <li class="footer-nav-item"><a href="#" data-lang-en="Contact" data-lang-sv="Kontakt">Contact</a></li>
-                        <li class="footer-nav-item"><a href="blog.html" data-lang-en="Blog" data-lang-sv="Blogg">Blog</a></li>
-                        <li class="footer-nav-item"><a href="support.html" class="current-page" data-lang-en="Support" data-lang-sv="Support">Support</a></li>
-                        <li class="footer-nav-item"><a href="dashboard.html" data-lang-en="Dashboard" data-lang-sv="Instrumentpanel">Dashboard</a></li>
-                    </ul>
-                </nav>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="footer-powered-by">
-                    <div class="logoland-container">
-                        <a href="https://logoland.se/" target="_blank" rel="noopener">
-                            <img src="images/Artboard1.svg" alt="LogoLand" class="logoland-logo">
-                        </a>
-                        <p data-lang-en="Powered by LogoLand with ❤️" data-lang-sv="Drivs av LogoLand med ❤️">Powered by LogoLand with ❤️</p>
-                    </div>
-                </div>
-                <div class="footer-social">
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link linkedin" title="Visit Fooodis on LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Visit Fooodis on Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Visit Fooodis on Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link twitter" title="Visit Fooodis on X (Twitter)">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="social-link youtube" title="Visit Fooodis on YouTube">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer injected by shared-footer.js -->
 
     <script>
-        // Initialize header functionality when the DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Header shadow and transparency on scroll
-            const header = document.querySelector('.fooodis-header');
+        // Language switching functionality for support page
+        window.switchLanguage = function(lang) {
+            document.documentElement.lang = lang;
 
-            function handleScroll() {
-                if (window.scrollY > 50) {
-                    // When scrolled, make header semi-transparent with blur effect
-                    header.style.backgroundColor = 'rgba(30, 33, 39, 0.7)';
-                    header.style.backdropFilter = 'blur(10px)';
-                    header.style.WebkitBackdropFilter = 'blur(10px)';
-                    header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
-                } else {
-                    // When at top, restore original background
-                    header.style.backgroundColor = '#1e2127';
-                    header.style.backdropFilter = '';
-                    header.style.WebkitBackdropFilter = '';
-                    header.style.boxShadow = '';
+            // Update language tabs
+            document.querySelectorAll('.language-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-lang') === lang) {
+                    tab.classList.add('active');
                 }
-            }
+            });
 
-            // Initial check and add scroll listener
-            handleScroll();
-            window.addEventListener('scroll', handleScroll, { passive: true });
-
-            // Mobile menu toggle
-            const hamburgerMenu = document.querySelector('.hamburger-menu');
-            const mobileNav = document.querySelector('.mobile-nav');
-            const closeBtn = document.querySelector('.mobile-nav-close');
-
-            if (hamburgerMenu && mobileNav) {
-                hamburgerMenu.addEventListener('click', function() {
-                    mobileNav.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
-
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function() {
-                        mobileNav.classList.remove('active');
-                        document.body.style.overflow = '';
-                    });
+            // Update all translatable elements
+            document.querySelectorAll('[data-lang-en]').forEach(element => {
+                const translation = element.getAttribute('data-lang-' + lang);
+                if (translation) {
+                    element.textContent = translation;
                 }
-
-                // Close mobile nav when clicking outside
-                mobileNav.addEventListener('click', function(e) {
-                    if (e.target === mobileNav) {
-                        mobileNav.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                });
-            }
-
-            // Language switching functionality
-            window.switchLanguage = function(lang) {
-                document.documentElement.lang = lang;
-
-                // Update language tabs
-                document.querySelectorAll('.language-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                    if (tab.getAttribute('data-lang') === lang) {
-                        tab.classList.add('active');
-                    }
-                });
-
-                // Update all translatable elements
-                document.querySelectorAll('[data-lang-en]').forEach(element => {
-                    const translation = element.getAttribute('data-lang-' + lang);
-                    if (translation) {
-                        element.textContent = translation;
-                    }
-                });
-
-                // Update placeholders
-                document.querySelectorAll('[data-lang-' + lang + '-placeholder]').forEach(element => {
-                    const placeholder = element.getAttribute('data-lang-' + lang + '-placeholder');
-                    if (placeholder) {
-                        element.placeholder = placeholder;
-                    }
-                });
-
-                // Update select options
-                document.querySelectorAll('option[data-lang-' + lang + ']').forEach(option => {
-                    const translation = option.getAttribute('data-lang-' + lang);
-                    if (translation) {
-                        option.textContent = translation;
-                    }
-                });
-            };
-
-            // Mobile nav toggle functions
-            window.toggleMobileNav = function() {
-                const mobileNav = document.querySelector('.mobile-nav');
-                if (mobileNav) {
-                    mobileNav.classList.toggle('active');
-                    document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
-                }
-            };
-
-            window.closeMobileNav = function() {
-                const mobileNav = document.querySelector('.mobile-nav');
-                if (mobileNav) {
-                    mobileNav.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            };
-        });
-
-        // Footer bubbles animation
-        function createBubbles() {
-            const bubblesContainer = document.querySelector('.bubbles');
-            if (!bubblesContainer) return;
-
-            const bubbleCount = 15;
-
-            for (let i = 0; i < bubbleCount; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                bubble.style.left = Math.random() * 100 + '%';
-                bubble.style.animationDelay = Math.random() * 15 + 's';
-                bubble.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                bubblesContainer.appendChild(bubble);
-            }
-        }
-
-        // Initialize bubbles when page loads
-        document.addEventListener('DOMContentLoaded', createBubbles);
+            });
+        };
     </script>
     <script src="js/support-portal.js"></script>
 
-    <!-- Chatbot Integration Scripts -->
-    <script src="js/storage-manager.js"></script>
-    <script src="js/chatbot-widget.js"></script>
-    <script src="js/chatbot-management.js"></script>
-    <script src="js/chatbot-message-enhancer.js"></script>
-    <script src="js/chatbot-integration-fixes.js"></script>
-    <script src="js/node-flow-builder.js"></script>
-
-    <!-- Initialize Chatbot -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize chatbot after page loads
-            setTimeout(() => {
-                if (typeof window.ChatbotWidget !== 'undefined') {
-                    window.chatbotWidget = new ChatbotWidget();
-                    console.log('✅ Chatbot initialized on support page');
-                } else {
-                    console.warn('⚠️ ChatbotWidget not available');
-                }
-            }, 1000);
-        });
-    </script>
-<script src="assets/shared-header.js"></script>
-<script src="assets/shared-footer.js"></script>
-<script src="assets/shared-widgets.js"></script>
+    <!-- Shared Header/Footer/Widgets -->
+    <script src="assets/shared-header.js" defer></script>
+    <script src="assets/shared-footer.js" defer></script>
+    <script src="assets/shared-widgets.js" defer></script>
 </body>
 </html>
