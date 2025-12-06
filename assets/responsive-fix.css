@@ -101,7 +101,20 @@ section[class*="u-section"] {
     max-width: 1200px !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    gap: 15px !important;
+    gap: 10px !important;
+    row-gap: 10px !important;
+    column-gap: 10px !important;
+}
+
+/* Reduce gaps in all grid/row layouts */
+.u-layout-row,
+.u-layout-cell,
+.u-container-layout {
+    margin-bottom: 0 !important;
+}
+
+.u-repeater-item {
+    margin-bottom: 10px !important;
 }
 
 /* ===========================================
