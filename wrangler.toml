@@ -52,6 +52,21 @@ ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 # binding = "ANALYTICS"
 # dataset = "fooodis_events"
 
+# ============================================
+# Queues Configuration
+# Used for: async newsletter processing, background jobs
+# Create queue in CF Dashboard: Workers & Pages > Queues > Create
+# ============================================
+[[queues.producers]]
+binding = "NEWSLETTER_QUEUE"
+queue = "fooodis-newsletter-queue"
+
+[[queues.consumers]]
+queue = "fooodis-newsletter-queue"
+max_batch_size = 10
+max_retries = 3
+dead_letter_queue = "fooodis-newsletter-dlq"
+
 # Cloudflare Turnstile (set via Cloudflare dashboard secrets for production)
 # TURNSTILE_SECRET_KEY = "your-secret-key"  # Set in Cloudflare dashboard
 # TURNSTILE_SITE_KEY = "0x4AAAAAAA"  # Update in login.html

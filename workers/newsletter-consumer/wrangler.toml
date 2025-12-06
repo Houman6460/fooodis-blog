@@ -1,0 +1,35 @@
+name = "fooodis-newsletter-consumer"
+main = "src/index.js"
+compatibility_date = "2023-01-01"
+
+# ============================================
+# Queue Consumer
+# ============================================
+[[queues.consumers]]
+queue = "fooodis-newsletter-queue"
+max_batch_size = 10
+max_retries = 3
+dead_letter_queue = "fooodis-newsletter-dlq"
+
+# ============================================
+# D1 Database Binding
+# ============================================
+[[d1_databases]]
+binding = "DB"
+database_name = "fooodis-db"
+database_id = "d106fe5e-fbe0-4942-9a9d-42e6c78515ed"
+
+# ============================================
+# KV Namespace Binding
+# ============================================
+[[kv_namespaces]]
+binding = "KV"
+id = "cf0ff73f7d304dc79a9c0739d617e633"
+
+# ============================================
+# Environment Variables
+# ============================================
+[vars]
+ENVIRONMENT = "production"
+# EMAIL_API_KEY = "your-email-service-api-key"  # Set in CF Dashboard
+# EMAIL_FROM = "newsletter@fooodis.com"
