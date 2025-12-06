@@ -395,6 +395,9 @@ async function callOpenAIChatCompletion(env, apiKey, systemPrompt, userMessage, 
   // Use AI Gateway if configured, otherwise direct OpenAI
   const endpoint = getOpenAIEndpoint(env, '/v1/chat/completions');
   
+  // Use gpt-3.5-turbo as default (more widely available than gpt-4)
+  const selectedModel = model || 'gpt-3.5-turbo';
+  
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -402,7 +405,7 @@ async function callOpenAIChatCompletion(env, apiKey, systemPrompt, userMessage, 
       'Authorization': `Bearer ${apiKey}`
     },
     body: JSON.stringify({
-      model: model || 'gpt-4',
+      model: selectedModel,
       messages: messages,
       max_tokens: 1000,
       temperature: 0.7
@@ -410,7 +413,9 @@ async function callOpenAIChatCompletion(env, apiKey, systemPrompt, userMessage, 
   });
 
   if (!response.ok) {
-    throw new Error(`OpenAI API error: ${response.status}`);
+    const errorBody = await response.text();
+    console.error(`OpenAI API error: ${response.status}`, errorBody);
+    throw new Error(`OpenAI API error: ${response.status} - ${errorBody.substring(0, 200)}`);
   }
 
   const data = await response.json();
