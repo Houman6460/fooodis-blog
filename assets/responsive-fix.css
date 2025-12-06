@@ -48,6 +48,47 @@
 }
 
 /* ===========================================
+   GALLERY FILTER HEIGHT FIX
+   Section height should adjust when filtering
+   =========================================== */
+
+/* Remove fixed height from gallery section */
+.u-section-5 {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* Gallery container should adjust height */
+.u-gallery {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* Gallery inner grid height adjustment */
+.u-gallery-inner {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* Hidden filtered items should not take space */
+.u-gallery-item[style*="display: none"],
+.u-gallery-item.u-filter-hidden,
+.u-gallery-item:not(.u-filter-active) {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Ensure visible items display properly */
+.u-gallery-item.u-filter-active,
+.u-gallery-item[style*="display: block"],
+.u-gallery-item[style*="display: flex"] {
+    display: block !important;
+}
+
+/* ===========================================
    MOBILE RESPONSIVE FIXES (max-width: 991px)
    =========================================== */
 @media (max-width: 991px) {
