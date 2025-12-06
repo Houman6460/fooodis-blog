@@ -108,23 +108,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         /* Back to Top Button */
-        .back-to-top {
+        .back-to-top,
+        .u-back-to-top,
+        [class*="back-to-top"] {
             position: fixed !important;
             bottom: 20px !important;
             right: 25px !important;
             z-index: 999998 !important;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: transparent;
-            border: 2px solid #e8f24c;
+            width: 50px !important;
+            height: 50px !important;
+            min-width: 50px !important;
+            max-width: 50px !important;
+            min-height: 50px !important;
+            max-height: 50px !important;
+            border-radius: 50% !important;
+            background: transparent !important;
+            border: 2px solid #e8f24c !important;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            padding: 0 !important;
         }
         
         .back-to-top.visible {
