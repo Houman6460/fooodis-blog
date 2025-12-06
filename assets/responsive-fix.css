@@ -65,11 +65,27 @@
 /* Gallery section - allow height to adjust */
 .u-section-5 {
     height: auto !important;
+    padding-bottom: 20px !important;
+    margin-bottom: 0 !important;
 }
 
 /* Gallery inner - auto height */
 .u-gallery-inner {
     height: auto !important;
+}
+
+/* Remove excessive gaps between sections */
+section + section {
+    margin-top: 0 !important;
+}
+
+/* Reduce padding on sections after gallery */
+.u-section-5 + section,
+.u-section-6,
+.u-section-7,
+.u-section-8 {
+    padding-top: 40px !important;
+    margin-top: 0 !important;
 }
 
 /* ===========================================
