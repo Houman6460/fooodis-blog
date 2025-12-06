@@ -21,6 +21,16 @@ function loadCookieConsent() {
     }
 }
 
+// Load Analytics Tracker
+function loadAnalyticsTracker() {
+    if (!document.querySelector('script[src*="analytics-tracker.js"]')) {
+        const script = document.createElement('script');
+        script.src = 'assets/analytics-tracker.js';
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+}
+
 // Load chatbot scripts dynamically
 function loadChatbotScripts() {
     const chatbotScripts = [
@@ -69,6 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load Cookie Consent Banner (shows on all pages)
     loadCookieConsent();
+    
+    // Load Analytics Tracker (shows on all pages)
+    loadAnalyticsTracker();
     
     // Load chatbot scripts if not already loaded
     if (typeof window.FoodisChatbot === 'undefined' && !document.querySelector('#fooodis-chatbot')) {

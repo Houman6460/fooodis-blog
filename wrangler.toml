@@ -43,6 +43,15 @@ ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 # CF_ACCOUNT_ID = "your-account-id"       # Set in Cloudflare Dashboard secrets
 # AI_GATEWAY_ID = "fooodis-ai-gateway"    # Set in Cloudflare Dashboard secrets
 
+# ============================================
+# Analytics Engine (Optional)
+# Enable in Cloudflare Dashboard > Analytics > Analytics Engine
+# Provides: high-performance event tracking and analytics
+# ============================================
+# [[analytics_engine_datasets]]
+# binding = "ANALYTICS"
+# dataset = "fooodis_events"
+
 # Cloudflare Turnstile (set via Cloudflare dashboard secrets for production)
 # TURNSTILE_SECRET_KEY = "your-secret-key"  # Set in Cloudflare dashboard
 # TURNSTILE_SITE_KEY = "0x4AAAAAAA"  # Update in login.html
