@@ -4,7 +4,72 @@
  * GET /api/chatbot - Get chatbot status and configuration
  * 
  * This is the main endpoint for the chatbot widget on the frontend
+ * 
+ * Features:
+ * - AI Gateway integration for cost control and analytics
+ * - Rate limiting per IP address
+ * - Conversation history context
  */
+
+// Rate limiting configuration
+const RATE_LIMIT = {
+  maxRequests: 20,      // Max requests per window
+  windowMs: 60 * 1000,  // 1 minute window
+  blockDurationMs: 5 * 60 * 1000  // 5 minute block if exceeded
+};
+
+/**
+ * Check rate limit for IP address
+ */
+async function checkRateLimit(env, ip) {
+  if (!env.KV) return { allowed: true };
+  
+  const key = `ratelimit:chatbot:${ip}`;
+  const blockKey = `ratelimit:blocked:${ip}`;
+  
+  // Check if IP is blocked
+  const blocked = await env.KV.get(blockKey);
+  if (blocked) {
+    return { allowed: false, blocked: true, retryAfter: 300 };
+  }
+  
+  // Get current request count
+  const data = await env.KV.get(key, 'json');
+  const now = Date.now();
+  
+  if (!data || (now - data.windowStart) > RATE_LIMIT.windowMs) {
+    // New window
+    await env.KV.put(key, JSON.stringify({ count: 1, windowStart: now }), { expirationTtl: 120 });
+    return { allowed: true, remaining: RATE_LIMIT.maxRequests - 1 };
+  }
+  
+  if (data.count >= RATE_LIMIT.maxRequests) {
+    // Rate limit exceeded - block the IP
+    await env.KV.put(blockKey, 'true', { expirationTtl: 300 });
+    return { allowed: false, blocked: true, retryAfter: 300 };
+  }
+  
+  // Increment count
+  await env.KV.put(key, JSON.stringify({ count: data.count + 1, windowStart: data.windowStart }), { expirationTtl: 120 });
+  return { allowed: true, remaining: RATE_LIMIT.maxRequests - data.count - 1 };
+}
+
+/**
+ * Get OpenAI API endpoint (supports AI Gateway)
+ */
+function getOpenAIEndpoint(env, path) {
+  // Check for AI Gateway configuration
+  const accountId = env.CF_ACCOUNT_ID;
+  const gatewayId = env.AI_GATEWAY_ID;
+  
+  if (accountId && gatewayId) {
+    // Use AI Gateway for cost control and analytics
+    return `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/openai${path}`;
+  }
+  
+  // Fallback to direct OpenAI API
+  return `https://api.openai.com${path}`;
+}
 
 /**
  * GET /api/chatbot - Get chatbot status and public configuration
@@ -70,6 +135,24 @@ export async function onRequestPost(context) {
   const { request, env } = context;
 
   try {
+    // Rate limiting check
+    const clientIP = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+    const rateLimit = await checkRateLimit(env, clientIP);
+    
+    if (!rateLimit.allowed) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Rate limit exceeded. Please wait before sending more messages.',
+        retryAfter: rateLimit.retryAfter
+      }), {
+        status: 429,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Retry-After': String(rateLimit.retryAfter || 60)
+        }
+      });
+    }
+
     const data = await request.json();
     const { message, conversationId, visitorId, assistantId, language, agentName, agentSystemPrompt } = data;
 
@@ -192,7 +275,7 @@ export async function onRequestPost(context) {
           tokensUsed = response.tokens || 0;
         } else {
           // Use Chat Completions API with conversation history
-          const response = await callOpenAIChatCompletion(apiKey, systemPrompt, message, assistant?.model || 'gpt-4', conversationHistory);
+          const response = await callOpenAIChatCompletion(env, apiKey, systemPrompt, message, assistant?.model || 'gpt-4', conversationHistory);
           aiResponse = response.message;
           tokensUsed = response.tokens || 0;
         }
@@ -264,8 +347,14 @@ export async function onRequestPost(context) {
 
 /**
  * Call OpenAI Chat Completion API
+ * @param {object} env - Environment bindings
+ * @param {string} apiKey - OpenAI API key
+ * @param {string} systemPrompt - System prompt for the AI
+ * @param {string} userMessage - User's message
+ * @param {string} model - AI model to use
+ * @param {array} conversationHistory - Previous messages for context
  */
-async function callOpenAIChatCompletion(apiKey, systemPrompt, userMessage, model, conversationHistory = []) {
+async function callOpenAIChatCompletion(env, apiKey, systemPrompt, userMessage, model, conversationHistory = []) {
   // Build messages array with system prompt, history, and current message
   const messages = [
     { role: 'system', content: systemPrompt }
@@ -281,7 +370,10 @@ async function callOpenAIChatCompletion(apiKey, systemPrompt, userMessage, model
   
   console.log(`Calling OpenAI with ${messages.length} messages (including ${conversationHistory.length} history)`);
   
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  // Use AI Gateway if configured, otherwise direct OpenAI
+  const endpoint = getOpenAIEndpoint(env, '/v1/chat/completions');
+  
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

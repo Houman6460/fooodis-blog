@@ -35,6 +35,14 @@ ENVIRONMENT = "production"
 MAX_UPLOAD_SIZE = "10485760"  # 10MB in bytes
 ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 
+# ============================================
+# AI Gateway Configuration (Optional but Recommended)
+# Provides: cost tracking, retry logic, rate limiting, analytics
+# Set these in Cloudflare Dashboard > AI Gateway > Create Gateway
+# ============================================
+# CF_ACCOUNT_ID = "your-account-id"       # Set in Cloudflare Dashboard secrets
+# AI_GATEWAY_ID = "fooodis-ai-gateway"    # Set in Cloudflare Dashboard secrets
+
 # Cloudflare Turnstile (set via Cloudflare dashboard secrets for production)
 # TURNSTILE_SECRET_KEY = "your-secret-key"  # Set in Cloudflare dashboard
 # TURNSTILE_SITE_KEY = "0x4AAAAAAA"  # Update in login.html
