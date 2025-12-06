@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="assets/hamburger-animation.css">
     <link rel="stylesheet" href="assets/bubble-footer-codepen.css">
     <link rel="stylesheet" href="assets/responsive-fix.css">
+    <link rel="stylesheet" href="assets/gradient-background.css">
 
     <style>
         /* Support page specific styles */
@@ -98,28 +99,25 @@
             display: none !important;
         }
 
-        /* Fix back-to-top button */
-        #back-to-top-btn {
+        /* Fix back-to-top button - override shared-widgets styles */
+        .back-to-top-btn,
+        #back-to-top-btn,
+        [id*="back-to-top"] {
             position: fixed !important;
             bottom: 30px !important;
             right: 30px !important;
             width: 50px !important;
             height: 50px !important;
+            min-width: 50px !important;
+            max-width: 50px !important;
+            min-height: 50px !important;
+            max-height: 50px !important;
             border-radius: 50% !important;
-            z-index: 999 !important;
-        }
-
-        /* Yellow gradient at bottom like homepage */
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            background: linear-gradient(to top, #c4b700 0%, transparent 100%);
-            pointer-events: none;
-            z-index: -1;
+            padding: 0 !important;
+            z-index: 9999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
     </style>
     <script src="assets/header-scroll-effect.js" defer></script>
