@@ -127,11 +127,10 @@ section[class*="u-section"] {
     overflow: hidden !important;
 }
 
-/* Card images rounded corners */
+/* Card images rounded corners - all corners */
 .u-repeater-item img,
-.u-container-style img,
-.u-image {
-    border-radius: 12px 12px 0 0 !important;
+.u-container-style img {
+    border-radius: 12px !important;
 }
 
 /* ===========================================
