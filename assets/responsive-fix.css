@@ -65,13 +65,27 @@
 /* Gallery section - allow height to adjust */
 .u-section-5 {
     height: auto !important;
+    min-height: 0 !important;
     padding-bottom: 20px !important;
     margin-bottom: 0 !important;
 }
 
-/* Gallery inner - auto height */
-.u-gallery-inner {
+/* Override Blog.css fixed heights */
+.u-section-5 .u-sheet-1 {
+    min-height: 0 !important;
     height: auto !important;
+}
+
+.u-section-5 .u-gallery-1 {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* Gallery inner - auto height */
+.u-gallery-inner,
+.u-gallery-inner-1 {
+    height: auto !important;
+    min-height: 0 !important;
 }
 
 /* Remove excessive gaps between sections */
