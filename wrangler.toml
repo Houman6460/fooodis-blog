@@ -56,16 +56,11 @@ ALLOWED_ORIGINS = "https://fooodis.com,https://www.fooodis.com"
 # Queues Configuration
 # Used for: async newsletter processing, background jobs
 # Create queue in CF Dashboard: Workers & Pages > Queues > Create
+# NOTE: consumers are in separate worker (workers/newsletter-consumer)
 # ============================================
 [[queues.producers]]
 binding = "NEWSLETTER_QUEUE"
 queue = "fooodis-newsletter-queue"
-
-[[queues.consumers]]
-queue = "fooodis-newsletter-queue"
-max_batch_size = 10
-max_retries = 3
-dead_letter_queue = "fooodis-newsletter-dlq"
 
 # ============================================
 # Vectorize Configuration
