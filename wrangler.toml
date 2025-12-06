@@ -67,6 +67,14 @@ max_batch_size = 10
 max_retries = 3
 dead_letter_queue = "fooodis-newsletter-dlq"
 
+# ============================================
+# Vectorize Configuration
+# Used for: chatbot semantic memory, conversation search
+# ============================================
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "fooodis-chatbot-memory"
+
 # Cloudflare Turnstile (set via Cloudflare dashboard secrets for production)
 # TURNSTILE_SECRET_KEY = "your-secret-key"  # Set in Cloudflare dashboard
 # TURNSTILE_SITE_KEY = "0x4AAAAAAA"  # Update in login.html
