@@ -1,0 +1,41 @@
+name = "fooodis-automation-scheduler"
+main = "src/index.js"
+compatibility_date = "2023-01-01"
+
+# ============================================
+# Scheduled Triggers (Cron Jobs)
+# ============================================
+[triggers]
+crons = [
+  "0 */6 * * *",    # Every 6 hours
+  "0 9 * * *",       # Daily at 9 AM UTC
+]
+
+# ============================================
+# D1 Database Binding (same as main site)
+# ============================================
+[[d1_databases]]
+binding = "DB"
+database_name = "fooodis-db"
+database_id = "d106fe5e-fbe0-4942-9a9d-42e6c78515ed"
+
+# ============================================
+# KV Namespace Binding
+# ============================================
+[[kv_namespaces]]
+binding = "KV"
+id = "cf0ff73f7d304dc79a9c0739d617e633"
+
+# ============================================
+# R2 Bucket Binding
+# ============================================
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "fooodis-media"
+
+# ============================================
+# Environment Variables
+# ============================================
+[vars]
+ENVIRONMENT = "production"
+MAIN_SITE_URL = "https://fooodis.com"
