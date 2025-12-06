@@ -101,9 +101,9 @@ section[class*="u-section"] {
     max-width: 1200px !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    gap: 10px !important;
-    row-gap: 10px !important;
-    column-gap: 10px !important;
+    gap: 15px !important;
+    row-gap: 15px !important;
+    column-gap: 15px !important;
 }
 
 /* Reduce gaps in all grid/row layouts */
@@ -114,7 +114,24 @@ section[class*="u-section"] {
 }
 
 .u-repeater-item {
-    margin-bottom: 10px !important;
+    margin-bottom: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+/* Rounded corners for all cards */
+.u-repeater-item,
+.u-container-style,
+.u-layout-cell {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+/* Card images rounded corners */
+.u-repeater-item img,
+.u-container-style img,
+.u-image {
+    border-radius: 12px 12px 0 0 !important;
 }
 
 /* ===========================================
