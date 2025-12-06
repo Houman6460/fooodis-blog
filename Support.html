@@ -97,6 +97,30 @@
         #chatbot-toggle {
             display: none !important;
         }
+
+        /* Fix back-to-top button */
+        #back-to-top-btn {
+            position: fixed !important;
+            bottom: 30px !important;
+            right: 30px !important;
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 50% !important;
+            z-index: 999 !important;
+        }
+
+        /* Yellow gradient at bottom like homepage */
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, #c4b700 0%, transparent 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
     </style>
     <script src="assets/header-scroll-effect.js" defer></script>
 </head>
