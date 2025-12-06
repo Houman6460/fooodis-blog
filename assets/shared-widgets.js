@@ -31,6 +31,16 @@ function loadAnalyticsTracker() {
     }
 }
 
+// Load Image Optimizer
+function loadImageOptimizer() {
+    if (!document.querySelector('script[src*="image-optimizer.js"]')) {
+        const script = document.createElement('script');
+        script.src = 'assets/image-optimizer.js';
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+}
+
 // Load chatbot scripts dynamically
 function loadChatbotScripts() {
     const chatbotScripts = [
@@ -82,6 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load Analytics Tracker (shows on all pages)
     loadAnalyticsTracker();
+    
+    // Load Image Optimizer (lazy loading + WebP)
+    loadImageOptimizer();
     
     // Load chatbot scripts if not already loaded
     if (typeof window.FoodisChatbot === 'undefined' && !document.querySelector('#fooodis-chatbot')) {
