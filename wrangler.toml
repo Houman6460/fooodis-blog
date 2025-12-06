@@ -75,6 +75,14 @@ dead_letter_queue = "fooodis-newsletter-dlq"
 binding = "VECTORIZE"
 index_name = "fooodis-chatbot-memory"
 
+# ============================================
+# Workers AI Configuration
+# Used for: cost-effective AI responses for simple queries
+# Free tier: 10,000 neurons/day
+# ============================================
+[ai]
+binding = "AI"
+
 # Cloudflare Turnstile (set via Cloudflare dashboard secrets for production)
 # TURNSTILE_SECRET_KEY = "your-secret-key"  # Set in Cloudflare dashboard
 # TURNSTILE_SITE_KEY = "0x4AAAAAAA"  # Update in login.html

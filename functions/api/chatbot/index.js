@@ -260,12 +260,32 @@ export async function onRequestPost(context) {
       }
     }
 
-    // Call OpenAI API
+    // Call AI API (Workers AI for simple queries, OpenAI for complex)
     let aiResponse = "I'm here to help! However, I'm currently unable to process your request. Please try again later.";
     let tokensUsed = 0;
+    let aiProvider = 'none';
     const startTime = Date.now();
 
-    if (apiKey) {
+    // Determine if this is a simple query (use cheaper Workers AI)
+    const isSimpleQuery = isSimpleQuestion(message);
+    
+    // Try Workers AI first for simple queries (FREE/cheap)
+    if (env.AI && isSimpleQuery && !assistant?.openai_assistant_id) {
+      try {
+        console.log('🤖 Using Workers AI for simple query');
+        const response = await callWorkersAI(env, systemPrompt, message, language);
+        if (response.success) {
+          aiResponse = response.message;
+          aiProvider = 'workers_ai';
+          tokensUsed = 0; // Workers AI doesn't charge per token the same way
+        }
+      } catch (error) {
+        console.log('Workers AI failed, falling back to OpenAI:', error.message);
+      }
+    }
+
+    // Use OpenAI for complex queries or if Workers AI failed
+    if (aiProvider === 'none' && apiKey) {
       try {
         // If we have an OpenAI assistant ID, use the Assistants API
         if (assistant?.openai_assistant_id) {
@@ -273,11 +293,13 @@ export async function onRequestPost(context) {
           aiResponse = response.message;
           threadId = response.threadId;
           tokensUsed = response.tokens || 0;
+          aiProvider = 'openai_assistant';
         } else {
           // Use Chat Completions API with conversation history
           const response = await callOpenAIChatCompletion(env, apiKey, systemPrompt, message, assistant?.model || 'gpt-4', conversationHistory);
           aiResponse = response.message;
           tokensUsed = response.tokens || 0;
+          aiProvider = 'openai';
         }
       } catch (error) {
         console.error('OpenAI API error:', error.message);
@@ -288,8 +310,8 @@ export async function onRequestPost(context) {
         });
         aiResponse = getErrorResponse(language);
       }
-    } else {
-      console.warn('No API key available - using fallback response');
+    } else if (aiProvider === 'none') {
+      console.warn('No API available - using fallback response');
       aiResponse = language === 'sv' 
         ? 'Hej! Hur kan jag hjälpa dig idag?'
         : 'Hello! How can I help you today?';
@@ -492,4 +514,96 @@ function getErrorResponse(language) {
     sv: "Jag ber om ursäkt, men jag har problem med att behandla din förfrågan just nu. Vänligen försök igen om en stund."
   };
   return errors[language] || errors.en;
+}
+
+/**
+ * Determine if a message is a simple question (suitable for Workers AI)
+ * Simple questions: greetings, basic info, FAQ-style queries
+ * Complex questions: multi-step reasoning, code, analysis
+ */
+function isSimpleQuestion(message) {
+  const msg = message.toLowerCase().trim();
+  
+  // Simple patterns - use Workers AI (FREE)
+  const simplePatterns = [
+    /^(hi|hello|hey|hej|hallo)/,
+    /^(thanks|thank you|tack)/,
+    /^(bye|goodbye|hejdå)/,
+    /what (is|are) (your|the) (hours|address|location|menu|price)/,
+    /how (do i|can i|to) (order|pay|contact|book|reserve)/,
+    /where (is|are|can)/,
+    /do you (have|offer|accept)/,
+    /(open|close|hours|timing)/,
+    /(delivery|pickup|takeaway)/,
+    /^(yes|no|ok|okay|sure)$/,
+  ];
+  
+  // Complex patterns - use OpenAI
+  const complexPatterns = [
+    /explain .{50,}/,
+    /compare|analyze|evaluate/,
+    /write (a |an |me )?code|script|program/,
+    /step by step|detailed|comprehensive/,
+    /\d{3,}/, // Long numbers suggest data/calculations
+    /```/, // Code blocks
+  ];
+  
+  // Check for complex patterns first
+  for (const pattern of complexPatterns) {
+    if (pattern.test(msg)) {
+      return false; // Complex - use OpenAI
+    }
+  }
+  
+  // Check for simple patterns
+  for (const pattern of simplePatterns) {
+    if (pattern.test(msg)) {
+      return true; // Simple - use Workers AI
+    }
+  }
+  
+  // Default: messages under 100 chars are likely simple
+  return msg.length < 100;
+}
+
+/**
+ * Call Workers AI for simple queries (FREE tier available)
+ * Uses Llama 3 model for chat completions
+ */
+async function callWorkersAI(env, systemPrompt, userMessage, language) {
+  if (!env.AI) {
+    return { success: false, error: 'Workers AI not configured' };
+  }
+
+  try {
+    // Add language instruction
+    const langNote = language === 'sv' 
+      ? '\n\nRespond in Swedish (Svenska).'
+      : '\n\nRespond in English.';
+
+    const messages = [
+      { role: 'system', content: systemPrompt + langNote },
+      { role: 'user', content: userMessage }
+    ];
+
+    // Use Llama 3 8B - good balance of quality and speed
+    const response = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
+      messages,
+      max_tokens: 500,
+      temperature: 0.7
+    });
+
+    if (response?.response) {
+      return {
+        success: true,
+        message: response.response,
+        model: 'llama-3-8b-instruct'
+      };
+    }
+
+    return { success: false, error: 'No response from Workers AI' };
+  } catch (error) {
+    console.error('Workers AI error:', error);
+    return { success: false, error: error.message };
+  }
 }
