@@ -15,6 +15,12 @@
     padding-left: 20px !important;
     padding-right: 20px !important;
     box-sizing: border-box !important;
+    height: auto !important;
+}
+
+/* Ensure gallery items have proper height */
+.u-gallery-item {
+    min-height: 200px !important;
 }
 
 /* Gallery inner grid */
@@ -52,31 +58,14 @@
    Section height should adjust when filtering
    =========================================== */
 
-/* Remove fixed height from gallery section */
+/* Gallery section - allow height to adjust */
 .u-section-5 {
     height: auto !important;
-    min-height: 0 !important;
 }
 
-/* Gallery container should adjust height */
-.u-gallery {
-    height: auto !important;
-    min-height: 0 !important;
-}
-
-/* Gallery inner grid height adjustment */
+/* Gallery inner - auto height */
 .u-gallery-inner {
     height: auto !important;
-    min-height: 0 !important;
-}
-
-/* Hidden filtered items should not take space */
-.u-gallery-item.u-filter-hidden {
-    display: none !important;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
 }
 
 /* ===========================================
