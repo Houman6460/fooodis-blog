@@ -4,9 +4,68 @@
  */
 
 /* ===========================================
+   GALLERY CARD FIXES - FEBlog and similar pages
+   =========================================== */
+
+/* Gallery container - add padding on all screen sizes */
+.u-gallery {
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Gallery inner grid */
+.u-gallery-inner {
+    max-width: 100% !important;
+    gap: 15px !important;
+}
+
+/* Individual gallery items */
+.u-gallery-item {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+/* Section containing gallery */
+.u-section-5 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.u-section-5 .u-sheet {
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+/* Override u-expanded-width for gallery */
+.u-gallery.u-expanded-width {
+    width: calc(100% - 40px) !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+}
+
+/* ===========================================
    MOBILE RESPONSIVE FIXES (max-width: 991px)
    =========================================== */
 @media (max-width: 991px) {
+    /* Gallery fixes for tablet */
+    .u-gallery {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    
+    .u-gallery.u-expanded-width {
+        width: calc(100% - 30px) !important;
+    }
+    
+    .u-gallery-inner {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    
     /* Fix section padding and margins */
     section {
         padding-left: 15px !important;
@@ -101,6 +160,25 @@
    MOBILE PHONE FIXES (max-width: 575px)
    =========================================== */
 @media (max-width: 575px) {
+    /* Gallery fixes for mobile */
+    .u-gallery {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+    
+    .u-gallery.u-expanded-width {
+        width: calc(100% - 20px) !important;
+    }
+    
+    .u-gallery-inner {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    .u-gallery-item {
+        margin-bottom: 10px !important;
+    }
+    
     /* Reduce section padding */
     section {
         padding-top: 30px !important;
