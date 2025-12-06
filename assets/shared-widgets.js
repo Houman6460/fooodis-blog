@@ -1,7 +1,25 @@
 /**
- * Shared Widgets - Chatbot & Back to Top
+ * Shared Widgets - Chatbot, Back to Top & Cookie Consent
  * Shows on all pages
  */
+
+// Load Cookie Consent
+function loadCookieConsent() {
+    // Load CSS
+    if (!document.querySelector('link[href*="cookie-consent.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'assets/cookie-consent.css';
+        document.head.appendChild(link);
+    }
+    
+    // Load JS
+    if (!document.querySelector('script[src*="cookie-consent.js"]')) {
+        const script = document.createElement('script');
+        script.src = 'assets/cookie-consent.js';
+        document.head.appendChild(script);
+    }
+}
 
 // Load chatbot scripts dynamically
 function loadChatbotScripts() {
@@ -48,6 +66,9 @@ function initializeChatbot() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Load Cookie Consent Banner (shows on all pages)
+    loadCookieConsent();
     
     // Load chatbot scripts if not already loaded
     if (typeof window.FoodisChatbot === 'undefined' && !document.querySelector('#fooodis-chatbot')) {
